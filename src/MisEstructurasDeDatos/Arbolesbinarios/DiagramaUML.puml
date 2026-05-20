@@ -1,0 +1,165 @@
+@startuml
+left to right direction
+
+package "Hoja2a.arbolesbinarios" {
+    interface InterfazArbol<T> {
+        +getRaiz() : Nodo<T>
+        +setRaiz(raiz: Nodo<T>)
+        +isEmpty() : boolean
+        +getIzquierda(nodo: Nodo<T>) : Nodo<T>
+        +getDerecha(nodo: Nodo<T>) : Nodo<T>
+        +getDato(nodo: Nodo<T>) : T
+        +getDatos(nodo: Nodo<T>) : ListaSimplementeEnlazada<T>
+        +getRepeticionesNodo(nodo: Nodo<T>) : int
+        +getRepeticionesDato(dato: T) : int
+        +getGrado() : int
+        +isNodoInArbol(dato: T) : boolean
+        +getAltura() : int
+        +getNivel(dato: T) : int
+        +getListaDatosNivel(nivel: int) : ListaEnlazada
+        +getListaNodosNivel(nivel: int) : ListaEnlazada
+        +getNodosHoja() : ListaEnlazada
+        +getNodoMasPequeño() : Nodo<T>
+        +getNodoMasGrande() : Nodo<T>
+        +add(dato: T)
+        +delDato(dato: T)
+        +delNodo(dato: T)
+        +getCaminoDatos(dato: T) : ListaEnlazada
+        +getCaminoNodos(dato: T) : ListaEnlazada
+        +isArbolHomogeneo1() : boolean
+        +isArbolHomogeneo2() : boolean
+        +isArbolCompleto() : boolean
+        +isArbolCasiCompleto() : boolean
+        +equilibrar() : Arbol
+        +getSubArbolIzquierda() : Arbol
+        +getSubArbolDerecha() : Arbol
+        +getListaOrdenCentral() : ListaEnlazada
+        +getListaPreOrden() : ListaEnlazada
+        +getListaPostOrden() : ListaEnlazada
+    }
+
+    class ArbolBinarioDeBusqueda<T> {
+        -raiz : Nodo<T>
+        +ArbolBinarioDeBusqueda()
+        +ArbolBinarioDeBusqueda(dato: T)
+        +getRaiz() : Nodo<T>
+        +setRaiz(raiz: Nodo<T>)
+        +isEmpty() : boolean
+        +getIzquierda(nodo: Nodo<T>) : Nodo<T>
+        +getDerecha(nodo: Nodo<T>) : Nodo<T>
+        +getDato(nodo: Nodo<T>) : T
+        +getDatos(nodo: Nodo<T>) : ListaSimplementeEnlazada<T>
+        +getRepeticionesNodo(nodo: Nodo<T>) : int
+        +getRepeticionesDato(dato: T) : int
+        +getGrado() : int
+        +isNodoInArbol(dato: T) : boolean
+        +getAltura() : int
+        +getNivel(dato: T) : int
+        +getListaDatosNivel(nivel: int) : ListaEnlazada
+        +getListaNodosNivel(nivel: int) : ListaEnlazada
+        +getNodosHoja() : ListaEnlazada
+        +getNodoMasPequeño() : Nodo<T>
+        +getNodoMasGrande() : Nodo<T>
+        +add(dato: T)
+        +delDato(dato: T)
+        +delNodo(dato: T)
+        +getCaminoDatos(dato: T) : ListaEnlazada
+        +getCaminoNodos(dato: T) : ListaEnlazada
+        +isArbolHomogeneo1() : boolean
+        +isArbolHomogeneo2() : boolean
+        +isArbolCompleto() : boolean
+        +isArbolCasiCompleto() : boolean
+        +equilibrar() : Arbol
+        +getSubArbolIzquierda() : Arbol
+        +getSubArbolDerecha() : Arbol
+        +getListaOrdenCentral() : ListaEnlazada
+        +getListaPreOrden() : ListaEnlazada
+        +getListaPostOrden() : ListaEnlazada
+        +toString() : String
+    }
+
+    class ArbolBinarioDeBusquedaEquilibrado<T> {
+        +add(dato: T)
+        +delDato(dato: T)
+        +delNodo(dato: T)
+    }
+
+    class Nodo<T> {
+        -izquierda : Nodo<T>
+        -derecha : Nodo<T>
+        -datos : ListaSimplementeEnlazada<T>
+
+        ~Nodo()
+        ~Nodo(izquierda: Nodo<T>, derecha: Nodo<T>, dato: T)
+        ~Nodo(dato: T)
+
+        #getIzquierda() : Nodo<T>
+        #getDerecha() : Nodo<T>
+        #setIzquierda(izquierda: Nodo<T>)
+        #setDerecha(derecha: Nodo<T>)
+        #getDatos() : ListaSimplementeEnlazada<T>
+
+        #getRepeticionesNodo(dato: T) : int
+        #getGrado() : int
+        #getAltura() : int
+        #isNodoInArbol(dato: T) : boolean
+        #getNivel(dato: T) : int
+        #getListaDatosNivel(elementos: ListaEnlazada, nivel: int)
+        #getListaNodosNivel(elementos: ListaEnlazada, nivel: int)
+        #numeroHijos() : int
+        #getNodosHoja(hijos: ListaEnlazada)
+        #getNodoMasPequeño() : Nodo<T>
+        #getNodoMasGrande() : Nodo<T>
+        #isArbolCompleto(nivelA: int, nivelR: int) : boolean
+        #isArbolCasiCompleto(nivelA: int, nivelR: int) : boolean
+        #isArbolHomogeneo(nodoActual: Nodo<T>) : boolean
+        #add(dato: T)
+        #add(nodo: Nodo<T>)
+        #delDato(dato: T) : Nodo<T>
+        #delNodo(dato: T) : Nodo<T>
+        #ProcesoBorrado() : Nodo<T>
+        #getCaminoDatos(camino: ListaEnlazada, dato: T) : boolean
+        #getCaminoNodos(camino: ListaEnlazada, dato: T) : boolean
+        #equilibrarBase() : Nodo<T>
+        #equilibrarAuxiliar(desequilibrio: int) : Nodo<T>
+        #rotacionHaciaIzquierda(nodo: Nodo<T>) : Nodo<T>
+        #rotacionHaciaDerecha(nodo: Nodo<T>) : Nodo<T>
+        #dobleRotacionDerecha(nodo: Nodo<T>) : Nodo<T>
+        #dobleRotacionIzquierda(nodo: Nodo<T>) : Nodo<T>
+        #ordenCentral(elementos: ListaEnlazada)
+        #preOrden(elementos: ListaEnlazada)
+        #postOrden(elementos: ListaEnlazada)
+        +toString() : String
+        +compareTo(o: Nodo<T>) : int
+    }
+}
+
+package "MisEstructurasDeDatos" {
+    class ListaSimplementeEnlazada<T> {
+        -primero : Elemento<T>
+        -size : int
+        +ListaSimplementeEnlazada()
+        +addEnd(dato: T)
+        +delFirst()
+        +get(index: int) : T
+        +getSize() : int
+        +isEmpty() : boolean
+        +toString() : String
+    }
+}
+
+' Relaciones de Interfaz
+InterfazArbol <|.. ArbolBinarioDeBusqueda
+ArbolBinarioDeBusqueda <|-- ArbolBinarioDeBusquedaEquilibrado
+
+' Relaciones Estructurales
+ArbolBinarioDeBusqueda "1" o-- "0..1" Nodo : raiz
+Nodo "1" o-- "0..1" Nodo : izquierda
+Nodo "1" o-- "0..1" Nodo : derecha
+Nodo "1" *-- "1" ListaSimplementeEnlazada : almacena datos
+
+' Relaciones de Dependencia (para dar robustez al diagrama)
+ArbolBinarioDeBusqueda ..> ListaSimplementeEnlazada : genera resultados
+ListaSimplementeEnlazada "1" *-- "n" Elemento : contiene
+
+@enduml

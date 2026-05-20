@@ -1,0 +1,234 @@
+@startuml
+
+package "Hoja2b.Grafos" {
+    interface InterfazGrafo<DN, DA> {
+        + getNodos() : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + getAristas() : ListaSimplementeEnlazada<Arista<DN, DA>>
+        + getTipos() : ListaSimplementeEnlazada<String>
+        + addNodo(nodo : NodoGrafo<DN>) : void
+        + addNodo(datos : DN) : void
+        + addArista(arista : Arista<DN, DA>) : void
+        + addArista(origen : NodoGrafo<DN>, predicado : DA, destino : NodoGrafo<DN>) : void
+        + addTipo(tipo : String) : void
+        + getNodosValidos() : ListaSimplementeEnlazada<InterfazDatosNodo>
+        + getAristasValidas() : ListaSimplementeEnlazada<InterfazDatosArista>
+        + buscarNodoPorId(id : long) : NodoGrafo<DN>
+        + buscarNodoPorNombre(nombreBusqueda : String) : NodoGrafo<DN>
+        + buscarNodoPorTipo(tipo : String) : NodoGrafo<DN>
+        + NumeroNodosTipo(tipo : String) : int
+        + getTiposDeNodos() : ListaSimplementeEnlazada<String>
+        + getVecinos(nodo : NodoGrafo<DN>) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + caminoMinimo(idOrigen : long, idDestino : long) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + caminoMinimoAmbosSentidos(idOrigen : long, idDestino : long) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + mostrarIdsCamino(camino : ListaSimplementeEnlazada<NodoGrafo<DN>>) : String
+        + mostrarDatosCamino(camino : ListaSimplementeEnlazada<NodoGrafo<DN>>) : String
+        + mostrarDatosNodosYAristasCamino(camino : ListaSimplementeEnlazada<NodoGrafo<DN>>) : String
+        + caminoMinimo(nombreOrigen : String, nombreDestino : String) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + caminoMinimoAmbosSentidos(nombreOrigen : String, nombreDestino : String) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + getVecinosNoDirigidos(nodo : NodoGrafo<DN>) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + esDisjunto() : boolean
+        + getAristaPorNodos(origen : NodoGrafo<DN>, destino : NodoGrafo<DN>) : Arista<DN, DA>
+        + getDestinosPorPredicado(origen : NodoGrafo<DN>, predicado : DA) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + getDestinosPorPredicado(origen : NodoGrafo<DN>, dato : String) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + getOrigenesPorPredicadoYDestino(predicado : DA, destino : NodoGrafo<DN>) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + getOrigenesPorPredicadoYDestino(dato : String, destino : NodoGrafo<DN>) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + personasMismaCiudadQue(tipoPersona : String) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + fisicosMismaCiudadQue(tipoPersona : String) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + lugaresNacimientoPremiosNobel() : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + Dijkstra(origen : NodoGrafo<DN>, destino : NodoGrafo<DN>) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + toString() : String
+    }
+    interface InterfazDatosNodo {
+        + getTipo() : String
+        + getNombre() : String
+    }
+    interface InterfazDatosArista {
+        + getDato() : String
+    }
+    interface InterfazAristasConPeso {
+        + getPeso() : Integer
+    }
+    class Grafo<DN, DA> {
+        - ListaSimplementeEnlazada<NodoGrafo<DN>> nodos
+        - ListaSimplementeEnlazada<Arista<DN, DA>> aristas
+        - ListaSimplementeEnlazada<String> tipos
+        + Grafo()
+        + getNodos() : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + getAristas() : ListaSimplementeEnlazada<Arista<DN, DA>>
+        + getTipos() : ListaSimplementeEnlazada<String>
+        + addNodo(nodo : NodoGrafo<DN>) : void
+        + addNodo(datos : DN) : void
+        + addArista(arista : Arista<DN, DA>) : void
+        + addArista(origen : NodoGrafo<DN>, predicado : DA, destino : NodoGrafo<DN>) : void
+        + addTipo(tipo : String) : void
+        + getNodosValidos() : ListaSimplementeEnlazada<InterfazDatosNodo>
+        + getAristasValidas() : ListaSimplementeEnlazada<InterfazDatosArista>
+        + buscarNodoPorId(id : long) : NodoGrafo<DN>
+        + buscarNodoPorNombre(nombreBusqueda : String) : NodoGrafo<DN>
+        + buscarNodoPorTipo(tipo : String) : NodoGrafo<DN>
+        + NumeroNodosTipo(tipo : String) : int
+        + getTiposDeNodos() : ListaSimplementeEnlazada<String>
+        + getVecinos(nodo : NodoGrafo<DN>) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + mostrarCaminoPruebaDijkstra(ListaSimplementeEnlazada<NodoGrafo<DN>> camino) : String
+        + caminoMinimo(idOrigen : long, idDestino : long) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + caminoMinimoAmbosSentidos(idOrigen : long, idDestino : long) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + mostrarIdsCamino(camino : ListaSimplementeEnlazada<NodoGrafo<DN>>) : String
+        + mostrarDatosCamino(camino : ListaSimplementeEnlazada<NodoGrafo<DN>>) : String
+        + mostrarDatosNodosYAristasCamino(camino : ListaSimplementeEnlazada<NodoGrafo<DN>>) : String
+        + caminoMinimo(nombreOrigen : String, nombreDestino : String) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + caminoMinimoAmbosSentidos(nombreOrigen : String, nombreDestino : String) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + getVecinosNoDirigidos(nodo : NodoGrafo<DN>) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + esDisjunto() : boolean
+        + getAristaPorNodos(origen : NodoGrafo<DN>, destino : NodoGrafo<DN>) : Arista<DN, DA>
+        + getDestinosPorPredicado(origen : NodoGrafo<DN>, predicado : DA) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + getDestinosPorPredicado(origen : NodoGrafo<DN>, dato : String) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + getOrigenesPorPredicadoYDestino(predicado : DA, destino : NodoGrafo<DN>) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + getOrigenesPorPredicadoYDestino(dato : String, destino : NodoGrafo<DN>) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + personasMismaCiudadQue(tipoPersona : String) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + fisicosMismaCiudadQue(tipoPersona : String) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + lugaresNacimientoPremiosNobel() : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + Dijkstra(origen : NodoGrafo<DN>, destino : NodoGrafo<DN>) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + reconstruirCamino(ListaSimplementeEnlazada<DatoDijkstra<DN>> tabla, NodoGrafo<DN> destino) : ListaSimplementeEnlazada<NodoGrafo<DN>>
+        + buscarMinimoNoVisitado(ListaSimplementeEnlazada<DatoDijkstra<DN>> tabla) : DatoDijkstra<DN>
+        + buscarEstado(ListaSimplementeEnlazada<DatoDijkstra<DN>> tabla, NodoGrafo<DN> nodo) : DatoDijkstra<DN>
+        + toString() : String
+    }
+    class NodoGrafo<DN> {
+        - long id
+        - contadorId = 0 : long
+        - datos : DN
+        # NodoGrafo(DN datos)
+        # getId() : long
+        # setId(long id) : void
+        # getDatos() : DN
+        # setDatos(DN datos) :void
+        + equals(Object obj) :boolean
+        + toString() : String
+        + compareTo(NodoGrafo otro) : int
+    }
+    class Arista<DN, DA> {
+        - long id
+        - contadorId = 0 : long
+        - origen NodoGrafo<DN>
+        - datos : DA
+        - destino NodoGrafo<DN>
+        # Arista(NodoGrafo<DN> origen, DA predicado, NodoGrafo<DN> destino)
+        # getId() : long
+        # setId(long id) : void
+        # getOrigen() : NodoGrafo<DN>
+        # setOrigen(NodoGrafo<DN> origen) : void
+        # getDestino() : NodoGrafo<DN>
+        # setDestino(NodoGrafo<DN> destino) : void
+        # getDato() : DA
+        # setDato(DA datos) :void
+        + equals(Object obj) :boolean
+        + toString() : String
+        + compareTo(NodoGrafo otro) : int
+    }
+    class DatoNodo {
+        - nombre : String
+        - tipo : String
+        + DatoNodo(String nombre, String tipo)
+        + getNombre() : String
+        + getTipo() : String
+        + toString() : String
+        + equals(Object obj) : boolean
+        + compareTo(InterfazDatosNodo o) : int
+    }
+    class DatoArista {
+        - dato : String
+        + DatoArista(String predicado)
+        + getDato() : String
+        + esValido() : boolean
+        + toString() : String
+        + equals(Object obj) : boolean
+        + compareTo(InterfazDatosArista o) : int
+    }
+    class DatoAristaConPeso {
+        - peso : int
+        - dato : String
+        + DatoAristaConPeso(int peso, String dato)
+        + getPeso() : Integer
+        + getDato() : String
+        + toString() : String
+        + equals(Object obj) : boolean
+        + compareTo(InterfazAristasConPeso o) : int
+    }
+    class DatoDijkstra {
+        + nodo : NodoGrafo<DN>
+        + distancia : int
+        + padre : NodoGrafo<DN>
+        + visitado : boolean
+        + DatoDijkstra(NodoGrafo<DN> n)
+        + compareTo(DatoDijkstra<DN> o) : int
+    }
+    class DatosGrafoJson {
+        - tipos : String[]
+        - tripletas : TripletaJson[]
+        + getTipos() : String[]
+        + setTipos(String[] tipos) : void
+        + getTripletas() : TripletaJson[]
+        + setTripletas(TripletaJson[] tripletas) : void
+    }
+    class TripletaJson {
+        - s : String
+        - p : String
+        - o : String
+        + getS() : String
+        + setS(String s) : void
+        + getD() : String
+        + setP(String p) : void
+        + getO() : String
+        + setO(String o) : void
+        + compareTo(TripletaJson o) :  : void
+    }
+    class LectorGrafoJson {
+        + cargarDesdeJson(String ruta) : Grafo<DatoNodo, DatoArista>
+    }
+}
+
+package "MisEstructurasDeDatos" {
+    class ListaSimplementeEnlazada<T> {
+        -primero : Elemento<T>
+        -size : int
+        +ListaSimplementeEnlazada()
+        +addEnd(dato: T)
+        +delFirst()
+        +get(index: int) : T
+        +getSize() : int
+        +isEmpty() : boolean
+        +toString() : String
+    }
+}
+
+' Relaciones de Interfaces
+InterfazGrafo <|.. Grafo
+InterfazDatosNodo <|.. DatoNodo
+InterfazDatosArista <|.. DatoArista
+InterfazAristasConPeso <|.. DatoAristaConPeso
+InterfazDatosArista <|.. DatoAristaConPeso
+
+' Relaciones estructurales del Grafo
+Grafo *-- "1" ListaSimplementeEnlazada : "contiene"
+Grafo "1" *-- "0..*" NodoGrafo : "almacena"
+Grafo "1" *-- "0..*" Arista : "almacena"
+
+' Estructura de la Arista
+Arista "0..*" o-- "1" NodoGrafo : "origen"
+Arista "0..*" o-- "1" NodoGrafo : "destino"
+
+' Relación Nodo/Arista con sus datos genéricos (DN/DA)
+' Aquí indicamos que DN y DA suelen ser las interfaces de datos
+NodoGrafo o-- "1" InterfazDatosNodo : "datos (DN)"
+Arista o-- "1" InterfazDatosArista : "datos (DA)"
+
+' Relaciones de algoritmos
+Grafo ..> DatoDijkstra : "utiliza para cálculos"
+DatoDijkstra o-- "1" NodoGrafo : "referencia"
+
+' Relaciones de persistencia JSON
+LectorGrafoJson ..> Grafo : "instancia"
+LectorGrafoJson ..> DatosGrafoJson : "mapea"
+DatosGrafoJson "1" *-- "0..*" TripletaJson : "contiene"
+
+@enduml

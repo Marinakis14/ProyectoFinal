@@ -1,0 +1,14 @@
+Explique las diferencias (si las ha habido) de los resultados obtenidos entre los dos programas de prueba.
+¿Qué sucede con los resultados si ejecuta los programas de prueba varias veces?
+
+Los resultados entre ambos programas se ven claramente, especialmente en la estructura del arbol, en la primera prueba como
+introduciamos todos los elementos en orden, cada elemento era mayor que el anterior y por tanto se introducia a la
+derecha, esto hacia que en vez de tener estructura de arbol tuviera mas bien una estructura de lista y por tanto era muy
+ineficiente, tenia una altura muy grande(la altura máxima para ese numero de nodos de hecho) y tardaba tanto en llegar
+a nodos grandes como el nodo 110.
+En la segunda prueba sin embargo el arbol tienen una estructura completamente diferente que a diferencia de la primera
+prueba(donde da igual cuantas veces ejecutes el programa los resultados siempre van a ser los mismos), en cada ejecución
+el árbol es distinto, debido a que insertamos los numeros de manera aleatoria, esto permite tambien que se puedan
+insertar nodos a la izquierda y a la derecha de la raiz dependiendo de si el valor es mayor o menor, lo que disminuye
+muchisimo la altura y el tiempo de busqueda y longitud de camino para valores grandes. Además la estructura esta mucho
+mas repartida y equilibrada.

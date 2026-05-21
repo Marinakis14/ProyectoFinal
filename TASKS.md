@@ -26,8 +26,8 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | Área | Estado |
 |------|--------|
 | Capas 2, 3 y 4 | Completadas y testeadas |
-| Primera parte de capa 5 | BFS, visión, combate y árbol de decisión IA completados |
-| Tests JUnit actuales | 215 tests pasando |
+| Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA e IA enemiga completados |
+| Tests JUnit actuales | 226 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
 ---
@@ -184,6 +184,14 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 20 | Decidir radio Manhattan para Guardian y Destructor en decisiones IA | ✅ Completado |
 | 21 | Implementar acciones `ATACAR`, `MOVER`, `MOVER_A_ZONA`, `APLICAR_EFECTO`, `INVOCAR`, `AOE` y `ESPERAR` | ✅ Completado |
 | 22 | Mantener `ArbolDecisionIA` como clase de decisión sin modificar estado del juego | ✅ Completado |
+| 23 | Implementar `IAEnemigo` | ✅ Completado |
+| 24 | Usar `BFSMovimiento` para movimiento de enemigos dentro de sala | ✅ Completado |
+| 25 | Implementar persecución hacia celda libre adyacente al jugador | ✅ Completado |
+| 26 | Implementar reposicionamiento `MOVER_A_ZONA` para enemigos a distancia | ✅ Completado |
+| 27 | Implementar huida del `SUMMONER` alejándose del jugador | ✅ Completado |
+| 28 | Implementar cooldown real del `SNIPER` | ✅ Completado |
+| 29 | Implementar aplicación de efectos del `CONTROLLER` | ✅ Completado |
+| 30 | Implementar invocación de Berserker por `SUMMONER` | ✅ Completado |
 
 ---
 
@@ -209,6 +217,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 16 | `LineaDeVisionTest` | ✅ Completado |
 | 17 | `CombatManagerTest` | ✅ Completado |
 | 18 | `ArbolDecisionIATest` | ✅ Completado |
+| 19 | `IAEnemigoTest` | ✅ Completado |
 
 ---
 
@@ -227,6 +236,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 9 | Suite tras `LineaDeVision` | ✅ Correcta |
 | 10 | Suite tras `CombatManager` | ✅ Correcta |
 | 11 | Suite tras `ArbolDecisionIA` | ✅ Correcta |
+| 12 | Suite tras `IAEnemigo` | ✅ Correcta |
 
 Última verificación completa:
 
@@ -237,7 +247,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 Resultado:
 
 ```text
-215 tests, 0 failures, 0 errors, 0 skipped
+226 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---
@@ -256,6 +266,9 @@ Resultado:
 | 8 | Cualquier cambio futuro en `MisEstructurasDeDatos` debe consultarse antes | ✅ Aceptada |
 | 9 | `ArbolDecisionIA` usa distancia Manhattan para Guardian y Destructor | ✅ Aceptada |
 | 10 | Archer y Sniper usan una zona de confort simple: atacan si pueden y se reposicionan si no | ✅ Aceptada |
+| 11 | `IAEnemigo` usa `BFSMovimiento`, no `BFSCaminoMinimo`, para moverse dentro de sala | ✅ Aceptada |
+| 12 | `SNIPER` ataca solo si `turnosSinActuar >= 2`; si no, consume turno e incrementa cooldown | ✅ Aceptada |
+| 13 | `MOVER`, `MOVER_A_ZONA` y huida de `SUMMONER` tienen comportamientos diferenciados | ✅ Aceptada |
 
 ---
 
@@ -263,13 +276,11 @@ Resultado:
 
 | Nº | Tarea pendiente | Estado |
 |---:|-----------------|--------|
-| 1 | Implementar `IAEnemigo` | ⬜ Pendiente |
-| 2 | Crear `IAEnemigoTest` | ⬜ Pendiente |
-| 3 | Implementar `TurnManager` | ⬜ Pendiente |
-| 4 | Crear `TurnManagerTest` | ⬜ Pendiente |
-| 5 | Implementar `ItemGenerator` | ⬜ Pendiente |
-| 6 | Crear `ItemGeneratorTest` | ⬜ Pendiente |
-| 7 | Implementar `DungeonGenerator` | ⬜ Pendiente |
-| 8 | Crear `DungeonGeneratorTest` | ⬜ Pendiente |
-| 9 | Implementar persistencia (`GameState`, `LectorJSON`) | ⬜ Pendiente |
-| 10 | Implementar capa JavaFX | ⬜ Pendiente |
+| 1 | Implementar `TurnManager` | ⬜ Pendiente |
+| 2 | Crear `TurnManagerTest` | ⬜ Pendiente |
+| 3 | Implementar `ItemGenerator` | ⬜ Pendiente |
+| 4 | Crear `ItemGeneratorTest` | ⬜ Pendiente |
+| 5 | Implementar `DungeonGenerator` | ⬜ Pendiente |
+| 6 | Crear `DungeonGeneratorTest` | ⬜ Pendiente |
+| 7 | Implementar persistencia (`GameState`, `LectorJSON`) | ⬜ Pendiente |
+| 8 | Implementar capa JavaFX | ⬜ Pendiente |

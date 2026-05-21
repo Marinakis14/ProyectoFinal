@@ -516,6 +516,61 @@ conversación, pero conservar el formato Markdown existente dentro de `TASKS.md`
 
 ---
 
+### Sesión 13 — 21 mayo 2026 — Codex
+
+**Clases o ficheros trabajados:**
+- `IAEnemigo`
+- `IAEnemigoTest`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Prompt usado (detalle):**
+El equipo pidió continuar con los primeros pasos del siguiente punto de la capa 5, `IAEnemigo`, y
+revisar antes la ficha 5.5 de `guia_codex.pdf`, el estado de `TASKS.md`, `COMMIT_LOG.md` y las
+clases relacionadas. Se detectó que la guía indicaba usar `BFSCaminoMinimo`, pero en el proyecto
+esa clase trabaja caminos entre salas, mientras que el movimiento de enemigos ocurre dentro de una
+sala. Se propuso usar `BFSMovimiento` para celdas y el equipo aceptó esa decisión.
+
+También se revisaron las opciones de comportamiento del `SNIPER`, `MOVER_A_ZONA` y la huida del
+`SUMMONER`. El equipo rechazó una solución demasiado genérica y pidió implementar desde el
+principio tres variantes diferenciadas: persecución normal, reposicionamiento de enemigos a
+distancia y huida del Invocador.
+
+**Resultado:**
+- Compila: SÍ
+- Tests pasan: SÍ
+- Cambios manuales necesarios: configurar `JAVA_HOME` a `C:\Program Files\Java\jdk-25` para Maven
+
+**Problemas encontrados:**
+- El primer pase de suite completa falló en un test antiguo de `CombatManagerTest` por la
+  aleatoriedad oficial de daño `[0.5, 1.5]`; al relanzar la suite pasó completa.
+- `BFSMovimiento.getCamino(...)` no puede usar como destino la celda ocupada por el jugador, por
+  lo que la persecución debe buscar una celda libre adyacente al jugador.
+- `Cell` no expone coordenadas, así que `IAEnemigo` localiza coordenadas recorriendo la matriz de
+  `Room` sin modificar las estructuras de datos.
+
+**Solución aplicada:**
+- `IAEnemigo` usa `BFSMovimiento` para movimiento dentro de sala.
+- `MOVER` persigue hacia la mejor celda libre adyacente al jugador.
+- `MOVER_A_ZONA` busca una celda alcanzable desde la que el enemigo mantenga distancia, rango y
+  línea de visión.
+- El `SUMMONER` huye eligiendo la celda alcanzable más lejana del jugador.
+- El `SNIPER` ataca solo si tiene `turnosSinActuar >= 2`; si no, consume turno e incrementa
+  cooldown.
+- El `CONTROLLER` aplica aleatoriamente `SLOW`, `BLIND` o `CURSE` durante 2 turnos.
+- El `SUMMONER` invoca un Berserker en una celda libre cercana y reinicia cooldown.
+
+**Decisiones técnicas:**
+- Se conserva la firma con parámetro `CombatManager cm` por compatibilidad con la guía, aunque se
+  usan métodos estáticos porque `CombatManager` no se instancia.
+- No se modificó `MisEstructurasDeDatos`.
+- La aleatoriedad oficial de combate se mantiene aunque pueda hacer flaky algún test antiguo si no
+  usa la sobrecarga determinista.
+
+**Commit sugerido:** `git commit -m "feat: implementar ejecucion de IA enemiga"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas
@@ -550,7 +605,7 @@ conversación, pero conservar el formato Markdown existente dentro de `TASKS.md`
 - [x] LineaDeVision
 - [x] CombatManager
 - [x] ArbolDecisionIA
-- [ ] IAEnemigo
+- [x] IAEnemigo
 - [ ] TurnManager
 - [ ] ItemGenerator
 - [ ] DungeonGenerator
@@ -592,7 +647,7 @@ conversación, pero conservar el formato Markdown existente dentro de `TASKS.md`
 - [x] LineaDeVisionTest
 - [x] CombatManagerTest
 - [x] ArbolDecisionIATest
-- [ ] IAEnemigoTest
+- [x] IAEnemigoTest
 - [ ] TurnManagerTest
 - [ ] ItemGeneratorTest
 - [ ] DungeonGeneratorTest
@@ -609,7 +664,7 @@ conversación, pero conservar el formato Markdown existente dentro de `TASKS.md`
 Resultado:
 
 ```text
-215 tests, 0 failures, 0 errors, 0 skipped
+226 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---
@@ -649,8 +704,9 @@ Resultado:
 
 ### Metodología recomendada para lo que queda
 
-- Continuar con `IAEnemigo`.
+- Continuar con `TurnManager`.
 - Mantener la decisión de radio Manhattan en IA y combate salvo que el equipo la cambie explícitamente.
+- Mantener `BFSMovimiento` para movimientos dentro de sala; `BFSCaminoMinimo` queda para caminos entre salas.
 - Mantener `mvn test` completo al cerrar cada bloque.
 - Actualizar `TASKS.md` y `COMMIT_LOG.md` al terminar cada grupo de tareas.
 - Hacer commit después de cada tarea cerrada y verificada, no solo al final de varias capas.
@@ -669,3 +725,5 @@ Resultado:
   fallo de proceso y se acuerda hacer commits incrementales en adelante.
 - [21 mayo 2026] Se decide que `ArbolDecisionIA` use Manhattan para Guardian y Destructor, y que
   Archer/Sniper usen una zona de confort simple.
+- [21 mayo 2026] Se decide que `IAEnemigo` use `BFSMovimiento` para celdas, implemente persecución,
+  reposicionamiento a distancia y huida del `SUMMONER`, y respete cooldown real del `SNIPER`.

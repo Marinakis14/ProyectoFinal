@@ -473,6 +473,49 @@ descripción más extensa y detallada de los prompts enviados.
 
 ---
 
+### Sesión 12 — 21 mayo 2026 — Codex
+
+**Clases o ficheros trabajados:**
+- `ArbolDecisionIA`
+- `ArbolDecisionIATest`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Prompt usado (detalle):**
+El equipo pidió continuar desde el punto pendiente de la capa 5, confirmando primero con
+`guia_codex.pdf`, `TASKS.md` y `COMMIT_LOG.md` que la siguiente clase era `ArbolDecisionIA`.
+Antes de modificar código se revisó la ficha exacta, las clases relacionadas (`Enemy`, `Player`,
+`Room`, `CombatManager`, `LineaDeVision`) y las ambigüedades de diseño.
+
+El equipo aceptó tres decisiones previas: usar distancia Manhattan para el Guardian y el Destructor,
+mantener una zona de confort simple para Archer/Sniper y representar las condiciones con una
+interfaz privada propia, sin `java.util.function`. También pidió mantener una tabla visual en la
+conversación, pero conservar el formato Markdown existente dentro de `TASKS.md`.
+
+**Resultado:**
+- Compila: SÍ
+- Tests pasan: SÍ
+- Cambios manuales necesarios: configurar `JAVA_HOME` a `C:\Program Files\Java\jdk-25` para que Maven use un JDK y no un JRE
+
+**Problemas encontrados:**
+- El entorno tenía `JAVA_HOME` apuntando a un JRE, por lo que Maven no encontraba compilador.
+- El primer intento de ejecutar un test concreto con `-Dtest` y nombre completo de paquete fue interpretado mal por PowerShell.
+
+**Solución aplicada:**
+- Se relanzó Maven con `JAVA_HOME` apuntando al JDK instalado.
+- Se ejecutó el test nuevo usando `"-Dtest=ArbolDecisionIATest"`.
+- Se ejecutó después la suite completa.
+
+**Decisiones técnicas:**
+- `ArbolDecisionIA` solo decide acciones; no mueve unidades, no ataca y no modifica estado.
+- `AccionIA` queda como enum público anidado para que pueda usarlo después `IAEnemigo`.
+- Guardian y Destructor usan distancia Manhattan para sus radios tácticos.
+- Archer y Sniper atacan si tienen rango y visión; si no, intentan `MOVER_A_ZONA`.
+
+**Commit sugerido:** `git commit -m "feat: implementar arbol de decision de IA"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas
@@ -506,7 +549,7 @@ descripción más extensa y detallada de los prompts enviados.
 - [x] BFSCaminoMinimo
 - [x] LineaDeVision
 - [x] CombatManager
-- [ ] ArbolDecisionIA
+- [x] ArbolDecisionIA
 - [ ] IAEnemigo
 - [ ] TurnManager
 - [ ] ItemGenerator
@@ -548,7 +591,7 @@ descripción más extensa y detallada de los prompts enviados.
 - [x] BFSCaminoMinimoTest
 - [x] LineaDeVisionTest
 - [x] CombatManagerTest
-- [ ] ArbolDecisionIATest
+- [x] ArbolDecisionIATest
 - [ ] IAEnemigoTest
 - [ ] TurnManagerTest
 - [ ] ItemGeneratorTest
@@ -566,7 +609,7 @@ descripción más extensa y detallada de los prompts enviados.
 Resultado:
 
 ```text
-202 tests, 0 failures, 0 errors, 0 skipped
+215 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---
@@ -586,6 +629,12 @@ Resultado:
 - Algunas fichas tienen pequeñas ambigüedades o firmas incompletas.
 - La consola puede mostrar mal caracteres UTF-8 aunque el fichero esté bien codificado.
 - Algunas estructuras propias tenían getters demasiado restrictivos para reutilizarlas fuera de su paquete.
+- No se hicieron commits incrementales durante el desarrollo. Al hacer un único commit final con
+  muchas clases, tests, documentación, PDFs y ajustes de configuración, el historial no refleja
+  bien la evolución real ni permite revisar con claridad cada bloque de cambios.
+- Parte del problema vino del bloqueo de Git por `dubious ownership`, porque el repositorio estaba
+  marcado como propiedad de otro usuario de Windows frente al usuario sandbox de Codex. Aun así,
+  este problema debería haberse detectado antes con una comprobación temprana de `git status`.
 
 ### Ajustes hechos al workflow inicial
 
@@ -593,13 +642,18 @@ Resultado:
 - Se aceptó modificar mínimamente la API pública del grafo con permiso explícito.
 - Se añadieron sobrecargas auxiliares cuando la guía necesitaba contexto adicional, sin eliminar las firmas base.
 - Se acordó que cualquier mejora frente a la guía debe proponerse antes de implementarse.
+- Al comenzar una sesión nueva, comprobar primero `git status` y resolver cualquier problema de
+  acceso al repositorio antes de acumular cambios.
+- Hacer commits pequeños al cerrar cada ficha, clase o bloque funcional, siguiendo el flujo
+  previsto en `AGENTS.md`, para que GitHub muestre un historial útil y revisable.
 
 ### Metodología recomendada para lo que queda
 
-- Continuar con `ArbolDecisionIA`.
-- Antes de implementar IA, revisar si el AOE del Destructor debe ser Manhattan, cuadrado o euclídeo.
+- Continuar con `IAEnemigo`.
+- Mantener la decisión de radio Manhattan en IA y combate salvo que el equipo la cambie explícitamente.
 - Mantener `mvn test` completo al cerrar cada bloque.
 - Actualizar `TASKS.md` y `COMMIT_LOG.md` al terminar cada grupo de tareas.
+- Hacer commit después de cada tarea cerrada y verificada, no solo al final de varias capas.
 
 ---
 
@@ -611,3 +665,7 @@ Resultado:
 - [20 mayo 2026] Se autoriza una modificación mínima en la API pública del grafo.
 - [21 mayo 2026] Se decide que `LineaDeVision` bloquea solo `WALL`.
 - [21 mayo 2026] Se decide conservar la aleatoriedad oficial de combate y añadir una sobrecarga determinista para tests.
+- [21 mayo 2026] Se detecta que el primer gran commit agrupó demasiados cambios. Se registra como
+  fallo de proceso y se acuerda hacer commits incrementales en adelante.
+- [21 mayo 2026] Se decide que `ArbolDecisionIA` use Manhattan para Guardian y Destructor, y que
+  Archer/Sniper usen una zona de confort simple.

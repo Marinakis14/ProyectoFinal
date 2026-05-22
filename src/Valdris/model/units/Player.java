@@ -59,6 +59,9 @@ public class Player extends Unit implements Comparable<Player> {
     /** Indica si el jugador ya usó la acción de ataque este turno. */
     private boolean haAtacado;
 
+    /** Bonus de ataque que se consume en el próximo ataque resuelto. */
+    private int bonusAtaqueTemporal;
+
     // -- Constructor ----------------------------------------------------------
 
     /**
@@ -74,6 +77,7 @@ public class Player extends Unit implements Comparable<Player> {
         this.escudoEquipado = null;
         this.armaduraEquipada = null;
         this.accesorioEquipado = null;
+        this.bonusAtaqueTemporal = 0;
         resetAcciones();
     }
 
@@ -172,6 +176,7 @@ public class Player extends Unit implements Comparable<Player> {
         if (accesorioEquipado != null) {
             ataque += accesorioEquipado.getBonusAtaque();
         }
+        ataque += bonusAtaqueTemporal;
         return ataque;
     }
 
@@ -227,6 +232,28 @@ public class Player extends Unit implements Comparable<Player> {
             return armaEquipada.getRango();
         }
         return getRango();
+    }
+
+    /**
+     * Añade un bonus de ataque temporal al próximo ataque del jugador.
+     *
+     * <p>Se usa para consumibles como el Elixir de Combate. El bonus se acumula
+     * si se aplican varias fuentes antes de atacar, aunque las reglas de turno
+     * normales solo permiten usar un item por turno.</p>
+     *
+     * @param bonus puntos de ataque temporal añadidos
+     */
+    public void addBonusAtaqueTemporal(int bonus) {
+        if (bonus > 0) {
+            bonusAtaqueTemporal += bonus;
+        }
+    }
+
+    /**
+     * Consume cualquier bonus de ataque temporal pendiente.
+     */
+    public void consumirBonusAtaqueTemporal() {
+        bonusAtaqueTemporal = 0;
     }
 
     /**
@@ -322,6 +349,15 @@ public class Player extends Unit implements Comparable<Player> {
      */
     public Accessory getAccesorioEquipado() {
         return accesorioEquipado;
+    }
+
+    /**
+     * Devuelve el bonus de ataque temporal pendiente.
+     *
+     * @return bonus que se sumará al próximo ataque
+     */
+    public int getBonusAtaqueTemporal() {
+        return bonusAtaqueTemporal;
     }
 
     /**

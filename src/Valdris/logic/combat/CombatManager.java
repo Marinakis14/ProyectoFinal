@@ -26,8 +26,8 @@ public final class CombatManager {
 
     // -- Constantes -----------------------------------------------------------
 
-    /** Danio aplicado por efectos de arma cuando no se especifica otra duracion. */
-    private static final int DURACION_EFECTO_ARMA = 1;
+    /** Probabilidad de que BLIND haga fallar un ataque. */
+    private static final double PROB_FALLO_BLIND = 0.25;
 
     /** Radio del ataque en area del Destructor. */
     private static final int RADIO_DESTRUCTOR = 2;
@@ -116,7 +116,13 @@ public final class CombatManager {
         validarUnidades(jugador, enemigo);
         validarRango(jugador, enemigo, room);
 
+        if (fallaAtaquePorBlind(jugador)) {
+            jugador.consumirBonusAtaqueTemporal();
+            return 0;
+        }
+
         int danio = calcularDanio(jugador, enemigo);
+        jugador.consumirBonusAtaqueTemporal();
         enemigo.recibirDanio(danio);
         aplicarEfectoDeArma(jugador, enemigo);
 
@@ -141,6 +147,9 @@ public final class CombatManager {
         throws InvalidAttackException {
 
         validarUnidades(enemigo, jugador);
+        if (fallaAtaquePorBlind(enemigo)) {
+            return 0;
+        }
         int danio = calcularDanio(enemigo, jugador);
         if (jugador.tieneEfecto(EffectType.CURSE)) {
             danio += 3;
@@ -216,6 +225,20 @@ public final class CombatManager {
             defensor.getFilaActual(), defensor.getColActual());
     }
 
+    /**
+     * Determina de forma determinista si BLIND hace fallar un ataque.
+     *
+     * <p>El método es público para permitir tests sin depender de
+     * {@code Math.random()}. Una tirada menor que 0.25 representa fallo.</p>
+     *
+     * @param atacante unidad que intenta atacar
+     * @param tirada valor entre 0.0 y 1.0 usado como tirada determinista
+     * @return true si el ataque falla por BLIND
+     */
+    public static boolean fallaAtaquePorBlind(Unit atacante, double tirada) {
+        return atacante != null && atacante.tieneEfecto(EffectType.BLIND) && tirada < PROB_FALLO_BLIND;
+    }
+
     // -- Metodos auxiliares ---------------------------------------------------
 
     /**
@@ -276,8 +299,35 @@ public final class CombatManager {
         }
         EffectType efecto = arma.tryAplicarEfecto();
         if (efecto != null) {
-            enemigo.addEfecto(new Effect(efecto, DURACION_EFECTO_ARMA));
+            enemigo.addEfecto(new Effect(efecto, getDuracionEfectoArma(efecto)));
         }
+        EffectType efectoSecundario = arma.tryAplicarEfectoSecundario();
+        if (efectoSecundario != null) {
+            enemigo.addEfecto(new Effect(efectoSecundario, getDuracionEfectoArma(efectoSecundario)));
+        }
+    }
+
+    /**
+     * Determina de forma aleatoria si BLIND hace fallar un ataque.
+     *
+     * @param atacante unidad que intenta atacar
+     * @return true si el ataque falla por BLIND
+     */
+    private static boolean fallaAtaquePorBlind(Unit atacante) {
+        return fallaAtaquePorBlind(atacante, Math.random());
+    }
+
+    /**
+     * Devuelve la duración oficial de un efecto aplicado por arma.
+     *
+     * @param efecto efecto aplicado
+     * @return duración en turnos
+     */
+    private static int getDuracionEfectoArma(EffectType efecto) {
+        if (efecto == EffectType.SLOW || efecto == EffectType.BLIND || efecto == EffectType.CURSE) {
+            return 2;
+        }
+        return 1;
     }
 
     /**

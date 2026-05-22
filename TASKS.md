@@ -26,8 +26,8 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | Área | Estado |
 |------|--------|
 | Capas 2, 3 y 4 | Completadas y testeadas |
-| Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga y TurnManager completados |
-| Tests JUnit actuales | 267 tests pasando |
+| Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga, TurnManager e ItemGenerator completados |
+| Tests JUnit actuales | 303 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
 ---
@@ -93,6 +93,9 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 12 | Implementar `Potion` | ✅ Completado |
 | 13 | Implementar `Accessory` | ✅ Completado |
 | 14 | Añadir comentarios por secciones en items: atributos, constructor, lógica, getters y comparación | ✅ Completado |
+| 15 | Ampliar `Weapon` para permitir hasta dos efectos especiales | ✅ Completado |
+| 16 | Rediseñar `BLIND` para probabilidad de fallo de ataque en vez de reducción de movimiento | ✅ Completado |
+| 17 | Ampliar `Potion` con efectos concretos a limpiar y bonus temporal de ataque | ✅ Completado |
 
 ---
 
@@ -105,7 +108,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 3 | Implementar lista de efectos activos en `Unit` | ✅ Completado |
 | 4 | Implementar reemplazo de efectos repetidos | ✅ Completado |
 | 5 | Implementar procesamiento de efectos `CURSE` y `BURN` | ✅ Completado |
-| 6 | Implementar movimiento efectivo reducido por `SLOW` y `BLIND` | ✅ Completado |
+| 6 | Implementar movimiento efectivo reducido por `SLOW` | ✅ Completado |
 | 7 | Implementar `Player` | ✅ Completado |
 | 8 | Implementar inventario y equipo del jugador | ✅ Completado |
 | 9 | Implementar cálculo de ataque, defensa, movimiento y rango efectivo del jugador | ✅ Completado |
@@ -117,6 +120,8 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 15 | Implementar drop de enemigo con `onDeath(Room)` | ✅ Completado |
 | 16 | Hacer `Player` compatible con `Comparable<Player>` | ✅ Completado |
 | 17 | Hacer `Enemy` compatible con `Comparable<Enemy>` | ✅ Completado |
+| 18 | Añadir `removeEfecto(EffectType)` en `Unit` para limpiar efectos concretos | ✅ Completado |
+| 19 | Añadir bonus temporal de ataque en `Player` para la poción P5 | ✅ Completado |
 
 ---
 
@@ -205,6 +210,13 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 36 | Implementar cambio de sala por `DOOR` o `STAIRS` con destino configurado | ✅ Completado |
 | 37 | Implementar `saltarMovimiento`, `saltarRecogida` y `saltarUsoItem` | ✅ Completado |
 | 38 | Implementar turno enemigo con iteración sobre enemigos iniciales del turno | ✅ Completado |
+| 39 | Ajustar `CombatManager` para fallo de ataque por `BLIND` | ✅ Completado |
+| 40 | Consumir bonus temporal de ataque en ataques resueltos, incluido fallo por `BLIND` | ✅ Completado |
+| 41 | Aplicar efectos primario y secundario de armas en combate | ✅ Completado |
+| 42 | Implementar `ItemGenerator` | ✅ Completado |
+| 43 | Implementar creación por id de armas, armaduras, pociones y accesorios oficiales | ✅ Completado |
+| 44 | Implementar generación aleatoria por zona con items reales | ✅ Completado |
+| 45 | Implementar drops de enemigos con items reales o `null` | ✅ Completado |
 
 ---
 
@@ -234,6 +246,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 20 | `ContainerTest` | ✅ Completado |
 | 21 | `ChestTest` | ✅ Completado |
 | 22 | `TurnManagerTest` | ✅ Completado |
+| 23 | `ItemGeneratorTest` | ✅ Completado |
 
 ---
 
@@ -254,6 +267,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 11 | Suite tras `ArbolDecisionIA` | ✅ Correcta |
 | 12 | Suite tras `IAEnemigo` | ✅ Correcta |
 | 13 | Suite tras `Container`, `Chest`, `Cell` ampliado y `TurnManager` | ✅ Correcta |
+| 14 | Suite tras rediseño de `BLIND`, P4, P5, armas con doble efecto e `ItemGenerator` | ✅ Correcta |
 
 Última verificación completa:
 
@@ -264,7 +278,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 Resultado:
 
 ```text
-267 tests, 0 failures, 0 errors, 0 skipped
+303 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---
@@ -291,6 +305,14 @@ Resultado:
 | 16 | Los items de suelo se recogen automáticamente en movimiento; `PICKUP` queda para contenedores adyacentes | ✅ Aceptada |
 | 17 | `Cell` guarda destinos concretos para accesos `DOOR` y `STAIRS` | ✅ Aceptada |
 | 18 | Los enemigos invocados durante `ENEMY_TURN` actúan a partir del siguiente turno enemigo | ✅ Aceptada |
+| 19 | `BLIND` deja de reducir movimiento y pasa a provocar un 25% de fallo de ataque | ✅ Aceptada |
+| 20 | Un ataque fallado por `BLIND` consume la acción de ataque y el bonus temporal de P5 | ✅ Aceptada |
+| 21 | Un ataque fallado por `BLIND` no aplica daño ni efectos de arma | ✅ Aceptada |
+| 22 | `Weapon` puede tener dos efectos especiales para representar W11 con `SLOW` y `BLIND` | ✅ Aceptada |
+| 23 | `P4` limpia `CURSE` y `BLIND` llamando a `removeEfecto` para cada efecto | ✅ Aceptada |
+| 24 | `P5` cura y añade bonus temporal al siguiente ataque del jugador | ✅ Aceptada |
+| 25 | `ItemGenerator` devuelve items reales o `null`, no materiales abstractos | ✅ Aceptada |
+| 26 | La asignación garantizada de mini-bosses y accesorios AC1-AC4 se aplaza para `DungeonGenerator` | ✅ Aceptada |
 
 ---
 
@@ -298,9 +320,8 @@ Resultado:
 
 | Nº | Tarea pendiente | Estado |
 |---:|-----------------|--------|
-| 1 | Implementar `ItemGenerator` | ⬜ Pendiente |
-| 2 | Crear `ItemGeneratorTest` | ⬜ Pendiente |
-| 3 | Implementar `DungeonGenerator` | ⬜ Pendiente |
-| 4 | Crear `DungeonGeneratorTest` | ⬜ Pendiente |
-| 5 | Implementar persistencia (`GameState`, `LectorJSON`) | ⬜ Pendiente |
-| 6 | Implementar capa JavaFX | ⬜ Pendiente |
+| 1 | Fijar mini-bosses y asignación garantizada de accesorios AC1-AC4 antes de `DungeonGenerator` | ⬜ Pendiente |
+| 2 | Implementar `DungeonGenerator` | ⬜ Pendiente |
+| 3 | Crear `DungeonGeneratorTest` | ⬜ Pendiente |
+| 4 | Implementar persistencia (`GameState`, `LectorJSON`) | ⬜ Pendiente |
+| 5 | Implementar capa JavaFX | ⬜ Pendiente |

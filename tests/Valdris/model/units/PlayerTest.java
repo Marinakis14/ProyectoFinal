@@ -159,6 +159,32 @@ class PlayerTest {
         assertEquals(3, kael.getMovEfectivo());
     }
 
+    @Test
+    void bonusAtaqueTemporal_seSumaAlAtaqueYSePuedeConsumir() {
+        // Arrange
+        kael.addBonusAtaqueTemporal(5);
+
+        // Act + Assert
+        assertEquals(23, kael.getAtaqueTotal());
+        assertEquals(5, kael.getBonusAtaqueTemporal());
+
+        kael.consumirBonusAtaqueTemporal();
+
+        assertEquals(18, kael.getAtaqueTotal());
+        assertEquals(0, kael.getBonusAtaqueTemporal());
+    }
+
+    @Test
+    void addBonusAtaqueTemporal_noAceptaValoresNoPositivos() {
+        // Act
+        kael.addBonusAtaqueTemporal(0);
+        kael.addBonusAtaqueTemporal(-5);
+
+        // Assert
+        assertEquals(0, kael.getBonusAtaqueTemporal());
+        assertEquals(18, kael.getAtaqueTotal());
+    }
+
     // -- Acciones de turno ---------------------------------------------------
 
     @Test

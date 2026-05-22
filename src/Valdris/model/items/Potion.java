@@ -33,6 +33,15 @@ public class Potion extends Item {
     /** Valor asociado al efecto extra, interpretado por la lógica de jugador. */
     private int valorEfecto;
 
+    /** Primer efecto que esta poción elimina al usarse, o null si no limpia. */
+    private EffectType efectoALimpiarPrimario;
+
+    /** Segundo efecto que esta poción elimina al usarse, o null si no limpia. */
+    private EffectType efectoALimpiarSecundario;
+
+    /** Bonus de ataque temporal aplicado al próximo ataque del jugador. */
+    private int bonusAtaqueTemporal;
+
     // -- Constructor ----------------------------------------------------------
 
     /**
@@ -47,6 +56,9 @@ public class Potion extends Item {
         this.curacionHP = curacionHP;
         this.efectoExtra = null;
         this.valorEfecto = 0;
+        this.efectoALimpiarPrimario = null;
+        this.efectoALimpiarSecundario = null;
+        this.bonusAtaqueTemporal = 0;
     }
 
     // -- Métodos de lógica ----------------------------------------------------
@@ -69,6 +81,15 @@ public class Potion extends Item {
         if (efectoExtra != null) {
             player.addEfecto(new Effect(efectoExtra, getDuracionEfectoExtra()));
         }
+        if (efectoALimpiarPrimario != null) {
+            player.removeEfecto(efectoALimpiarPrimario);
+        }
+        if (efectoALimpiarSecundario != null) {
+            player.removeEfecto(efectoALimpiarSecundario);
+        }
+        if (bonusAtaqueTemporal > 0) {
+            player.addBonusAtaqueTemporal(bonusAtaqueTemporal);
+        }
         player.removeItem(this);
     }
 
@@ -84,6 +105,33 @@ public class Potion extends Item {
     public void setEfectoExtra(EffectType efectoExtra, int valorEfecto) {
         this.efectoExtra = efectoExtra;
         this.valorEfecto = valorEfecto;
+    }
+
+    /**
+     * Configura los efectos que esta poción elimina al consumirse.
+     *
+     * <p>Se ofrecen dos ranuras explícitas porque el Antídoto elimina CURSE y
+     * BLIND. Si una ranura es null, simplemente se ignora.</p>
+     *
+     * @param efectoPrimario primer efecto a limpiar
+     * @param efectoSecundario segundo efecto a limpiar
+     */
+    public void setEfectosALimpiar(EffectType efectoPrimario, EffectType efectoSecundario) {
+        this.efectoALimpiarPrimario = efectoPrimario;
+        this.efectoALimpiarSecundario = efectoSecundario;
+    }
+
+    /**
+     * Configura un bonus de ataque temporal para el próximo ataque.
+     *
+     * @param bonusAtaqueTemporal puntos de ataque que se añadirán temporalmente
+     */
+    public void setBonusAtaqueTemporal(int bonusAtaqueTemporal) {
+        if (bonusAtaqueTemporal < 0) {
+            this.bonusAtaqueTemporal = 0;
+        } else {
+            this.bonusAtaqueTemporal = bonusAtaqueTemporal;
+        }
     }
 
     /**
@@ -125,5 +173,32 @@ public class Potion extends Item {
      */
     public int getValorEfecto() {
         return valorEfecto;
+    }
+
+    /**
+     * Devuelve el primer efecto que limpia esta poción.
+     *
+     * @return efecto primario a limpiar, o null si no aplica
+     */
+    public EffectType getEfectoALimpiarPrimario() {
+        return efectoALimpiarPrimario;
+    }
+
+    /**
+     * Devuelve el segundo efecto que limpia esta poción.
+     *
+     * @return efecto secundario a limpiar, o null si no aplica
+     */
+    public EffectType getEfectoALimpiarSecundario() {
+        return efectoALimpiarSecundario;
+    }
+
+    /**
+     * Devuelve el bonus de ataque temporal configurado.
+     *
+     * @return bonus temporal para el próximo ataque
+     */
+    public int getBonusAtaqueTemporal() {
+        return bonusAtaqueTemporal;
     }
 }

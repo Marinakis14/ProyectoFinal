@@ -155,6 +155,28 @@ public abstract class Unit {
     }
 
     /**
+     * Elimina un efecto activo concreto de la unidad.
+     *
+     * <p>Los efectos no se apilan en esta implementación, pero el recorrido
+     * elimina cualquier coincidencia para dejar el estado limpio si se invoca
+     * desde una poción o una regla especial.</p>
+     *
+     * @param tipo tipo de efecto que se quiere retirar
+     */
+    public void removeEfecto(EffectType tipo) {
+        if (tipo == null) {
+            return;
+        }
+        for (int i = 0; i < efectosActivos.getSize(); i++) {
+            Effect effect = efectosActivos.get(i);
+            if (effect != null && effect.getTipo() == tipo) {
+                efectosActivos.del(effect);
+                i--;
+            }
+        }
+    }
+
+    /**
      * Procesa los efectos activos de la unidad.
      *
      * <p>Los efectos de daño directo, como CURSE y BURN, aplican 3 puntos de
@@ -186,7 +208,7 @@ public abstract class Unit {
      * @return movimiento reducido por SLOW o BLIND, o movimiento base si no aplican
      */
     public int getMovEfectivo() {
-        if (tieneEfecto(EffectType.SLOW) || tieneEfecto(EffectType.BLIND)) {
+        if (tieneEfecto(EffectType.SLOW)) {
             return (int) Math.ceil(movBase / 2.0);
         }
         return movBase;

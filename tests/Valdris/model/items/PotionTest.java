@@ -36,6 +36,9 @@ class PotionTest {
         assertEquals(20, pocion.getCuracionHP());
         assertNull(pocion.getEfectoExtra());
         assertEquals(0, pocion.getValorEfecto());
+        assertNull(pocion.getEfectoALimpiarPrimario());
+        assertNull(pocion.getEfectoALimpiarSecundario());
+        assertEquals(0, pocion.getBonusAtaqueTemporal());
     }
 
     // -- use -----------------------------------------------------------------
@@ -79,6 +82,38 @@ class PotionTest {
     }
 
     @Test
+    void use_limpiaEfectosConfigurados() {
+        // Arrange
+        pocion.setEfectosALimpiar(EffectType.CURSE, EffectType.BLIND);
+        jugador.addEfecto(new Valdris.model.effects.Effect(EffectType.CURSE, 2));
+        jugador.addEfecto(new Valdris.model.effects.Effect(EffectType.BLIND, 2));
+        jugador.addEfecto(new Valdris.model.effects.Effect(EffectType.SLOW, 2));
+        jugador.addItem(pocion);
+
+        // Act
+        pocion.use(jugador);
+
+        // Assert
+        assertFalse(jugador.tieneEfecto(EffectType.CURSE));
+        assertFalse(jugador.tieneEfecto(EffectType.BLIND));
+        assertTrue(jugador.tieneEfecto(EffectType.SLOW));
+    }
+
+    @Test
+    void use_aplicaBonusAtaqueTemporal() {
+        // Arrange
+        pocion.setBonusAtaqueTemporal(5);
+        jugador.addItem(pocion);
+
+        // Act
+        pocion.use(jugador);
+
+        // Assert
+        assertEquals(5, jugador.getBonusAtaqueTemporal());
+        assertEquals(23, jugador.getAtaqueTotal());
+    }
+
+    @Test
     void use_nullNoLanzaExcepcion() {
         assertDoesNotThrow(() -> pocion.use(null));
     }
@@ -94,6 +129,25 @@ class PotionTest {
         assertEquals(EffectType.SLOW, pocion.getEfectoExtra());
         assertEquals(3, pocion.getValorEfecto());
         assertEquals(3, pocion.getDuracionEfectoExtra());
+    }
+
+    @Test
+    void setEfectosALimpiar_guardaAmbosEfectos() {
+        // Act
+        pocion.setEfectosALimpiar(EffectType.CURSE, EffectType.BLIND);
+
+        // Assert
+        assertEquals(EffectType.CURSE, pocion.getEfectoALimpiarPrimario());
+        assertEquals(EffectType.BLIND, pocion.getEfectoALimpiarSecundario());
+    }
+
+    @Test
+    void setBonusAtaqueTemporal_noPermiteNegativo() {
+        // Act
+        pocion.setBonusAtaqueTemporal(-5);
+
+        // Assert
+        assertEquals(0, pocion.getBonusAtaqueTemporal());
     }
 
     @Test

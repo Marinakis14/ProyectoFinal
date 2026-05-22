@@ -37,7 +37,9 @@ class WeaponTest {
         assertEquals(2, arma.getPenetracion());
         assertEquals(2, arma.getRango());
         assertNull(arma.getEfectoEspecial());
+        assertNull(arma.getEfectoEspecialSecundario());
         assertEquals(0.0, arma.getProbEfecto());
+        assertEquals(0.0, arma.getProbEfectoSecundario());
     }
 
     // -- Afinidad ------------------------------------------------------------
@@ -106,6 +108,22 @@ class WeaponTest {
     }
 
     @Test
+    void tryAplicarEfectoSecundario_probabilidadUnoSiempreDevuelveSegundoEfecto() {
+        // Arrange
+        arma.setEfectoEspecialSecundario(EffectType.BLIND, 1.0);
+
+        // Act + Assert
+        assertEquals(EffectType.BLIND, arma.tryAplicarEfectoSecundario());
+        assertEquals(EffectType.BLIND, arma.getEfectoEspecialSecundario());
+        assertEquals(1.0, arma.getProbEfectoSecundario());
+    }
+
+    @Test
+    void tryAplicarEfectoSecundario_sinEfectoDevuelveNull() {
+        assertNull(arma.tryAplicarEfectoSecundario());
+    }
+
+    @Test
     void setEfectoEspecial_limitaProbabilidadAlRangoValido() {
         // Act + Assert
         arma.setEfectoEspecial(EffectType.CURSE, -1.0);
@@ -113,5 +131,15 @@ class WeaponTest {
 
         arma.setEfectoEspecial(EffectType.CURSE, 2.0);
         assertEquals(1.0, arma.getProbEfecto());
+    }
+
+    @Test
+    void setEfectoEspecialSecundario_limitaProbabilidadAlRangoValido() {
+        // Act + Assert
+        arma.setEfectoEspecialSecundario(EffectType.BLIND, -1.0);
+        assertEquals(0.0, arma.getProbEfectoSecundario());
+
+        arma.setEfectoEspecialSecundario(EffectType.BLIND, 2.0);
+        assertEquals(1.0, arma.getProbEfectoSecundario());
     }
 }

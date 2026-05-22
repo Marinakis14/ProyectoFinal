@@ -627,6 +627,82 @@ métodos explícitos para saltar fases y ampliar `Cell` con contenedores y desti
 
 ---
 
+### Sesión 15 — 22 mayo 2026 — Codex
+
+**Clases o ficheros trabajados:**
+- `Unit`
+- `Player`
+- `Weapon`
+- `Potion`
+- `CombatManager`
+- `ItemGenerator`
+- `UnitTest`
+- `PlayerTest`
+- `WeaponTest`
+- `PotionTest`
+- `CombatManagerTest`
+- `ItemGeneratorTest`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Prompt usado (detalle):**
+El equipo pidió revisar el siguiente bloque de generación y empezar por `ItemGenerator`, pero antes
+quiso cerrar todas las decisiones de diseño relacionadas con efectos, pociones y drops. Se decidió
+que W11 conservaría dos efectos (`SLOW` y `BLIND`) ampliando `Weapon` para soportar un efecto
+secundario, que `BLIND` dejaría de duplicar la mecánica de `SLOW` y pasaría a provocar fallo de
+ataque, y que P4 y P5 necesitaban soporte explícito en el modelo para limpiar efectos negativos y
+aplicar bonus temporal de ataque.
+
+También se pidió sustituir cualquier resultado de tipo "material" por items reales o `null`, dejar
+la asignación garantizada de mini-bosses y accesorios AC1-AC4 para `DungeonGenerator`, y añadir
+tests suficientes para cubrir los casos oficiales y los casos extra necesarios.
+
+**Resultado:**
+- Compila: SÍ
+- Tests pasan: SÍ
+- Cambios manuales necesarios: ninguno
+
+**Problemas encontrados:**
+- En la guía rápida `BLIND` tenía el mismo efecto práctico que `SLOW`, por lo que no aportaba una
+  identidad mecánica propia.
+- P4 necesitaba eliminar efectos negativos concretos, pero `Unit` solo permitía añadir y procesar
+  efectos, no retirarlos de forma selectiva.
+- P5 requería que el daño del siguiente ataque aumentase de forma temporal y se consumiese al
+  resolver el ataque.
+- W11 necesitaba representar dos efectos sin crear un efecto combinado artificial.
+- Algunos drops previstos como "materiales" no encajaban con el modelo actual de items.
+
+**Solución aplicada:**
+- `BLIND` se rediseñó como 25% de probabilidad de fallo de ataque.
+- `SLOW` queda como el único efecto que reduce movimiento efectivo.
+- `Unit` añade `removeEfecto(EffectType)` para limpiar un efecto concreto.
+- `Player` añade bonus temporal de ataque, consumible al resolver el siguiente ataque.
+- `Potion` añade campos concretos para efectos a limpiar y bonus temporal de ataque.
+- `Weapon` permite un efecto especial secundario con probabilidad independiente.
+- `CombatManager` consume el bonus temporal en ataques resueltos, incluidos fallos por `BLIND`, y
+  no aplica daño ni efectos cuando el ataque falla por `BLIND`.
+- `ItemGenerator` crea items oficiales por id, genera items reales por zona y devuelve drops reales
+  o `null` para enemigos.
+
+**Decisiones técnicas:**
+- Un ataque fallado por `BLIND` consume acción y bonus temporal de P5.
+- Un ataque fallado por `BLIND` no aplica daño ni efectos de arma.
+- W11 se representa con dos efectos en `Weapon`: `SLOW` y `BLIND`.
+- P4 limpia `CURSE` y `BLIND` llamando a `removeEfecto` para cada efecto.
+- P5 cura y añade bonus temporal al siguiente ataque.
+- La asignación garantizada de mini-bosses y accesorios AC1-AC4 queda pendiente para
+  `DungeonGenerator`.
+
+**Verificación:**
+- `.\mvnw.cmd -q -DskipTests compile`
+- `.\mvnw.cmd -q "-Dtest=UnitTest,PlayerTest,WeaponTest,PotionTest,CombatManagerTest,ItemGeneratorTest" test`
+- `.\mvnw.cmd -q test`
+- Resultado suite completa: `303 tests, 0 failures, 0 errors, 0 skipped`
+
+**Commit sugerido:** `git commit -m "feat: implementar generador de items y ajustar efectos"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas
@@ -665,7 +741,7 @@ métodos explícitos para saltar fases y ampliar `Cell` con contenedores y desti
 - [x] ArbolDecisionIA
 - [x] IAEnemigo
 - [x] TurnManager
-- [ ] ItemGenerator
+- [x] ItemGenerator
 - [ ] DungeonGenerator
 
 **Bloque 5 — Persistencia**
@@ -709,7 +785,7 @@ métodos explícitos para saltar fases y ampliar `Cell` con contenedores y desti
 - [x] ContainerTest
 - [x] ChestTest
 - [x] TurnManagerTest
-- [ ] ItemGeneratorTest
+- [x] ItemGeneratorTest
 - [ ] DungeonGeneratorTest
 - [ ] GameStateTest
 
@@ -724,7 +800,7 @@ métodos explícitos para saltar fases y ampliar `Cell` con contenedores y desti
 Resultado:
 
 ```text
-267 tests, 0 failures, 0 errors, 0 skipped
+303 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---
@@ -764,7 +840,8 @@ Resultado:
 
 ### Metodología recomendada para lo que queda
 
-- Continuar con `ItemGenerator`.
+- Cerrar las reglas de mini-bosses y accesorios AC1-AC4 antes de implementar `DungeonGenerator`.
+- Continuar con `DungeonGenerator`.
 - Mantener la decisión de radio Manhattan en IA y combate salvo que el equipo la cambie explícitamente.
 - Mantener `BFSMovimiento` para movimientos dentro de sala; `BFSCaminoMinimo` queda para caminos entre salas.
 - Mantener `mvn test` completo al cerrar cada bloque.
@@ -793,3 +870,10 @@ Resultado:
 - [22 mayo 2026] Se decide que los items de suelo se recojan automáticamente al moverse y que `PICKUP`
   quede para contenedores adyacentes.
 - [22 mayo 2026] Se decide añadir destinos concretos a `Cell` para puertas y escaleras.
+- [22 mayo 2026] Se decide rediseñar `BLIND` como 25% de fallo de ataque; ya no reduce movimiento.
+- [22 mayo 2026] Se decide que W11 use dos efectos en `Weapon`: `SLOW` y `BLIND`.
+- [22 mayo 2026] Se decide que P4 limpie `CURSE` y `BLIND`, y que P5 aplique bonus temporal al
+  siguiente ataque.
+- [22 mayo 2026] Se decide que `ItemGenerator` genere items reales o `null`, no materiales.
+- [22 mayo 2026] Se aplaza la definición cerrada de mini-bosses y accesorios AC1-AC4 para antes de
+  `DungeonGenerator`.

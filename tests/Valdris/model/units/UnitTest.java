@@ -99,6 +99,34 @@ class UnitTest {
     }
 
     @Test
+    void removeEfecto_eliminaSoloElTipoIndicado() {
+        // Arrange
+        unidad.addEfecto(new Effect(EffectType.BLIND, 2));
+        unidad.addEfecto(new Effect(EffectType.SLOW, 2));
+
+        // Act
+        unidad.removeEfecto(EffectType.BLIND);
+
+        // Assert
+        assertFalse(unidad.tieneEfecto(EffectType.BLIND));
+        assertTrue(unidad.tieneEfecto(EffectType.SLOW));
+        assertEquals(1, unidad.getEfectosActivos().getSize());
+    }
+
+    @Test
+    void removeEfecto_nullNoModificaLista() {
+        // Arrange
+        unidad.addEfecto(new Effect(EffectType.BLIND, 2));
+
+        // Act
+        unidad.removeEfecto(null);
+
+        // Assert
+        assertTrue(unidad.tieneEfecto(EffectType.BLIND));
+        assertEquals(1, unidad.getEfectosActivos().getSize());
+    }
+
+    @Test
     void procesarEfectos_aplicaDanioYEliminaExpirados() {
         // Arrange
         unidad.addEfecto(new Effect(EffectType.BURN, 1));
@@ -122,6 +150,16 @@ class UnitTest {
 
         // Act + Assert
         assertEquals(2, berserker.getMovEfectivo());
+    }
+
+    @Test
+    void getMovEfectivo_blindNoReduceMovimiento() {
+        // Arrange
+        Enemy berserker = new Enemy(EnemyType.BERSERKER, 0, 0, "R1");
+        berserker.addEfecto(new Effect(EffectType.BLIND, 2));
+
+        // Act + Assert
+        assertEquals(4, berserker.getMovEfectivo());
     }
 
     // -- Posicion ------------------------------------------------------------

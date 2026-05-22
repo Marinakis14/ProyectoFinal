@@ -36,8 +36,14 @@ public class Weapon extends Item {
     /** Efecto que el arma puede aplicar al atacar, o null si no tiene. */
     private EffectType efectoEspecial;
 
+    /** Segundo efecto que el arma puede aplicar al atacar, o null si no tiene. */
+    private EffectType efectoEspecialSecundario;
+
     /** Probabilidad entre 0.0 y 1.0 de aplicar el efecto especial. */
     private double probEfecto;
+
+    /** Probabilidad entre 0.0 y 1.0 de aplicar el segundo efecto especial. */
+    private double probEfectoSecundario;
 
     /** Rango de ataque otorgado por el arma mientras está equipada. */
     private final int rango;
@@ -60,7 +66,9 @@ public class Weapon extends Item {
         this.rango = rango;
         this.afinidades = new int[CharacterType.values().length];
         this.efectoEspecial = null;
+        this.efectoEspecialSecundario = null;
         this.probEfecto = 0.0;
+        this.probEfectoSecundario = 0.0;
     }
 
     // -- Métodos de lógica ----------------------------------------------------
@@ -125,13 +133,16 @@ public class Weapon extends Item {
      * @return efecto aplicado, o null si no se activa
      */
     public EffectType tryAplicarEfecto() {
-        if (efectoEspecial == null) {
-            return null;
-        }
-        if (Math.random() < probEfecto) {
-            return efectoEspecial;
-        }
-        return null;
+        return tirarEfecto(efectoEspecial, probEfecto);
+    }
+
+    /**
+     * Intenta aplicar el segundo efecto especial del arma.
+     *
+     * @return segundo efecto aplicado, o null si no se activa
+     */
+    public EffectType tryAplicarEfectoSecundario() {
+        return tirarEfecto(efectoEspecialSecundario, probEfectoSecundario);
     }
 
     /**
@@ -142,13 +153,51 @@ public class Weapon extends Item {
      */
     public void setEfectoEspecial(EffectType efectoEspecial, double probEfecto) {
         this.efectoEspecial = efectoEspecial;
-        if (probEfecto < 0.0) {
-            this.probEfecto = 0.0;
-        } else if (probEfecto > 1.0) {
-            this.probEfecto = 1.0;
-        } else {
-            this.probEfecto = probEfecto;
+        this.probEfecto = normalizarProbabilidad(probEfecto);
+    }
+
+    /**
+     * Configura el segundo efecto especial del arma y su probabilidad.
+     *
+     * @param efectoEspecialSecundario segundo efecto que puede aplicar el arma
+     * @param probEfectoSecundario probabilidad entre 0.0 y 1.0
+     */
+    public void setEfectoEspecialSecundario(EffectType efectoEspecialSecundario, double probEfectoSecundario) {
+        this.efectoEspecialSecundario = efectoEspecialSecundario;
+        this.probEfectoSecundario = normalizarProbabilidad(probEfectoSecundario);
+    }
+
+    /**
+     * Ejecuta una tirada para un efecto especial concreto.
+     *
+     * @param efecto efecto que se intenta aplicar
+     * @param probabilidad probabilidad configurada
+     * @return efecto aplicado, o null si no se activa
+     */
+    private EffectType tirarEfecto(EffectType efecto, double probabilidad) {
+        if (efecto == null) {
+            return null;
         }
+        if (Math.random() < probabilidad) {
+            return efecto;
+        }
+        return null;
+    }
+
+    /**
+     * Limita una probabilidad al rango válido [0.0, 1.0].
+     *
+     * @param probabilidad valor recibido
+     * @return probabilidad normalizada
+     */
+    private double normalizarProbabilidad(double probabilidad) {
+        if (probabilidad < 0.0) {
+            return 0.0;
+        }
+        if (probabilidad > 1.0) {
+            return 1.0;
+        }
+        return probabilidad;
     }
 
     // -- Getters --------------------------------------------------------------
@@ -181,12 +230,30 @@ public class Weapon extends Item {
     }
 
     /**
+     * Devuelve el segundo efecto especial configurado.
+     *
+     * @return segundo efecto especial, o null si no existe
+     */
+    public EffectType getEfectoEspecialSecundario() {
+        return efectoEspecialSecundario;
+    }
+
+    /**
      * Devuelve la probabilidad de activar el efecto especial.
      *
      * @return probabilidad entre 0.0 y 1.0
      */
     public double getProbEfecto() {
         return probEfecto;
+    }
+
+    /**
+     * Devuelve la probabilidad del segundo efecto especial.
+     *
+     * @return probabilidad entre 0.0 y 1.0
+     */
+    public double getProbEfectoSecundario() {
+        return probEfectoSecundario;
     }
 
     /**

@@ -177,6 +177,35 @@ class CombatManagerTest {
     }
 
     @Test
+    void resolverAtaqueJugador_aplicaDosEfectosEspecialesDelArma() throws InvalidAttackException {
+        // Arrange
+        Weapon arma = new Weapon("W-ECLIPSE", "Arco del Eclipse", 20, 0, 4);
+        arma.setEfectoEspecial(EffectType.SLOW, 1.0);
+        arma.setEfectoEspecialSecundario(EffectType.BLIND, 1.0);
+        jugador.equip(arma);
+
+        // Act
+        CombatManager.resolverAtaqueJugador(jugador, enemigo);
+
+        // Assert
+        assertTrue(enemigo.tieneEfecto(EffectType.SLOW));
+        assertTrue(enemigo.tieneEfecto(EffectType.BLIND));
+    }
+
+    @Test
+    void resolverAtaqueJugador_consumeBonusAtaqueTemporal() throws InvalidAttackException {
+        // Arrange
+        jugador.addBonusAtaqueTemporal(5);
+
+        // Act
+        int danio = CombatManager.resolverAtaqueJugador(jugador, enemigo);
+
+        // Assert
+        assertTrue(danio > 0);
+        assertEquals(0, jugador.getBonusAtaqueTemporal());
+    }
+
+    @Test
     void resolverAtaqueJugador_enemigoMuertoColocaDropEnSala() throws Exception {
         // Arrange
         Weapon arma = new Weapon("W-KILL", "Mandoble", 100, 0, 1);
@@ -227,7 +256,7 @@ class CombatManagerTest {
     @Test
     void resolverAtaqueEnemigo_respetaDefensaDelJugador() throws InvalidAttackException {
         // Arrange
-        Armor armadura = new Armor("A-DEF", "Cota", 20, false);
+        Armor armadura = new Armor("A-DEF", "Cota", 30, false);
         jugador.equip(armadura);
 
         // Act
@@ -236,6 +265,25 @@ class CombatManagerTest {
         // Assert
         assertEquals(0, danio);
         assertEquals(jugador.getHpMax(), jugador.getHp());
+    }
+
+    // -- BLIND ---------------------------------------------------------------
+
+    @Test
+    void fallaAtaquePorBlind_respetaProbabilidadDeterminista() {
+        // Arrange
+        jugador.addEfecto(new Effect(EffectType.BLIND, 2));
+
+        // Act + Assert
+        assertTrue(CombatManager.fallaAtaquePorBlind(jugador, 0.24));
+        assertFalse(CombatManager.fallaAtaquePorBlind(jugador, 0.25));
+        assertFalse(CombatManager.fallaAtaquePorBlind(jugador, 0.80));
+    }
+
+    @Test
+    void fallaAtaquePorBlind_sinBlindNoFalla() {
+        assertFalse(CombatManager.fallaAtaquePorBlind(jugador, 0.0));
+        assertFalse(CombatManager.fallaAtaquePorBlind(null, 0.0));
     }
 
     // -- resolverAOEDestructor ----------------------------------------------

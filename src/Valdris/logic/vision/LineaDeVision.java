@@ -1,7 +1,6 @@
 package Valdris.logic.vision;
 
 import Valdris.exceptions.InvalidMoveException;
-import Valdris.model.enums.CellType;
 import Valdris.model.map.Room;
 
 /**
@@ -12,9 +11,10 @@ import Valdris.model.map.Room;
  * Bresenham para recorrer las celdas intermedias entre origen y destino sin
  * comprobar las celdas extremas.</p>
  *
- * <p>Por decision de diseno actual, solo las paredes bloquean vision. Escaleras,
- * trampas, runas, palancas y puertas no se tratan como obstaculos visuales
- * dentro de una sala.</p>
+ * <p>Por decisión de diseño actual, las paredes y las escaleras ascendentes
+ * bloquean visión cuando aparecen como celdas intermedias. Las escaleras
+ * descendentes, trampas, runas, palancas y puertas no se tratan como obstáculos
+ * visuales dentro de una sala.</p>
  */
 public final class LineaDeVision {
 
@@ -40,7 +40,7 @@ public final class LineaDeVision {
      * @param c1 columna de origen
      * @param f2 fila de destino
      * @param c2 columna de destino
-     * @return true si ninguna celda intermedia es pared
+     * @return true si ninguna celda intermedia bloquea la visión
      */
     public static boolean tieneVision(Room room, int f1, int c1, int f2, int c2) {
         if (room == null || !room.isEnRango(f1, c1) || !room.isEnRango(f2, c2)) {
@@ -72,7 +72,7 @@ public final class LineaDeVision {
             if (fila == f2 && col == c2) {
                 break;
             }
-            if (esPared(room, fila, col)) {
+            if (bloqueaVision(room, fila, col)) {
                 return false;
             }
         }
@@ -82,16 +82,16 @@ public final class LineaDeVision {
     // -- Metodos auxiliares ---------------------------------------------------
 
     /**
-     * Comprueba si una celda intermedia bloquea la vision.
+     * Comprueba si una celda intermedia bloquea la visión.
      *
      * @param room sala consultada
      * @param fila fila intermedia
      * @param col columna intermedia
-     * @return true si la celda es pared o no puede consultarse
+     * @return true si la celda bloquea visión o no puede consultarse
      */
-    private static boolean esPared(Room room, int fila, int col) {
+    private static boolean bloqueaVision(Room room, int fila, int col) {
         try {
-            return room.getCell(fila, col).getTipo() == CellType.WALL;
+            return room.getCell(fila, col).bloqueaVision();
         } catch (InvalidMoveException e) {
             return true;
         }

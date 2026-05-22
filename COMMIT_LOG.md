@@ -703,6 +703,77 @@ tests suficientes para cubrir los casos oficiales y los casos extra necesarios.
 
 ---
 
+### Sesión 16 — 22 mayo 2026 — Codex
+
+**Clases o ficheros trabajados:**
+- `CellType`
+- `Cell`
+- `LineaDeVision`
+- `TurnManager`
+- `EffectType`
+- `Unit`
+- `TypeEnumsTest`
+- `CellTest`
+- `LineaDeVisionTest`
+- `TurnManagerTest`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Prompt usado (detalle):**
+El equipo añadió `GUIA_PROYECTO_JUEGO_V3.md` al proyecto y pidió compararla con el código actual.
+Después se cerraron varias decisiones antes de tocar código: reemplazar el tipo genérico `STAIRS`
+por `STAIRS_UP` y `STAIRS_DOWN`, hacer que las escaleras no fueran transitables, exigir que se
+usen desde una celda frontal configurada y compartir una acción genérica `usarAccesoAdyacente()`
+para puertas y escaleras.
+
+También se decidió que `STAIRS_UP` bloquearía línea de visión y ataques a distancia si aparece
+como celda intermedia, mientras que `STAIRS_DOWN` no bloquearía visión. Se descartó `clearLog()`
+porque el log de acciones deberá conservarse completo para resumen y persistencia JSON al final de
+la partida. `BLIND` mantiene la regla acordada de 25% de fallo de ataque, por lo que se corrigieron
+comentarios obsoletos que lo describían como reducción de movimiento.
+
+**Resultado:**
+- Compila: SÍ
+- Tests pasan: SÍ
+- Cambios manuales necesarios: ninguno
+
+**Problemas encontrados:**
+- La mecánica anterior permitía pisar una puerta para cambiar de sala, pero el nuevo diseño trata
+  puertas y escaleras como accesos situados en pared o como elementos del mapa no ocupables.
+- Las escaleras colocadas dentro de la sala necesitan orientación para impedir que se usen desde
+  cualquier lado.
+- `LineaDeVision` tenía codificada directamente la regla "solo WALL bloquea", por lo que convenía
+  mover la decisión a `Cell.bloqueaVision()`.
+
+**Solución aplicada:**
+- `CellType.STAIRS` se reemplazó por `STAIRS_UP` y `STAIRS_DOWN`.
+- `Cell.isWalkable()` trata puertas y escaleras como no transitables.
+- `Cell` añade helpers de acceso, orientación frontal, requisito de item narrativo, trigger,
+  resaltado visual, reserva de llegada y bloqueo de visión.
+- `LineaDeVision` usa `Cell.bloqueaVision()`.
+- `TurnManager` añade `usarAccesoAdyacente()`, búsqueda de acceso usable, validación de destino,
+  desbloqueo de `DOOR_LOCKED` por item requerido y comprobación de item narrativo por id.
+- Los tests se ampliaron para cubrir accesos no transitables, orientación de escaleras,
+  `STAIRS_UP` bloqueando visión, `STAIRS_DOWN` sin bloquear, puertas cerradas con llave y destino
+  bloqueado.
+
+**Decisiones técnicas:**
+- Las puertas no necesitan orientación porque se colocan en paredes.
+- Las escaleras sí necesitan orientación porque pueden estar en medio de una sala.
+- La celda destino de un acceso debe estar libre y ser transitable; no se busca una alternativa
+  automática si está bloqueada.
+- El log de partida debe ser acumulativo y persistible, sin método destructivo `clearLog()`.
+
+**Verificación:**
+- `.\mvnw.cmd -q -DskipTests compile`
+- `.\mvnw.cmd -q "-Dtest=TypeEnumsTest,CellTest,LineaDeVisionTest,TurnManagerTest" test`
+- `.\mvnw.cmd -q test`
+- Resultado suite completa: `316 tests, 0 failures, 0 errors, 0 skipped`
+
+**Commit sugerido:** `git commit -m "feat: ajustar accesos y escaleras"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas
@@ -800,7 +871,7 @@ tests suficientes para cubrir los casos oficiales y los casos extra necesarios.
 Resultado:
 
 ```text
-303 tests, 0 failures, 0 errors, 0 skipped
+316 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---
@@ -840,6 +911,7 @@ Resultado:
 
 ### Metodología recomendada para lo que queda
 
+- Continuar con soporte de diálogos por personaje, palancas, runas y pasadizos secretos.
 - Cerrar las reglas de mini-bosses y accesorios AC1-AC4 antes de implementar `DungeonGenerator`.
 - Continuar con `DungeonGenerator`.
 - Mantener la decisión de radio Manhattan en IA y combate salvo que el equipo la cambie explícitamente.
@@ -877,3 +949,12 @@ Resultado:
 - [22 mayo 2026] Se decide que `ItemGenerator` genere items reales o `null`, no materiales.
 - [22 mayo 2026] Se aplaza la definición cerrada de mini-bosses y accesorios AC1-AC4 para antes de
   `DungeonGenerator`.
+- [22 mayo 2026] Se decide reemplazar `STAIRS` por `STAIRS_UP` y `STAIRS_DOWN`.
+- [22 mayo 2026] Se decide que puertas y escaleras se usen desde `PICKUP` con
+  `usarAccesoAdyacente()`, sin pisar la celda de acceso.
+- [22 mayo 2026] Se decide que `STAIRS_UP` bloquee visión como obstáculo intermedio y
+  `STAIRS_DOWN` no bloquee visión.
+- [22 mayo 2026] Se decide que las escaleras tengan orientación frontal y que las puertas no la
+  necesiten por estar en paredes.
+- [22 mayo 2026] Se descarta `clearLog()` porque el historial de acciones debe conservarse para
+  resumen y persistencia JSON.

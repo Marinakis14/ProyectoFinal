@@ -32,10 +32,16 @@ public enum CellType {
     DOOR_LOCKED,
 
     /**
-     * Escaleras. Transitable. Cambia de piso en las Minas de Karath (Zona 3).
-     * Activa {@code TurnManager.changeRoom()} al pisarlas.
+     * Escalera ascendente. No es transitable: se usa desde la celda frontal.
+     * Bloquea la línea de visión como una pared si queda entre dos unidades.
      */
-    STAIRS,
+    STAIRS_UP,
+
+    /**
+     * Escalera descendente. No es transitable: se usa desde la celda frontal.
+     * No bloquea la línea de visión dentro de la sala.
+     */
+    STAIRS_DOWN,
 
     /**
      * Runa del suelo. Transitable. Activa un mecanismo al pisarla

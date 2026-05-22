@@ -115,9 +115,18 @@ class LineaDeVisionTest {
     // -- Celdas especiales ---------------------------------------------------
 
     @Test
-    void tieneVision_escalerasNoBloqueanVision() throws InvalidMoveException {
+    void tieneVision_stairsUpIntermediaBloqueaVision() throws InvalidMoveException {
         // Arrange
-        room.setCellType(2, 3, CellType.STAIRS);
+        room.setCellType(2, 3, CellType.STAIRS_UP);
+
+        // Act + Assert
+        assertFalse(LineaDeVision.tieneVision(room, 2, 1, 2, 5));
+    }
+
+    @Test
+    void tieneVision_stairsDownIntermediaNoBloqueaVision() throws InvalidMoveException {
+        // Arrange
+        room.setCellType(2, 3, CellType.STAIRS_DOWN);
 
         // Act + Assert
         assertTrue(LineaDeVision.tieneVision(room, 2, 1, 2, 5));

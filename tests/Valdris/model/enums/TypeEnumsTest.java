@@ -92,7 +92,8 @@ class TypeEnumsTest {
             CellType.DOOR,
             CellType.DOOR_HIDDEN,
             CellType.DOOR_LOCKED,
-            CellType.STAIRS,
+            CellType.STAIRS_UP,
+            CellType.STAIRS_DOWN,
             CellType.RUNE,
             CellType.LEVER,
             CellType.TRAP

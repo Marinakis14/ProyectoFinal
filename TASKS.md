@@ -27,7 +27,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 |------|--------|
 | Capas 2, 3 y 4 | Completadas y testeadas |
 | Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga, TurnManager e ItemGenerator completados |
-| Tests JUnit actuales | 303 tests pasando |
+| Tests JUnit actuales | 316 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
 ---
@@ -96,6 +96,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 15 | Ampliar `Weapon` para permitir hasta dos efectos especiales | ✅ Completado |
 | 16 | Rediseñar `BLIND` para probabilidad de fallo de ataque en vez de reducción de movimiento | ✅ Completado |
 | 17 | Ampliar `Potion` con efectos concretos a limpiar y bonus temporal de ataque | ✅ Completado |
+| 18 | Reemplazar `STAIRS` por `STAIRS_UP` y `STAIRS_DOWN` en `CellType` | ✅ Completado |
 
 ---
 
@@ -152,8 +153,12 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 21 | Implementar `Container` como base de contenedores del mapa | ✅ Completado |
 | 22 | Implementar `Chest` como cofre concreto | ✅ Completado |
 | 23 | Ampliar `Cell` con contenedor opcional no transitable | ✅ Completado |
-| 24 | Ampliar `Cell` con destino concreto para `DOOR` y `STAIRS` | ✅ Completado |
+| 24 | Ampliar `Cell` con destino concreto para accesos entre salas | ✅ Completado |
 | 25 | Mantener los items de suelo transitables para recogida automática | ✅ Completado |
+| 26 | Hacer puertas y escaleras accesos no transitables usados desde celda adyacente | ✅ Completado |
+| 27 | Añadir orientación frontal para escaleras `STAIRS_UP` y `STAIRS_DOWN` | ✅ Completado |
+| 28 | Añadir helpers de acceso, trigger, resaltado, reserva y requisito de item en `Cell` | ✅ Completado |
+| 29 | Centralizar bloqueo de visión en `Cell.bloqueaVision()` | ✅ Completado |
 
 ---
 
@@ -182,7 +187,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 8 | Implementar `getCaminoPorId(Dungeon, String, String)` | ✅ Completado |
 | 9 | Implementar `getDistancia(Dungeon, Room, Room)` | ✅ Completado |
 | 10 | Implementar `LineaDeVision` con Bresenham | ✅ Completado |
-| 11 | Decidir que solo `WALL` bloquea línea de visión por ahora | ✅ Completado |
+| 11 | Decidir que `WALL` y `STAIRS_UP` bloquean línea de visión | ✅ Completado |
 | 12 | Implementar `CombatManager` | ✅ Completado |
 | 13 | Mantener fórmula oficial de daño con aleatoriedad `[0.5, 1.5]` | ✅ Completado |
 | 14 | Añadir sobrecarga determinista de `calcularDanio` para tests | ✅ Completado |
@@ -207,7 +212,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 33 | Implementar movimiento del jugador con `BFSMovimiento` | ✅ Completado |
 | 34 | Implementar recogida automática de items de suelo al moverse | ✅ Completado |
 | 35 | Implementar interacción `PICKUP` con contenedor adyacente | ✅ Completado |
-| 36 | Implementar cambio de sala por `DOOR` o `STAIRS` con destino configurado | ✅ Completado |
+| 36 | Implementar cambio de sala por acceso adyacente con destino configurado | ✅ Completado |
 | 37 | Implementar `saltarMovimiento`, `saltarRecogida` y `saltarUsoItem` | ✅ Completado |
 | 38 | Implementar turno enemigo con iteración sobre enemigos iniciales del turno | ✅ Completado |
 | 39 | Ajustar `CombatManager` para fallo de ataque por `BLIND` | ✅ Completado |
@@ -217,6 +222,9 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 43 | Implementar creación por id de armas, armaduras, pociones y accesorios oficiales | ✅ Completado |
 | 44 | Implementar generación aleatoria por zona con items reales | ✅ Completado |
 | 45 | Implementar drops de enemigos con items reales o `null` | ✅ Completado |
+| 46 | Implementar `usarAccesoAdyacente()` para puertas y escaleras | ✅ Completado |
+| 47 | Implementar validación de llegada antes de cambiar de sala por acceso | ✅ Completado |
+| 48 | Implementar desbloqueo de `DOOR_LOCKED` por item narrativo requerido | ✅ Completado |
 
 ---
 
@@ -268,6 +276,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 12 | Suite tras `IAEnemigo` | ✅ Correcta |
 | 13 | Suite tras `Container`, `Chest`, `Cell` ampliado y `TurnManager` | ✅ Correcta |
 | 14 | Suite tras rediseño de `BLIND`, P4, P5, armas con doble efecto e `ItemGenerator` | ✅ Correcta |
+| 15 | Suite tras `STAIRS_UP/DOWN`, accesos adyacentes y visión actualizada | ✅ Correcta |
 
 Última verificación completa:
 
@@ -278,7 +287,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 Resultado:
 
 ```text
-303 tests, 0 failures, 0 errors, 0 skipped
+316 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---
@@ -291,8 +300,8 @@ Resultado:
 | 2 | No modificar `ListaSimplementeEnlazada` para eliminar la restricción `Comparable<T>` | ✅ Aceptada |
 | 3 | Mejorar la API pública mínima de `Grafo`, `NodoGrafo` y `Arista` con permiso explícito | ✅ Aceptada |
 | 4 | `BFSCaminoMinimo` se mantiene aunque no tenga ficha propia detallada en la guía | ✅ Aceptada |
-| 5 | `LineaDeVision` bloquea solo `WALL` por ahora | ✅ Aceptada |
-| 6 | `STAIRS`, `TRAP`, `LEVER` y `RUNE` no bloquean visión | ✅ Aceptada |
+| 5 | `LineaDeVision` bloquea `WALL` y `STAIRS_UP` como obstáculos intermedios | ✅ Aceptada |
+| 6 | `STAIRS_DOWN`, `TRAP`, `LEVER`, `RUNE` y `DOOR` no bloquean visión | ✅ Aceptada |
 | 7 | `CombatManager` conserva la aleatoriedad oficial y añade sobrecarga determinista para tests | ✅ Aceptada |
 | 8 | Cualquier cambio futuro en `MisEstructurasDeDatos` debe consultarse antes | ✅ Aceptada |
 | 9 | `ArbolDecisionIA` usa distancia Manhattan para Guardian y Destructor | ✅ Aceptada |
@@ -303,7 +312,7 @@ Resultado:
 | 14 | `TurnManager` no importa ni referencia `GameModel`; la UI refrescará desde fuera | ✅ Aceptada |
 | 15 | `Container` y `Chest` se añaden en `Valdris.model.map` con autorización puntual | ✅ Aceptada |
 | 16 | Los items de suelo se recogen automáticamente en movimiento; `PICKUP` queda para contenedores adyacentes | ✅ Aceptada |
-| 17 | `Cell` guarda destinos concretos para accesos `DOOR` y `STAIRS` | ✅ Aceptada |
+| 17 | `Cell` guarda destinos concretos para accesos entre salas | ✅ Aceptada |
 | 18 | Los enemigos invocados durante `ENEMY_TURN` actúan a partir del siguiente turno enemigo | ✅ Aceptada |
 | 19 | `BLIND` deja de reducir movimiento y pasa a provocar un 25% de fallo de ataque | ✅ Aceptada |
 | 20 | Un ataque fallado por `BLIND` consume la acción de ataque y el bonus temporal de P5 | ✅ Aceptada |
@@ -313,6 +322,12 @@ Resultado:
 | 24 | `P5` cura y añade bonus temporal al siguiente ataque del jugador | ✅ Aceptada |
 | 25 | `ItemGenerator` devuelve items reales o `null`, no materiales abstractos | ✅ Aceptada |
 | 26 | La asignación garantizada de mini-bosses y accesorios AC1-AC4 se aplaza para `DungeonGenerator` | ✅ Aceptada |
+| 27 | `STAIRS_UP` y `STAIRS_DOWN` sustituyen al tipo genérico `STAIRS` | ✅ Aceptada |
+| 28 | Puertas y escaleras se usan con `usarAccesoAdyacente()` desde `PICKUP` | ✅ Aceptada |
+| 29 | Las escaleras son no transitables y solo se usan desde su frente configurado | ✅ Aceptada |
+| 30 | Las puertas no necesitan orientación porque se colocan en paredes | ✅ Aceptada |
+| 31 | `DOOR_LOCKED` puede requerir un item narrativo por id para desbloquearse | ✅ Aceptada |
+| 32 | El log de partida debe ser acumulativo y no debe tener `clearLog()` destructivo | ✅ Aceptada |
 
 ---
 
@@ -321,7 +336,9 @@ Resultado:
 | Nº | Tarea pendiente | Estado |
 |---:|-----------------|--------|
 | 1 | Fijar mini-bosses y asignación garantizada de accesorios AC1-AC4 antes de `DungeonGenerator` | ⬜ Pendiente |
-| 2 | Implementar `DungeonGenerator` | ⬜ Pendiente |
-| 3 | Crear `DungeonGeneratorTest` | ⬜ Pendiente |
-| 4 | Implementar persistencia (`GameState`, `LectorJSON`) | ⬜ Pendiente |
-| 5 | Implementar capa JavaFX | ⬜ Pendiente |
+| 2 | Añadir soporte de diálogos por personaje en `Room` y `TurnManager` | ⬜ Pendiente |
+| 3 | Añadir soporte de palancas, runas y pasadizos secretos | ⬜ Pendiente |
+| 4 | Implementar `DungeonGenerator` | ⬜ Pendiente |
+| 5 | Crear `DungeonGeneratorTest` | ⬜ Pendiente |
+| 6 | Implementar persistencia (`GameState`, `LectorJSON`) | ⬜ Pendiente |
+| 7 | Implementar capa JavaFX | ⬜ Pendiente |

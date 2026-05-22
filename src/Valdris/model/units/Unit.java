@@ -205,7 +205,7 @@ public abstract class Unit {
     /**
      * Devuelve el movimiento efectivo tras aplicar efectos de estado.
      *
-     * @return movimiento reducido por SLOW o BLIND, o movimiento base si no aplican
+     * @return movimiento reducido por SLOW, o movimiento base si no aplica
      */
     public int getMovEfectivo() {
         if (tieneEfecto(EffectType.SLOW)) {

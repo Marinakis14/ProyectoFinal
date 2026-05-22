@@ -42,6 +42,10 @@ class CellTest {
         assertNull(celdaSuelo.getItem());
         assertNull(celdaSuelo.getContainer());
         assertFalse(celdaSuelo.hasDestinoAcceso());
+        assertFalse(celdaSuelo.hasAccessFacing());
+        assertFalse(celdaSuelo.hasTrigger());
+        assertFalse(celdaSuelo.isHighlighted());
+        assertFalse(celdaSuelo.isReservedForAccess());
     }
 
     @Test
@@ -62,18 +66,24 @@ class CellTest {
     }
 
     @Test
-    void isWalkable_paredYPuertaCerradaNoSonTransitables() {
+    void isWalkable_paredPuertaYEscalerasNoSonTransitables() {
         // Arrange
         Cell pared = new Cell(CellType.WALL);
+        Cell puerta = new Cell(CellType.DOOR);
         Cell puertaCerrada = new Cell(CellType.DOOR_LOCKED);
+        Cell escaleraArriba = new Cell(CellType.STAIRS_UP);
+        Cell escaleraAbajo = new Cell(CellType.STAIRS_DOWN);
 
         // Act + Assert
         assertFalse(pared.isWalkable());
+        assertFalse(puerta.isWalkable());
         assertFalse(puertaCerrada.isWalkable());
+        assertFalse(escaleraArriba.isWalkable());
+        assertFalse(escaleraAbajo.isWalkable());
     }
 
     @Test
-    void isWalkable_puertaOcultaSoloEsTransitableTrasRevelarse() {
+    void isWalkable_puertaOcultaReveladaSigueSiendoAccesoNoTransitable() {
         // Arrange
         Cell puertaOculta = new Cell(CellType.DOOR_HIDDEN);
 
@@ -82,7 +92,7 @@ class CellTest {
 
         puertaOculta.revelar();
 
-        assertTrue(puertaOculta.isWalkable());
+        assertFalse(puertaOculta.isWalkable());
         assertEquals(CellType.DOOR, puertaOculta.getTipo());
         assertTrue(puertaOculta.isDescubierta());
     }
@@ -193,6 +203,102 @@ class CellTest {
         assertNull(celdaSuelo.getSalaDestino());
         assertEquals(0, celdaSuelo.getFilaDestino());
         assertEquals(0, celdaSuelo.getColDestino());
+    }
+
+    @Test
+    void helpersDeAcceso_identificanPuertasEscalerasEInteraccion() {
+        // Arrange
+        Cell puerta = new Cell(CellType.DOOR);
+        Cell puertaCerrada = new Cell(CellType.DOOR_LOCKED);
+        Cell puertaOculta = new Cell(CellType.DOOR_HIDDEN);
+        Cell escalera = new Cell(CellType.STAIRS_DOWN);
+
+        // Act + Assert
+        assertTrue(puerta.isAccessCell());
+        assertTrue(puerta.isDoor());
+        assertTrue(puerta.isInteractuableAccess());
+        assertTrue(puertaCerrada.isInteractuableAccess());
+        assertFalse(puertaOculta.isInteractuableAccess());
+        assertTrue(escalera.isAccessCell());
+        assertTrue(escalera.isStairs());
+        assertTrue(escalera.isInteractuableAccess());
+    }
+
+    @Test
+    void bloqueaVision_paredYStairsUpBloqueanPeroStairsDownNo() {
+        assertTrue(new Cell(CellType.WALL).bloqueaVision());
+        assertTrue(new Cell(CellType.STAIRS_UP).bloqueaVision());
+        assertFalse(new Cell(CellType.STAIRS_DOWN).bloqueaVision());
+        assertFalse(new Cell(CellType.DOOR).bloqueaVision());
+        assertFalse(new Cell(CellType.RUNE).bloqueaVision());
+    }
+
+    @Test
+    void setAccessFacing_validaDireccionOrtogonal() {
+        // Arrange
+        Cell escalera = new Cell(CellType.STAIRS_UP);
+
+        // Act
+        escalera.setAccessFacing(0, -1);
+
+        // Assert
+        assertTrue(escalera.hasAccessFacing());
+        assertEquals(0, escalera.getAccessFacingDeltaFila());
+        assertEquals(-1, escalera.getAccessFacingDeltaCol());
+
+        // Act
+        escalera.setAccessFacing(1, 1);
+
+        // Assert
+        assertFalse(escalera.hasAccessFacing());
+        assertEquals(0, escalera.getAccessFacingDeltaFila());
+        assertEquals(0, escalera.getAccessFacingDeltaCol());
+    }
+
+    @Test
+    void isUsableFrom_escaleraSoloDesdeFrenteConfigurado() {
+        // Arrange
+        Cell escalera = new Cell(CellType.STAIRS_DOWN);
+        escalera.setAccessFacing(0, -1);
+
+        // Act + Assert
+        assertTrue(escalera.isUsableFrom(2, 2, 2, 3));
+        assertFalse(escalera.isUsableFrom(1, 3, 2, 3));
+        assertFalse(escalera.isUsableFrom(2, 4, 2, 3));
+    }
+
+    @Test
+    void isUsableFrom_puertaPermiteCualquierAdyacenteOrtogonal() {
+        // Arrange
+        Cell puerta = new Cell(CellType.DOOR);
+
+        // Act + Assert
+        assertTrue(puerta.isUsableFrom(2, 2, 2, 3));
+        assertTrue(puerta.isUsableFrom(1, 3, 2, 3));
+        assertFalse(puerta.isUsableFrom(1, 2, 2, 3));
+    }
+
+    @Test
+    void requiredItemTriggerHighlightYReserva_seConfiguranCorrectamente() {
+        // Act
+        celdaSuelo.setRequiredItemId("AC1");
+        celdaSuelo.setTriggerId("secret_s1");
+        celdaSuelo.setHighlighted(true);
+        celdaSuelo.setReservedForAccess(true);
+
+        // Assert
+        assertTrue(celdaSuelo.hasRequiredItem());
+        assertEquals("AC1", celdaSuelo.getRequiredItemId());
+        assertTrue(celdaSuelo.hasTrigger());
+        assertEquals("secret_s1", celdaSuelo.getTriggerId());
+        assertTrue(celdaSuelo.isHighlighted());
+        assertTrue(celdaSuelo.isReservedForAccess());
+
+        // Act
+        celdaSuelo.clearHighlight();
+
+        // Assert
+        assertFalse(celdaSuelo.isHighlighted());
     }
 
     // -- Tipo y revelado -----------------------------------------------------

@@ -26,8 +26,8 @@ public enum EffectType {
 
     /**
      * Ceguera. Dura 2 turnos.
-     * Reduce el movimiento efectivo a {@code ceil(movBase / 2.0)} y representa
-     * desorientación táctica durante el turno afectado.
+     * Da un 25% de probabilidad de fallar ataques. Un ataque fallado por BLIND
+     * consume la acción de ataque, no inflige daño y no aplica efectos de arma.
      */
     BLIND,
 

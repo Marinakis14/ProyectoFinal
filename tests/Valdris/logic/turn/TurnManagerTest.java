@@ -7,6 +7,7 @@ import Valdris.model.enums.CellType;
 import Valdris.model.enums.CharacterType;
 import Valdris.model.enums.EnemyType;
 import Valdris.model.enums.Phase;
+import Valdris.model.items.Accessory;
 import Valdris.model.items.Weapon;
 import Valdris.model.map.Chest;
 import Valdris.model.map.Dungeon;
@@ -306,7 +307,7 @@ class TurnManagerTest {
     // -- Cambio de sala ------------------------------------------------------
 
     @Test
-    void ejecutarMovimiento_enPuertaConDestinoCambiaSalaYColocaJugador()
+    void usarAccesoAdyacente_enPuertaConDestinoCambiaSalaYColocaJugador()
         throws InvalidMoveException, GameStateException {
 
         // Arrange
@@ -316,9 +317,10 @@ class TurnManagerTest {
         destino.setColJugador(1);
         room.setCellType(2, 3, CellType.DOOR);
         room.getCell(2, 3).setDestinoAcceso(destino, 1, 1);
+        turnManager.saltarMovimiento();
 
         // Act
-        turnManager.ejecutarMovimiento(2, 3);
+        turnManager.usarAccesoAdyacente();
 
         // Assert
         assertSame(destino, dungeon.getRoomActual());
@@ -326,7 +328,118 @@ class TurnManagerTest {
         assertEquals(1, player.getFilaActual());
         assertEquals(1, player.getColActual());
         assertSame(player, destino.getCell(1, 1).getUnit());
-        assertNull(room.getCell(2, 3).getUnit());
+        assertNull(room.getCell(2, 2).getUnit());
+        assertEquals(Phase.USE_ITEM, turnManager.getFaseActual());
+    }
+
+    @Test
+    void ejecutarMovimiento_noPermitePisarPuerta() throws InvalidMoveException {
+        // Arrange
+        room.setCellType(2, 3, CellType.DOOR);
+
+        // Act + Assert
+        assertThrows(InvalidMoveException.class, () -> turnManager.ejecutarMovimiento(2, 3));
+        assertSame(room, dungeon.getRoomActual());
+        assertEquals(Phase.MOVEMENT, turnManager.getFaseActual());
+    }
+
+    @Test
+    void usarAccesoAdyacente_enEscaleraSoloDesdeFrenteConfigurado()
+        throws InvalidMoveException, GameStateException {
+
+        // Arrange
+        Room destino = new Room("R2-UP", "Planta superior", 4, 4);
+        dungeon.conectar(room, destino, "escalera arriba");
+        room.setCellType(2, 3, CellType.STAIRS_UP);
+        room.getCell(2, 3).setAccessFacing(0, -1);
+        room.getCell(2, 3).setDestinoAcceso(destino, 1, 1);
+        destino.getCell(1, 1).setReservedForAccess(true);
+        turnManager.saltarMovimiento();
+
+        // Act
+        turnManager.usarAccesoAdyacente();
+
+        // Assert
+        assertSame(destino, dungeon.getRoomActual());
+        assertEquals(1, player.getFilaActual());
+        assertEquals(1, player.getColActual());
+        assertEquals(Phase.USE_ITEM, turnManager.getFaseActual());
+    }
+
+    @Test
+    void usarAccesoAdyacente_escaleraDesdeLadoIncorrectoLanzaGameStateException()
+        throws InvalidMoveException, GameStateException {
+
+        // Arrange
+        Room destino = new Room("R2-UP", "Planta superior", 4, 4);
+        dungeon.conectar(room, destino, "escalera arriba");
+        room.setCellType(2, 3, CellType.STAIRS_UP);
+        room.getCell(2, 3).setAccessFacing(-1, 0);
+        room.getCell(2, 3).setDestinoAcceso(destino, 1, 1);
+        turnManager.saltarMovimiento();
+
+        // Act + Assert
+        assertThrows(GameStateException.class, () -> turnManager.usarAccesoAdyacente());
+        assertSame(room, dungeon.getRoomActual());
+        assertEquals(Phase.PICKUP, turnManager.getFaseActual());
+    }
+
+    @Test
+    void usarAccesoAdyacente_destinoBloqueadoLanzaInvalidMoveException()
+        throws InvalidMoveException, GameStateException {
+
+        // Arrange
+        Room destino = new Room("R2", "Sala destino", 4, 4);
+        dungeon.conectar(room, destino, "puerta este");
+        room.setCellType(2, 3, CellType.DOOR);
+        room.getCell(2, 3).setDestinoAcceso(destino, 1, 1);
+        destino.setCellType(1, 1, CellType.WALL);
+        turnManager.saltarMovimiento();
+
+        // Act + Assert
+        assertThrows(InvalidMoveException.class, () -> turnManager.usarAccesoAdyacente());
+        assertSame(room, dungeon.getRoomActual());
+        assertEquals(Phase.PICKUP, turnManager.getFaseActual());
+    }
+
+    @Test
+    void usarAccesoAdyacente_puertaCerradaConLlaveSeAbreYCambiaSala()
+        throws InvalidMoveException, GameStateException {
+
+        // Arrange
+        Room destino = new Room("R2", "Sala destino", 4, 4);
+        dungeon.conectar(room, destino, "puerta cerrada");
+        room.setCellType(2, 3, CellType.DOOR_LOCKED);
+        room.getCell(2, 3).setRequiredItemId("AC1");
+        room.getCell(2, 3).setDestinoAcceso(destino, 1, 1);
+        player.addItem(new Accessory("AC1", "Llave de Hierro"));
+        turnManager.saltarMovimiento();
+
+        // Act
+        turnManager.usarAccesoAdyacente();
+
+        // Assert
+        assertEquals(CellType.DOOR, room.getCell(2, 3).getTipo());
+        assertSame(destino, dungeon.getRoomActual());
+        assertEquals(Phase.USE_ITEM, turnManager.getFaseActual());
+    }
+
+    @Test
+    void usarAccesoAdyacente_puertaCerradaSinLlaveNoSeAbre()
+        throws InvalidMoveException, GameStateException {
+
+        // Arrange
+        Room destino = new Room("R2", "Sala destino", 4, 4);
+        dungeon.conectar(room, destino, "puerta cerrada");
+        room.setCellType(2, 3, CellType.DOOR_LOCKED);
+        room.getCell(2, 3).setRequiredItemId("AC1");
+        room.getCell(2, 3).setDestinoAcceso(destino, 1, 1);
+        turnManager.saltarMovimiento();
+
+        // Act + Assert
+        assertThrows(GameStateException.class, () -> turnManager.usarAccesoAdyacente());
+        assertEquals(CellType.DOOR_LOCKED, room.getCell(2, 3).getTipo());
+        assertSame(room, dungeon.getRoomActual());
         assertEquals(Phase.PICKUP, turnManager.getFaseActual());
     }
 

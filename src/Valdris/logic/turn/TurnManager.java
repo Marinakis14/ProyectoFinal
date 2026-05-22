@@ -81,8 +81,9 @@ public class TurnManager {
      *
      * <p>El destino debe pertenecer al rango calculado por BFS, salvo cuando el
      * jugador elige su propia celda para resolver la fase sin desplazarse. Si la
-     * celda destino contiene un item de suelo, se recoge automáticamente. Si es
-     * una puerta o escalera con destino configurado, cambia de sala.</p>
+     * celda destino contiene un item de suelo, se recoge automáticamente. Las
+     * puertas y escaleras no se pisan: se usan desde una celda adyacente durante
+     * la fase de recogida/interacción con {@link #usarAccesoAdyacente()}.</p>
      *
      * @param filaDestino fila destino
      * @param colDestino columna destino
@@ -104,10 +105,6 @@ public class TurnManager {
         resolverItemDeSuelo(room.getCell(filaDestino, colDestino));
         player.setHaMovido(true);
 
-        Cell destino = room.getCell(filaDestino, colDestino);
-        if (esAccesoConDestino(destino)) {
-            changeRoom(destino.getSalaDestino(), destino.getFilaDestino(), destino.getColDestino());
-        }
         faseActual = Phase.PICKUP;
     }
 
@@ -161,6 +158,136 @@ public class TurnManager {
         }
         player.setHaRecogido(true);
         faseActual = Phase.USE_ITEM;
+    }
+
+    /**
+     * Usa una puerta o escalera adyacente al jugador.
+     *
+     * <p>Comparte la fase de interacción con la recogida de contenedores. Las
+     * escaleras solo pueden usarse desde su frente configurado; las puertas se
+     * pueden usar desde cualquier celda ortogonal adyacente porque se colocan en
+     * paredes y solo tienen una celda frontal real dentro de la sala.</p>
+     *
+     * @throws InvalidMoveException si la llegada configurada no es válida
+     * @throws GameStateException si no hay acceso usable o la fase no permite usarlo
+     */
+    public void usarAccesoAdyacente() throws InvalidMoveException, GameStateException {
+        validarFase(Phase.PICKUP);
+        if (player.isHaRecogido()) {
+            throw new GameStateException("El jugador ya resolvió la interacción este turno.");
+        }
+
+        Cell acceso = buscarAccesoInteractuableAdyacente();
+        if (acceso == null) {
+            throw new GameStateException("No hay puerta o escalera usable junto al jugador.");
+        }
+        if (acceso.getTipo() == CellType.DOOR_LOCKED && !intentarDesbloquearPuerta(acceso)) {
+            throw new GameStateException("La puerta está bloqueada.");
+        }
+
+        resolverAcceso(acceso);
+        player.setHaRecogido(true);
+        faseActual = Phase.USE_ITEM;
+    }
+
+    /**
+     * Busca una puerta o escalera usable junto al jugador.
+     *
+     * @return acceso encontrado, o null si no hay ninguno usable
+     */
+    public Cell buscarAccesoInteractuableAdyacente() {
+        try {
+            Room room = getRoomActualObligatoria();
+            for (int i = 0; i < DIRECCIONES.length; i++) {
+                int fila = player.getFilaActual() + DIRECCIONES[i][0];
+                int col = player.getColActual() + DIRECCIONES[i][1];
+                if (room.isEnRango(fila, col)) {
+                    Cell acceso = room.getCell(fila, col);
+                    if (acceso.isUsableFrom(player.getFilaActual(), player.getColActual(), fila, col)) {
+                        return acceso;
+                    }
+                }
+            }
+        } catch (GameStateException | InvalidMoveException e) {
+            return null;
+        }
+        return null;
+    }
+
+    /**
+     * Ejecuta el cambio de sala de un acceso ya seleccionado.
+     *
+     * @param acceso puerta o escalera usada
+     * @throws InvalidMoveException si la celda destino no es transitable
+     * @throws GameStateException si el acceso no tiene destino funcional
+     */
+    public void resolverAcceso(Cell acceso) throws InvalidMoveException, GameStateException {
+        validarDestinoAcceso(acceso);
+        changeRoom(acceso.getSalaDestino(), acceso.getFilaDestino(), acceso.getColDestino());
+    }
+
+    /**
+     * Valida que un acceso tenga una llegada usable.
+     *
+     * @param acceso puerta o escalera consultada
+     * @throws InvalidMoveException si la coordenada destino es inválida o bloqueada
+     * @throws GameStateException si el acceso no está configurado
+     */
+    public void validarDestinoAcceso(Cell acceso) throws InvalidMoveException, GameStateException {
+        if (acceso == null || !acceso.isInteractuableAccess()) {
+            throw new GameStateException("El acceso seleccionado no es válido.");
+        }
+        if (!acceso.hasDestinoAcceso()) {
+            throw new GameStateException("El acceso no tiene destino configurado.");
+        }
+        Room destino = acceso.getSalaDestino();
+        int fila = acceso.getFilaDestino();
+        int col = acceso.getColDestino();
+        if (destino == null) {
+            throw new GameStateException("La sala destino no puede ser null.");
+        }
+        if (!destino.isEnRango(fila, col)) {
+            throw new InvalidMoveException("Entrada fuera de rango en sala destino.");
+        }
+        if (!destino.getCell(fila, col).isWalkable()) {
+            throw new InvalidMoveException("La celda de llegada del acceso no es transitable.");
+        }
+    }
+
+    /**
+     * Intenta desbloquear una puerta cerrada con el inventario del jugador.
+     *
+     * @param puerta puerta que se intenta abrir
+     * @return true si queda abierta
+     */
+    public boolean intentarDesbloquearPuerta(Cell puerta) {
+        if (puerta == null || puerta.getTipo() != CellType.DOOR_LOCKED) {
+            return false;
+        }
+        if (!puerta.hasRequiredItem() || !jugadorTieneItemNarrativo(puerta.getRequiredItemId())) {
+            return false;
+        }
+        puerta.setTipo(CellType.DOOR);
+        return true;
+    }
+
+    /**
+     * Comprueba si el jugador tiene un item concreto en el inventario.
+     *
+     * @param itemId identificador del item narrativo
+     * @return true si el inventario contiene ese item
+     */
+    public boolean jugadorTieneItemNarrativo(String itemId) {
+        if (itemId == null || itemId.isEmpty()) {
+            return false;
+        }
+        for (int i = 0; i < player.getInventario().getSize(); i++) {
+            Item item = player.getInventario().get(i);
+            if (item != null && itemId.equals(item.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -424,19 +551,6 @@ public class TurnManager {
         }
         Item item = celda.removeItem();
         player.addItem(item);
-    }
-
-    /**
-     * Comprueba si una celda es puerta o escalera con destino configurado.
-     *
-     * @param celda celda consultada
-     * @return true si debe cambiar de sala
-     */
-    private boolean esAccesoConDestino(Cell celda) {
-        if (celda == null || !celda.hasDestinoAcceso()) {
-            return false;
-        }
-        return celda.getTipo() == CellType.DOOR || celda.getTipo() == CellType.STAIRS;
     }
 
     /**

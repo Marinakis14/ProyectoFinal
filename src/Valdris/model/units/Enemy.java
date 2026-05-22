@@ -67,6 +67,35 @@ public class Enemy extends Unit implements Comparable<Enemy> {
         this.esMiniJefe = false;
     }
 
+    /**
+     * Crea un enemigo con estadísticas explícitas.
+     *
+     * <p>Este constructor queda protegido para subtipos especiales, como
+     * mini-bosses, que comparten la identidad de enemigo pero no usan las
+     * estadísticas base de {@link EnemyType}.</p>
+     *
+     * @param tipo tipo de IA base usado por el enemigo
+     * @param hpMax HP máximo
+     * @param ataqueBase ataque base
+     * @param defensaBase defensa base
+     * @param movBase movimiento base
+     * @param rango rango base
+     * @param fila fila inicial
+     * @param col columna inicial
+     * @param idSala sala de aparición
+     */
+    protected Enemy(EnemyType tipo, int hpMax, int ataqueBase, int defensaBase,
+                    int movBase, int rango, int fila, int col, String idSala) {
+        super(hpMax, ataqueBase, defensaBase, movBase, rango, fila, col);
+        this.tipo = tipo;
+        this.dropItem = null;
+        this.turnosSinActuar = 0;
+        this.idSala = idSala;
+        this.filaSpawn = fila;
+        this.colSpawn = col;
+        this.esMiniJefe = false;
+    }
+
     // -- Métodos de lógica ----------------------------------------------------
 
     /**
@@ -123,6 +152,22 @@ public class Enemy extends Unit implements Comparable<Enemy> {
      */
     public int getDanoBase() {
         return getAtaqueBase();
+    }
+
+    /**
+     * Devuelve cuánta defensa del jugador ignora este enemigo al atacar.
+     *
+     * <p>Solo algunos enemigos avanzados usan penetración natural. El Eco de
+     * Magia ignora 3 puntos de defensa; el resto de enemigos normales no ignora
+     * defensa salvo que una subclase sobrescriba este método.</p>
+     *
+     * @return puntos de defensa ignorados
+     */
+    public int getPenetracionDefensa() {
+        if (tipo == EnemyType.ECO_DE_MAGIA) {
+            return 3;
+        }
+        return 0;
     }
 
     // -- Getters y setters ----------------------------------------------------
@@ -248,6 +293,12 @@ public class Enemy extends Unit implements Comparable<Enemy> {
         if (tipo == EnemyType.SUMMONER) {
             return 45;
         }
+        if (tipo == EnemyType.CONSTRUCTO || tipo == EnemyType.SOMBRA_ABSORBIDA) {
+            return 45;
+        }
+        if (tipo == EnemyType.ECO_DE_MAGIA) {
+            return 35;
+        }
         return 35;
     }
 
@@ -279,6 +330,15 @@ public class Enemy extends Unit implements Comparable<Enemy> {
         if (tipo == EnemyType.SUMMONER) {
             return 0;
         }
+        if (tipo == EnemyType.CONSTRUCTO) {
+            return 17;
+        }
+        if (tipo == EnemyType.SOMBRA_ABSORBIDA) {
+            return 20;
+        }
+        if (tipo == EnemyType.ECO_DE_MAGIA) {
+            return 22;
+        }
         return 15;
     }
 
@@ -303,6 +363,15 @@ public class Enemy extends Unit implements Comparable<Enemy> {
         }
         if (tipo == EnemyType.SUMMONER) {
             return 6;
+        }
+        if (tipo == EnemyType.CONSTRUCTO) {
+            return 10;
+        }
+        if (tipo == EnemyType.SOMBRA_ABSORBIDA) {
+            return 8;
+        }
+        if (tipo == EnemyType.ECO_DE_MAGIA) {
+            return 5;
         }
         return 8;
     }
@@ -332,6 +401,10 @@ public class Enemy extends Unit implements Comparable<Enemy> {
         if (tipo == EnemyType.CONTROLLER || tipo == EnemyType.SUMMONER) {
             return 2;
         }
+        if (tipo == EnemyType.CONSTRUCTO || tipo == EnemyType.SOMBRA_ABSORBIDA
+            || tipo == EnemyType.ECO_DE_MAGIA) {
+            return 2;
+        }
         return 2;
     }
 
@@ -353,6 +426,9 @@ public class Enemy extends Unit implements Comparable<Enemy> {
         }
         if (tipo == EnemyType.SUMMONER) {
             return 0;
+        }
+        if (tipo == EnemyType.ECO_DE_MAGIA) {
+            return 3;
         }
         return 1;
     }

@@ -7,9 +7,9 @@ import Valdris.model.units.Player;
  * Clase base de todos los objetos que puede encontrar, guardar o usar el jugador.
  *
  * <p>Un item representa cualquier elemento interactivo del inventario: armas,
- * armaduras, escudos, pociones y accesorios. Las subclases concretas definen
- * el comportamiento real al usarse, como equiparse en una ranura o consumir una
- * poción.</p>
+ * armaduras, escudos, pociones, accesorios y objetos narrativos. Las subclases
+ * concretas definen el comportamiento real al usarse, como equiparse en una
+ * ranura, consumir una poción o conservar progreso de historia.</p>
  *
  * <p>El identificador {@code id} es importante para persistencia, generación
  * de objetos y reconstrucción desde JSON. Debe coincidir con los códigos de la
@@ -19,6 +19,7 @@ import Valdris.model.units.Player;
  * @see Armor
  * @see Potion
  * @see Accessory
+ * @see NarrativeItem
  */
 public abstract class Item implements Comparable<Item> {
 

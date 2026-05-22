@@ -6,6 +6,7 @@ import Valdris.model.enums.EnemyType;
 import Valdris.model.items.Accessory;
 import Valdris.model.items.Armor;
 import Valdris.model.items.Item;
+import Valdris.model.items.NarrativeItem;
 import Valdris.model.items.Potion;
 import Valdris.model.items.Weapon;
 
@@ -14,8 +15,8 @@ import Valdris.model.items.Weapon;
  *
  * <p>Cada llamada crea una instancia nueva para evitar compartir estado entre
  * inventario, cofres, drops y persistencia. Los IDs coinciden con la guía de
- * diseño v5: armas W1-W12, armaduras A1-A8, pociones P1-P5 y accesorios
- * AC1-AC8.</p>
+ * diseño v5: armas W1-W12, armaduras A1-A8, pociones P1-P5, accesorios
+ * AC5-AC8 y objetos narrativos AC1-AC4/N1.</p>
  *
  * <p>Los métodos aleatorios tienen sobrecargas deterministas para tests. La
  * lógica de juego debe usar las firmas principales de la guía.</p>
@@ -126,16 +127,16 @@ public final class ItemGenerator {
             return potion;
         }
         if ("AC1".equals(id)) {
-            return crearAccesorioNarrativo("AC1", "Llave de Hierro", "Abre puertas de la Zona 1");
+            return new NarrativeItem("AC1", "Llave de Hierro", "Abre puertas de la Zona 1");
         }
         if ("AC2".equals(id)) {
-            return crearAccesorioNarrativo("AC2", "Semilla Resonante", "Resalta trampas cercanas");
+            return new NarrativeItem("AC2", "Semilla Resonante", "Resalta trampas cercanas");
         }
         if ("AC3".equals(id)) {
-            return crearAccesorioNarrativo("AC3", "Fragmento de Sello", "Permite acceder a S5-SEC");
+            return new NarrativeItem("AC3", "Fragmento de Sello", "Permite acceder a S5-SEC");
         }
         if ("AC4".equals(id)) {
-            return crearAccesorioNarrativo("AC4", "Fragmento de Voluntad", "Potencia la habilidad especial");
+            return new NarrativeItem("AC4", "Fragmento de Voluntad", "Potencia la habilidad especial");
         }
         if ("AC5".equals(id)) {
             Accessory accesorio = new Accessory("AC5", "Amuleto de Fuerza");
@@ -157,6 +158,10 @@ public final class ItemGenerator {
             accesorio.setBonus(0, 0, 3);
             return accesorio;
         }
+        if ("N1".equals(id)) {
+            return new NarrativeItem("N1", "Pergamino Sellado",
+                "Añade diálogo extra con Malachar en el Núcleo Profundo");
+        }
         return null;
     }
 
@@ -165,7 +170,7 @@ public final class ItemGenerator {
     /**
      * Devuelve un item aleatorio del pool de una zona.
      *
-     * @param zona zona consultada, de 1 a 4
+     * @param zona zona consultada, de 1 a 5
      * @return item del pool, o null si la zona no tiene pool
      */
     public static Item itemAleatorioZona(int zona) {
@@ -175,7 +180,7 @@ public final class ItemGenerator {
     /**
      * Devuelve un item del pool de zona usando una tirada determinista.
      *
-     * @param zona zona consultada, de 1 a 4
+     * @param zona zona consultada, de 1 a 5
      * @param tirada valor usado para elegir una de las tres opciones
      * @return item elegido, o null si la zona no tiene pool
      */
@@ -192,6 +197,9 @@ public final class ItemGenerator {
         }
         if (zona == 4) {
             return elegir(opcion, "A7", "P5", "AC7");
+        }
+        if (zona == 5) {
+            return elegir(opcion, "P3", "P4", "P5");
         }
         return null;
     }
@@ -382,20 +390,6 @@ public final class ItemGenerator {
     }
 
     // -- Auxiliares ----------------------------------------------------------
-
-    /**
-     * Crea un accesorio narrativo.
-     *
-     * @param id identificador
-     * @param nombre nombre visible
-     * @param efecto descripcion narrativa
-     * @return accesorio configurado
-     */
-    private static Accessory crearAccesorioNarrativo(String id, String nombre, String efecto) {
-        Accessory accesorio = new Accessory(id, nombre);
-        accesorio.setEfectoNarrativo(efecto);
-        return accesorio;
-    }
 
     /**
      * Elige uno de tres IDs y crea el item correspondiente.

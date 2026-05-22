@@ -54,7 +54,8 @@ class TypeEnumsTest {
             ItemType.ARMOR,
             ItemType.SHIELD,
             ItemType.ACCESSORY,
-            ItemType.POTION
+            ItemType.POTION,
+            ItemType.NARRATIVE
         };
 
         // Act + Assert
@@ -74,7 +75,10 @@ class TypeEnumsTest {
             EnemyType.SNIPER,
             EnemyType.DESTRUCTOR,
             EnemyType.CONTROLLER,
-            EnemyType.SUMMONER
+            EnemyType.SUMMONER,
+            EnemyType.CONSTRUCTO,
+            EnemyType.SOMBRA_ABSORBIDA,
+            EnemyType.ECO_DE_MAGIA
         };
 
         // Act + Assert
@@ -118,5 +122,22 @@ class TypeEnumsTest {
 
         // Act + Assert
         assertArrayEquals(esperado, Phase.values());
+    }
+
+    // -- MiniBossType --------------------------------------------------------
+
+    @Test
+    void miniBossType_contieneMiniBossesEnOrdenEsperado() {
+        // Arrange
+        MiniBossType[] esperado = {
+            MiniBossType.ALCALDE_CORRUPTO,
+            MiniBossType.ESPIRITU_MADRE,
+            MiniBossType.GOLEM,
+            MiniBossType.GUARDIAN_SIN_NOMBRE,
+            MiniBossType.EL_FILTRO
+        };
+
+        // Act + Assert
+        assertArrayEquals(esperado, MiniBossType.values());
     }
 }

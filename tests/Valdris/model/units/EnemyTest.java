@@ -50,6 +50,9 @@ class EnemyTest {
         assertStats(EnemyType.DESTRUCTOR, 40, 6, 5, 0, 5);
         assertStats(EnemyType.CONTROLLER, 35, 4, 4, 2, 3);
         assertStats(EnemyType.SUMMONER, 45, 0, 6, 2, 0);
+        assertStats(EnemyType.CONSTRUCTO, 45, 17, 10, 2, 1);
+        assertStats(EnemyType.SOMBRA_ABSORBIDA, 45, 20, 8, 2, 1);
+        assertStats(EnemyType.ECO_DE_MAGIA, 35, 22, 5, 2, 3);
     }
 
     // -- Drop ----------------------------------------------------------------
@@ -128,6 +131,16 @@ class EnemyTest {
     @Test
     void getDanoBase_devuelveAtaqueBase() {
         assertEquals(enemigo.getAtaqueBase(), enemigo.getDanoBase());
+    }
+
+    @Test
+    void getPenetracionDefensa_soloEcoDeMagiaIgnoraDefensa() {
+        // Arrange
+        Enemy eco = new Enemy(EnemyType.ECO_DE_MAGIA, 0, 0, "R1");
+
+        // Act + Assert
+        assertEquals(0, enemigo.getPenetracionDefensa());
+        assertEquals(3, eco.getPenetracionDefensa());
     }
 
     // -- compareTo -----------------------------------------------------------

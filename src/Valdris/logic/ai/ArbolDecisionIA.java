@@ -90,7 +90,7 @@ public class ArbolDecisionIA {
         if (tipo == EnemyType.GUARDIAN) {
             return nodo(new CondicionZonaGuardian(), construirArbolWarrior(), hoja(AccionIA.ESPERAR));
         }
-        if (tipo == EnemyType.ARCHER || tipo == EnemyType.SNIPER) {
+        if (tipo == EnemyType.ARCHER || tipo == EnemyType.SNIPER || tipo == EnemyType.ECO_DE_MAGIA) {
             return construirArbolArquero();
         }
         if (tipo == EnemyType.DESTRUCTOR) {

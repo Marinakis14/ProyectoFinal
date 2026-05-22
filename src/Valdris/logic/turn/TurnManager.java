@@ -316,6 +316,9 @@ public class TurnManager {
         if (itemId == null || itemId.isEmpty()) {
             return false;
         }
+        if (player.tieneItemNarrativo(itemId)) {
+            return true;
+        }
         for (int i = 0; i < player.getInventario().getSize(); i++) {
             Item item = player.getInventario().get(i);
             if (item != null && itemId.equals(item.getId())) {

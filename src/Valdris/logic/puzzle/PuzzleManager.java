@@ -21,9 +21,6 @@ public final class PuzzleManager {
 
     // -- Constantes -----------------------------------------------------------
 
-    /** Daño aplicado al jugador cuando introduce una secuencia incorrecta. */
-    private static final int DANIO_FALLO = 3;
-
     // -- Constructor privado -------------------------------------------------
 
     /**
@@ -128,6 +125,7 @@ public final class PuzzleManager {
             return false;
         }
         room.setPuzzleResolved(true);
+        room.openAccessByTrigger(room.getPuzzleSuccessTarget());
         if (dungeon != null && room.getPuzzleSuccessTarget() != null) {
             dungeon.activateHiddenPassage(room.getPuzzleSuccessTarget());
         }
@@ -142,7 +140,8 @@ public final class PuzzleManager {
      */
     public static void applyFailure(Room room, Player player) {
         if (player != null) {
-            player.recibirDanio(DANIO_FALLO);
+            int danio = room == null ? 3 : room.getPuzzleFailureDamage();
+            player.recibirDanio(danio);
         }
         resetSequence(room);
     }

@@ -6,10 +6,10 @@ import Valdris.model.units.Player;
 /**
  * Accesorio equipable por el jugador en la ranura de accesorio.
  *
- * <p>Los accesorios cubren dos funciones distintas dentro de Valdris. Algunos
- * son objetos de combate que aportan ataque, movimiento o defensa. Otros son
- * objetos narrativos de progresión, como llaves, semillas o fragmentos que
- * permiten acceder a salas o detectar elementos ocultos.</p>
+ * <p>Los accesorios aportan bonificaciones de combate como ataque, movimiento
+ * o defensa. La versión actual separa los objetos narrativos principales en
+ * {@link NarrativeItem}, aunque se conserva el campo narrativo para accesorios
+ * híbridos o compatibilidad con datos antiguos.</p>
  *
  * <p>Solo puede haber un accesorio equipado a la vez. Equiparlo consume la
  * acción de uso de item del turno, pero sus efectos pasivos se consultan desde
@@ -85,11 +85,11 @@ public class Accessory extends Item {
     }
 
     /**
-     * Configura el accesorio como objeto narrativo de progresión.
+     * Configura el accesorio como objeto con efecto narrativo secundario.
      *
-     * <p>Los accesorios narrativos se guardan en la misma ranura, pero su valor
-     * principal es desbloquear rutas, revelar trampas o cumplir requisitos de
-     * historia.</p>
+     * <p>Los objetos de progresión principales deben modelarse como
+     * {@link NarrativeItem}. Este método queda disponible para accesorios
+     * híbridos o compatibilidad con partidas antiguas.</p>
      *
      * @param efectoNarrativo descripción del efecto narrativo
      */

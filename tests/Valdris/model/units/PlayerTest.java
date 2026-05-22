@@ -5,6 +5,7 @@ import Valdris.model.enums.CharacterType;
 import Valdris.model.enums.EffectType;
 import Valdris.model.items.Accessory;
 import Valdris.model.items.Armor;
+import Valdris.model.items.NarrativeItem;
 import Valdris.model.items.Potion;
 import Valdris.model.items.Weapon;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,6 +40,7 @@ class PlayerTest {
         assertEquals(3, kael.getMovBase());
         assertEquals(1, kael.getRango());
         assertEquals(0, kael.getInventario().getSize());
+        assertEquals(0, kael.getItemsNarrativos().getSize());
     }
 
     @Test
@@ -87,6 +89,22 @@ class PlayerTest {
 
         // Assert
         assertEquals(0, kael.getInventario().getSize());
+    }
+
+    @Test
+    void addItem_narrativoVaASeccionSeparadaSinDuplicar() {
+        // Arrange
+        NarrativeItem llave = new NarrativeItem("AC1", "Llave de Hierro", "Abre puertas");
+        NarrativeItem otraLlave = new NarrativeItem("AC1", "Llave de Hierro", "Abre puertas");
+
+        // Act
+        kael.addItem(llave);
+        kael.addItem(otraLlave);
+
+        // Assert
+        assertEquals(0, kael.getInventario().getSize());
+        assertEquals(1, kael.getItemsNarrativos().getSize());
+        assertTrue(kael.tieneItemNarrativo("AC1"));
     }
 
     // -- Equipo --------------------------------------------------------------

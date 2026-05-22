@@ -40,7 +40,8 @@ public enum ItemType {
     /**
      * Accesorio equipable en la ranura de accesorio.
      * Puede dar bonificaciones de combate o actuar como objeto narrativo de
-     * progresión, como llaves, semillas o fragmentos.
+     * progresión en versiones antiguas del diseño. Los objetos de progresión
+     * nuevos usan {@link #NARRATIVE} para reservarles una sección propia.
      */
     ACCESSORY,
 
@@ -49,5 +50,13 @@ public enum ItemType {
      * Se usa desde el inventario para curar, limpiar efectos o aplicar una
      * mejora puntual, y después debe retirarse del inventario.
      */
-    POTION
+    POTION,
+
+    /**
+     * Objeto narrativo de progresión.
+     * No se equipa ni se consume como una poción; permanece en una sección
+     * separada del inventario para mostrar llaves, fragmentos y documentos
+     * importantes conseguidos durante la partida.
+     */
+    NARRATIVE
 }

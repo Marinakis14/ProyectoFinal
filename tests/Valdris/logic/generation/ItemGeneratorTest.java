@@ -7,6 +7,7 @@ import Valdris.model.enums.ItemType;
 import Valdris.model.items.Accessory;
 import Valdris.model.items.Armor;
 import Valdris.model.items.Item;
+import Valdris.model.items.NarrativeItem;
 import Valdris.model.items.Potion;
 import Valdris.model.items.Weapon;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ class ItemGeneratorTest {
             "W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8", "W9", "W10", "W11", "W12",
             "A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8",
             "P1", "P2", "P3", "P4", "P5",
-            "AC1", "AC2", "AC3", "AC4", "AC5", "AC6", "AC7", "AC8"
+            "AC1", "AC2", "AC3", "AC4", "AC5", "AC6", "AC7", "AC8", "N1"
         };
 
         // Act + Assert
@@ -155,15 +156,17 @@ class ItemGeneratorTest {
     }
 
     @Test
-    void crearItem_accesoriosConfiguranNarrativaYBonus() {
+    void crearItem_narrativosYAccesoriosConfiguranTiposYBonus() {
         // Act
-        Accessory ac1 = (Accessory) ItemGenerator.crearItem("AC1");
+        NarrativeItem ac1 = (NarrativeItem) ItemGenerator.crearItem("AC1");
+        NarrativeItem n1 = (NarrativeItem) ItemGenerator.crearItem("N1");
         Accessory ac7 = (Accessory) ItemGenerator.crearItem("AC7");
         Accessory ac8 = (Accessory) ItemGenerator.crearItem("AC8");
 
         // Assert
-        assertTrue(ac1.isNarrativo());
-        assertNotNull(ac1.getEfectoNarrativo());
+        assertEquals(ItemType.NARRATIVE, ac1.getTipo());
+        assertEquals(ItemType.NARRATIVE, n1.getTipo());
+        assertTrue(n1.getDescripcion().contains("Malachar"));
 
         assertEquals(4, ac7.getBonusAtaque());
         assertEquals(0, ac7.getBonusDef());
@@ -191,12 +194,16 @@ class ItemGeneratorTest {
         assertEquals("A7", ItemGenerator.itemAleatorioZona(4, 0.00).getId());
         assertEquals("P5", ItemGenerator.itemAleatorioZona(4, 0.34).getId());
         assertEquals("AC7", ItemGenerator.itemAleatorioZona(4, 0.70).getId());
+
+        assertEquals("P3", ItemGenerator.itemAleatorioZona(5, 0.00).getId());
+        assertEquals("P4", ItemGenerator.itemAleatorioZona(5, 0.34).getId());
+        assertEquals("P5", ItemGenerator.itemAleatorioZona(5, 0.70).getId());
     }
 
     @Test
     void itemAleatorioZona_zonaInvalidaDevuelveNull() {
         assertNull(ItemGenerator.itemAleatorioZona(0, 0.0));
-        assertNull(ItemGenerator.itemAleatorioZona(5, 0.0));
+        assertNull(ItemGenerator.itemAleatorioZona(6, 0.0));
     }
 
     // -- Drops ---------------------------------------------------------------

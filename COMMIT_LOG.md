@@ -840,6 +840,88 @@ acumulativa sin `clearLog()`.
 
 ---
 
+### Sesión 18 — 22 mayo 2026 — Codex
+
+**Clases o ficheros trabajados:**
+- `EnemyType`
+- `MiniBossType`
+- `Enemy`
+- `MiniBossEnemy`
+- `ItemType`
+- `NarrativeItem`
+- `Player`
+- `ItemGenerator`
+- `CombatManager`
+- `ArbolDecisionIA`
+- `Room`
+- `PuzzleManager`
+- `DungeonGenerator`
+- `TypeEnumsTest`
+- `EnemyTest`
+- `MiniBossEnemyTest`
+- `PlayerTest`
+- `ItemGeneratorTest`
+- `PuzzleManagerTest`
+- `DungeonGeneratorTest`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Prompt usado (detalle):**
+El equipo pidió cerrar las decisiones pendientes de `DungeonGenerator` antes de implementar. Se añadieron imágenes
+del mapa en `docs/mapas/` para recuperar las conexiones perdidas al convertir los PDF a Markdown. Después se fijó que
+`PASILLO_FINAL` debía ser una sala real, igual que los pasillos entre zonas, pero sin cofre y con una advertencia de
+no retorno antes de `S5-D`. También se decidió dejar constancia de que el mapa implementado tiene 34 salas reales.
+
+Se cerraron las reglas de puzzles: celdas fijas, orden correcto aleatorio al generar partida, daño por fallo 5/6/7/8
+según zona, reinicio de secuencia al fallar y puzzle no repetible tras resolverse. Para enemigos se aceptó que la
+cantidad y tipo por sala son fijos según la guía, pero que la posición concreta sea aleatoria dentro de casillas
+candidatas seguras, sin duplicados y lejos de la entrada.
+
+El equipo proporcionó una tabla balanceada de enemigos nuevos y mini-bosses. Se decidió crear `CONSTRUCTO`,
+`SOMBRA_ABSORBIDA` y `ECO_DE_MAGIA` como `EnemyType` normales, separar los mini-bosses en `MiniBossEnemy`, dejar sus
+habilidades especiales para más adelante, y tratar `EL_FILTRO` como mini-boss. También se decidió que los objetos
+narrativos deben ser items reales con espacio propio, no accesorios equipables.
+
+**Resultado:**
+- Compila: SÍ
+- Tests pasan: SÍ
+- Cambios manuales necesarios: actualización de tests existentes por nuevos enums y tipo de item narrativo
+
+**Problemas encontrados:**
+- `DungeonGenerator` todavía no existía en `src`.
+- La guía hablaba de 33 salas, pero el diseño jugable fijado por el equipo requiere contar `PASILLO_FINAL` como sala real.
+- Los items AC1-AC4 estaban modelados como accesorios narrativos, pero el equipo pidió reservarles un espacio propio.
+- `PuzzleManager` tenía daño fijo de fallo y necesitaba variar por zona.
+- `Enemy` no permitía estadísticas explícitas para mini-bosses porque las calculaba solo por `EnemyType`.
+
+**Solución aplicada:**
+- Se creó `DungeonGenerator` con 34 salas, tamaños oficiales, conexiones de las imágenes, secretos, puzzles, cofres,
+  items de pasillo, diálogos puntuales, mini-bosses y spawns enemigos seguros.
+- `PASILLO_FINAL` se modeló como sala propia con conexión bidireccional desde `S5-C` y conexión unidireccional hacia `S5-D`.
+- Se añadió `MiniBossType` y `MiniBossEnemy` para mini-bosses con estadísticas propias.
+- Se añadieron `CONSTRUCTO`, `SOMBRA_ABSORBIDA` y `ECO_DE_MAGIA` a `EnemyType`.
+- `ECO_DE_MAGIA` ignora 3 defensa del jugador y `EL_FILTRO` ignora 5.
+- Se añadió `ItemType.NARRATIVE`, `NarrativeItem` e inventario narrativo separado en `Player`.
+- `ItemGenerator` crea AC1-AC4 y N1 como items narrativos y añade Zona 5 con P3/P4/P5.
+- `Room` permite configurar daño de fallo de puzzle y abrir accesos marcados por trigger al resolverlo.
+- `PuzzleManager` usa el daño configurado por sala.
+
+**Decisiones técnicas:**
+- No se modificó `MisEstructurasDeDatos`.
+- El mapa estructural es fijo; solo varían el orden de puzzles y las posiciones concretas de enemigos.
+- Los spawns enemigos se eligen desde casillas candidatas seguras y se descarta cualquier celda ya ocupada.
+- Los mini-bosses quedan separados para permitir habilidades especiales futuras sin ensuciar `Enemy`.
+- `MalacharAlly` y `ParasitoEnemy` quedan para un bloque posterior de boss final.
+
+**Verificación:**
+- `.\mvnw.cmd -q -DskipTests compile`
+- `.\mvnw.cmd -q test`
+- Resultado suite completa: `349 tests, 0 failures, 0 errors, 0 skipped`
+
+**Commit sugerido:** `git commit -m "feat: implementar generador de dungeon"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas
@@ -850,9 +932,11 @@ acumulativa sin `clearLog()`.
 - [x] ItemType
 - [x] CharacterType
 - [x] EnemyType
+- [x] MiniBossType
 - [x] Phase
 - [x] Effect
 - [x] Item (abstracta)
+- [x] NarrativeItem
 - [x] Weapon
 - [x] Armor
 - [x] Potion
@@ -862,6 +946,7 @@ acumulativa sin `clearLog()`.
 - [x] Unit (abstracta)
 - [x] Player
 - [x] Enemy
+- [x] MiniBossEnemy
 
 **Bloque 3 — Mapa**
 - [x] Cell
@@ -881,7 +966,7 @@ acumulativa sin `clearLog()`.
 - [x] TurnManager
 - [x] ItemGenerator
 - [x] PuzzleManager
-- [ ] DungeonGenerator
+- [x] DungeonGenerator
 
 **Bloque 5 — Persistencia**
 - [x] InvalidMoveException
@@ -926,7 +1011,8 @@ acumulativa sin `clearLog()`.
 - [x] TurnManagerTest
 - [x] ItemGeneratorTest
 - [x] PuzzleManagerTest
-- [ ] DungeonGeneratorTest
+- [x] MiniBossEnemyTest
+- [x] DungeonGeneratorTest
 - [ ] GameStateTest
 
 ---
@@ -940,7 +1026,7 @@ acumulativa sin `clearLog()`.
 Resultado:
 
 ```text
-337 tests, 0 failures, 0 errors, 0 skipped
+349 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---

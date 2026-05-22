@@ -79,6 +79,9 @@ public class Room implements Comparable<Room> {
     /** Identificador de puerta o pasadizo que se activa al resolver el puzzle. */
     private String puzzleSuccessTarget;
 
+    /** Daño aplicado al jugador si falla el puzzle de esta sala. */
+    private int puzzleFailureDamage;
+
     /** IDs de triggers secretos presentes en la sala. */
     private final ListaSimplementeEnlazada<String> secretTriggerIds;
 
@@ -132,6 +135,7 @@ public class Room implements Comparable<Room> {
         this.secuenciaActivadaSize = 0;
         this.puzzleResolved = false;
         this.puzzleSuccessTarget = null;
+        this.puzzleFailureDamage = 3;
         this.secretTriggerIds = new ListaSimplementeEnlazada<>();
         this.secretTargetIds = new ListaSimplementeEnlazada<>();
         this.dialogoKael = null;
@@ -487,6 +491,39 @@ public class Room implements Comparable<Room> {
     }
 
     /**
+     * Abre o revela accesos que coinciden con un identificador lógico.
+     *
+     * <p>Se usa al resolver puzzles de sala. El generador puede marcar una
+     * puerta, escalera o pasadizo con el mismo {@code triggerId} que el objetivo
+     * del puzzle; al completarse la secuencia, esta operación transforma puertas
+     * cerradas u ocultas en puertas abiertas.</p>
+     *
+     * @param triggerId identificador de acceso que debe abrirse
+     * @return true si al menos una celda fue modificada
+     */
+    public boolean openAccessByTrigger(String triggerId) {
+        if (triggerId == null || triggerId.isEmpty()) {
+            return false;
+        }
+        boolean abierto = false;
+        for (int fila = 0; fila < filas; fila++) {
+            for (int col = 0; col < cols; col++) {
+                Cell cell = celdas[fila][col];
+                if (cell != null && triggerId.equals(cell.getTriggerId())) {
+                    if (cell.getTipo() == CellType.DOOR_HIDDEN) {
+                        cell.revelar();
+                        abierto = true;
+                    } else if (cell.getTipo() == CellType.DOOR_LOCKED) {
+                        cell.setTipo(CellType.DOOR);
+                        abierto = true;
+                    }
+                }
+            }
+        }
+        return abierto;
+    }
+
+    /**
      * Valida que una celda pueda usarse como llegada de acceso.
      *
      * @param fila fila destino
@@ -634,6 +671,28 @@ public class Room implements Comparable<Room> {
      */
     public String getPuzzleSuccessTarget() {
         return puzzleSuccessTarget;
+    }
+
+    /**
+     * Configura el daño aplicado al fallar el puzzle de esta sala.
+     *
+     * @param puzzleFailureDamage daño de fallo, mínimo 0
+     */
+    public void setPuzzleFailureDamage(int puzzleFailureDamage) {
+        if (puzzleFailureDamage < 0) {
+            this.puzzleFailureDamage = 0;
+        } else {
+            this.puzzleFailureDamage = puzzleFailureDamage;
+        }
+    }
+
+    /**
+     * Devuelve el daño aplicado al fallar el puzzle.
+     *
+     * @return daño de fallo
+     */
+    public int getPuzzleFailureDamage() {
+        return puzzleFailureDamage;
     }
 
     /**

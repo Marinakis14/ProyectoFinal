@@ -106,6 +106,7 @@ class PuzzleManagerTest {
         room.addLeverCell(leverA);
         room.addLeverCell(leverB);
         room.setCorrectSequence(new int[] {1, 0});
+        room.setPuzzleFailureDamage(6);
         int hpAntes = player.getHp();
 
         // Act
@@ -113,7 +114,7 @@ class PuzzleManagerTest {
         PuzzleManager.resolverActivacion(room, leverB, dungeon, player);
 
         // Assert
-        assertEquals(hpAntes - 3, player.getHp());
+        assertEquals(hpAntes - 6, player.getHp());
         assertFalse(room.isPuzzleResolved());
         assertEquals(0, room.getSecuenciaActivada().length);
     }

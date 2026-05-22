@@ -71,5 +71,26 @@ public enum EnemyType {
      * HP 45, ataque 0, defensa 6, movimiento 2 y rango 0. Invoca Berserkers
      * cada 2 turnos en celdas libres cercanas.
      */
-    SUMMONER
+    SUMMONER,
+
+    /**
+     * Constructo de la Torre de Embrath.
+     * HP 45, ataque 17, defensa 10, movimiento 2 y rango 1. Funciona como una
+     * infantería reforzada de Zona 4 con comportamiento similar al Warrior.
+     */
+    CONSTRUCTO,
+
+    /**
+     * Sombra Absorbida del Núcleo Profundo.
+     * HP 45, ataque 20, defensa 8, movimiento 2 y rango 1. Representa una
+     * variante oscura del Warrior para Zona 5.
+     */
+    SOMBRA_ABSORBIDA,
+
+    /**
+     * Eco de Magia del Núcleo Profundo.
+     * HP 35, ataque 22, defensa 5, movimiento 2 y rango 3. Ataca a distancia e
+     * ignora 3 puntos de defensa del jugador.
+     */
+    ECO_DE_MAGIA
 }

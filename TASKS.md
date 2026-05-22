@@ -26,8 +26,8 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | Área | Estado |
 |------|--------|
 | Capas 2, 3 y 4 | Completadas y testeadas |
-| Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga, TurnManager e ItemGenerator completados |
-| Tests JUnit actuales | 337 tests pasando |
+| Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga, TurnManager, ItemGenerator, PuzzleManager y DungeonGenerator completados |
+| Tests JUnit actuales | 349 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
 ---
@@ -97,6 +97,9 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 16 | Rediseñar `BLIND` para probabilidad de fallo de ataque en vez de reducción de movimiento | ✅ Completado |
 | 17 | Ampliar `Potion` con efectos concretos a limpiar y bonus temporal de ataque | ✅ Completado |
 | 18 | Reemplazar `STAIRS` por `STAIRS_UP` y `STAIRS_DOWN` en `CellType` | ✅ Completado |
+| 19 | Añadir `MiniBossType` para mini-bosses narrativos separados de enemigos normales | ✅ Completado |
+| 20 | Añadir `ItemType.NARRATIVE` para objetos de progresión con espacio propio | ✅ Completado |
+| 21 | Implementar `NarrativeItem` para llaves, fragmentos y documentos de historia | ✅ Completado |
 
 ---
 
@@ -123,6 +126,11 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 17 | Hacer `Enemy` compatible con `Comparable<Enemy>` | ✅ Completado |
 | 18 | Añadir `removeEfecto(EffectType)` en `Unit` para limpiar efectos concretos | ✅ Completado |
 | 19 | Añadir bonus temporal de ataque en `Player` para la poción P5 | ✅ Completado |
+| 20 | Añadir inventario narrativo separado en `Player` | ✅ Completado |
+| 21 | Añadir `CONSTRUCTO`, `SOMBRA_ABSORBIDA` y `ECO_DE_MAGIA` a `EnemyType` | ✅ Completado |
+| 22 | Ajustar estadísticas de enemigos nuevos según tabla acordada | ✅ Completado |
+| 23 | Implementar penetración natural de defensa para `ECO_DE_MAGIA` | ✅ Completado |
+| 24 | Implementar `MiniBossEnemy` con estadísticas propias y tipo narrativo | ✅ Completado |
 
 ---
 
@@ -236,6 +244,18 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 51 | Implementar log acumulativo de partida en `TurnManager` | ✅ Completado |
 | 52 | Implementar activación de triggers secretos y runas al moverse | ✅ Completado |
 | 53 | Implementar activación de palancas adyacentes desde `PICKUP` | ✅ Completado |
+| 54 | Implementar daño de fallo de puzzle configurable por sala | ✅ Completado |
+| 55 | Ajustar `PuzzleManager` para usar daño por zona 5, 6, 7 y 8 | ✅ Completado |
+| 56 | Ampliar `ItemGenerator` con objetos narrativos AC1-AC4 y N1 | ✅ Completado |
+| 57 | Añadir pool de Zona 5 con P3, P4 y P5 | ✅ Completado |
+| 58 | Implementar `DungeonGenerator` con mapa fijo de 34 salas | ✅ Completado |
+| 59 | Generar conexiones de sala según mapas de `docs/mapas/` | ✅ Completado |
+| 60 | Modelar `PASILLO_FINAL` como sala real con aviso de no retorno | ✅ Completado |
+| 61 | Modelar conexión `PASILLO_FINAL -> S5-D` como solo ida | ✅ Completado |
+| 62 | Colocar cofres, items de pasillo, puzzles, secretos y accesos fijos | ✅ Completado |
+| 63 | Colocar enemigos con posiciones aleatorias dentro de casillas seguras | ✅ Completado |
+| 64 | Evitar duplicados de enemigos en una misma celda durante generación | ✅ Completado |
+| 65 | Asignar drops garantizados AC1-AC4 a mini-bosses de Zona 1-4 | ✅ Completado |
 
 ---
 
@@ -267,6 +287,8 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 22 | `TurnManagerTest` | ✅ Completado |
 | 23 | `ItemGeneratorTest` | ✅ Completado |
 | 24 | `PuzzleManagerTest` | ✅ Completado |
+| 25 | `MiniBossEnemyTest` | ✅ Completado |
+| 26 | `DungeonGeneratorTest` | ✅ Completado |
 
 ---
 
@@ -290,6 +312,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 14 | Suite tras rediseño de `BLIND`, P4, P5, armas con doble efecto e `ItemGenerator` | ✅ Correcta |
 | 15 | Suite tras `STAIRS_UP/DOWN`, accesos adyacentes y visión actualizada | ✅ Correcta |
 | 16 | Suite tras diálogos, puzzles, pasadizos ocultos y log acumulativo | ✅ Correcta |
+| 17 | Suite tras enemigos nuevos, mini-bosses, items narrativos y `DungeonGenerator` | ✅ Correcta |
 
 Última verificación completa:
 
@@ -300,7 +323,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 Resultado:
 
 ```text
-337 tests, 0 failures, 0 errors, 0 skipped
+349 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---
@@ -347,6 +370,17 @@ Resultado:
 | 36 | Los pasadizos ocultos se guardan fuera del grafo hasta activarse | ✅ Aceptada |
 | 37 | `HiddenPassage` se usa como clase comparable para pasadizos secretos | ✅ Aceptada |
 | 38 | `changeRoom(...)` llama automáticamente a `onRoomEnter()` | ✅ Aceptada |
+| 39 | El mapa usa 34 salas porque `PASILLO_FINAL` es una sala real de advertencia | ✅ Aceptada |
+| 40 | `PASILLO_FINAL -> S5-D` es de solo ida y S5-D no conecta de vuelta | ✅ Aceptada |
+| 41 | Los puzzles tienen celdas fijas, orden aleatorio por partida y no se repiten tras resolverse | ✅ Aceptada |
+| 42 | El daño por fallo de puzzle es 5, 6, 7 y 8 para zonas 1, 2, 3 y 4 | ✅ Aceptada |
+| 43 | Los enemigos tienen cantidad y tipo fijos por sala, pero posición aleatoria segura | ✅ Aceptada |
+| 44 | Los objetos narrativos tienen sección separada del inventario de combate | ✅ Aceptada |
+| 45 | `CONSTRUCTO`, `SOMBRA_ABSORBIDA` y `ECO_DE_MAGIA` son enemigos normales nuevos | ✅ Aceptada |
+| 46 | Los mini-bosses usan `MiniBossEnemy`, dejando habilidades especiales para más adelante | ✅ Aceptada |
+| 47 | `EL_FILTRO` pertenece a `MiniBossEnemy` e ignora 5 defensa del jugador | ✅ Aceptada |
+| 48 | `ECO_DE_MAGIA` ignora 3 defensa del jugador | ✅ Aceptada |
+| 49 | Los items aleatorios de Zona 5 son P3, P4 o P5 | ✅ Aceptada |
 
 ---
 
@@ -354,9 +388,7 @@ Resultado:
 
 | Nº | Tarea pendiente | Estado |
 |---:|-----------------|--------|
-| 1 | Fijar mini-bosses y asignación garantizada de accesorios AC1-AC4 antes de `DungeonGenerator` | ⬜ Pendiente |
-| 2 | Fijar estructura de generación de zonas, salas, accesos y puzzles antes de `DungeonGenerator` | ⬜ Pendiente |
-| 3 | Implementar `DungeonGenerator` | ⬜ Pendiente |
-| 4 | Crear `DungeonGeneratorTest` | ⬜ Pendiente |
-| 5 | Implementar persistencia (`GameState`, `LectorJSON`) | ⬜ Pendiente |
-| 6 | Implementar capa JavaFX | ⬜ Pendiente |
+| 1 | Definir habilidades especiales finales de mini-bosses | ⬜ Pendiente |
+| 2 | Definir `MalacharAlly` y `ParasitoEnemy` para el boss final | ⬜ Pendiente |
+| 3 | Implementar persistencia (`GameState`, `LectorJSON`) | ⬜ Pendiente |
+| 4 | Implementar capa JavaFX | ⬜ Pendiente |

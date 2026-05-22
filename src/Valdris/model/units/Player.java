@@ -4,6 +4,7 @@ import MisEstructurasDeDatos.ListasPilasYColas.ListaSimplementeEnlazada;
 import Valdris.model.effects.Effect;
 import Valdris.model.enums.CharacterType;
 import Valdris.model.enums.EffectType;
+import Valdris.model.enums.ItemType;
 import Valdris.model.items.Accessory;
 import Valdris.model.items.Armor;
 import Valdris.model.items.Item;
@@ -34,6 +35,9 @@ public class Player extends Unit implements Comparable<Player> {
 
     /** Inventario completo del jugador. */
     private final ListaSimplementeEnlazada<Item> inventario;
+
+    /** Objetos narrativos de progresión separados del inventario de combate. */
+    private final ListaSimplementeEnlazada<Item> itemsNarrativos;
 
     /** Arma equipada en la mano principal. */
     private Weapon armaEquipada;
@@ -73,6 +77,7 @@ public class Player extends Unit implements Comparable<Player> {
         super(getHpBase(tipo), getAtaqueBase(tipo), 0, getMovBase(tipo), getRangoBase(tipo), 0, 0);
         this.tipo = tipo;
         this.inventario = new ListaSimplementeEnlazada<>();
+        this.itemsNarrativos = new ListaSimplementeEnlazada<>();
         this.armaEquipada = null;
         this.escudoEquipado = null;
         this.armaduraEquipada = null;
@@ -89,7 +94,11 @@ public class Player extends Unit implements Comparable<Player> {
      * @param item item que se añade
      */
     public void addItem(Item item) {
-        if (item != null) {
+        if (item != null && item.getTipo() == ItemType.NARRATIVE) {
+            if (!tieneItemNarrativo(item.getId())) {
+                itemsNarrativos.addEnd(item);
+            }
+        } else if (item != null) {
             inventario.addEnd(item);
         }
     }
@@ -100,7 +109,9 @@ public class Player extends Unit implements Comparable<Player> {
      * @param item item que se elimina
      */
     public void removeItem(Item item) {
-        if (item != null) {
+        if (item != null && item.getTipo() == ItemType.NARRATIVE) {
+            itemsNarrativos.del(item);
+        } else if (item != null) {
             inventario.del(item);
         }
     }
@@ -313,6 +324,34 @@ public class Player extends Unit implements Comparable<Player> {
      */
     public ListaSimplementeEnlazada<Item> getInventario() {
         return inventario;
+    }
+
+    /**
+     * Devuelve los objetos narrativos de progresión del jugador.
+     *
+     * @return lista separada de items narrativos
+     */
+    public ListaSimplementeEnlazada<Item> getItemsNarrativos() {
+        return itemsNarrativos;
+    }
+
+    /**
+     * Comprueba si el jugador conserva un objeto narrativo concreto.
+     *
+     * @param itemId identificador del objeto narrativo
+     * @return true si el item está en la sección narrativa
+     */
+    public boolean tieneItemNarrativo(String itemId) {
+        if (itemId == null || itemId.isEmpty()) {
+            return false;
+        }
+        for (int i = 0; i < itemsNarrativos.getSize(); i++) {
+            Item item = itemsNarrativos.get(i);
+            if (item != null && itemId.equals(item.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

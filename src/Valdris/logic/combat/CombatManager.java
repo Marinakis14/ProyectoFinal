@@ -283,6 +283,9 @@ public final class CombatManager {
                 return arma.getPenetracion();
             }
         }
+        if (atacante instanceof Enemy) {
+            return ((Enemy) atacante).getPenetracionDefensa();
+        }
         return 0;
     }
 

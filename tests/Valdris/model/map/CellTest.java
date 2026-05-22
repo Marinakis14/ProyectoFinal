@@ -22,12 +22,14 @@ class CellTest {
     private Cell celdaSuelo;
     private Player jugador;
     private Weapon item;
+    private Chest chest;
 
     @BeforeEach
     void setUp() {
         celdaSuelo = new Cell(CellType.FLOOR);
         jugador = new Player(CharacterType.KAEL);
         item = new Weapon("W1", "Espada de prueba", 8, 0, 1);
+        chest = new Chest("CH1", "Cofre de prueba");
     }
 
     // -- Constructor ---------------------------------------------------------
@@ -38,6 +40,8 @@ class CellTest {
         assertTrue(celdaSuelo.isDescubierta());
         assertNull(celdaSuelo.getUnit());
         assertNull(celdaSuelo.getItem());
+        assertNull(celdaSuelo.getContainer());
+        assertFalse(celdaSuelo.hasDestinoAcceso());
     }
 
     @Test
@@ -92,6 +96,15 @@ class CellTest {
         assertFalse(celdaSuelo.isWalkable());
     }
 
+    @Test
+    void isWalkable_celdaConContenedorNoEsTransitable() {
+        // Act
+        celdaSuelo.setContainer(chest);
+
+        // Assert
+        assertFalse(celdaSuelo.isWalkable());
+    }
+
     // -- Unit ----------------------------------------------------------------
 
     @Test
@@ -130,6 +143,56 @@ class CellTest {
     @Test
     void removeItem_celdaSinItemDevuelveNull() {
         assertNull(celdaSuelo.removeItem());
+    }
+
+    // -- Container -----------------------------------------------------------
+
+    @Test
+    void setContainer_y_removeContainer_actualizanContenedorDeLaCelda() {
+        // Act
+        celdaSuelo.setContainer(chest);
+
+        // Assert
+        assertSame(chest, celdaSuelo.getContainer());
+
+        // Act
+        celdaSuelo.removeContainer();
+
+        // Assert
+        assertNull(celdaSuelo.getContainer());
+    }
+
+    // -- Acceso entre salas --------------------------------------------------
+
+    @Test
+    void setDestinoAcceso_configuraSalaYCoordenadasDestino() {
+        // Arrange
+        Room destino = new Room("R2", "Sala destino", 4, 4);
+
+        // Act
+        celdaSuelo.setDestinoAcceso(destino, 2, 3);
+
+        // Assert
+        assertTrue(celdaSuelo.hasDestinoAcceso());
+        assertSame(destino, celdaSuelo.getSalaDestino());
+        assertEquals(2, celdaSuelo.getFilaDestino());
+        assertEquals(3, celdaSuelo.getColDestino());
+    }
+
+    @Test
+    void limpiarDestinoAcceso_eliminaDestinoFuncional() {
+        // Arrange
+        Room destino = new Room("R2", "Sala destino", 4, 4);
+        celdaSuelo.setDestinoAcceso(destino, 2, 3);
+
+        // Act
+        celdaSuelo.limpiarDestinoAcceso();
+
+        // Assert
+        assertFalse(celdaSuelo.hasDestinoAcceso());
+        assertNull(celdaSuelo.getSalaDestino());
+        assertEquals(0, celdaSuelo.getFilaDestino());
+        assertEquals(0, celdaSuelo.getColDestino());
     }
 
     // -- Tipo y revelado -----------------------------------------------------

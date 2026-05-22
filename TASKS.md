@@ -26,8 +26,8 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | Área | Estado |
 |------|--------|
 | Capas 2, 3 y 4 | Completadas y testeadas |
-| Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA e IA enemiga completados |
-| Tests JUnit actuales | 226 tests pasando |
+| Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga y TurnManager completados |
+| Tests JUnit actuales | 267 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
 ---
@@ -144,6 +144,11 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 18 | Evitar duplicado de salas por id en `Dungeon` | ✅ Completado |
 | 19 | Evitar aristas duplicadas en `Dungeon.conectar` | ✅ Completado |
 | 20 | Evitar aristas duplicadas en `Dungeon.conectarUnidireccional` | ✅ Completado |
+| 21 | Implementar `Container` como base de contenedores del mapa | ✅ Completado |
+| 22 | Implementar `Chest` como cofre concreto | ✅ Completado |
+| 23 | Ampliar `Cell` con contenedor opcional no transitable | ✅ Completado |
+| 24 | Ampliar `Cell` con destino concreto para `DOOR` y `STAIRS` | ✅ Completado |
+| 25 | Mantener los items de suelo transitables para recogida automática | ✅ Completado |
 
 ---
 
@@ -192,6 +197,14 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 28 | Implementar cooldown real del `SNIPER` | ✅ Completado |
 | 29 | Implementar aplicación de efectos del `CONTROLLER` | ✅ Completado |
 | 30 | Implementar invocación de Berserker por `SUMMONER` | ✅ Completado |
+| 31 | Implementar `TurnManager` | ✅ Completado |
+| 32 | Mantener `TurnManager` separado de `GameModel` y de la capa UI | ✅ Completado |
+| 33 | Implementar movimiento del jugador con `BFSMovimiento` | ✅ Completado |
+| 34 | Implementar recogida automática de items de suelo al moverse | ✅ Completado |
+| 35 | Implementar interacción `PICKUP` con contenedor adyacente | ✅ Completado |
+| 36 | Implementar cambio de sala por `DOOR` o `STAIRS` con destino configurado | ✅ Completado |
+| 37 | Implementar `saltarMovimiento`, `saltarRecogida` y `saltarUsoItem` | ✅ Completado |
+| 38 | Implementar turno enemigo con iteración sobre enemigos iniciales del turno | ✅ Completado |
 
 ---
 
@@ -218,6 +231,9 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 17 | `CombatManagerTest` | ✅ Completado |
 | 18 | `ArbolDecisionIATest` | ✅ Completado |
 | 19 | `IAEnemigoTest` | ✅ Completado |
+| 20 | `ContainerTest` | ✅ Completado |
+| 21 | `ChestTest` | ✅ Completado |
+| 22 | `TurnManagerTest` | ✅ Completado |
 
 ---
 
@@ -237,6 +253,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 10 | Suite tras `CombatManager` | ✅ Correcta |
 | 11 | Suite tras `ArbolDecisionIA` | ✅ Correcta |
 | 12 | Suite tras `IAEnemigo` | ✅ Correcta |
+| 13 | Suite tras `Container`, `Chest`, `Cell` ampliado y `TurnManager` | ✅ Correcta |
 
 Última verificación completa:
 
@@ -247,7 +264,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 Resultado:
 
 ```text
-226 tests, 0 failures, 0 errors, 0 skipped
+267 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---
@@ -269,6 +286,11 @@ Resultado:
 | 11 | `IAEnemigo` usa `BFSMovimiento`, no `BFSCaminoMinimo`, para moverse dentro de sala | ✅ Aceptada |
 | 12 | `SNIPER` ataca solo si `turnosSinActuar >= 2`; si no, consume turno e incrementa cooldown | ✅ Aceptada |
 | 13 | `MOVER`, `MOVER_A_ZONA` y huida de `SUMMONER` tienen comportamientos diferenciados | ✅ Aceptada |
+| 14 | `TurnManager` no importa ni referencia `GameModel`; la UI refrescará desde fuera | ✅ Aceptada |
+| 15 | `Container` y `Chest` se añaden en `Valdris.model.map` con autorización puntual | ✅ Aceptada |
+| 16 | Los items de suelo se recogen automáticamente en movimiento; `PICKUP` queda para contenedores adyacentes | ✅ Aceptada |
+| 17 | `Cell` guarda destinos concretos para accesos `DOOR` y `STAIRS` | ✅ Aceptada |
+| 18 | Los enemigos invocados durante `ENEMY_TURN` actúan a partir del siguiente turno enemigo | ✅ Aceptada |
 
 ---
 
@@ -276,11 +298,9 @@ Resultado:
 
 | Nº | Tarea pendiente | Estado |
 |---:|-----------------|--------|
-| 1 | Implementar `TurnManager` | ⬜ Pendiente |
-| 2 | Crear `TurnManagerTest` | ⬜ Pendiente |
-| 3 | Implementar `ItemGenerator` | ⬜ Pendiente |
-| 4 | Crear `ItemGeneratorTest` | ⬜ Pendiente |
-| 5 | Implementar `DungeonGenerator` | ⬜ Pendiente |
-| 6 | Crear `DungeonGeneratorTest` | ⬜ Pendiente |
-| 7 | Implementar persistencia (`GameState`, `LectorJSON`) | ⬜ Pendiente |
-| 8 | Implementar capa JavaFX | ⬜ Pendiente |
+| 1 | Implementar `ItemGenerator` | ⬜ Pendiente |
+| 2 | Crear `ItemGeneratorTest` | ⬜ Pendiente |
+| 3 | Implementar `DungeonGenerator` | ⬜ Pendiente |
+| 4 | Crear `DungeonGeneratorTest` | ⬜ Pendiente |
+| 5 | Implementar persistencia (`GameState`, `LectorJSON`) | ⬜ Pendiente |
+| 6 | Implementar capa JavaFX | ⬜ Pendiente |

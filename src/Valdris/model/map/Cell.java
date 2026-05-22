@@ -8,8 +8,9 @@ import Valdris.model.units.Unit;
  * Representa una celda individual dentro de una sala del dungeon.
  *
  * <p>Una celda concentra la información mínima que necesitan movimiento,
- * combate, recogida de objetos y renderizado: su tipo, la unidad que la ocupa
- * y el item que puede haber en el suelo.</p>
+ * combate, recogida de objetos, accesos entre salas y renderizado: su tipo, la
+ * unidad que la ocupa, el item que puede haber en el suelo y el contenedor
+ * interactivo opcional.</p>
  *
  * <p>La transitabilidad se decide con {@link #isWalkable()}. Esa lógica es
  * crítica para BFS, IA enemiga y validación de movimiento del jugador. Las
@@ -32,8 +33,20 @@ public class Cell implements Comparable<Cell> {
     /** Item colocado en la celda, o null si no hay ninguno. */
     private Item item;
 
+    /** Contenedor situado en la celda, o null si no hay ninguno. */
+    private Container container;
+
     /** Indica si una puerta oculta ya fue descubierta por el jugador. */
     private boolean descubierta;
+
+    /** Sala destino si la celda funciona como puerta o escalera. */
+    private Room salaDestino;
+
+    /** Fila de aparición del jugador en la sala destino. */
+    private int filaDestino;
+
+    /** Columna de aparición del jugador en la sala destino. */
+    private int colDestino;
 
     // -- Constructor ----------------------------------------------------------
 
@@ -50,7 +63,11 @@ public class Cell implements Comparable<Cell> {
         this.tipo = tipo;
         this.unit = null;
         this.item = null;
+        this.container = null;
         this.descubierta = tipo != CellType.DOOR_HIDDEN;
+        this.salaDestino = null;
+        this.filaDestino = 0;
+        this.colDestino = 0;
     }
 
     // -- Métodos de lógica ----------------------------------------------------
@@ -72,6 +89,9 @@ public class Cell implements Comparable<Cell> {
             return false;
         }
         if (tipo == CellType.DOOR_HIDDEN && !descubierta) {
+            return false;
+        }
+        if (container != null) {
             return false;
         }
         return true;
@@ -111,6 +131,60 @@ public class Cell implements Comparable<Cell> {
         Item itemRetirado = item;
         item = null;
         return itemRetirado;
+    }
+
+    /**
+     * Coloca un contenedor interactivo en la celda.
+     *
+     * <p>Una celda con contenedor no es transitable. El jugador debe situarse en
+     * una celda adyacente y resolverlo desde la fase de recogida.</p>
+     *
+     * @param container contenedor que ocupa la celda
+     */
+    public void setContainer(Container container) {
+        this.container = container;
+    }
+
+    /**
+     * Elimina el contenedor de la celda.
+     */
+    public void removeContainer() {
+        this.container = null;
+    }
+
+    /**
+     * Configura el destino de una puerta o escalera.
+     *
+     * <p>El destino incluye la sala y la coordenada exacta donde aparecerá el
+     * jugador tras cruzar el acceso. Si la sala es null, el acceso queda sin
+     * destino funcional.</p>
+     *
+     * @param salaDestino sala a la que conduce la celda
+     * @param filaDestino fila de aparición en la sala destino
+     * @param colDestino columna de aparición en la sala destino
+     */
+    public void setDestinoAcceso(Room salaDestino, int filaDestino, int colDestino) {
+        this.salaDestino = salaDestino;
+        this.filaDestino = filaDestino;
+        this.colDestino = colDestino;
+    }
+
+    /**
+     * Elimina el destino funcional de la puerta o escalera.
+     */
+    public void limpiarDestinoAcceso() {
+        this.salaDestino = null;
+        this.filaDestino = 0;
+        this.colDestino = 0;
+    }
+
+    /**
+     * Indica si la celda tiene un destino de sala configurado.
+     *
+     * @return true si existe sala destino
+     */
+    public boolean hasDestinoAcceso() {
+        return salaDestino != null;
     }
 
     /**
@@ -171,12 +245,48 @@ public class Cell implements Comparable<Cell> {
     }
 
     /**
+     * Devuelve el contenedor colocado en la celda.
+     *
+     * @return contenedor actual, o null si no hay ninguno
+     */
+    public Container getContainer() {
+        return container;
+    }
+
+    /**
      * Indica si la celda ya fue descubierta.
      *
      * @return true si no está oculta para el jugador
      */
     public boolean isDescubierta() {
         return descubierta;
+    }
+
+    /**
+     * Devuelve la sala destino de esta puerta o escalera.
+     *
+     * @return sala destino, o null si no hay acceso configurado
+     */
+    public Room getSalaDestino() {
+        return salaDestino;
+    }
+
+    /**
+     * Devuelve la fila de aparición en la sala destino.
+     *
+     * @return fila destino configurada
+     */
+    public int getFilaDestino() {
+        return filaDestino;
+    }
+
+    /**
+     * Devuelve la columna de aparición en la sala destino.
+     *
+     * @return columna destino configurada
+     */
+    public int getColDestino() {
+        return colDestino;
     }
 
     // -- Comparación ----------------------------------------------------------
@@ -205,9 +315,18 @@ public class Cell implements Comparable<Cell> {
         if (unit != other.unit) {
             return unit == null ? -1 : 1;
         }
-        if (item == other.item) {
-            return 0;
+        if (item != other.item) {
+            return item == null ? -1 : 1;
         }
-        return item == null ? -1 : 1;
+        if (container != other.container) {
+            return container == null ? -1 : 1;
+        }
+        if (salaDestino != other.salaDestino) {
+            return salaDestino == null ? -1 : 1;
+        }
+        if (filaDestino != other.filaDestino) {
+            return filaDestino - other.filaDestino;
+        }
+        return colDestino - other.colDestino;
     }
 }

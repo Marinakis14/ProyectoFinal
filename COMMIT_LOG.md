@@ -571,6 +571,62 @@ distancia y huida del Invocador.
 
 ---
 
+### Sesión 14 — 22 mayo 2026 — Codex
+
+**Clases o ficheros trabajados:**
+- `Container`
+- `Chest`
+- `Cell`
+- `TurnManager`
+- `ContainerTest`
+- `ChestTest`
+- `CellTest`
+- `TurnManagerTest`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Prompt usado (detalle):**
+El equipo pidió continuar con el bloque pendiente de TurnManager, pero antes se revisaron las guías
+convertidas a Markdown en `docs/` para confirmar las reglas exactas de fases, recogida y cofres.
+Se autorizó puntualmente crear `Container` y `Chest` como clases nuevas en `Valdris.model.map`, añadir
+métodos explícitos para saltar fases y ampliar `Cell` con contenedores y destinos concretos para
+`DOOR`/`STAIRS`. También se mantuvo la decisión de separar `TurnManager` de `GameModel` y de la capa UI.
+
+**Resultado:**
+- Compila: SÍ
+- Tests pasan: SÍ
+- Cambios manuales necesarios: ninguno
+
+**Problemas encontrados:**
+- La ficha de `TurnManager` menciona `GameModel`, pero importarlo desde lógica rompería la regla de capas.
+- La guía usa el concepto `item.requiresAdjacent`, pero el modelo actual no tiene ese atributo en `Item`.
+- El cambio de sala necesita destino concreto por celda, no solo aristas entre salas en `Dungeon`.
+
+**Solución aplicada:**
+- `TurnManager` se implementó como lógica pura, sin dependencia de UI.
+- `Container` y `Chest` modelan los cofres y contenedores adyacentes de la fase `PICKUP`.
+- `Cell` ahora puede guardar un contenedor opcional y un destino de acceso con sala, fila y columna.
+- Los items de suelo siguen en `Cell.item` y se recogen automáticamente al moverse.
+- `TurnManager` añade `saltarMovimiento`, `saltarRecogida` y `saltarUsoItem`.
+- El turno enemigo captura el número de enemigos inicial para que los invocados actúen en el siguiente turno.
+
+**Decisiones técnicas:**
+- No se modificó `MisEstructurasDeDatos`.
+- `Container` y `Chest` pertenecen a mapa, no a items, porque no son objetos de inventario.
+- Los cofres pueden contener varios items usando `ListaSimplementeEnlazada<Item>`.
+- Abrir un cofre por segunda vez no duplica contenido.
+- La puerta final de vuelta puede representarse después como `DOOR_LOCKED` estética sin destino funcional.
+
+**Verificación:**
+- `.\mvnw.cmd -q -DskipTests compile`
+- `.\mvnw.cmd -q "-Dtest=CellTest,ContainerTest,ChestTest,TurnManagerTest" test`
+- `.\mvnw.cmd -q test`
+- Resultado suite completa: `267 tests, 0 failures, 0 errors, 0 skipped`
+
+**Commit sugerido:** `git commit -m "feat: implementar gestion de turnos y contenedores"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas
@@ -598,6 +654,8 @@ distancia y huida del Invocador.
 - [x] Cell
 - [x] Room
 - [x] Dungeon
+- [x] Container
+- [x] Chest
 
 **Bloque 4 — Lógica**
 - [x] BFSMovimiento
@@ -606,7 +664,7 @@ distancia y huida del Invocador.
 - [x] CombatManager
 - [x] ArbolDecisionIA
 - [x] IAEnemigo
-- [ ] TurnManager
+- [x] TurnManager
 - [ ] ItemGenerator
 - [ ] DungeonGenerator
 
@@ -648,7 +706,9 @@ distancia y huida del Invocador.
 - [x] CombatManagerTest
 - [x] ArbolDecisionIATest
 - [x] IAEnemigoTest
-- [ ] TurnManagerTest
+- [x] ContainerTest
+- [x] ChestTest
+- [x] TurnManagerTest
 - [ ] ItemGeneratorTest
 - [ ] DungeonGeneratorTest
 - [ ] GameStateTest
@@ -664,7 +724,7 @@ distancia y huida del Invocador.
 Resultado:
 
 ```text
-226 tests, 0 failures, 0 errors, 0 skipped
+267 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---
@@ -704,7 +764,7 @@ Resultado:
 
 ### Metodología recomendada para lo que queda
 
-- Continuar con `TurnManager`.
+- Continuar con `ItemGenerator`.
 - Mantener la decisión de radio Manhattan en IA y combate salvo que el equipo la cambie explícitamente.
 - Mantener `BFSMovimiento` para movimientos dentro de sala; `BFSCaminoMinimo` queda para caminos entre salas.
 - Mantener `mvn test` completo al cerrar cada bloque.
@@ -727,3 +787,9 @@ Resultado:
   Archer/Sniper usen una zona de confort simple.
 - [21 mayo 2026] Se decide que `IAEnemigo` use `BFSMovimiento` para celdas, implemente persecución,
   reposicionamiento a distancia y huida del `SUMMONER`, y respete cooldown real del `SNIPER`.
+- [22 mayo 2026] Se decide que `TurnManager` no dependa de `GameModel` ni de JavaFX; la UI refrescará
+  desde fuera.
+- [22 mayo 2026] Se autoriza puntualmente crear `Container` y `Chest` en `Valdris.model.map`.
+- [22 mayo 2026] Se decide que los items de suelo se recojan automáticamente al moverse y que `PICKUP`
+  quede para contenedores adyacentes.
+- [22 mayo 2026] Se decide añadir destinos concretos a `Cell` para puertas y escaleras.

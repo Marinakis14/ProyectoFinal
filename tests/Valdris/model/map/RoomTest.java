@@ -2,6 +2,7 @@ package Valdris.model.map;
 
 import Valdris.exceptions.GameStateException;
 import Valdris.exceptions.InvalidMoveException;
+import Valdris.model.enums.CharacterType;
 import Valdris.model.enums.CellType;
 import Valdris.model.enums.EnemyType;
 import Valdris.model.units.Enemy;
@@ -43,6 +44,11 @@ class RoomTest {
         assertFalse(room.isExplorada());
         assertEquals(0, room.getFilaJugador());
         assertEquals(0, room.getColJugador());
+        assertEquals(0, room.getLeverCells().getSize());
+        assertEquals(0, room.getRuneCells().getSize());
+        assertEquals(0, room.getCorrectSequence().length);
+        assertFalse(room.isPuzzleResolved());
+        assertNull(room.getPuzzleSuccessTarget());
     }
 
     @Test
@@ -236,6 +242,137 @@ class RoomTest {
         assertTrue(room.isExplorada());
         assertEquals(2, room.getFilaJugador());
         assertEquals(3, room.getColJugador());
+    }
+
+    // -- Diálogos por personaje ---------------------------------------------
+
+    @Test
+    void dialogosPorPersonaje_seGuardanYMarcanComoMostrados() {
+        // Act
+        room.addCharacterDialogue(CharacterType.KAEL, "Kael recuerda Embrath.");
+        room.addCharacterDialogue(CharacterType.SYRA, "Syra escucha el bosque.");
+
+        // Assert
+        assertTrue(room.hasCharacterDialogue(CharacterType.KAEL));
+        assertEquals("Kael recuerda Embrath.", room.getCharacterDialogue(CharacterType.KAEL));
+        assertEquals("Syra escucha el bosque.", room.getCharacterDialogue(CharacterType.SYRA));
+        assertFalse(room.hasCharacterDialogue(CharacterType.DORATH));
+        assertFalse(room.wasDialogueShown(CharacterType.KAEL));
+
+        // Act
+        room.markDialogueShown(CharacterType.KAEL);
+
+        // Assert
+        assertTrue(room.wasDialogueShown(CharacterType.KAEL));
+        assertFalse(room.wasDialogueShown(CharacterType.SYRA));
+    }
+
+    // -- Puzzles de secuencia -----------------------------------------------
+
+    @Test
+    void leverYRuneCells_noSeDuplican() throws InvalidMoveException {
+        // Arrange
+        Cell lever = room.getCell(0, 1);
+        Cell rune = room.getCell(1, 1);
+
+        // Act
+        room.addLeverCell(lever);
+        room.addLeverCell(lever);
+        room.addRuneCell(rune);
+        room.addRuneCell(rune);
+
+        // Assert
+        assertEquals(1, room.getLeverCells().getSize());
+        assertEquals(1, room.getRuneCells().getSize());
+    }
+
+    @Test
+    void secuenciaCorrecta_seRegistraYComprueba() {
+        // Arrange
+        room.setCorrectSequence(new int[] {2, 0, 1});
+
+        // Act
+        room.registrarActivacion(2);
+        room.registrarActivacion(0);
+        room.registrarActivacion(1);
+
+        // Assert
+        assertTrue(room.isSequenceComplete());
+        assertTrue(room.checkSequence());
+        assertArrayEquals(new int[] {2, 0, 1}, room.getSecuenciaActivada());
+    }
+
+    @Test
+    void secuenciaIncorrecta_noPasaCheckYSePuedeLimpiar() {
+        // Arrange
+        room.setCorrectSequence(new int[] {0, 1});
+
+        // Act
+        room.registrarActivacion(1);
+        room.registrarActivacion(0);
+
+        // Assert
+        assertTrue(room.isSequenceComplete());
+        assertFalse(room.checkSequence());
+
+        // Act
+        room.limpiarSecuenciaActivada();
+
+        // Assert
+        assertFalse(room.isSequenceComplete());
+        assertEquals(0, room.getSecuenciaActivada().length);
+    }
+
+    @Test
+    void puzzleResolvedYSuccessTarget_seConfiguran() {
+        // Act
+        room.setPuzzleSuccessTarget("secret_s1");
+        room.setPuzzleResolved(true);
+
+        // Assert
+        assertEquals("secret_s1", room.getPuzzleSuccessTarget());
+        assertTrue(room.isPuzzleResolved());
+    }
+
+    // -- Triggers secretos y utilidades visuales ----------------------------
+
+    @Test
+    void secretTrigger_seAsociaConDestino() throws InvalidMoveException {
+        // Arrange
+        room.getCell(1, 1).setTriggerId("trigger_molino");
+
+        // Act
+        room.addSecretTrigger("trigger_molino", "secret_molino");
+
+        // Assert
+        assertEquals("secret_molino", room.getSecretTarget("trigger_molino"));
+        assertTrue(room.checkSecretTrigger(1, 1));
+        assertFalse(room.checkSecretTrigger(0, 0));
+    }
+
+    @Test
+    void clearHighlights_limpiaTodasLasCeldas() throws InvalidMoveException {
+        // Arrange
+        room.getCell(0, 0).setHighlighted(true);
+        room.getCell(1, 1).setHighlighted(true);
+
+        // Act
+        room.clearHighlights();
+
+        // Assert
+        assertFalse(room.getCell(0, 0).isHighlighted());
+        assertFalse(room.getCell(1, 1).isHighlighted());
+    }
+
+    @Test
+    void validarCeldaLlegada_lanzaSiNoEsTransitable() throws InvalidMoveException {
+        // Arrange
+        room.setCellType(0, 0, CellType.WALL);
+
+        // Act + Assert
+        assertDoesNotThrow(() -> room.validarCeldaLlegada(1, 1));
+        assertThrows(InvalidMoveException.class, () -> room.validarCeldaLlegada(0, 0));
+        assertThrows(InvalidMoveException.class, () -> room.validarCeldaLlegada(-1, 0));
     }
 
     // -- compareTo -----------------------------------------------------------

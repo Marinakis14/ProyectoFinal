@@ -7,6 +7,7 @@ import Valdris.exceptions.InvalidMoveException;
 import Valdris.logic.ai.IAEnemigo;
 import Valdris.logic.bfs.BFSMovimiento;
 import Valdris.logic.combat.CombatManager;
+import Valdris.logic.puzzle.PuzzleManager;
 import Valdris.model.enums.CellType;
 import Valdris.model.enums.Phase;
 import Valdris.model.items.Item;
@@ -59,6 +60,12 @@ public class TurnManager {
     /** Contador de turnos enemigos resueltos. */
     private int turnoGlobal;
 
+    /** Historial acumulativo de acciones de la partida. */
+    private final ListaSimplementeEnlazada<String> log;
+
+    /** Último diálogo generado al entrar en una sala. */
+    private String lastDialogue;
+
     // -- Constructor ----------------------------------------------------------
 
     /**
@@ -72,6 +79,8 @@ public class TurnManager {
         this.dungeon = dungeon;
         this.player = player;
         this.turnoGlobal = 0;
+        this.log = new ListaSimplementeEnlazada<>();
+        this.lastDialogue = null;
     }
 
     // -- Acciones del jugador -------------------------------------------------
@@ -103,6 +112,8 @@ public class TurnManager {
 
         moverJugadorEnSala(room, filaDestino, colDestino);
         resolverItemDeSuelo(room.getCell(filaDestino, colDestino));
+        activarTriggerActual();
+        activarRunaActual();
         player.setHaMovido(true);
 
         faseActual = Phase.PICKUP;
@@ -140,6 +151,7 @@ public class TurnManager {
         Container container = buscarContenedorAdyacente();
         if (container != null) {
             container.abrir(player);
+            addLog("Contenedor abierto junto al jugador.");
         }
 
         player.setHaRecogido(true);
@@ -186,6 +198,28 @@ public class TurnManager {
         }
 
         resolverAcceso(acceso);
+        addLog("Acceso usado hacia " + acceso.getSalaDestino().getId() + ".");
+        player.setHaRecogido(true);
+        faseActual = Phase.USE_ITEM;
+    }
+
+    /**
+     * Activa una palanca adyacente al jugador.
+     *
+     * @throws GameStateException si no está en fase de interacción o no hay palanca
+     */
+    public void activarPalancaAdyacente() throws GameStateException {
+        validarFase(Phase.PICKUP);
+        if (player.isHaRecogido()) {
+            throw new GameStateException("El jugador ya resolvió la interacción este turno.");
+        }
+
+        Cell palanca = buscarCeldaAdyacentePorTipo(CellType.LEVER);
+        if (palanca == null) {
+            throw new GameStateException("No hay palanca adyacente al jugador.");
+        }
+        PuzzleManager.resolverActivacion(getRoomActualObligatoria(), palanca, dungeon, player);
+        addLog("Palanca activada.");
         player.setHaRecogido(true);
         faseActual = Phase.USE_ITEM;
     }
@@ -268,6 +302,7 @@ public class TurnManager {
             return false;
         }
         puerta.setTipo(CellType.DOOR);
+        addLog("Puerta desbloqueada con " + puerta.getRequiredItemId() + ".");
         return true;
     }
 
@@ -307,6 +342,7 @@ public class TurnManager {
         }
         if (item != null) {
             player.equip(item);
+            addLog("Item usado: " + item.getId() + ".");
         }
         player.setHaUsadoItem(true);
         faseActual = Phase.ATTACK;
@@ -338,6 +374,7 @@ public class TurnManager {
         }
 
         CombatManager.resolverAtaqueJugador(player, objetivo, getRoomActualObligatoria());
+        addLog("Ataque del jugador contra " + objetivo.getTipo() + ".");
         player.setHaAtacado(true);
         faseActual = Phase.ENEMY_TURN;
     }
@@ -376,6 +413,7 @@ public class TurnManager {
 
         player.procesarEfectos();
         player.resetAcciones();
+        addLog("Turno enemigo resuelto.");
         faseActual = Phase.MOVEMENT;
     }
 
@@ -416,8 +454,73 @@ public class TurnManager {
 
         limpiarJugadorDeSalaActual();
         dungeon.setRoomActual(destino);
-        destino.setExplorada(true);
         moverJugadorEnSala(destino, filaEntrada, colEntrada);
+        onRoomEnter();
+    }
+
+    /**
+     * Ejecuta la lógica de entrada en la sala actual.
+     *
+     * @throws GameStateException si no hay sala actual configurada
+     */
+    public void onRoomEnter() throws GameStateException {
+        Room room = getRoomActualObligatoria();
+        room.setExplorada(true);
+        addLog("Entrada en sala " + room.getId() + ".");
+
+        lastDialogue = null;
+        if (room.hasCharacterDialogue(player.getTipo()) && !room.wasDialogueShown(player.getTipo())) {
+            lastDialogue = room.getCharacterDialogue(player.getTipo());
+            room.markDialogueShown(player.getTipo());
+            addLog("Diálogo mostrado en sala " + room.getId() + ".");
+        }
+    }
+
+    /**
+     * Activa el trigger secreto de la celda actual del jugador.
+     *
+     * @return true si se activó un pasadizo oculto
+     * @throws GameStateException si no hay sala actual
+     */
+    public boolean activarTriggerActual() throws GameStateException {
+        try {
+            Room room = getRoomActualObligatoria();
+            Cell actual = room.getCell(player.getFilaActual(), player.getColActual());
+            if (!room.checkSecretTrigger(player.getFilaActual(), player.getColActual())) {
+                return false;
+            }
+            String target = room.getSecretTarget(actual.getTriggerId());
+            boolean activado = dungeon.activateHiddenPassage(target);
+            if (activado) {
+                addLog("Pasadizo oculto activado: " + target + ".");
+            }
+            return activado;
+        } catch (InvalidMoveException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Activa una runa si el jugador está sobre ella.
+     *
+     * @return true si se registró una activación de runa
+     * @throws GameStateException si no hay sala actual
+     */
+    public boolean activarRunaActual() throws GameStateException {
+        try {
+            Room room = getRoomActualObligatoria();
+            Cell actual = room.getCell(player.getFilaActual(), player.getColActual());
+            if (actual.getTipo() != CellType.RUNE) {
+                return false;
+            }
+            boolean activada = PuzzleManager.resolverActivacion(room, actual, dungeon, player);
+            if (activada) {
+                addLog("Runa activada.");
+            }
+            return activada;
+        } catch (InvalidMoveException e) {
+            return false;
+        }
     }
 
     // -- Getters --------------------------------------------------------------
@@ -456,6 +559,46 @@ public class TurnManager {
      */
     public int getTurnoGlobal() {
         return turnoGlobal;
+    }
+
+    /**
+     * Añade una entrada al historial acumulativo de partida.
+     *
+     * @param texto texto del evento
+     */
+    public void addLog(String texto) {
+        if (texto != null && !texto.isEmpty()) {
+            log.addEnd(texto);
+        }
+    }
+
+    /**
+     * Devuelve el historial completo de la partida.
+     *
+     * @return lista acumulativa de eventos
+     */
+    public ListaSimplementeEnlazada<String> getLog() {
+        return log;
+    }
+
+    /**
+     * Devuelve el último diálogo generado por entrada de sala.
+     *
+     * @return diálogo pendiente para UI o test
+     */
+    public String getLastDialogue() {
+        return lastDialogue;
+    }
+
+    /**
+     * Devuelve y limpia el último diálogo pendiente.
+     *
+     * @return diálogo consumido, o null si no hay
+     */
+    public String consumeLastDialogue() {
+        String dialogo = lastDialogue;
+        lastDialogue = null;
+        return dialogo;
     }
 
     // -- Métodos auxiliares ---------------------------------------------------
@@ -568,6 +711,31 @@ public class TurnManager {
                     Container container = room.getCell(fila, col).getContainer();
                     if (container != null) {
                         return container;
+                    }
+                }
+            }
+        } catch (GameStateException | InvalidMoveException e) {
+            return null;
+        }
+        return null;
+    }
+
+    /**
+     * Busca una celda adyacente de un tipo concreto.
+     *
+     * @param tipo tipo de celda buscado
+     * @return celda encontrada, o null si no hay ninguna
+     */
+    private Cell buscarCeldaAdyacentePorTipo(CellType tipo) {
+        try {
+            Room room = getRoomActualObligatoria();
+            for (int i = 0; i < DIRECCIONES.length; i++) {
+                int fila = player.getFilaActual() + DIRECCIONES[i][0];
+                int col = player.getColActual() + DIRECCIONES[i][1];
+                if (room.isEnRango(fila, col)) {
+                    Cell cell = room.getCell(fila, col);
+                    if (cell.getTipo() == tipo) {
+                        return cell;
                     }
                 }
             }

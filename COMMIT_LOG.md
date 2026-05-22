@@ -774,6 +774,72 @@ comentarios obsoletos que lo describían como reducción de movimiento.
 
 ---
 
+### Sesión 17 — 22 mayo 2026 — Codex
+
+**Clases o ficheros trabajados:**
+- `Room`
+- `Dungeon`
+- `HiddenPassage`
+- `PuzzleManager`
+- `TurnManager`
+- `RoomTest`
+- `DungeonTest`
+- `PuzzleManagerTest`
+- `TurnManagerTest`
+- `GUIA_PROYECTO_JUEGO_V3.md`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Prompt usado (detalle):**
+El equipo confirmó el siguiente bloque para enriquecer salas con diálogos por personaje, palancas,
+runas, pasadizos secretos y log acumulativo. Antes de implementar se cerraron varias decisiones:
+usar campos concretos por personaje en `Room` en vez de `Map`, compartir la lógica de `LEVER` y
+`RUNE` en un único gestor, llamar a ese gestor `PuzzleManager` en lugar de `LeverManager`, mantener
+los pasadizos ocultos fuera del grafo hasta activarlos, y guardar el log de partida de forma
+acumulativa sin `clearLog()`.
+
+**Resultado:**
+- Compila: SÍ
+- Tests pasan: SÍ
+- Cambios manuales necesarios: ninguno
+
+**Problemas encontrados:**
+- `ListaSimplementeEnlazada<String>` es válida porque `String` implementa `Comparable<String>`.
+- Al registrar varias celdas equivalentes en una LSE, `contains()` y `getPosicion()` no sirven para
+  distinguir celdas por identidad porque `Cell.compareTo()` puede devolver 0 para dos celdas
+  distintas pero equivalentes.
+
+**Solución aplicada:**
+- `Room` añade diálogos por personaje, flags de diálogo mostrado, secuencias de puzzle,
+  `leverCells`, `runeCells`, triggers secretos, objetivo de éxito, limpieza de resaltado y
+  validación de celda de llegada.
+- El registro de palancas y runas compara por referencia de objeto para permitir varias celdas
+  equivalentes en una misma sala.
+- `HiddenPassage` modela conexiones ocultas comparables.
+- `Dungeon` registra pasadizos ocultos fuera del grafo y los añade como aristas al activarse.
+- `PuzzleManager` gestiona secuencias de palancas y runas, aplica éxito activando pasadizos y
+  aplica fallo dañando al jugador y reiniciando la secuencia.
+- `TurnManager` añade log acumulativo, `onRoomEnter()`, `lastDialogue`, activación de triggers
+  secretos, activación automática de runas al moverse y activación de palancas adyacentes desde
+  `PICKUP`.
+- `GUIA_PROYECTO_JUEGO_V3.md` se actualizó para sustituir `LeverManager` por `PuzzleManager`.
+
+**Decisiones técnicas:**
+- No se usa `Map` para diálogos; se usan campos concretos para Kael, Syra y Dorath.
+- `PuzzleManager` sustituye conceptualmente a `LeverManager` porque también resuelve runas.
+- El log de partida es acumulativo y persistible.
+- `changeRoom(...)` llama automáticamente a `onRoomEnter()`.
+
+**Verificación:**
+- `.\mvnw.cmd -q -DskipTests compile`
+- `.\mvnw.cmd -q "-Dtest=RoomTest,DungeonTest,PuzzleManagerTest,TurnManagerTest" test`
+- `.\mvnw.cmd -q test`
+- Resultado suite completa: `337 tests, 0 failures, 0 errors, 0 skipped`
+
+**Commit sugerido:** `git commit -m "feat: implementar puzzles y pasadizos secretos"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas
@@ -803,6 +869,7 @@ comentarios obsoletos que lo describían como reducción de movimiento.
 - [x] Dungeon
 - [x] Container
 - [x] Chest
+- [x] HiddenPassage
 
 **Bloque 4 — Lógica**
 - [x] BFSMovimiento
@@ -813,6 +880,7 @@ comentarios obsoletos que lo describían como reducción de movimiento.
 - [x] IAEnemigo
 - [x] TurnManager
 - [x] ItemGenerator
+- [x] PuzzleManager
 - [ ] DungeonGenerator
 
 **Bloque 5 — Persistencia**
@@ -857,6 +925,7 @@ comentarios obsoletos que lo describían como reducción de movimiento.
 - [x] ChestTest
 - [x] TurnManagerTest
 - [x] ItemGeneratorTest
+- [x] PuzzleManagerTest
 - [ ] DungeonGeneratorTest
 - [ ] GameStateTest
 
@@ -871,7 +940,7 @@ comentarios obsoletos que lo describían como reducción de movimiento.
 Resultado:
 
 ```text
-316 tests, 0 failures, 0 errors, 0 skipped
+337 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---
@@ -911,8 +980,9 @@ Resultado:
 
 ### Metodología recomendada para lo que queda
 
-- Continuar con soporte de diálogos por personaje, palancas, runas y pasadizos secretos.
 - Cerrar las reglas de mini-bosses y accesorios AC1-AC4 antes de implementar `DungeonGenerator`.
+- Fijar la estructura exacta de generación de zonas, salas, accesos, puzzles y pasadizos antes de
+  implementar `DungeonGenerator`.
 - Continuar con `DungeonGenerator`.
 - Mantener la decisión de radio Manhattan en IA y combate salvo que el equipo la cambie explícitamente.
 - Mantener `BFSMovimiento` para movimientos dentro de sala; `BFSCaminoMinimo` queda para caminos entre salas.
@@ -958,3 +1028,9 @@ Resultado:
   necesiten por estar en paredes.
 - [22 mayo 2026] Se descarta `clearLog()` porque el historial de acciones debe conservarse para
   resumen y persistencia JSON.
+- [22 mayo 2026] Se decide implementar diálogos por personaje con campos concretos en `Room`, no
+  con `Map`.
+- [22 mayo 2026] Se decide que `LEVER` y `RUNE` compartan lógica de secuencia en `PuzzleManager`.
+- [22 mayo 2026] Se decide guardar pasadizos ocultos fuera del grafo hasta que un trigger o puzzle
+  los active.
+- [22 mayo 2026] Se decide que `changeRoom(...)` llame automáticamente a `onRoomEnter()`.

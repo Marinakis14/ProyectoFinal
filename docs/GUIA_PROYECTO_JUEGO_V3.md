@@ -195,7 +195,7 @@ La fortaleza subterránea donde fue sellado Malachar. No es una mazmorra de comb
 | Pasadizos secretos | Arista oculta en el Grafo. La celda trigger es FLOOR normal. Al pisar: `Room.checkSecretTrigger(row,col)` → `Dungeon.activateHiddenPassage(roomId)` añade la arista al Grafo. |
 | Escaleras (pisos) | `NodoGrafo` con id que contiene `'stairs_up'` o `'stairs_down'`. Arista con dirección `'arriba'` o `'abajo'`. `Dungeon.getAdjacentRooms()` las incluye normalmente. |
 | Enemigo suelta item | Enemy tiene campo `dropItem: Item` (puede ser null). En `Enemy.onDeath()`: si `dropItem != null` → `room.placeItemOnCell(row, col, dropItem)`. El item queda en la celda hasta que el jugador la pisa. |
-| Acertijos de palancas | Room tiene `LSE leverCells` y `int[] correctSequence`. `LeverManager.activate(cell)` registra el orden. `LeverManager.checkSequence()` compara → abre puerta o activa trampa. |
+| Acertijos de palancas | Room tiene `LSE leverCells` y `int[] correctSequence`. `PuzzleManager.activate(cell)` registra el orden. `PuzzleManager.checkSequence()` compara → abre puerta, activa pasadizo o activa trampa. |
 | Acertijo de runas | Igual que palancas pero Cell son tipo RUNE. Se activan al pisarlas. La secuencia correcta viene de un pergamino (`SpecialItem` con `effectData = 'rune_sequence:3,1,4,2'`). |
 | Fragmento de Voluntad | `SpecialItem` con `effectData` por personaje. `onEquip()` comprueba `Player.characterType`: KAEL → modifica probabilidad descarga; SYRA → suma 5 a daño base; DORATH → activa flag `dualSimultaneous` en Palabra Dual. |
 | Diálogos por personaje | Room tiene `Map characterDialogues`. `TurnManager.onRoomEnter()` comprueba si hay diálogo para el personaje actual y lo muestra en el log / pantalla de diálogo JavaFX. |
@@ -214,7 +214,7 @@ La fortaleza subterránea donde fue sellado Malachar. No es una mazmorra de comb
 |------|---------|----------------|
 | Estructuras base | `MisEstructurasDeDatos` | LSE, Cola, Grafo, ABB — ya implementadas, no tocar |
 | Modelo / Dominio juego | `juego.modelo` | Cell, Room, Dungeon, Unit, Player, Enemy, Item, GameState |
-| Lógica del juego | `juego.logica` | TurnManager, BFSMovimiento, LeverManager, LectorJSON |
+| Lógica del juego | `juego.logica` | TurnManager, BFSMovimiento, PuzzleManager, LectorJSON |
 | Presentación JavaFX | `juego.vista` | Controllers, GridPane de habitación, HUD, menús, EndingController |
 
 ### Clases clave — atributos añadidos o modificados en v3
@@ -257,7 +257,7 @@ La fortaleza subterránea donde fue sellado Malachar. No es una mazmorra de comb
 ### Fase 2 — Lógica del juego
 - `BFSMovimiento.getCellsInRange()` sobre `Cell[][]` usando `moveCost` variable.
 - `Player.move(r,c)`: consume movePoints, detecta STAIRS/DOOR/DOOR_LOCKED/DOOR_HIDDEN/RUNE.
-- `LeverManager`: registra secuencia, compara con `correctSequence`, activa resultado.
+- `PuzzleManager`: registra secuencia de palancas o runas, compara con `correctSequence`, activa resultado.
 - `Room.checkSecretTrigger`: detecta triggerId en celda pisada, llama a `Dungeon.activateHiddenPassage`.
 - `Enemy.executeTurn()` por tipo. `MalacharAlly.executeAllyTurn()`. `ParasitoEnemy` con fases.
 - `SpecialItem.onEquip()`: aplica efecto del Fragmento de Voluntad según `characterType`.

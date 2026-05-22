@@ -170,6 +170,62 @@ class DungeonTest {
         assertEquals(1, dungeon.getSalasAdyacentes(salaBosque).getSize());
     }
 
+    // -- Pasadizos ocultos ---------------------------------------------------
+
+    @Test
+    void connectHidden_registraPasadizoSinCrearArista() {
+        // Act
+        dungeon.connectHidden(salaInicial, salaBosque, "pasadizo secreto", "secret_s1");
+
+        // Assert
+        assertEquals(2, dungeon.getGrafo().getNodos().getSize());
+        assertEquals(0, dungeon.getGrafo().getAristas().getSize());
+        assertEquals(1, dungeon.getHiddenPassages().getSize());
+        assertNotNull(dungeon.getHiddenPassage("secret_s1"));
+        assertFalse(dungeon.isHiddenPassageActive("secret_s1"));
+        assertSame(salaBosque, dungeon.getHiddenPassageTarget("secret_s1"));
+    }
+
+    @Test
+    void activateHiddenPassage_creaConexionBidireccionalSoloUnaVez() {
+        // Arrange
+        dungeon.connectHidden(salaInicial, salaBosque, "pasadizo secreto", "secret_s1");
+
+        // Act
+        boolean activado = dungeon.activateHiddenPassage("secret_s1");
+        boolean repetido = dungeon.activateHiddenPassage("secret_s1");
+
+        // Assert
+        assertTrue(activado);
+        assertTrue(repetido);
+        assertTrue(dungeon.isHiddenPassageActive("secret_s1"));
+        assertEquals(2, dungeon.getGrafo().getAristas().getSize());
+        assertEquals(1, dungeon.getSalasAdyacentes(salaInicial).getSize());
+        assertEquals(1, dungeon.getSalasAdyacentes(salaBosque).getSize());
+    }
+
+    @Test
+    void activateHiddenPassage_unidireccionalCreaUnaSolaArista() {
+        // Arrange
+        dungeon.connectHidden(salaBosque, salaFinal, "pasadizo final", "secret_s5", false);
+
+        // Act
+        dungeon.activateHiddenPassage("secret_s5");
+
+        // Assert
+        assertTrue(dungeon.isHiddenPassageActive("secret_s5"));
+        assertEquals(1, dungeon.getGrafo().getAristas().getSize());
+        assertEquals(1, dungeon.getSalasAdyacentes(salaBosque).getSize());
+        assertEquals(0, dungeon.getSalasAdyacentes(salaFinal).getSize());
+    }
+
+    @Test
+    void activateHiddenPassage_idInexistenteDevuelveFalse() {
+        assertFalse(dungeon.activateHiddenPassage("NO_EXISTE"));
+        assertFalse(dungeon.isHiddenPassageActive("NO_EXISTE"));
+        assertNull(dungeon.getHiddenPassageTarget("NO_EXISTE"));
+    }
+
     // -- getSalasAdyacentes --------------------------------------------------
 
     @Test

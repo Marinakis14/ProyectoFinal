@@ -34,6 +34,9 @@ public class Dungeon implements Comparable<Dungeon> {
     /** Nodo del grafo correspondiente a {@code roomActual}. */
     private NodoGrafo<Room> nodoActual;
 
+    /** Pasadizos secretos registrados pero no necesariamente activos. */
+    private final ListaSimplementeEnlazada<HiddenPassage> hiddenPassages;
+
     // -- Constructor ----------------------------------------------------------
 
     /**
@@ -43,6 +46,7 @@ public class Dungeon implements Comparable<Dungeon> {
         this.grafo = new Grafo<>();
         this.roomActual = null;
         this.nodoActual = null;
+        this.hiddenPassages = new ListaSimplementeEnlazada<>();
     }
 
     // -- Metodos de logica ----------------------------------------------------
@@ -115,6 +119,87 @@ public class Dungeon implements Comparable<Dungeon> {
     }
 
     /**
+     * Registra un pasadizo oculto sin añadirlo todavía al grafo.
+     *
+     * <p>Mientras no se active, el pasadizo no aparece en vecinos ni en caminos
+     * mínimos. Si ya existe un pasadizo con el mismo id, no se duplica.</p>
+     *
+     * @param a sala origen
+     * @param b sala destino
+     * @param desc descripción de la conexión
+     * @param id identificador del pasadizo oculto
+     */
+    public void connectHidden(Room a, Room b, String desc, String id) {
+        connectHidden(a, b, desc, id, true);
+    }
+
+    /**
+     * Registra un pasadizo oculto indicando si será bidireccional.
+     *
+     * @param a sala origen
+     * @param b sala destino
+     * @param desc descripción de la conexión
+     * @param id identificador del pasadizo oculto
+     * @param bidireccional true si al activarse crea conexión de vuelta
+     */
+    public void connectHidden(Room a, Room b, String desc, String id, boolean bidireccional) {
+        if (a == null || b == null || id == null || id.isEmpty() || getHiddenPassage(id) != null) {
+            return;
+        }
+        addRoom(a);
+        addRoom(b);
+        hiddenPassages.addEnd(new HiddenPassage(id, getRoomById(a.getId()), getRoomById(b.getId()),
+            desc, bidireccional));
+    }
+
+    /**
+     * Activa un pasadizo oculto y lo añade al grafo.
+     *
+     * @param id identificador del pasadizo
+     * @return true si el pasadizo existe y queda activo
+     */
+    public boolean activateHiddenPassage(String id) {
+        HiddenPassage passage = getHiddenPassage(id);
+        if (passage == null) {
+            return false;
+        }
+        if (!passage.isActive()) {
+            if (passage.isBidireccional()) {
+                conectar(passage.getOrigen(), passage.getDestino(), passage.getDescripcion());
+            } else {
+                conectarUnidireccional(passage.getOrigen(), passage.getDestino(), passage.getDescripcion());
+            }
+            passage.activar();
+        }
+        return true;
+    }
+
+    /**
+     * Indica si un pasadizo oculto ya está activo.
+     *
+     * @param id identificador del pasadizo
+     * @return true si existe y está activo
+     */
+    public boolean isHiddenPassageActive(String id) {
+        HiddenPassage passage = getHiddenPassage(id);
+        return passage != null && passage.isActive();
+    }
+
+    /**
+     * Devuelve la sala destino de un pasadizo oculto.
+     *
+     * @param id identificador del pasadizo
+     * @return sala destino, o null si no existe
+     */
+    public Room getHiddenPassageTarget(String id) {
+        HiddenPassage passage = getHiddenPassage(id);
+        if (passage == null) {
+            return null;
+        }
+        return passage.getDestino();
+    }
+
+    /**
      * Devuelve las salas conectadas mediante aristas salientes desde una sala.
      *
      * <p>En conexiones bidireccionales apareceran las salas vecinas normales.
@@ -160,6 +245,25 @@ public class Dungeon implements Comparable<Dungeon> {
             Room room = nodos.get(i).getDatos();
             if (room != null && id.equals(room.getId())) {
                 return room;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Busca un pasadizo oculto por id.
+     *
+     * @param id identificador buscado
+     * @return pasadizo encontrado, o null si no existe
+     */
+    public HiddenPassage getHiddenPassage(String id) {
+        if (id == null) {
+            return null;
+        }
+        for (int i = 0; i < hiddenPassages.getSize(); i++) {
+            HiddenPassage passage = hiddenPassages.get(i);
+            if (passage != null && id.equals(passage.getId())) {
+                return passage;
             }
         }
         return null;
@@ -268,6 +372,15 @@ public class Dungeon implements Comparable<Dungeon> {
      */
     public NodoGrafo<Room> getNodoActual() {
         return nodoActual;
+    }
+
+    /**
+     * Devuelve los pasadizos ocultos registrados.
+     *
+     * @return lista de pasadizos ocultos
+     */
+    public ListaSimplementeEnlazada<HiddenPassage> getHiddenPassages() {
+        return hiddenPassages;
     }
 
     // -- Comparacion ----------------------------------------------------------

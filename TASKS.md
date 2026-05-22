@@ -27,7 +27,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 |------|--------|
 | Capas 2, 3 y 4 | Completadas y testeadas |
 | Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga, TurnManager e ItemGenerator completados |
-| Tests JUnit actuales | 316 tests pasando |
+| Tests JUnit actuales | 337 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
 ---
@@ -159,6 +159,12 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 27 | Añadir orientación frontal para escaleras `STAIRS_UP` y `STAIRS_DOWN` | ✅ Completado |
 | 28 | Añadir helpers de acceso, trigger, resaltado, reserva y requisito de item en `Cell` | ✅ Completado |
 | 29 | Centralizar bloqueo de visión en `Cell.bloqueaVision()` | ✅ Completado |
+| 30 | Añadir diálogos por personaje en `Room` sin usar `Map` | ✅ Completado |
+| 31 | Añadir secuencias comunes para palancas y runas en `Room` | ✅ Completado |
+| 32 | Añadir triggers secretos y objetivos de puzzle en `Room` | ✅ Completado |
+| 33 | Añadir limpieza de resaltado y validación de celdas de llegada en `Room` | ✅ Completado |
+| 34 | Crear `HiddenPassage` como pasadizo oculto comparable | ✅ Completado |
+| 35 | Añadir pasadizos ocultos activables en `Dungeon` | ✅ Completado |
 
 ---
 
@@ -225,6 +231,11 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 46 | Implementar `usarAccesoAdyacente()` para puertas y escaleras | ✅ Completado |
 | 47 | Implementar validación de llegada antes de cambiar de sala por acceso | ✅ Completado |
 | 48 | Implementar desbloqueo de `DOOR_LOCKED` por item narrativo requerido | ✅ Completado |
+| 49 | Crear `PuzzleManager` para secuencias de `LEVER` y `RUNE` | ✅ Completado |
+| 50 | Implementar `onRoomEnter()` con diálogos por personaje en `TurnManager` | ✅ Completado |
+| 51 | Implementar log acumulativo de partida en `TurnManager` | ✅ Completado |
+| 52 | Implementar activación de triggers secretos y runas al moverse | ✅ Completado |
+| 53 | Implementar activación de palancas adyacentes desde `PICKUP` | ✅ Completado |
 
 ---
 
@@ -255,6 +266,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 21 | `ChestTest` | ✅ Completado |
 | 22 | `TurnManagerTest` | ✅ Completado |
 | 23 | `ItemGeneratorTest` | ✅ Completado |
+| 24 | `PuzzleManagerTest` | ✅ Completado |
 
 ---
 
@@ -277,6 +289,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 13 | Suite tras `Container`, `Chest`, `Cell` ampliado y `TurnManager` | ✅ Correcta |
 | 14 | Suite tras rediseño de `BLIND`, P4, P5, armas con doble efecto e `ItemGenerator` | ✅ Correcta |
 | 15 | Suite tras `STAIRS_UP/DOWN`, accesos adyacentes y visión actualizada | ✅ Correcta |
+| 16 | Suite tras diálogos, puzzles, pasadizos ocultos y log acumulativo | ✅ Correcta |
 
 Última verificación completa:
 
@@ -287,7 +300,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 Resultado:
 
 ```text
-316 tests, 0 failures, 0 errors, 0 skipped
+337 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---
@@ -328,6 +341,12 @@ Resultado:
 | 30 | Las puertas no necesitan orientación porque se colocan en paredes | ✅ Aceptada |
 | 31 | `DOOR_LOCKED` puede requerir un item narrativo por id para desbloquearse | ✅ Aceptada |
 | 32 | El log de partida debe ser acumulativo y no debe tener `clearLog()` destructivo | ✅ Aceptada |
+| 33 | Los diálogos de sala se guardan con campos concretos por personaje, no con `Map` | ✅ Aceptada |
+| 34 | `LEVER` y `RUNE` comparten un sistema común de secuencia | ✅ Aceptada |
+| 35 | `PuzzleManager` sustituye conceptualmente a `LeverManager` porque también gestiona runas | ✅ Aceptada |
+| 36 | Los pasadizos ocultos se guardan fuera del grafo hasta activarse | ✅ Aceptada |
+| 37 | `HiddenPassage` se usa como clase comparable para pasadizos secretos | ✅ Aceptada |
+| 38 | `changeRoom(...)` llama automáticamente a `onRoomEnter()` | ✅ Aceptada |
 
 ---
 
@@ -336,9 +355,8 @@ Resultado:
 | Nº | Tarea pendiente | Estado |
 |---:|-----------------|--------|
 | 1 | Fijar mini-bosses y asignación garantizada de accesorios AC1-AC4 antes de `DungeonGenerator` | ⬜ Pendiente |
-| 2 | Añadir soporte de diálogos por personaje en `Room` y `TurnManager` | ⬜ Pendiente |
-| 3 | Añadir soporte de palancas, runas y pasadizos secretos | ⬜ Pendiente |
-| 4 | Implementar `DungeonGenerator` | ⬜ Pendiente |
-| 5 | Crear `DungeonGeneratorTest` | ⬜ Pendiente |
-| 6 | Implementar persistencia (`GameState`, `LectorJSON`) | ⬜ Pendiente |
-| 7 | Implementar capa JavaFX | ⬜ Pendiente |
+| 2 | Fijar estructura de generación de zonas, salas, accesos y puzzles antes de `DungeonGenerator` | ⬜ Pendiente |
+| 3 | Implementar `DungeonGenerator` | ⬜ Pendiente |
+| 4 | Crear `DungeonGeneratorTest` | ⬜ Pendiente |
+| 5 | Implementar persistencia (`GameState`, `LectorJSON`) | ⬜ Pendiente |
+| 6 | Implementar capa JavaFX | ⬜ Pendiente |

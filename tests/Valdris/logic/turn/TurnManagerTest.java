@@ -465,6 +465,111 @@ class TurnManagerTest {
         assertNull(room.getCell(2, 2).getUnit());
     }
 
+    // -- Entrada de sala, triggers y log ------------------------------------
+
+    @Test
+    void changeRoom_llamaOnRoomEnterYGeneraDialogoUnaSolaVez()
+        throws InvalidMoveException, GameStateException {
+
+        // Arrange
+        Room destino = new Room("R2", "Sala destino", 4, 4);
+        dungeon.addRoom(destino);
+        destino.setFilaJugador(1);
+        destino.setColJugador(1);
+        destino.addCharacterDialogue(CharacterType.KAEL, "Kael reconoce la sala.");
+
+        // Act
+        turnManager.changeRoom(destino);
+
+        // Assert
+        assertEquals("Kael reconoce la sala.", turnManager.getLastDialogue());
+        assertTrue(destino.wasDialogueShown(CharacterType.KAEL));
+        assertEquals("Kael reconoce la sala.", turnManager.consumeLastDialogue());
+        assertNull(turnManager.getLastDialogue());
+        assertEquals(2, turnManager.getLog().getSize());
+
+        // Act
+        turnManager.onRoomEnter();
+
+        // Assert
+        assertNull(turnManager.getLastDialogue());
+    }
+
+    @Test
+    void addLog_guardaHistorialAcumulativo() {
+        // Act
+        turnManager.addLog("Evento 1");
+        turnManager.addLog("Evento 2");
+        turnManager.addLog(null);
+
+        // Assert
+        assertEquals(2, turnManager.getLog().getSize());
+        assertEquals("Evento 1", turnManager.getLog().get(0));
+        assertEquals("Evento 2", turnManager.getLog().get(1));
+    }
+
+    @Test
+    void ejecutarMovimiento_activaTriggerSecretoDeCeldaActual()
+        throws InvalidMoveException, GameStateException {
+
+        // Arrange
+        Room secreta = new Room("R-SEC", "Sala secreta", 3, 3);
+        dungeon.connectHidden(room, secreta, "pasadizo oculto", "secret_trigger");
+        room.getCell(2, 3).setTriggerId("trigger_1");
+        room.addSecretTrigger("trigger_1", "secret_trigger");
+
+        // Act
+        turnManager.ejecutarMovimiento(2, 3);
+
+        // Assert
+        assertTrue(dungeon.isHiddenPassageActive("secret_trigger"));
+        assertEquals(Phase.PICKUP, turnManager.getFaseActual());
+    }
+
+    @Test
+    void ejecutarMovimiento_sobreRunaRegistraSecuenciaYActivaPasadizo()
+        throws InvalidMoveException, GameStateException {
+
+        // Arrange
+        Room secreta = new Room("R-RUNE", "Sala de runas", 3, 3);
+        dungeon.connectHidden(room, secreta, "pasadizo de runas", "secret_rune");
+        room.setCellType(2, 3, CellType.RUNE);
+        room.addRuneCell(room.getCell(2, 3));
+        room.setCorrectSequence(new int[] {0});
+        room.setPuzzleSuccessTarget("secret_rune");
+
+        // Act
+        turnManager.ejecutarMovimiento(2, 3);
+
+        // Assert
+        assertTrue(room.isPuzzleResolved());
+        assertTrue(dungeon.isHiddenPassageActive("secret_rune"));
+        assertEquals(Phase.PICKUP, turnManager.getFaseActual());
+    }
+
+    @Test
+    void activarPalancaAdyacente_resuelveInteraccionDePickup()
+        throws InvalidMoveException, GameStateException {
+
+        // Arrange
+        Room secreta = new Room("R-LEV", "Sala de palanca", 3, 3);
+        dungeon.connectHidden(room, secreta, "pasadizo de palanca", "secret_lever");
+        room.setCellType(2, 3, CellType.LEVER);
+        room.addLeverCell(room.getCell(2, 3));
+        room.setCorrectSequence(new int[] {0});
+        room.setPuzzleSuccessTarget("secret_lever");
+        turnManager.saltarMovimiento();
+
+        // Act
+        turnManager.activarPalancaAdyacente();
+
+        // Assert
+        assertTrue(room.isPuzzleResolved());
+        assertTrue(dungeon.isHiddenPassageActive("secret_lever"));
+        assertTrue(player.isHaRecogido());
+        assertEquals(Phase.USE_ITEM, turnManager.getFaseActual());
+    }
+
     // -- Turno enemigo -------------------------------------------------------
 
     @Test

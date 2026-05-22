@@ -3,6 +3,7 @@ package Valdris.model.map;
 import MisEstructurasDeDatos.ListasPilasYColas.ListaSimplementeEnlazada;
 import Valdris.exceptions.GameStateException;
 import Valdris.exceptions.InvalidMoveException;
+import Valdris.model.enums.CharacterType;
 import Valdris.model.enums.CellType;
 import Valdris.model.units.Enemy;
 
@@ -57,6 +58,51 @@ public class Room implements Comparable<Room> {
     /** Columna donde aparece el jugador al entrar en la sala. */
     private int colJugador;
 
+    /** Palancas registradas para puzzles de secuencia. */
+    private final ListaSimplementeEnlazada<Cell> leverCells;
+
+    /** Runas registradas para puzzles de secuencia. */
+    private final ListaSimplementeEnlazada<Cell> runeCells;
+
+    /** Secuencia correcta de activación para palancas o runas. */
+    private int[] correctSequence;
+
+    /** Secuencia activada actualmente por el jugador. */
+    private int[] secuenciaActivada;
+
+    /** Número de entradas registradas en la secuencia activada. */
+    private int secuenciaActivadaSize;
+
+    /** Indica si el puzzle de la sala ya fue resuelto. */
+    private boolean puzzleResolved;
+
+    /** Identificador de puerta o pasadizo que se activa al resolver el puzzle. */
+    private String puzzleSuccessTarget;
+
+    /** IDs de triggers secretos presentes en la sala. */
+    private final ListaSimplementeEnlazada<String> secretTriggerIds;
+
+    /** Destinos asociados a los triggers secretos, en el mismo orden. */
+    private final ListaSimplementeEnlazada<String> secretTargetIds;
+
+    /** Diálogo especial para Kael en esta sala. */
+    private String dialogoKael;
+
+    /** Diálogo especial para Syra en esta sala. */
+    private String dialogoSyra;
+
+    /** Diálogo especial para Dorath en esta sala. */
+    private String dialogoDorath;
+
+    /** Indica si el diálogo de Kael ya fue mostrado. */
+    private boolean dialogoKaelMostrado;
+
+    /** Indica si el diálogo de Syra ya fue mostrado. */
+    private boolean dialogoSyraMostrado;
+
+    /** Indica si el diálogo de Dorath ya fue mostrado. */
+    private boolean dialogoDorathMostrado;
+
     // -- Constructor ----------------------------------------------------------
 
     /**
@@ -79,6 +125,21 @@ public class Room implements Comparable<Room> {
         this.explorada = false;
         this.filaJugador = 0;
         this.colJugador = 0;
+        this.leverCells = new ListaSimplementeEnlazada<>();
+        this.runeCells = new ListaSimplementeEnlazada<>();
+        this.correctSequence = new int[0];
+        this.secuenciaActivada = new int[0];
+        this.secuenciaActivadaSize = 0;
+        this.puzzleResolved = false;
+        this.puzzleSuccessTarget = null;
+        this.secretTriggerIds = new ListaSimplementeEnlazada<>();
+        this.secretTargetIds = new ListaSimplementeEnlazada<>();
+        this.dialogoKael = null;
+        this.dialogoSyra = null;
+        this.dialogoDorath = null;
+        this.dialogoKaelMostrado = false;
+        this.dialogoSyraMostrado = false;
+        this.dialogoDorathMostrado = false;
         inicializarCeldas();
     }
 
@@ -195,6 +256,253 @@ public class Room implements Comparable<Room> {
     }
 
     /**
+     * Registra una palanca de la sala para puzzles de secuencia.
+     *
+     * @param cell celda de tipo palanca
+     */
+    public void addLeverCell(Cell cell) {
+        if (cell != null && !contieneCeldaPorReferencia(leverCells, cell)) {
+            leverCells.addEnd(cell);
+        }
+    }
+
+    /**
+     * Registra una runa de la sala para puzzles de secuencia.
+     *
+     * @param cell celda de tipo runa
+     */
+    public void addRuneCell(Cell cell) {
+        if (cell != null && !contieneCeldaPorReferencia(runeCells, cell)) {
+            runeCells.addEnd(cell);
+        }
+    }
+
+    /**
+     * Configura la secuencia correcta del puzzle de la sala.
+     *
+     * @param correctSequence orden correcto de activaciones
+     */
+    public void setCorrectSequence(int[] correctSequence) {
+        this.correctSequence = copiarArray(correctSequence);
+        this.secuenciaActivada = new int[this.correctSequence.length];
+        this.secuenciaActivadaSize = 0;
+        this.puzzleResolved = false;
+    }
+
+    /**
+     * Registra una activación dentro de la secuencia actual.
+     *
+     * @param indice índice lógico de palanca o runa activada
+     */
+    public void registrarActivacion(int indice) {
+        if (correctSequence.length == 0 || puzzleResolved) {
+            return;
+        }
+        if (secuenciaActivada.length != correctSequence.length) {
+            secuenciaActivada = new int[correctSequence.length];
+            secuenciaActivadaSize = 0;
+        }
+        if (secuenciaActivadaSize < secuenciaActivada.length) {
+            secuenciaActivada[secuenciaActivadaSize] = indice;
+            secuenciaActivadaSize++;
+        }
+    }
+
+    /**
+     * Limpia la secuencia activada por el jugador.
+     */
+    public void limpiarSecuenciaActivada() {
+        this.secuenciaActivada = new int[correctSequence.length];
+        this.secuenciaActivadaSize = 0;
+    }
+
+    /**
+     * Indica si el jugador ya introdujo tantos pasos como exige el puzzle.
+     *
+     * @return true si la secuencia actual está completa
+     */
+    public boolean isSequenceComplete() {
+        return correctSequence.length > 0 && secuenciaActivadaSize >= correctSequence.length;
+    }
+
+    /**
+     * Compara la secuencia activada contra la solución.
+     *
+     * @return true si la secuencia está completa y coincide con la correcta
+     */
+    public boolean checkSequence() {
+        if (!isSequenceComplete()) {
+            return false;
+        }
+        for (int i = 0; i < correctSequence.length; i++) {
+            if (correctSequence[i] != secuenciaActivada[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Asocia un trigger de celda con un pasadizo o destino oculto.
+     *
+     * @param triggerId identificador del trigger
+     * @param targetId identificador del pasadizo o destino
+     */
+    public void addSecretTrigger(String triggerId, String targetId) {
+        if (triggerId == null || triggerId.isEmpty() || targetId == null || targetId.isEmpty()) {
+            return;
+        }
+        int posicion = secretTriggerIds.getPosicion(triggerId);
+        if (posicion >= 0) {
+            return;
+        }
+        secretTriggerIds.addEnd(triggerId);
+        secretTargetIds.addEnd(targetId);
+    }
+
+    /**
+     * Devuelve el destino asociado a un trigger secreto.
+     *
+     * @param triggerId identificador del trigger
+     * @return id de destino, o null si no existe
+     */
+    public String getSecretTarget(String triggerId) {
+        if (triggerId == null) {
+            return null;
+        }
+        int posicion = secretTriggerIds.getPosicion(triggerId);
+        if (posicion < 0) {
+            return null;
+        }
+        return secretTargetIds.get(posicion);
+    }
+
+    /**
+     * Comprueba si una celda activa un trigger secreto.
+     *
+     * @param fila fila consultada
+     * @param col columna consultada
+     * @return true si la celda tiene trigger con destino asociado
+     */
+    public boolean checkSecretTrigger(int fila, int col) {
+        if (!isEnRango(fila, col)) {
+            return false;
+        }
+        Cell cell = celdas[fila][col];
+        return cell.hasTrigger() && getSecretTarget(cell.getTriggerId()) != null;
+    }
+
+    /**
+     * Añade un diálogo especial por personaje.
+     *
+     * @param tipo personaje al que pertenece el diálogo
+     * @param texto texto mostrado al entrar en la sala
+     */
+    public void addCharacterDialogue(CharacterType tipo, String texto) {
+        if (tipo == CharacterType.KAEL) {
+            dialogoKael = texto;
+            dialogoKaelMostrado = false;
+        } else if (tipo == CharacterType.SYRA) {
+            dialogoSyra = texto;
+            dialogoSyraMostrado = false;
+        } else if (tipo == CharacterType.DORATH) {
+            dialogoDorath = texto;
+            dialogoDorathMostrado = false;
+        }
+    }
+
+    /**
+     * Devuelve el diálogo asociado a un personaje.
+     *
+     * @param tipo personaje consultado
+     * @return diálogo configurado, o null si no hay
+     */
+    public String getCharacterDialogue(CharacterType tipo) {
+        if (tipo == CharacterType.KAEL) {
+            return dialogoKael;
+        }
+        if (tipo == CharacterType.SYRA) {
+            return dialogoSyra;
+        }
+        if (tipo == CharacterType.DORATH) {
+            return dialogoDorath;
+        }
+        return null;
+    }
+
+    /**
+     * Indica si la sala tiene diálogo para un personaje.
+     *
+     * @param tipo personaje consultado
+     * @return true si hay diálogo no vacío
+     */
+    public boolean hasCharacterDialogue(CharacterType tipo) {
+        String dialogo = getCharacterDialogue(tipo);
+        return dialogo != null && !dialogo.isEmpty();
+    }
+
+    /**
+     * Marca el diálogo de un personaje como mostrado.
+     *
+     * @param tipo personaje cuyo diálogo se marca
+     */
+    public void markDialogueShown(CharacterType tipo) {
+        if (tipo == CharacterType.KAEL) {
+            dialogoKaelMostrado = true;
+        } else if (tipo == CharacterType.SYRA) {
+            dialogoSyraMostrado = true;
+        } else if (tipo == CharacterType.DORATH) {
+            dialogoDorathMostrado = true;
+        }
+    }
+
+    /**
+     * Indica si el diálogo de un personaje ya fue mostrado.
+     *
+     * @param tipo personaje consultado
+     * @return true si ya se mostró
+     */
+    public boolean wasDialogueShown(CharacterType tipo) {
+        if (tipo == CharacterType.KAEL) {
+            return dialogoKaelMostrado;
+        }
+        if (tipo == CharacterType.SYRA) {
+            return dialogoSyraMostrado;
+        }
+        if (tipo == CharacterType.DORATH) {
+            return dialogoDorathMostrado;
+        }
+        return false;
+    }
+
+    /**
+     * Limpia el resaltado visual de todas las celdas.
+     */
+    public void clearHighlights() {
+        for (int fila = 0; fila < filas; fila++) {
+            for (int col = 0; col < cols; col++) {
+                celdas[fila][col].clearHighlight();
+            }
+        }
+    }
+
+    /**
+     * Valida que una celda pueda usarse como llegada de acceso.
+     *
+     * @param fila fila destino
+     * @param col columna destino
+     * @throws InvalidMoveException si la celda no existe o no está libre
+     */
+    public void validarCeldaLlegada(int fila, int col) throws InvalidMoveException {
+        if (!isEnRango(fila, col)) {
+            throw new InvalidMoveException("Entrada fuera de rango en sala " + id);
+        }
+        if (!celdas[fila][col].isWalkable()) {
+            throw new InvalidMoveException("La celda de llegada no es transitable en sala " + id);
+        }
+    }
+
+    /**
      * Inicializa todas las posiciones de la matriz como celdas de suelo.
      */
     private void inicializarCeldas() {
@@ -250,6 +558,82 @@ public class Room implements Comparable<Room> {
      */
     public ListaSimplementeEnlazada<Enemy> getEnemigos() {
         return enemigos;
+    }
+
+    /**
+     * Devuelve las palancas registradas en la sala.
+     *
+     * @return lista de celdas de palanca
+     */
+    public ListaSimplementeEnlazada<Cell> getLeverCells() {
+        return leverCells;
+    }
+
+    /**
+     * Devuelve las runas registradas en la sala.
+     *
+     * @return lista de celdas de runa
+     */
+    public ListaSimplementeEnlazada<Cell> getRuneCells() {
+        return runeCells;
+    }
+
+    /**
+     * Devuelve una copia de la secuencia correcta.
+     *
+     * @return secuencia correcta
+     */
+    public int[] getCorrectSequence() {
+        return copiarArray(correctSequence);
+    }
+
+    /**
+     * Devuelve una copia de la secuencia activada.
+     *
+     * @return secuencia introducida hasta ahora
+     */
+    public int[] getSecuenciaActivada() {
+        int[] copia = new int[secuenciaActivadaSize];
+        for (int i = 0; i < secuenciaActivadaSize; i++) {
+            copia[i] = secuenciaActivada[i];
+        }
+        return copia;
+    }
+
+    /**
+     * Indica si el puzzle de la sala ya fue resuelto.
+     *
+     * @return true si el puzzle está resuelto
+     */
+    public boolean isPuzzleResolved() {
+        return puzzleResolved;
+    }
+
+    /**
+     * Configura si el puzzle de la sala está resuelto.
+     *
+     * @param puzzleResolved nuevo estado del puzzle
+     */
+    public void setPuzzleResolved(boolean puzzleResolved) {
+        this.puzzleResolved = puzzleResolved;
+    }
+
+    /**
+     * Configura el destino que se activa al resolver el puzzle.
+     *
+     * @param puzzleSuccessTarget id de puerta o pasadizo activado
+     */
+    public void setPuzzleSuccessTarget(String puzzleSuccessTarget) {
+        this.puzzleSuccessTarget = puzzleSuccessTarget;
+    }
+
+    /**
+     * Devuelve el destino que se activa al resolver el puzzle.
+     *
+     * @return id de puerta o pasadizo
+     */
+    public String getPuzzleSuccessTarget() {
+        return puzzleSuccessTarget;
     }
 
     /**
@@ -360,5 +744,38 @@ public class Room implements Comparable<Room> {
             return 1;
         }
         return id.compareTo(other.id);
+    }
+
+    /**
+     * Copia un array de enteros sin exponer la referencia interna.
+     *
+     * @param origen array original
+     * @return copia independiente
+     */
+    private int[] copiarArray(int[] origen) {
+        if (origen == null) {
+            return new int[0];
+        }
+        int[] copia = new int[origen.length];
+        for (int i = 0; i < origen.length; i++) {
+            copia[i] = origen[i];
+        }
+        return copia;
+    }
+
+    /**
+     * Comprueba si una lista contiene exactamente la misma instancia de celda.
+     *
+     * @param lista lista consultada
+     * @param cell celda buscada por referencia
+     * @return true si la instancia ya está registrada
+     */
+    private boolean contieneCeldaPorReferencia(ListaSimplementeEnlazada<Cell> lista, Cell cell) {
+        for (int i = 0; i < lista.getSize(); i++) {
+            if (lista.get(i) == cell) {
+                return true;
+            }
+        }
+        return false;
     }
 }

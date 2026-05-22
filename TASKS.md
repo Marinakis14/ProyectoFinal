@@ -27,7 +27,8 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 |------|--------|
 | Capas 2, 3 y 4 | Completadas y testeadas |
 | Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga, TurnManager, ItemGenerator, PuzzleManager y DungeonGenerator completados |
-| Tests JUnit actuales | 349 tests pasando |
+| Capa 6 inicial | GameState, LoadedGame, GameSummary y LectorJSON completados |
+| Tests JUnit actuales | 360 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
 ---
@@ -259,6 +260,28 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 
 ---
 
+## Capa 6 — Persistencia
+
+| Nº | Tarea | Estado |
+|---:|-------|--------|
+| 1 | Implementar `GameState` como DTO plano serializable | ✅ Completado |
+| 2 | Guardar sala actual, personaje, fase, turno, flags de acción y último diálogo | ✅ Completado |
+| 3 | Guardar HP, posición, inventario normal, inventario narrativo, equipo, bonus temporal y efectos del jugador | ✅ Completado |
+| 4 | Guardar salas exploradas, temporizadores, diálogos mostrados, puzzles y celdas dinámicas | ✅ Completado |
+| 5 | Guardar contenedores con id, estado abierto e items restantes | ✅ Completado |
+| 6 | Guardar enemigos vivos y muertos con sala, posición, HP, drop, cooldown, tipo y efectos | ✅ Completado |
+| 7 | Guardar pasadizos ocultos activos y log acumulativo | ✅ Completado |
+| 8 | Implementar `LoadedGame` como alternativa tipada a `Object[]` | ✅ Completado |
+| 9 | Implementar `GameSummary` para resumen final exportable | ✅ Completado |
+| 10 | Implementar `LectorJSON.guardarPartida(...)` en UTF-8 | ✅ Completado |
+| 11 | Implementar `LectorJSON.cargarPartida(...)` reconstruyendo base con `DungeonGenerator` y aplicando estado dinámico | ✅ Completado |
+| 12 | Implementar `extraerGameState(...)` y `reconstruirDesdeGameState(...)` | ✅ Completado |
+| 13 | Implementar exportación de resumen final con `exportarResumen(...)` | ✅ Completado |
+| 14 | Añadir setters controlados en `TurnManager` para restaurar fase, turno y último diálogo | ✅ Completado |
+| 15 | Añadir restauración de apertura en `Container` para carga sin entregar loot duplicado | ✅ Completado |
+
+---
+
 ## Tests implementados
 
 | Nº | Test | Estado |
@@ -289,6 +312,8 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 24 | `PuzzleManagerTest` | ✅ Completado |
 | 25 | `MiniBossEnemyTest` | ✅ Completado |
 | 26 | `DungeonGeneratorTest` | ✅ Completado |
+| 27 | `GameStateTest` | ✅ Completado |
+| 28 | `LectorJSONTest` | ✅ Completado |
 
 ---
 
@@ -313,6 +338,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 15 | Suite tras `STAIRS_UP/DOWN`, accesos adyacentes y visión actualizada | ✅ Correcta |
 | 16 | Suite tras diálogos, puzzles, pasadizos ocultos y log acumulativo | ✅ Correcta |
 | 17 | Suite tras enemigos nuevos, mini-bosses, items narrativos y `DungeonGenerator` | ✅ Correcta |
+| 18 | Suite tras persistencia (`GameState`, `LoadedGame`, `GameSummary`, `LectorJSON`) | ✅ Correcta |
 
 Última verificación completa:
 
@@ -323,7 +349,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 Resultado:
 
 ```text
-349 tests, 0 failures, 0 errors, 0 skipped
+360 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---
@@ -381,6 +407,12 @@ Resultado:
 | 47 | `EL_FILTRO` pertenece a `MiniBossEnemy` e ignora 5 defensa del jugador | ✅ Aceptada |
 | 48 | `ECO_DE_MAGIA` ignora 3 defensa del jugador | ✅ Aceptada |
 | 49 | Los items aleatorios de Zona 5 son P3, P4 o P5 | ✅ Aceptada |
+| 50 | La persistencia usa DTOs planos y referencias por id, no referencias directas entre objetos vivos | ✅ Aceptada |
+| 51 | La carga reconstruye el mundo base con `DungeonGenerator` y aplica después el estado dinámico guardado | ✅ Aceptada |
+| 52 | `LoadedGame` sustituye a `Object[]` para devolver dungeon, jugador y turn manager de forma tipada | ✅ Aceptada |
+| 53 | `GameSummary` se crea ahora con datos fiables: personaje, sala, HP, turno, inventarios, salas exploradas y log | ✅ Aceptada |
+| 54 | Los enemigos muertos se guardan con `vivo=false` y no se reinsertan al reconstruir la partida | ✅ Aceptada |
+| 55 | Los JSON de partida y resumen se escriben y leen explícitamente en UTF-8 | ✅ Aceptada |
 
 ---
 
@@ -390,5 +422,5 @@ Resultado:
 |---:|-----------------|--------|
 | 1 | Definir habilidades especiales finales de mini-bosses | ⬜ Pendiente |
 | 2 | Definir `MalacharAlly` y `ParasitoEnemy` para el boss final | ⬜ Pendiente |
-| 3 | Implementar persistencia (`GameState`, `LectorJSON`) | ⬜ Pendiente |
+| 3 | Enriquecer y completar mensajes del log de operaciones | ⬜ Pendiente |
 | 4 | Implementar capa JavaFX | ⬜ Pendiente |

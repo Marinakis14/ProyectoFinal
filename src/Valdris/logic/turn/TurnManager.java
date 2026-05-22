@@ -604,6 +604,39 @@ public class TurnManager {
         return dialogo;
     }
 
+    /**
+     * Restaura la fase actual desde persistencia.
+     *
+     * @param faseActual fase guardada
+     */
+    public void setFaseActual(Phase faseActual) {
+        if (faseActual != null) {
+            this.faseActual = faseActual;
+        }
+    }
+
+    /**
+     * Restaura el turno global desde persistencia.
+     *
+     * @param turnoGlobal turno guardado
+     */
+    public void setTurnoGlobal(int turnoGlobal) {
+        if (turnoGlobal < 0) {
+            this.turnoGlobal = 0;
+        } else {
+            this.turnoGlobal = turnoGlobal;
+        }
+    }
+
+    /**
+     * Restaura el último diálogo pendiente desde persistencia.
+     *
+     * @param lastDialogue diálogo pendiente
+     */
+    public void setLastDialogue(String lastDialogue) {
+        this.lastDialogue = lastDialogue;
+    }
+
     // -- Métodos auxiliares ---------------------------------------------------
 
     /**

@@ -89,6 +89,18 @@ public abstract class Container implements Comparable<Container> {
     }
 
     /**
+     * Restaura el estado de apertura desde persistencia.
+     *
+     * <p>No entrega contenido al jugador ni modifica la lista de items. Solo
+     * debe usarse al reconstruir una partida guardada.</p>
+     *
+     * @param abierto true si el contenedor ya estaba abierto
+     */
+    public void restaurarAbierto(boolean abierto) {
+        this.abierto = abierto;
+    }
+
+    /**
      * Indica si el contenedor no tiene items pendientes.
      *
      * @return true si no queda contenido por recoger

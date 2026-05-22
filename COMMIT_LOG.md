@@ -922,6 +922,66 @@ narrativos deben ser items reales con espacio propio, no accesorios equipables.
 
 ---
 
+### Sesión 19 — 23 mayo 2026 — Codex
+
+**Clases o ficheros trabajados:**
+- `GameState`
+- `LoadedGame`
+- `GameSummary`
+- `LectorJSON`
+- `TurnManager`
+- `Container`
+- `GameStateTest`
+- `LectorJSONTest`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Prompt usado (detalle):**
+El equipo pidió empezar el bloque de persistencia después de cerrar la estructura de `DungeonGenerator`.
+Antes de implementar se fijó que la guía define la estructura base, pero que se ampliaría para guardar el
+estado real actual: inventario narrativo, puzzles, pasadizos ocultos, cofres, enemigos vivos y muertos,
+fase actual, flags de acciones y log acumulativo. También se decidió desviarse de la propuesta `Object[]`
+de la guía y usar una clase tipada `LoadedGame`. Se cerró además crear `GameSummary` ya en este bloque,
+pero solo con datos fiables disponibles ahora.
+
+**Resultado:**
+- Compila: SÍ
+- Tests pasan: SÍ
+- Cambios manuales necesarios: ninguno
+
+**Problemas encontrados:**
+- Los DTOs de `GameState` no podían guardarse temporalmente en `ListaSimplementeEnlazada` porque la LSE
+  propia exige `Comparable<T>`.
+- El primer intento de ejecutar una suite concreta quedó bloqueado por permisos de red/sandbox al resolver
+  Maven Wrapper.
+
+**Solución aplicada:**
+- Se usaron arrays de DTOs y recorridos en dos pasadas donde hacía falta contar elementos antes de construir
+  el array, sin tocar `MisEstructurasDeDatos`.
+- Se repitió la ejecución de tests con permiso para Maven en el caso bloqueado por sandbox.
+- `LectorJSON` lee y escribe JSON explícitamente con UTF-8.
+- La carga reconstruye primero el mundo base con `DungeonGenerator` y después aplica estado dinámico:
+  salas, celdas, contenedores, pasadizos, jugador, enemigos, sala actual y turno.
+- Los enemigos muertos se guardan como `vivo=false` y no se reinsertan en la reconstrucción.
+- `Container` recibió `restaurarAbierto(boolean)` para restaurar cofres sin entregar loot de nuevo.
+- `TurnManager` recibió setters controlados para restaurar fase, turno global y último diálogo.
+
+**Decisiones técnicas:**
+- `GameState` queda como DTO plano público para Gson, sin referencias directas entre objetos del dominio.
+- `LoadedGame` sustituye a `Object[]` para evitar casts frágiles al cargar.
+- `GameSummary` guarda personaje, sala, HP, turno, inventario normal, inventario narrativo, salas exploradas y log.
+- La mejora de mensajes del log queda como bloque posterior separado de persistencia.
+
+**Verificación:**
+- `.\mvnw.cmd -q -DskipTests compile`
+- `.\mvnw.cmd -q "-Dtest=LectorJSONTest" test`
+- `.\mvnw.cmd -q test`
+- Resultado suite completa: `360 tests, 0 failures, 0 errors, 0 skipped`
+
+**Commit sugerido:** `git commit -m "feat: implementar persistencia json"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas
@@ -972,8 +1032,10 @@ narrativos deben ser items reales con espacio propio, no accesorios equipables.
 - [x] InvalidMoveException
 - [x] InvalidAttackException
 - [x] GameStateException
-- [ ] GameState
-- [ ] LectorJSON
+- [x] GameState
+- [x] LoadedGame
+- [x] GameSummary
+- [x] LectorJSON
 
 **Bloque 6 — JavaFX**
 - [ ] MainApp
@@ -1013,7 +1075,8 @@ narrativos deben ser items reales con espacio propio, no accesorios equipables.
 - [x] PuzzleManagerTest
 - [x] MiniBossEnemyTest
 - [x] DungeonGeneratorTest
-- [ ] GameStateTest
+- [x] GameStateTest
+- [x] LectorJSONTest
 
 ---
 
@@ -1026,7 +1089,7 @@ narrativos deben ser items reales con espacio propio, no accesorios equipables.
 Resultado:
 
 ```text
-349 tests, 0 failures, 0 errors, 0 skipped
+360 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---

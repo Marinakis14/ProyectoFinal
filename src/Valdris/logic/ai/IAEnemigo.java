@@ -16,6 +16,7 @@ import Valdris.model.items.Item;
 import Valdris.model.map.Cell;
 import Valdris.model.map.Room;
 import Valdris.model.units.Enemy;
+import Valdris.model.units.MiniBossEnemy;
 import Valdris.model.units.Player;
 
 /**
@@ -81,6 +82,32 @@ public final class IAEnemigo {
                 motivo, dropItemId);
         }
 
+        if (enemy instanceof MiniBossEnemy) {
+            return MiniBossAI.executeTurn((MiniBossEnemy) enemy, room, player, cm,
+                filaOrigen, colOrigen, effects);
+        }
+
+        return executeBaseAction(enemy, room, player, cm, filaOrigen, colOrigen, effects);
+    }
+
+    /**
+     * Ejecuta la acción base de un enemigo no especial.
+     *
+     * <p>Este método queda accesible dentro del paquete para que la IA de
+     * mini-bosses pueda reutilizar el comportamiento normal cuando la habilidad
+     * especial no está cargada o no corresponde usarla.</p>
+     *
+     * @param enemy enemigo activo
+     * @param room sala actual
+     * @param player jugador objetivo
+     * @param cm parámetro conservado por compatibilidad con la guía
+     * @param filaOrigen fila inicial
+     * @param colOrigen columna inicial
+     * @param effects efectos procesados antes de actuar
+     * @return resultado de la acción base
+     */
+    static AIActionResult executeBaseAction(Enemy enemy, Room room, Player player, CombatManager cm,
+                                            int filaOrigen, int colOrigen, EffectProcessingResult effects) {
         ArbolDecisionIA arbol = new ArbolDecisionIA(enemy.getTipo());
         AccionIA accion = arbol.decidirAccion(enemy, room, player);
         AIActionResult result = ejecutarAccion(accion, enemy, room, player, cm, filaOrigen, colOrigen);

@@ -153,7 +153,7 @@ Minas enanas excavadas hace siglos, ahora abandonadas. Varios pisos conectados p
 |--|--|
 | **Enemigos** | Gólems de piedra (Warrior muy lento, altísima defensa), Murciélagos de cristal (Archer rápido, frágil), Enano espectral (Mage con ataque de área) |
 | **Acertijo** | Mecanismo de vagoneta en tres niveles: activar palancas en pisos distintos en el orden correcto para abrir la compuerta inferior. Orden incorrecto → vagoneta aplasta celda bloqueando el paso temporalmente. |
-| **Mini-boss** | El Gólem Maestro — Warrior que ocupa 2×2 celdas. Al morir suelta el **Fragmento de Sello**. |
+| **Mini-boss** | El Gólem Maestro — Warrior pesado con Pisotón Sísmico de área. Al morir suelta el **Fragmento de Sello**. |
 | **Item de zona** | **Fragmento de Sello** — necesario para interactuar con los mecanismos del Núcleo Profundo. Desbloquea diálogos extra con Malachar. |
 | **Escaleras** | Tres pisos: Piso -1 (entrada), Piso -2 (minas activas), Piso -3 (cámaras profundas con el mini-boss). |
 

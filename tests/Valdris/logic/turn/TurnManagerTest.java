@@ -9,6 +9,7 @@ import Valdris.model.enums.CharacterType;
 import Valdris.model.enums.EffectType;
 import Valdris.model.enums.EnemyType;
 import Valdris.model.enums.LogEventType;
+import Valdris.model.enums.MiniBossType;
 import Valdris.model.enums.Phase;
 import Valdris.model.items.Accessory;
 import Valdris.model.items.Weapon;
@@ -16,6 +17,7 @@ import Valdris.model.map.Chest;
 import Valdris.model.map.Dungeon;
 import Valdris.model.map.Room;
 import Valdris.model.units.Enemy;
+import Valdris.model.units.MiniBossEnemy;
 import Valdris.model.units.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -678,6 +680,24 @@ class TurnManagerTest {
         assertTrue(player.getHp() < hpInicial);
         assertTrue(existeLog(LogEventType.COMBAT, "muere por efectos"));
         assertTrue(existeLog(LogEventType.ENEMY_TURN, "Turno enemigo resuelto"));
+    }
+
+    @Test
+    void ejecutarTurnoEnemigos_registraHabilidadEspecialDeMiniBoss() throws GameStateException {
+        // Arrange
+        MiniBossEnemy alcalde = new MiniBossEnemy(MiniBossType.ALCALDE_CORRUPTO, 2, 3, "R1");
+        alcalde.setTurnosSinActuar(3);
+        room.addEnemigo(alcalde);
+        int hpInicial = player.getHp();
+        turnManager.cederTurno();
+
+        // Act
+        turnManager.ejecutarTurnoEnemigos();
+
+        // Assert
+        assertEquals(hpInicial - 35, player.getHp());
+        assertTrue(existeLog(LogEventType.ENEMY_TURN, "Estocada Corrupta"));
+        assertTrue(existeLog(LogEventType.ENEMY_TURN, "Alcalde Corrupto"));
     }
 
     // -- Métodos auxiliares --------------------------------------------------

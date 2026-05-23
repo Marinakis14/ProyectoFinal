@@ -17,11 +17,11 @@ class MiniBossEnemyTest {
 
     @Test
     void constructor_inicializaStatsDeTodosLosMiniBosses() {
-        assertStats(MiniBossType.ALCALDE_CORRUPTO, 55, 18, 8, 2, 1, 0, false);
-        assertStats(MiniBossType.ESPIRITU_MADRE, 65, 16, 8, 2, 4, 0, false);
-        assertStats(MiniBossType.GOLEM, 90, 20, 11, 1, 1, 0, true);
-        assertStats(MiniBossType.GUARDIAN_SIN_NOMBRE, 80, 22, 12, 2, 1, 0, false);
-        assertStats(MiniBossType.EL_FILTRO, 70, 22, 10, 2, 3, 5, false);
+        assertStats(MiniBossType.ALCALDE_CORRUPTO, 55, 18, 8, 2, 1, 0);
+        assertStats(MiniBossType.ESPIRITU_MADRE, 65, 16, 8, 2, 4, 0);
+        assertStats(MiniBossType.GOLEM, 90, 20, 11, 1, 1, 0);
+        assertStats(MiniBossType.GUARDIAN_SIN_NOMBRE, 80, 22, 12, 2, 1, 0);
+        assertStats(MiniBossType.EL_FILTRO, 70, 22, 10, 2, 3, 5);
     }
 
     @Test
@@ -41,7 +41,7 @@ class MiniBossEnemyTest {
     // -- Helpers -------------------------------------------------------------
 
     private void assertStats(MiniBossType tipo, int hp, int ataque, int defensa,
-                             int mov, int rango, int penetracion, boolean ocupa2x2) {
+                             int mov, int rango, int penetracion) {
         // Arrange + Act
         MiniBossEnemy boss = new MiniBossEnemy(tipo, 0, 0, "R-BOSS");
 
@@ -52,6 +52,5 @@ class MiniBossEnemyTest {
         assertEquals(mov, boss.getMovBase());
         assertEquals(rango, boss.getRango());
         assertEquals(penetracion, boss.getPenetracionDefensa());
-        assertEquals(ocupa2x2, boss.isOcupa2x2());
     }
 }

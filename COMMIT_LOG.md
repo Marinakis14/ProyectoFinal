@@ -1114,6 +1114,67 @@ categoría demasiado técnica y debía reemplazarse por `GAME`, reservada para e
 
 ---
 
+### Sesión 22 — 23 mayo 2026 — Codex
+
+**Clases o ficheros trabajados:**
+- `MiniBossAI`
+- `IAEnemigo`
+- `AIActionResult`
+- `ArbolDecisionIA`
+- `TurnManager`
+- `MiniBossEnemy`
+- `MiniBossType`
+- `MiniBossAITest`
+- `MiniBossEnemyTest`
+- `TurnManagerTest`
+- `GUIA_DISENO_V4_FINAL.md`
+- `GUIA_DISENO_V5_FINAL.md`
+- `GUIA_PROYECTO_JUEGO_V3.md`
+- `TASKS.md`
+
+**Prompt usado (detalle):**
+El equipo cerró las habilidades especiales de los mini-bosses y pidió implementarlas antes de JavaFX.
+Se decidió que el Golem dejara de ocupar 2x2 de forma real o conceptual y pasara a ser una unidad 1x1,
+con Pisotón Sísmico como área de radio Manhattan 2 que atraviesa paredes por tratarse de una onda sísmica.
+También se fijó que los especiales respetan BLIND y que el sistema completo de game over queda para más adelante.
+
+**Resultado:**
+- Compila: SÍ
+- Tests pasan: SÍ
+- Cambios manuales necesarios: actualización de tests de IA, turnos, mini-bosses y documentación de diseño
+
+**Problemas encontrados:**
+- `MiniBossEnemy` todavía exponía `isOcupa2x2()`, que ya no representa una regla vigente.
+- La IA enemiga solo conocía comportamientos por `EnemyType`, sin punto claro para habilidades narrativas.
+- El log estructurado necesitaba nombre de actor y nombre de habilidad para no registrar mini-bosses como tipos genéricos.
+
+**Solución aplicada:**
+- Se añadió `MiniBossAI` para resolver habilidades especiales sin ensuciar `Enemy`.
+- `IAEnemigo.executeTurn(...)` delega en `MiniBossAI` cuando el enemigo es `MiniBossEnemy`.
+- `AIActionResult` puede transportar nombre narrativo de actor y nombre de habilidad especial.
+- `ArbolDecisionIA.AccionIA` incluye `HABILIDAD_ESPECIAL`.
+- `TurnManager` registra habilidades especiales, fallos por BLIND, efectos aplicados y derrotas del jugador en el log.
+- Se eliminaron `ocupa2x2` e `isOcupa2x2()` de `MiniBossEnemy`.
+- Se actualizaron las guías Markdown para reflejar que el Golem es 1x1 y usa Pisotón Sísmico.
+
+**Decisiones técnicas:**
+- Alcalde Corrupto: Estocada Corrupta, 35 daño fijo, rango 1, cooldown 3.
+- Espíritu Madre: Enredadera Paralizante, 12 daño fijo + PARALYSIS 1 turno, rango 4 con visión, cooldown 3.
+- Golem: Pisotón Sísmico, 28 daño fijo, radio Manhattan 2, sin línea de visión, cooldown 3.
+- Guardián Sin Nombre: Sentencia Arcana, 20 daño fijo + CURSE 2 turnos, rango 1, cooldown 2.
+- El Filtro mantiene solo su pasivo de penetración 5.
+- Si un especial cargado no alcanza tras intentar moverse, se pierde el intento y se reinicia cooldown.
+- No se modificó `MisEstructurasDeDatos`.
+
+**Verificación:**
+- `.\mvnw.cmd -q "-Dtest=MiniBossAITest,IAEnemigoTest,TurnManagerTest,MiniBossEnemyTest,TypeEnumsTest,DungeonGeneratorTest,LectorJSONTest" test`
+- `.\mvnw.cmd -q test`
+- Resultado suite completa: `379 tests, 0 failures, 0 errors, 0 skipped`
+
+**Commit sugerido:** `git commit -m "feat: implementar habilidades de mini-bosses"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas
@@ -1227,7 +1288,7 @@ categoría demasiado técnica y debía reemplazarse por `GAME`, reservada para e
 Resultado:
 
 ```text
-371 tests, 0 failures, 0 errors, 0 skipped
+379 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---

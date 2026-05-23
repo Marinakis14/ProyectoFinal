@@ -397,6 +397,9 @@ public class ArbolDecisionIA {
         /** Ataque en área del Destructor. */
         AOE,
 
+        /** Habilidad especial de mini-boss. */
+        HABILIDAD_ESPECIAL,
+
         /** Sin acción útil este turno. */
         ESPERAR
     }

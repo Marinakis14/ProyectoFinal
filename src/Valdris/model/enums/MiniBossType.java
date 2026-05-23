@@ -23,7 +23,7 @@ public enum MiniBossType {
 
     /**
      * Mini-boss de Zona 3.
-     * Ocupa conceptualmente 2x2 celdas y entrega el Fragmento de Sello.
+     * Usa Pisotón Sísmico como onda de área y entrega el Fragmento de Sello.
      */
     GOLEM,
 

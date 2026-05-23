@@ -556,7 +556,7 @@ PASILLO 2→3 ── S3-A (Entrada -1) ── S3-B (Vagoneta -1)
 | S3-C | Túnel Central | -2 | 8x8 | 2 Guardian, 1 Archer | Escaleras a -1 y -3. Acceso a S3-SEC |
 | S3-D | Cámara de Cristal | -2 | 7x9 | 2 Destructor, 1 Berserker | Sala difícil — dos Destructores |
 | S3-E | Profundidades | -3 | 9x9 | 3 Warrior, 1 Francotirador | Primer Francotirador del juego |
-| S3-F | Cámara del Golem | -3 | 10x11 | Mini-boss: Golem (2x2) + 2 Guardian | Suelta Fragmento de Sello |
+| S3-F | Cámara del Golem | -3 | 10x11 | Mini-boss: Golem + 2 Guardian | Suelta Fragmento de Sello |
 | S3-SEC | Cámara Enana | -2 | 5x6 | Ninguno | Cofre Arma Zona 3. DOOR_HIDDEN desde S3-C |
 | PASILLO 3→4 | Base de la Torre | — | 3x8 | Ninguno | Item aleatorio Zona 4. hasRoomTimer=false |
 

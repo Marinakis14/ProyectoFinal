@@ -206,7 +206,7 @@ Versión v5.0 Final — Sistema turnos + IA + Mapa + Items completos + Balanceo 
 |------|------|----|------|-----|-------------|-----------------|
 | Alcalde Corrupto | Z1 | 55 | 18 | 8 | + 2 Warrior | Def 8: Syra hace 11 med (5t). Dorath 6.9t. Kael 3.4t |
 | Espíritu Madre | Z2 | 65 | 16 | 8 | + 2 Archer | Syra con Arco Élfico: 14 med, 4.6t — boss de su zona |
-| Golem | Z3 | 90 | 20 | 11 | + 2 Guardian | Def 11: Syra sin Martillo 8.2t (viable con pociones). Ocupa 2x2 |
+| Golem | Z3 | 90 | 20 | 11 | + 2 Guardian | Def 11: Syra sin Martillo 8.2t (viable con pociones). Pisotón Sísmico como área de radio 2 |
 | Guardian Sin Nombre | Z4 | 80 | 22 | 12 | + 2 Constructo | Dorath con Grimorio: 20 med, 4t — Kael 3.8t — Syra 5.7t |
 | El Filtro | Z5 | 70 | 22 | 10 | Solo | Ignora 5 def jugador. Syra aguanta 4.2 golpes — tensión máxima |
 

@@ -8,8 +8,8 @@ import Valdris.model.enums.MiniBossType;
  *
  * <p>Los mini-bosses siguen siendo enemigos para combate, sala, IA y drops,
  * pero guardan un tipo narrativo propio. Esto permite añadir más adelante
- * habilidades concretas sin convertir {@link Enemy} en una colección de casos
- * especiales.</p>
+ * habilidades concretas desde la capa de lógica sin convertir {@link Enemy} en
+ * una colección de casos especiales.</p>
  */
 public class MiniBossEnemy extends Enemy {
 
@@ -20,9 +20,6 @@ public class MiniBossEnemy extends Enemy {
 
     /** Nombre visible del mini-boss. */
     private final String nombreNarrativo;
-
-    /** Indica si el mini-boss ocupa conceptualmente un bloque 2x2. */
-    private final boolean ocupa2x2;
 
     /** Defensa del jugador ignorada al atacar. */
     private final int penetracionDefensa;
@@ -43,7 +40,6 @@ public class MiniBossEnemy extends Enemy {
             fila, col, idSala);
         this.tipoMiniBoss = tipoMiniBoss;
         this.nombreNarrativo = getNombreNarrativo(tipoMiniBoss);
-        this.ocupa2x2 = tipoMiniBoss == MiniBossType.GOLEM;
         this.penetracionDefensa = tipoMiniBoss == MiniBossType.EL_FILTRO ? 5 : 0;
         setMiniJefe(true);
     }
@@ -66,15 +62,6 @@ public class MiniBossEnemy extends Enemy {
      */
     public String getNombreNarrativo() {
         return nombreNarrativo;
-    }
-
-    /**
-     * Indica si el mini-boss ocupa conceptualmente 2x2 celdas.
-     *
-     * @return true si ocupa 2x2
-     */
-    public boolean isOcupa2x2() {
-        return ocupa2x2;
     }
 
     /**

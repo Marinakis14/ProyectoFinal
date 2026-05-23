@@ -850,16 +850,16 @@ public class TurnManager {
         if (result == null) {
             return;
         }
-        registrarResultadoEfectos(result.getEnemyType().name(), result.getEffectProcessingResult(), -1, -1);
+        String actor = result.getNombreActor();
+        registrarResultadoEfectos(actor, result.getEffectProcessingResult(), -1, -1);
         if (result.getMotivo() != null && result.getAccion() == AccionIA.ESPERAR) {
-            addLog(LogEventType.ENEMY_TURN, result.getEnemyType().name(),
-                result.getEnemyType() + " no actúa: " + result.getMotivo() + ".", result.getMotivo());
+            addLog(LogEventType.ENEMY_TURN, actor, actor + " no actúa: " + result.getMotivo() + ".",
+                result.getMotivo());
             if ("MUERTO_POR_EFECTOS".equals(result.getMotivo())) {
-                addLog(LogEventType.COMBAT, result.getEnemyType().name(),
-                    result.getEnemyType() + " muere por efectos.", null);
+                addLog(LogEventType.COMBAT, actor, actor + " muere por efectos.", null);
                 if (result.getDropItemId() != null) {
-                    addLog(LogEventType.PICKUP, result.getEnemyType().name(),
-                        result.getEnemyType() + " deja caer " + result.getDropItemId() + ".",
+                    addLog(LogEventType.PICKUP, actor,
+                        actor + " deja caer " + result.getDropItemId() + ".",
                         "dropItemId=" + result.getDropItemId());
                 }
             }
@@ -869,23 +869,27 @@ public class TurnManager {
             registrarCombateEnemigo(result);
         }
         if (result.getEfectoAplicado() != null) {
-            addLog(LogEventType.STATE, result.getEnemyType().name(),
-                result.getEnemyType() + " aplica " + result.getEfectoAplicado() + " a " + nombreJugador() + ".",
+            addLog(LogEventType.STATE, actor,
+                actor + " aplica " + result.getEfectoAplicado() + " a " + nombreJugador() + ".",
                 "efecto=" + result.getEfectoAplicado());
         }
         if (result.getTipoInvocado() != null) {
-            addLog(LogEventType.ENEMY_TURN, result.getEnemyType().name(),
-                result.getEnemyType() + " invoca " + result.getTipoInvocado() + " en ("
+            addLog(LogEventType.ENEMY_TURN, actor,
+                actor + " invoca " + result.getTipoInvocado() + " en ("
                     + result.getFilaInvocado() + "," + result.getColInvocado() + ").",
                 "invocado=" + result.getTipoInvocado());
         }
         if (result.huboMovimiento()) {
-            addLog(LogEventType.ENEMY_TURN, result.getEnemyType().name(),
-                result.getEnemyType() + " se mueve de (" + result.getFilaOrigen() + ","
+            addLog(LogEventType.ENEMY_TURN, actor,
+                actor + " se mueve de (" + result.getFilaOrigen() + ","
                     + result.getColOrigen() + ") a (" + result.getFilaDestino() + ","
                     + result.getColDestino() + ").",
                 "origen=" + result.getFilaOrigen() + "," + result.getColOrigen()
                     + ";destino=" + result.getFilaDestino() + "," + result.getColDestino());
+        }
+        if (result.getMotivo() != null && result.getAccion() != AccionIA.ESPERAR) {
+            addLog(LogEventType.ENEMY_TURN, actor, actor + ": " + result.getMotivo() + ".",
+                result.getMotivo());
         }
     }
 
@@ -896,17 +900,31 @@ public class TurnManager {
      */
     private void registrarCombateEnemigo(AIActionResult result) {
         CombatResult combat = result.getCombatResult();
+        String actor = result.getNombreActor();
         if (combat.isFalloPorBlind()) {
-            addLog(LogEventType.ENEMY_TURN, result.getEnemyType().name(),
-                result.getEnemyType() + " falla su ataque por BLIND.", null);
+            String accionFallida = result.getHabilidadEspecial() == null
+                ? "su ataque" : result.getHabilidadEspecial();
+            addLog(LogEventType.ENEMY_TURN, actor,
+                actor + " falla " + accionFallida + " por BLIND.", null);
             return;
         }
-        String accion = result.getAccion() == AccionIA.AOE ? "alcanza con AOE a" : "ataca a";
-        addLog(LogEventType.ENEMY_TURN, result.getEnemyType().name(),
-            result.getEnemyType() + " " + accion + " " + nombreJugador() + " e inflige "
-                + combat.getDanioAplicado() + " daño. HP jugador: "
-                + combat.getHpRestanteObjetivo() + "/" + combat.getHpMaxObjetivo() + ".",
-            "danio=" + combat.getDanioAplicado());
+        if (result.getAccion() == AccionIA.HABILIDAD_ESPECIAL) {
+            addLog(LogEventType.ENEMY_TURN, actor,
+                actor + " usa " + result.getHabilidadEspecial() + " contra " + nombreJugador()
+                    + " e inflige " + combat.getDanioAplicado() + " daño. HP jugador: "
+                    + combat.getHpRestanteObjetivo() + "/" + combat.getHpMaxObjetivo() + ".",
+                "habilidad=" + result.getHabilidadEspecial() + ";danio=" + combat.getDanioAplicado());
+        } else {
+            String accion = result.getAccion() == AccionIA.AOE ? "alcanza con AOE a" : "ataca a";
+            addLog(LogEventType.ENEMY_TURN, actor,
+                actor + " " + accion + " " + nombreJugador() + " e inflige "
+                    + combat.getDanioAplicado() + " daño. HP jugador: "
+                    + combat.getHpRestanteObjetivo() + "/" + combat.getHpMaxObjetivo() + ".",
+                "danio=" + combat.getDanioAplicado());
+        }
+        if (combat.isObjetivoMuerto()) {
+            addLog(LogEventType.COMBAT, actor, nombreJugador() + " cae derrotado por " + actor + ".", null);
+        }
     }
 
     /**

@@ -23,6 +23,9 @@ public class AIActionResult implements Comparable<AIActionResult> {
     /** Tipo del enemigo que actuó. */
     private final EnemyType enemyType;
 
+    /** Nombre visible del actor para log, o null si se usa el tipo. */
+    private final String nombreActor;
+
     /** ID de la sala donde actuó. */
     private final String salaId;
 
@@ -62,6 +65,9 @@ public class AIActionResult implements Comparable<AIActionResult> {
     /** ID del drop generado por muerte de efectos, o null. */
     private final String dropItemId;
 
+    /** Nombre de habilidad especial usada, o null. */
+    private final String habilidadEspecial;
+
     // -- Constructor ----------------------------------------------------------
 
     /**
@@ -88,8 +94,41 @@ public class AIActionResult implements Comparable<AIActionResult> {
                           CombatResult combatResult, EffectProcessingResult effectProcessingResult,
                           EffectType efectoAplicado, EnemyType tipoInvocado,
                           int filaInvocado, int colInvocado, String motivo, String dropItemId) {
+        this(accion, enemyType, salaId, filaOrigen, colOrigen, filaDestino, colDestino,
+            combatResult, effectProcessingResult, efectoAplicado, tipoInvocado, filaInvocado, colInvocado,
+            motivo, dropItemId, null, null);
+    }
+
+    /**
+     * Crea un resultado de IA con nombre visible y habilidad especial.
+     *
+     * @param accion acción ejecutada
+     * @param enemyType tipo de enemigo
+     * @param salaId id de sala
+     * @param filaOrigen fila inicial
+     * @param colOrigen columna inicial
+     * @param filaDestino fila final
+     * @param colDestino columna final
+     * @param combatResult resultado de combate
+     * @param effectProcessingResult resultado de efectos previos
+     * @param efectoAplicado efecto aplicado
+     * @param tipoInvocado tipo invocado
+     * @param filaInvocado fila invocada
+     * @param colInvocado columna invocada
+     * @param motivo motivo adicional
+     * @param dropItemId id de drop generado por efectos
+     * @param nombreActor nombre visible del actor
+     * @param habilidadEspecial nombre de la habilidad usada
+     */
+    public AIActionResult(AccionIA accion, EnemyType enemyType, String salaId,
+                          int filaOrigen, int colOrigen, int filaDestino, int colDestino,
+                          CombatResult combatResult, EffectProcessingResult effectProcessingResult,
+                          EffectType efectoAplicado, EnemyType tipoInvocado,
+                          int filaInvocado, int colInvocado, String motivo, String dropItemId,
+                          String nombreActor, String habilidadEspecial) {
         this.accion = accion;
         this.enemyType = enemyType;
+        this.nombreActor = nombreActor;
         this.salaId = salaId;
         this.filaOrigen = filaOrigen;
         this.colOrigen = colOrigen;
@@ -103,6 +142,7 @@ public class AIActionResult implements Comparable<AIActionResult> {
         this.colInvocado = colInvocado;
         this.motivo = motivo;
         this.dropItemId = dropItemId;
+        this.habilidadEspecial = habilidadEspecial;
     }
 
     // -- Getters --------------------------------------------------------------
@@ -115,6 +155,18 @@ public class AIActionResult implements Comparable<AIActionResult> {
     /** @return tipo de enemigo */
     public EnemyType getEnemyType() {
         return enemyType;
+    }
+
+    /**
+     * Devuelve el nombre visible del actor.
+     *
+     * @return nombre visible, o el tipo de enemigo si no hay nombre narrativo
+     */
+    public String getNombreActor() {
+        if (nombreActor != null && !nombreActor.isEmpty()) {
+            return nombreActor;
+        }
+        return enemyType == null ? "ENEMIGO" : enemyType.name();
     }
 
     /** @return id de sala */
@@ -180,6 +232,11 @@ public class AIActionResult implements Comparable<AIActionResult> {
     /** @return id de drop generado por efectos, o null */
     public String getDropItemId() {
         return dropItemId;
+    }
+
+    /** @return nombre de habilidad especial, o null */
+    public String getHabilidadEspecial() {
+        return habilidadEspecial;
     }
 
     /**

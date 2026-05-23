@@ -28,7 +28,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | Capas 2, 3 y 4 | Completadas y testeadas |
 | Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga, TurnManager, ItemGenerator, PuzzleManager y DungeonGenerator completados |
 | Capa 6 inicial | GameState, LoadedGame, GameSummary y LectorJSON completados |
-| Tests JUnit actuales | 371 tests pasando |
+| Tests JUnit actuales | 379 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
 ---
@@ -273,6 +273,10 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 79 | Registrar daño y expiración de efectos relevantes en `TurnManager` | ✅ Completado |
 | 80 | Hacer que `ejecutarUsoItem(null)` lance `GameStateException` | ✅ Completado |
 | 81 | Resolver muerte, retirada de sala y drop de enemigos por efectos al inicio de su turno | ✅ Completado |
+| 82 | Crear `MiniBossAI` para habilidades especiales de mini-bosses | ✅ Completado |
+| 83 | Integrar habilidades especiales de mini-bosses en `IAEnemigo` | ✅ Completado |
+| 84 | Registrar habilidades especiales de mini-bosses en el log estructurado | ✅ Completado |
+| 85 | Convertir el Golem a unidad 1x1 y eliminar `isOcupa2x2()` | ✅ Completado |
 
 ---
 
@@ -331,6 +335,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 27 | `GameStateTest` | ✅ Completado |
 | 28 | `LectorJSONTest` | ✅ Completado |
 | 29 | `GameLogEntryTest` | ✅ Completado |
+| 30 | `MiniBossAITest` | ✅ Completado |
 
 ---
 
@@ -358,6 +363,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 18 | Suite tras persistencia (`GameState`, `LoadedGame`, `GameSummary`, `LectorJSON`) | ✅ Correcta |
 | 19 | Suite tras sub-bloque 1 de log estructurado y `CombatResult` | ✅ Correcta |
 | 20 | Suite tras sub-bloque 2 de log estructurado, IA, efectos y persistencia final | ✅ Correcta |
+| 21 | Suite tras habilidades especiales de mini-bosses | ✅ Correcta |
 
 Última verificación completa:
 
@@ -368,7 +374,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 Resultado:
 
 ```text
-371 tests, 0 failures, 0 errors, 0 skipped
+379 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---
@@ -441,6 +447,9 @@ Resultado:
 | 62 | `ejecutarUsoItem(null)` lanza `GameStateException`; saltar item se hace con `saltarUsoItem()` | ✅ Aceptada |
 | 63 | `AIActionResult` y `EffectProcessingResult` alimentan el log estructurado de turnos enemigos y estados | ✅ Aceptada |
 | 64 | Si un enemigo muere por efectos al empezar su turno, deja drop, sale de la sala y no bloquea el turno del resto | ✅ Aceptada |
+| 65 | El Golem deja de ocupar 2x2 y funciona como unidad 1x1 con Pisotón Sísmico de radio 2 | ✅ Aceptada |
+| 66 | Las habilidades especiales de mini-bosses usan cooldown, respetan BLIND y se registran en el log | ✅ Aceptada |
+| 67 | Si un especial cargado no alcanza al jugador tras intentar moverse, se pierde el intento y se reinicia cooldown | ✅ Aceptada |
 
 ---
 
@@ -448,7 +457,7 @@ Resultado:
 
 | Nº | Tarea pendiente | Estado |
 |---:|-----------------|--------|
-| 1 | Definir habilidades especiales finales de mini-bosses | ⬜ Pendiente |
-| 2 | Definir `MalacharAlly` y `ParasitoEnemy` para el boss final | ⬜ Pendiente |
-| 3 | Definir habilidades especiales finales de mini-bosses y boss final | ⬜ Pendiente |
+| 1 | Definir `MalacharAlly` como aliado NPC del combate final | ⬜ Pendiente |
+| 2 | Definir `ParasitoEnemy`, sus fases, derrota y desenlace final | ⬜ Pendiente |
+| 3 | Implementar sistema de game over y desenlace final | ⬜ Pendiente |
 | 4 | Implementar capa JavaFX | ⬜ Pendiente |

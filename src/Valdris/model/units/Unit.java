@@ -2,6 +2,7 @@ package Valdris.model.units;
 
 import MisEstructurasDeDatos.ListasPilasYColas.ListaSimplementeEnlazada;
 import Valdris.model.effects.Effect;
+import Valdris.model.effects.EffectProcessingResult;
 import Valdris.model.enums.EffectType;
 
 /**
@@ -182,8 +183,13 @@ public abstract class Unit {
      * <p>Los efectos de daño directo, como CURSE y BURN, aplican 3 puntos de
      * daño. Después se decrementa la duración de todos los efectos y se eliminan
      * los que han expirado.</p>
+     *
+     * @return resumen del daño aplicado y efectos expirados
      */
-    public void procesarEfectos() {
+    public EffectProcessingResult procesarEfectos() {
+        EffectType[] expirados = new EffectType[efectosActivos.getSize()];
+        int expiradosSize = 0;
+        int danioTotal = 0;
         for (int i = 0; i < efectosActivos.getSize(); i++) {
             Effect effect = efectosActivos.get(i);
             if (effect == null) {
@@ -192,14 +198,33 @@ public abstract class Unit {
 
             if (effect.getTipo() == EffectType.CURSE || effect.getTipo() == EffectType.BURN) {
                 recibirDanio(3);
+                danioTotal += 3;
             }
 
             effect.decrementar();
             if (effect.isExpired()) {
+                expirados[expiradosSize] = effect.getTipo();
+                expiradosSize++;
                 efectosActivos.del(effect);
                 i--;
             }
         }
+        return new EffectProcessingResult(danioTotal, copiarEfectos(expirados, expiradosSize));
+    }
+
+    /**
+     * Recorta un array de efectos al tamaño usado.
+     *
+     * @param origen array temporal
+     * @param size número de entradas válidas
+     * @return array recortado
+     */
+    private EffectType[] copiarEfectos(EffectType[] origen, int size) {
+        EffectType[] copia = new EffectType[size];
+        for (int i = 0; i < size; i++) {
+            copia[i] = origen[i];
+        }
+        return copia;
     }
 
     /**

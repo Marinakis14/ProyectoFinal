@@ -156,7 +156,7 @@ class TypeEnumsTest {
             LogEventType.ACCESS,
             LogEventType.ROOM,
             LogEventType.STATE,
-            LogEventType.SYSTEM
+            LogEventType.GAME
         };
 
         // Act + Assert

@@ -47,7 +47,7 @@ public class GameLogEntry implements Comparable<GameLogEntry> {
     public GameLogEntry(int turno, LogEventType tipo, String actor, String salaId,
                         String mensaje, String detalle) {
         this.turno = Math.max(0, turno);
-        this.tipo = tipo == null ? LogEventType.SYSTEM : tipo;
+        this.tipo = tipo == null ? LogEventType.GAME : tipo;
         this.actor = actor;
         this.salaId = salaId;
         this.mensaje = mensaje == null ? "" : mensaje;

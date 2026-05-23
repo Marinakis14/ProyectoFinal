@@ -8,6 +8,7 @@ import Valdris.logic.turn.TurnManager;
 import Valdris.model.effects.Effect;
 import Valdris.model.enums.CharacterType;
 import Valdris.model.enums.EffectType;
+import Valdris.model.enums.LogEventType;
 import Valdris.model.enums.MiniBossType;
 import Valdris.model.enums.Phase;
 import Valdris.model.items.Item;
@@ -65,7 +66,7 @@ class LectorJSONTest {
         assertTrue(contiene(state.itemsInventario, "P3"));
         assertTrue(contiene(state.itemsNarrativos, "AC1"));
         assertTrue(contiene(state.pasadizosActivos, "S1_SECRET"));
-        assertTrue(contieneTexto(state.log, "Movimiento registrado."));
+        assertTrue(contieneLog(state.logEventos, "Movimiento registrado."));
 
         GameState.RoomStateDTO s2c = buscarSala(state, "S2-C");
         assertNotNull(s2c);
@@ -126,6 +127,8 @@ class LectorJSONTest {
         assertEquals(7, loaded.getTurnManager().getTurnoGlobal());
         assertEquals("Diálogo de prueba", loaded.getTurnManager().getLastDialogue());
         assertEquals(2, loaded.getTurnManager().getLog().getSize());
+        assertEquals(LogEventType.MOVEMENT, loaded.getTurnManager().getLog().get(0).getTipo());
+        assertEquals("Movimiento registrado.", loaded.getTurnManager().getLog().get(0).getMensaje());
 
         assertTrue(tieneItem(loaded.getPlayer(), "P3"));
         assertTrue(tieneItem(loaded.getPlayer(), "AC1"));
@@ -199,7 +202,7 @@ class LectorJSONTest {
         assertTrue(contiene(summary.itemsInventario, "P3"));
         assertTrue(contiene(summary.itemsNarrativos, "AC1"));
         assertTrue(contiene(summary.salasExploradas, "S2-C"));
-        assertTrue(contieneTexto(summary.log, "Movimiento registrado."));
+        assertTrue(contieneLog(summary.logEventos, "Movimiento registrado."));
     }
 
     @Test
@@ -214,7 +217,7 @@ class LectorJSONTest {
         try (FileReader reader = new FileReader(archivo, StandardCharsets.UTF_8)) {
             GameSummary summary = new Gson().fromJson(reader, GameSummary.class);
             assertEquals("KAEL", summary.tipoPersonaje);
-            assertTrue(contieneTexto(summary.log, "Ataque registrado."));
+            assertTrue(contieneLog(summary.logEventos, "Ataque registrado."));
         }
     }
 
@@ -268,8 +271,8 @@ class LectorJSONTest {
         turnManager.setFaseActual(Phase.ATTACK);
         turnManager.setTurnoGlobal(7);
         turnManager.setLastDialogue("Diálogo de prueba");
-        turnManager.addLog("Movimiento registrado.");
-        turnManager.addLog("Ataque registrado.");
+        turnManager.addLog(LogEventType.MOVEMENT, "KAEL", "Movimiento registrado.", null);
+        turnManager.addLog(LogEventType.COMBAT, "KAEL", "Ataque registrado.", null);
 
         Escenario escenario = new Escenario();
         escenario.dungeon = dungeon;
@@ -318,14 +321,14 @@ class LectorJSONTest {
     }
 
     /**
-     * Indica si un array contiene un texto como fragmento de alguna entrada.
+     * Indica si un array de eventos contiene un mensaje como fragmento.
      */
-    private boolean contieneTexto(String[] valores, String esperado) {
+    private boolean contieneLog(GameState.GameLogEntryDTO[] valores, String esperado) {
         if (valores == null) {
             return false;
         }
         for (int i = 0; i < valores.length; i++) {
-            if (valores[i] != null && valores[i].contains(esperado)) {
+            if (valores[i] != null && valores[i].mensaje != null && valores[i].mensaje.contains(esperado)) {
                 return true;
             }
         }

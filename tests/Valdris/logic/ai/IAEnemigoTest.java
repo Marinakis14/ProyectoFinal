@@ -1,10 +1,12 @@
 package Valdris.logic.ai;
 
 import Valdris.exceptions.InvalidMoveException;
+import Valdris.logic.ai.ArbolDecisionIA.AccionIA;
 import Valdris.model.effects.Effect;
 import Valdris.model.enums.CharacterType;
 import Valdris.model.enums.EffectType;
 import Valdris.model.enums.EnemyType;
+import Valdris.model.items.Weapon;
 import Valdris.model.map.Room;
 import Valdris.model.units.Enemy;
 import Valdris.model.units.Player;
@@ -42,10 +44,12 @@ class IAEnemigoTest {
         int hpInicial = player.getHp();
 
         // Act
-        IAEnemigo.executeTurn(warrior, room, player, null);
+        AIActionResult result = IAEnemigo.executeTurn(warrior, room, player, null);
 
         // Assert
         assertTrue(player.getHp() < hpInicial);
+        assertEquals(AccionIA.ATACAR, result.getAccion());
+        assertNotNull(result.getCombatResult());
     }
 
     @Test
@@ -57,10 +61,34 @@ class IAEnemigoTest {
         int hpInicial = player.getHp();
 
         // Act
-        IAEnemigo.executeTurn(warrior, room, player, null);
+        AIActionResult result = IAEnemigo.executeTurn(warrior, room, player, null);
 
         // Assert
         assertEquals(hpInicial, player.getHp());
+        assertEquals(AccionIA.ESPERAR, result.getAccion());
+        assertEquals("PARALYSIS", result.getMotivo());
+    }
+
+    @Test
+    void executeTurn_enemigoMuerePorEfectosDejaDropYSeRetiraDeSala() throws InvalidMoveException {
+        // Arrange
+        Enemy warrior = crearEnemy(EnemyType.WARRIOR, 3, 3);
+        Weapon drop = new Weapon("W-DROP", "Botín", 5, 0, 1);
+        warrior.setHp(1);
+        warrior.setDropItem(drop);
+        warrior.addEfecto(new Effect(EffectType.BURN, 1));
+        player.setPosicion(3, 4);
+
+        // Act
+        AIActionResult result = IAEnemigo.executeTurn(warrior, room, player, null);
+
+        // Assert
+        assertFalse(warrior.isVivo());
+        assertEquals("MUERTO_POR_EFECTOS", result.getMotivo());
+        assertEquals("W-DROP", result.getDropItemId());
+        assertFalse(room.getEnemigos().contains(warrior));
+        assertNull(room.getCell(3, 3).getUnit());
+        assertSame(drop, room.getCell(3, 3).getItem());
     }
 
     @Test
@@ -139,11 +167,12 @@ class IAEnemigoTest {
         int hpInicial = player.getHp();
 
         // Act
-        IAEnemigo.ejecutarAtaque(sniper, player, null);
+        AIActionResult result = IAEnemigo.ejecutarAtaque(sniper, player, null);
 
         // Assert
         assertEquals(hpInicial, player.getHp());
         assertEquals(1, sniper.getTurnosSinActuar());
+        assertEquals("COOLDOWN", result.getMotivo());
     }
 
     @Test
@@ -155,11 +184,13 @@ class IAEnemigoTest {
         int hpInicial = player.getHp();
 
         // Act
-        IAEnemigo.ejecutarAtaque(sniper, player, null);
+        AIActionResult result = IAEnemigo.ejecutarAtaque(sniper, player, null);
 
         // Assert
         assertTrue(player.getHp() < hpInicial);
         assertEquals(0, sniper.getTurnosSinActuar());
+        assertEquals(AccionIA.ATACAR, result.getAccion());
+        assertNotNull(result.getCombatResult());
     }
 
     @Test
@@ -170,13 +201,15 @@ class IAEnemigoTest {
         int hpInicial = player.getHp();
 
         // Act
-        IAEnemigo.ejecutarAtaque(controller, player, null);
+        AIActionResult result = IAEnemigo.ejecutarAtaque(controller, player, null);
 
         // Assert
         assertEquals(hpInicial, player.getHp());
         assertEquals(1, player.getEfectosActivos().getSize());
         assertTrue(esEfectoController(player.getEfectosActivos().get(0).getTipo()));
         assertEquals(2, player.getEfectosActivos().get(0).getTurnos());
+        assertEquals(AccionIA.APLICAR_EFECTO, result.getAccion());
+        assertTrue(esEfectoController(result.getEfectoAplicado()));
     }
 
     // -- Invocación ----------------------------------------------------------
@@ -189,12 +222,13 @@ class IAEnemigoTest {
         int enemigosIniciales = room.getEnemigos().getSize();
 
         // Act
-        IAEnemigo.invocarBerserker(summoner, room);
+        AIActionResult result = IAEnemigo.invocarBerserker(summoner, room);
 
         // Assert
         assertEquals(enemigosIniciales + 1, room.getEnemigos().getSize());
         assertEquals(0, summoner.getTurnosSinActuar());
         assertTrue(existeBerserkerInvocado());
+        assertEquals(EnemyType.BERSERKER, result.getTipoInvocado());
     }
 
     @Test
@@ -207,13 +241,14 @@ class IAEnemigoTest {
             player.getFilaActual(), player.getColActual());
 
         // Act
-        IAEnemigo.executeTurn(summoner, room, player, null);
+        AIActionResult result = IAEnemigo.executeTurn(summoner, room, player, null);
 
         // Assert
         int distanciaFinal = distancia(summoner.getFilaActual(), summoner.getColActual(),
             player.getFilaActual(), player.getColActual());
         assertTrue(distanciaFinal > distanciaInicial);
         assertEquals(2, summoner.getTurnosSinActuar());
+        assertTrue(result.huboMovimiento());
     }
 
     // -- Métodos auxiliares --------------------------------------------------

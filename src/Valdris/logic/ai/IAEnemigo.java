@@ -6,10 +6,13 @@ import Valdris.exceptions.InvalidMoveException;
 import Valdris.logic.ai.ArbolDecisionIA.AccionIA;
 import Valdris.logic.bfs.BFSMovimiento;
 import Valdris.logic.combat.CombatManager;
+import Valdris.logic.combat.CombatResult;
 import Valdris.logic.vision.LineaDeVision;
 import Valdris.model.effects.Effect;
+import Valdris.model.effects.EffectProcessingResult;
 import Valdris.model.enums.EffectType;
 import Valdris.model.enums.EnemyType;
+import Valdris.model.items.Item;
 import Valdris.model.map.Cell;
 import Valdris.model.map.Room;
 import Valdris.model.units.Enemy;
@@ -55,21 +58,41 @@ public final class IAEnemigo {
      * @param room sala donde se encuentra
      * @param player jugador objetivo
      * @param cm parámetro conservado por compatibilidad con la guía
+     * @return resultado de la acción ejecutada, o null si faltan datos
      */
-    public static void executeTurn(Enemy enemy, Room room, Player player, CombatManager cm) {
+    public static AIActionResult executeTurn(Enemy enemy, Room room, Player player, CombatManager cm) {
         if (enemy == null || room == null || player == null || !enemy.isVivo()) {
-            return;
+            return null;
         }
 
+        int filaOrigen = enemy.getFilaActual();
+        int colOrigen = enemy.getColActual();
         boolean paralizado = enemy.tieneEfecto(EffectType.PARALYSIS);
-        enemy.procesarEfectos();
+        EffectProcessingResult effects = enemy.procesarEfectos();
         if (paralizado || !enemy.isVivo()) {
-            return;
+            String dropItemId = null;
+            if (!enemy.isVivo()) {
+                dropItemId = resolverMuertePorEfectos(enemy, room);
+            }
+            String motivo = enemy.isVivo() ? "PARALYSIS" : "MUERTO_POR_EFECTOS";
+            return new AIActionResult(AccionIA.ESPERAR, enemy.getTipo(), room.getId(),
+                filaOrigen, colOrigen, enemy.getFilaActual(), enemy.getColActual(),
+                null, effects, null, null, -1, -1,
+                motivo, dropItemId);
         }
 
         ArbolDecisionIA arbol = new ArbolDecisionIA(enemy.getTipo());
         AccionIA accion = arbol.decidirAccion(enemy, room, player);
-        ejecutarAccion(accion, enemy, room, player, cm);
+        AIActionResult result = ejecutarAccion(accion, enemy, room, player, cm, filaOrigen, colOrigen);
+        if (result == null) {
+            return new AIActionResult(AccionIA.ESPERAR, enemy.getTipo(), room.getId(),
+                filaOrigen, colOrigen, enemy.getFilaActual(), enemy.getColActual(),
+                null, effects, null, null, -1, -1, "SIN_ACCION", null);
+        }
+        return new AIActionResult(result.getAccion(), result.getEnemyType(), result.getSalaId(),
+            result.getFilaOrigen(), result.getColOrigen(), result.getFilaDestino(), result.getColDestino(),
+            result.getCombatResult(), effects, result.getEfectoAplicado(), result.getTipoInvocado(),
+            result.getFilaInvocado(), result.getColInvocado(), result.getMotivo(), result.getDropItemId());
     }
 
     /**
@@ -81,27 +104,27 @@ public final class IAEnemigo {
      * @param player jugador objetivo
      * @param cm parámetro conservado por compatibilidad con la guía
      */
-    private static void ejecutarAccion(AccionIA accion, Enemy enemy, Room room, Player player, CombatManager cm) {
+    private static AIActionResult ejecutarAccion(AccionIA accion, Enemy enemy, Room room, Player player,
+                                                 CombatManager cm, int filaOrigen, int colOrigen) {
         if (accion == AccionIA.ATACAR) {
-            ejecutarAtaque(enemy, player, cm);
-            return;
+            return ejecutarAtaque(enemy, player, cm);
         }
         if (accion == AccionIA.APLICAR_EFECTO) {
-            aplicarEfectoController(player);
-            return;
+            EffectType efecto = aplicarEfectoController(player);
+            return crearResultado(accion, enemy, room, filaOrigen, colOrigen, null, null, efecto, null,
+                -1, -1, null);
         }
         if (accion == AccionIA.AOE) {
-            ejecutarAOE(enemy, room, player);
-            return;
+            return ejecutarAOE(enemy, room, player);
         }
         if (accion == AccionIA.INVOCAR) {
-            invocarBerserker(enemy, room);
-            return;
+            return invocarBerserker(enemy, room);
         }
         if (accion == AccionIA.MOVER_A_ZONA) {
             ejecutarMovimientoAZona(enemy, room, player);
             incrementarCooldownSiCorresponde(enemy);
-            return;
+            return crearResultado(accion, enemy, room, filaOrigen, colOrigen, null, null, null, null,
+                -1, -1, null);
         }
         if (accion == AccionIA.MOVER) {
             if (enemy.getTipo() == EnemyType.SUMMONER) {
@@ -110,7 +133,11 @@ public final class IAEnemigo {
                 ejecutarMovimiento(enemy, room, player);
             }
             incrementarCooldownSiCorresponde(enemy);
+            return crearResultado(accion, enemy, room, filaOrigen, colOrigen, null, null, null, null,
+                -1, -1, null);
         }
+        return crearResultado(AccionIA.ESPERAR, enemy, room, filaOrigen, colOrigen, null, null, null, null,
+            -1, -1, "ESPERA");
     }
 
     // -- Movimiento -----------------------------------------------------------
@@ -184,28 +211,39 @@ public final class IAEnemigo {
      * @param enemy enemigo atacante
      * @param player jugador objetivo
      * @param cm parámetro conservado por compatibilidad con la guía
+     * @return resultado de la acción de ataque
      */
-    public static void ejecutarAtaque(Enemy enemy, Player player, CombatManager cm) {
+    public static AIActionResult ejecutarAtaque(Enemy enemy, Player player, CombatManager cm) {
         if (enemy == null || player == null) {
-            return;
+            return null;
         }
 
         if (enemy.getTipo() == EnemyType.CONTROLLER) {
-            aplicarEfectoController(player);
-            return;
+            EffectType efecto = aplicarEfectoController(player);
+            return new AIActionResult(AccionIA.APLICAR_EFECTO, enemy.getTipo(), enemy.getIdSala(),
+                enemy.getFilaActual(), enemy.getColActual(), enemy.getFilaActual(), enemy.getColActual(),
+                null, null, efecto, null, -1, -1, null, null);
         }
         if (enemy.getTipo() == EnemyType.SNIPER && !enemy.isCooldownListo(COOLDOWN_SNIPER)) {
             enemy.incrementarCooldown();
-            return;
+            return new AIActionResult(AccionIA.ESPERAR, enemy.getTipo(), enemy.getIdSala(),
+                enemy.getFilaActual(), enemy.getColActual(), enemy.getFilaActual(), enemy.getColActual(),
+                null, null, null, null, -1, -1, "COOLDOWN", null);
         }
 
         try {
-            CombatManager.resolverAtaqueEnemigo(enemy, player);
+            CombatResult combat = CombatManager.resolverAtaqueEnemigo(enemy, player);
             if (enemy.getTipo() == EnemyType.SNIPER) {
                 enemy.resetCooldown();
             }
+            return new AIActionResult(AccionIA.ATACAR, enemy.getTipo(), enemy.getIdSala(),
+                enemy.getFilaActual(), enemy.getColActual(), enemy.getFilaActual(), enemy.getColActual(),
+                combat, null, null, null, -1, -1, null, null);
         } catch (InvalidAttackException e) {
             incrementarCooldownSiCorresponde(enemy);
+            return new AIActionResult(AccionIA.ESPERAR, enemy.getTipo(), enemy.getIdSala(),
+                enemy.getFilaActual(), enemy.getColActual(), enemy.getFilaActual(), enemy.getColActual(),
+                null, null, null, null, -1, -1, "ATAQUE_INVALIDO", null);
         }
     }
 
@@ -216,11 +254,15 @@ public final class IAEnemigo {
      * @param room sala actual
      * @param player jugador objetivo
      */
-    private static void ejecutarAOE(Enemy enemy, Room room, Player player) {
+    private static AIActionResult ejecutarAOE(Enemy enemy, Room room, Player player) {
         try {
-            CombatManager.resolverAOEDestructor(enemy, room, player);
+            CombatResult combat = CombatManager.resolverAOEDestructor(enemy, room, player);
+            return crearResultado(AccionIA.AOE, enemy, room, enemy.getFilaActual(), enemy.getColActual(),
+                combat, null, null, null, -1, -1, null);
         } catch (InvalidAttackException e) {
             // Si faltan datos o el ataque no es válido, el enemigo pierde la acción.
+            return crearResultado(AccionIA.ESPERAR, enemy, room, enemy.getFilaActual(), enemy.getColActual(),
+                null, null, null, null, -1, -1, "AOE_INVALIDO");
         }
     }
 
@@ -229,21 +271,26 @@ public final class IAEnemigo {
      *
      * @param summoner enemigo invocador
      * @param room sala actual
+     * @return resultado de la invocación
      */
-    public static void invocarBerserker(Enemy summoner, Room room) {
+    public static AIActionResult invocarBerserker(Enemy summoner, Room room) {
         if (summoner == null || room == null) {
-            return;
+            return null;
         }
 
         Cell celda = room.getCeldaLibreCercana(summoner.getFilaActual(), summoner.getColActual());
         Posicion posicion = buscarPosicion(room, celda);
         if (posicion == null) {
-            return;
+            return crearResultado(AccionIA.ESPERAR, summoner, room, summoner.getFilaActual(),
+                summoner.getColActual(), null, null, null, null, -1, -1, "SIN_CELDA_INVOCACION");
         }
 
         Enemy berserker = new Enemy(EnemyType.BERSERKER, posicion.getFila(), posicion.getCol(), room.getId());
         room.addEnemigo(berserker);
         summoner.resetCooldown();
+        return crearResultado(AccionIA.INVOCAR, summoner, room, summoner.getFilaActual(),
+            summoner.getColActual(), null, null, null, EnemyType.BERSERKER,
+            posicion.getFila(), posicion.getCol(), null);
     }
 
     /**
@@ -251,11 +298,13 @@ public final class IAEnemigo {
      *
      * @param player jugador afectado
      */
-    private static void aplicarEfectoController(Player player) {
+    private static EffectType aplicarEfectoController(Player player) {
         if (player == null) {
-            return;
+            return null;
         }
-        player.addEfecto(new Effect(elegirEfectoController(), DURACION_EFECTO_CONTROLLER));
+        EffectType efecto = elegirEfectoController();
+        player.addEfecto(new Effect(efecto, DURACION_EFECTO_CONTROLLER));
+        return efecto;
     }
 
     /**
@@ -272,6 +321,52 @@ public final class IAEnemigo {
             return EffectType.BLIND;
         }
         return EffectType.CURSE;
+    }
+
+    /**
+     * Crea un resultado usando la posición final actual del enemigo.
+     *
+     * @param accion acción ejecutada
+     * @param enemy enemigo que actuó
+     * @param room sala actual
+     * @param filaOrigen fila inicial
+     * @param colOrigen columna inicial
+     * @param combat resultado de combate
+     * @param effects resultado de efectos
+     * @param efecto efecto aplicado
+     * @param invocado tipo invocado
+     * @param filaInvocado fila invocada
+     * @param colInvocado columna invocada
+     * @param motivo motivo adicional
+     * @return resultado estructurado
+     */
+    private static AIActionResult crearResultado(AccionIA accion, Enemy enemy, Room room,
+                                                 int filaOrigen, int colOrigen,
+                                                 CombatResult combat, EffectProcessingResult effects,
+                                                 EffectType efecto, EnemyType invocado,
+                                                 int filaInvocado, int colInvocado, String motivo) {
+        if (enemy == null) {
+            return null;
+        }
+        String salaId = room == null ? enemy.getIdSala() : room.getId();
+        return new AIActionResult(accion, enemy.getTipo(), salaId, filaOrigen, colOrigen,
+            enemy.getFilaActual(), enemy.getColActual(), combat, effects, efecto, invocado,
+            filaInvocado, colInvocado, motivo, null);
+    }
+
+    /**
+     * Resuelve drop y retirada cuando un enemigo muere por efectos al inicio de turno.
+     *
+     * @param enemy enemigo muerto
+     * @param room sala donde estaba
+     * @return id del drop generado, o null
+     */
+    private static String resolverMuertePorEfectos(Enemy enemy, Room room) {
+        Item drop = enemy.getDropItem();
+        String dropItemId = drop == null ? null : drop.getId();
+        enemy.onDeath(room);
+        room.removeEnemigo(enemy);
+        return dropItemId;
     }
 
     // -- Búsqueda de destinos -------------------------------------------------

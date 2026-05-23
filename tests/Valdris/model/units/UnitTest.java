@@ -1,6 +1,7 @@
 package Valdris.model.units;
 
 import Valdris.model.effects.Effect;
+import Valdris.model.effects.EffectProcessingResult;
 import Valdris.model.enums.EffectType;
 import Valdris.model.enums.EnemyType;
 import org.junit.jupiter.api.BeforeEach;
@@ -133,13 +134,16 @@ class UnitTest {
         unidad.addEfecto(new Effect(EffectType.CURSE, 2));
 
         // Act
-        unidad.procesarEfectos();
+        EffectProcessingResult result = unidad.procesarEfectos();
 
         // Assert
         assertEquals(29, unidad.getHp());
         assertFalse(unidad.tieneEfecto(EffectType.BURN));
         assertTrue(unidad.tieneEfecto(EffectType.CURSE));
         assertEquals(1, unidad.getEfectosActivos().getSize());
+        assertEquals(6, result.getDanioAplicado());
+        assertEquals(1, result.getEfectosExpirados().length);
+        assertEquals(EffectType.BURN, result.getEfectosExpirados()[0]);
     }
 
     @Test

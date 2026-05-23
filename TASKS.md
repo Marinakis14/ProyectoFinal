@@ -28,7 +28,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | Capas 2, 3 y 4 | Completadas y testeadas |
 | Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga, TurnManager, ItemGenerator, PuzzleManager y DungeonGenerator completados |
 | Capa 6 inicial | GameState, LoadedGame, GameSummary y LectorJSON completados |
-| Tests JUnit actuales | 367 tests pasando |
+| Tests JUnit actuales | 371 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
 ---
@@ -260,10 +260,19 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 66 | Crear `LogEventType` para clasificar eventos del log de partida | ✅ Completado |
 | 67 | Crear `GameLogEntry` como evento estructurado comparable | ✅ Completado |
 | 68 | Adaptar `TurnManager` a `ListaSimplementeEnlazada<GameLogEntry>` | ✅ Completado |
-| 69 | Añadir `getLogTextos()` en `TurnManager` para compatibilidad textual | ✅ Completado |
+| 69 | Añadir `getLogTextos()` en `TurnManager` como utilidad visual | ✅ Completado |
 | 70 | Crear `CombatResult` para devolver resultados completos de combate | ✅ Completado |
 | 71 | Adaptar `CombatManager` para devolver `CombatResult` en ataques y AOE | ✅ Completado |
 | 72 | Registrar eventos estructurados de movimiento, recogida, item, combate, acceso, sala y puzzle en `TurnManager` | ✅ Completado |
+| 73 | Reemplazar `LogEventType.SYSTEM` por `LogEventType.GAME` | ✅ Completado |
+| 74 | Crear `AIActionResult` para resultados estructurados de IA enemiga | ✅ Completado |
+| 75 | Adaptar `IAEnemigo.executeTurn(...)` para devolver `AIActionResult` | ✅ Completado |
+| 76 | Crear `EffectProcessingResult` para daño y expiración de efectos | ✅ Completado |
+| 77 | Adaptar `Unit.procesarEfectos()` para devolver resultado estructurado | ✅ Completado |
+| 78 | Registrar acciones concretas de enemigos en `TurnManager` | ✅ Completado |
+| 79 | Registrar daño y expiración de efectos relevantes en `TurnManager` | ✅ Completado |
+| 80 | Hacer que `ejecutarUsoItem(null)` lance `GameStateException` | ✅ Completado |
+| 81 | Resolver muerte, retirada de sala y drop de enemigos por efectos al inicio de su turno | ✅ Completado |
 
 ---
 
@@ -348,6 +357,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 17 | Suite tras enemigos nuevos, mini-bosses, items narrativos y `DungeonGenerator` | ✅ Correcta |
 | 18 | Suite tras persistencia (`GameState`, `LoadedGame`, `GameSummary`, `LectorJSON`) | ✅ Correcta |
 | 19 | Suite tras sub-bloque 1 de log estructurado y `CombatResult` | ✅ Correcta |
+| 20 | Suite tras sub-bloque 2 de log estructurado, IA, efectos y persistencia final | ✅ Correcta |
 
 Última verificación completa:
 
@@ -358,7 +368,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 Resultado:
 
 ```text
-367 tests, 0 failures, 0 errors, 0 skipped
+371 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---
@@ -425,7 +435,12 @@ Resultado:
 | 56 | El log interno pasa a eventos estructurados con `GameLogEntry` antes de JavaFX | ✅ Aceptada |
 | 57 | `LogEventType` se usa para evitar categorías de log escritas como texto libre | ✅ Aceptada |
 | 58 | `CombatResult` se usa para registrar daño, fallo por BLIND, muerte, drops y efectos sin deducirlo desde HP | ✅ Aceptada |
-| 59 | Durante la transición, persistencia conserva `String[] log` usando `TurnManager.getLogTextos()` | ✅ Aceptada |
+| 59 | La persistencia usa solo `GameLogEntryDTO[] logEventos` como diseño único del log | ✅ Aceptada |
+| 60 | `getLogTextos()` se mantiene solo como utilidad visual para UI y resumen textual | ✅ Aceptada |
+| 61 | `LogEventType.GAME` sustituye a `SYSTEM` para eventos globales de partida, no técnicos | ✅ Aceptada |
+| 62 | `ejecutarUsoItem(null)` lanza `GameStateException`; saltar item se hace con `saltarUsoItem()` | ✅ Aceptada |
+| 63 | `AIActionResult` y `EffectProcessingResult` alimentan el log estructurado de turnos enemigos y estados | ✅ Aceptada |
+| 64 | Si un enemigo muere por efectos al empezar su turno, deja drop, sale de la sala y no bloquea el turno del resto | ✅ Aceptada |
 
 ---
 
@@ -435,5 +450,5 @@ Resultado:
 |---:|-----------------|--------|
 | 1 | Definir habilidades especiales finales de mini-bosses | ⬜ Pendiente |
 | 2 | Definir `MalacharAlly` y `ParasitoEnemy` para el boss final | ⬜ Pendiente |
-| 3 | Completar sub-bloque 2 de log: `AIActionResult`, efectos y persistencia estructurada | ⬜ Pendiente |
+| 3 | Definir habilidades especiales finales de mini-bosses y boss final | ⬜ Pendiente |
 | 4 | Implementar capa JavaFX | ⬜ Pendiente |

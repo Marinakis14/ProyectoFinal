@@ -84,8 +84,8 @@ public class GameState {
     /** IDs de pasadizos ocultos activos. */
     public String[] pasadizosActivos;
 
-    /** Log acumulativo de la partida. */
-    public String[] log;
+    /** Log estructurado acumulativo de la partida. */
+    public GameLogEntryDTO[] logEventos;
 
     // -- DTOs internos --------------------------------------------------------
 
@@ -99,6 +99,30 @@ public class GameState {
 
         /** Turnos restantes. */
         public int turnos;
+    }
+
+    /**
+     * Estado serializable de una entrada del log de partida.
+     */
+    public static class GameLogEntryDTO {
+
+        /** Turno global del evento. */
+        public int turno;
+
+        /** LogEventType.name(). */
+        public String tipo;
+
+        /** Actor principal del evento. */
+        public String actor;
+
+        /** ID de sala asociado. */
+        public String salaId;
+
+        /** Mensaje visible. */
+        public String mensaje;
+
+        /** Detalle estructurado opcional. */
+        public String detalle;
     }
 
     /**

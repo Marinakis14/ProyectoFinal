@@ -4,12 +4,16 @@ import MisEstructurasDeDatos.ListasPilasYColas.ListaSimplementeEnlazada;
 import Valdris.exceptions.GameStateException;
 import Valdris.exceptions.InvalidAttackException;
 import Valdris.exceptions.InvalidMoveException;
+import Valdris.logic.ai.AIActionResult;
 import Valdris.logic.ai.IAEnemigo;
+import Valdris.logic.ai.ArbolDecisionIA.AccionIA;
 import Valdris.logic.bfs.BFSMovimiento;
 import Valdris.logic.combat.CombatManager;
 import Valdris.logic.combat.CombatResult;
 import Valdris.logic.puzzle.PuzzleManager;
+import Valdris.model.effects.EffectProcessingResult;
 import Valdris.model.enums.CellType;
+import Valdris.model.enums.EffectType;
 import Valdris.model.enums.LogEventType;
 import Valdris.model.enums.Phase;
 import Valdris.model.items.Item;
@@ -353,10 +357,6 @@ public class TurnManager {
     /**
      * Usa o equipa un item del inventario durante la fase de uso de item.
      *
-     * <p>Si el item es null, la llamada se interpreta como salto de fase para
-     * mantener compatibilidad con controladores sencillos. La forma explícita
-     * recomendada para no usar item es {@link #saltarUsoItem()}.</p>
-     *
      * @param item item que se usa o equipa
      * @throws GameStateException si no se está en fase de uso de item
      */
@@ -365,15 +365,13 @@ public class TurnManager {
         if (player.isHaUsadoItem()) {
             throw new GameStateException("El jugador ya usó un item este turno.");
         }
-        if (item != null) {
-            player.equip(item);
-            addLog(LogEventType.ITEM, nombreJugador(),
-                nombreJugador() + " usa " + item.getId() + " - " + item.getNombre() + ".",
-                "itemId=" + item.getId());
-        } else {
-            addLog(LogEventType.ITEM, nombreJugador(),
-                nombreJugador() + " decide no usar item.", null);
+        if (item == null) {
+            throw new GameStateException("Para saltar el uso de item debe llamarse a saltarUsoItem().");
         }
+        player.equip(item);
+        addLog(LogEventType.ITEM, nombreJugador(),
+            nombreJugador() + " usa " + item.getId() + " - " + item.getNombre() + ".",
+            "itemId=" + item.getId());
         player.setHaUsadoItem(true);
         faseActual = Phase.ATTACK;
     }
@@ -384,7 +382,13 @@ public class TurnManager {
      * @throws GameStateException si no se está en fase de uso de item
      */
     public void saltarUsoItem() throws GameStateException {
-        ejecutarUsoItem(null);
+        validarFase(Phase.USE_ITEM);
+        if (player.isHaUsadoItem()) {
+            throw new GameStateException("El jugador ya usó un item este turno.");
+        }
+        addLog(LogEventType.ITEM, nombreJugador(), nombreJugador() + " decide no usar item.", null);
+        player.setHaUsadoItem(true);
+        faseActual = Phase.ATTACK;
     }
 
     /**
@@ -436,13 +440,20 @@ public class TurnManager {
         room.decrementarTimer();
 
         ListaSimplementeEnlazada<Enemy> enemigos = room.getEnemigos();
-        int enemigosIniciales = enemigos.getSize();
-        for (int i = 0; i < enemigosIniciales; i++) {
-            Enemy enemy = enemigos.get(i);
-            IAEnemigo.executeTurn(enemy, room, player, null);
+        Enemy[] enemigosTurno = new Enemy[enemigos.getSize()];
+        for (int i = 0; i < enemigosTurno.length; i++) {
+            enemigosTurno[i] = enemigos.get(i);
         }
 
-        player.procesarEfectos();
+        int enemigosIniciales = enemigosTurno.length;
+        for (int i = 0; i < enemigosTurno.length; i++) {
+            Enemy enemy = enemigosTurno[i];
+            AIActionResult result = IAEnemigo.executeTurn(enemy, room, player, null);
+            registrarResultadoIA(result);
+        }
+
+        EffectProcessingResult efectosJugador = player.procesarEfectos();
+        registrarResultadoEfectos(nombreJugador(), efectosJugador, player.getHp(), player.getHpMax());
         player.resetAcciones();
         addLog(LogEventType.ENEMY_TURN, "ENEMIGOS",
             "Turno enemigo resuelto en " + room.getId() + ".", "enemigosIniciales=" + enemigosIniciales);
@@ -599,21 +610,6 @@ public class TurnManager {
     }
 
     /**
-     * Añade una entrada textual general al historial acumulativo.
-     *
-     * <p>Esta sobrecarga se conserva para restaurar logs de texto plano desde
-     * persistencia y para pruebas sencillas. Las acciones reales de juego deben
-     * usar la sobrecarga estructurada con {@link LogEventType}.</p>
-     *
-     * @param texto texto del evento legacy
-     */
-    public void addLog(String texto) {
-        if (texto != null && !texto.isEmpty()) {
-            addLog(LogEventType.SYSTEM, null, texto, null);
-        }
-    }
-
-    /**
      * Añade una entrada estructurada al historial acumulativo.
      *
      * @param tipo tipo de evento
@@ -624,6 +620,17 @@ public class TurnManager {
     public void addLog(LogEventType tipo, String actor, String mensaje, String detalle) {
         if (mensaje != null && !mensaje.isEmpty()) {
             log.addEnd(new GameLogEntry(turnoGlobal, tipo, actor, idSalaActual(), mensaje, detalle));
+        }
+    }
+
+    /**
+     * Añade una entrada ya reconstruida desde persistencia.
+     *
+     * @param entry entrada estructurada
+     */
+    public void addLogEntry(GameLogEntry entry) {
+        if (entry != null && !entry.getMensaje().isEmpty()) {
+            log.addEnd(entry);
         }
     }
 
@@ -831,6 +838,98 @@ public class TurnManager {
                     objetivo.getTipo() + " deja caer " + result.getDropItemId() + ".",
                     "dropItemId=" + result.getDropItemId());
             }
+        }
+    }
+
+    /**
+     * Registra el resultado de una acción enemiga.
+     *
+     * @param result resultado de IA
+     */
+    private void registrarResultadoIA(AIActionResult result) {
+        if (result == null) {
+            return;
+        }
+        registrarResultadoEfectos(result.getEnemyType().name(), result.getEffectProcessingResult(), -1, -1);
+        if (result.getMotivo() != null && result.getAccion() == AccionIA.ESPERAR) {
+            addLog(LogEventType.ENEMY_TURN, result.getEnemyType().name(),
+                result.getEnemyType() + " no actúa: " + result.getMotivo() + ".", result.getMotivo());
+            if ("MUERTO_POR_EFECTOS".equals(result.getMotivo())) {
+                addLog(LogEventType.COMBAT, result.getEnemyType().name(),
+                    result.getEnemyType() + " muere por efectos.", null);
+                if (result.getDropItemId() != null) {
+                    addLog(LogEventType.PICKUP, result.getEnemyType().name(),
+                        result.getEnemyType() + " deja caer " + result.getDropItemId() + ".",
+                        "dropItemId=" + result.getDropItemId());
+                }
+            }
+            return;
+        }
+        if (result.getCombatResult() != null) {
+            registrarCombateEnemigo(result);
+        }
+        if (result.getEfectoAplicado() != null) {
+            addLog(LogEventType.STATE, result.getEnemyType().name(),
+                result.getEnemyType() + " aplica " + result.getEfectoAplicado() + " a " + nombreJugador() + ".",
+                "efecto=" + result.getEfectoAplicado());
+        }
+        if (result.getTipoInvocado() != null) {
+            addLog(LogEventType.ENEMY_TURN, result.getEnemyType().name(),
+                result.getEnemyType() + " invoca " + result.getTipoInvocado() + " en ("
+                    + result.getFilaInvocado() + "," + result.getColInvocado() + ").",
+                "invocado=" + result.getTipoInvocado());
+        }
+        if (result.huboMovimiento()) {
+            addLog(LogEventType.ENEMY_TURN, result.getEnemyType().name(),
+                result.getEnemyType() + " se mueve de (" + result.getFilaOrigen() + ","
+                    + result.getColOrigen() + ") a (" + result.getFilaDestino() + ","
+                    + result.getColDestino() + ").",
+                "origen=" + result.getFilaOrigen() + "," + result.getColOrigen()
+                    + ";destino=" + result.getFilaDestino() + "," + result.getColDestino());
+        }
+    }
+
+    /**
+     * Registra un ataque enemigo normal o AOE.
+     *
+     * @param result resultado de IA con combate
+     */
+    private void registrarCombateEnemigo(AIActionResult result) {
+        CombatResult combat = result.getCombatResult();
+        if (combat.isFalloPorBlind()) {
+            addLog(LogEventType.ENEMY_TURN, result.getEnemyType().name(),
+                result.getEnemyType() + " falla su ataque por BLIND.", null);
+            return;
+        }
+        String accion = result.getAccion() == AccionIA.AOE ? "alcanza con AOE a" : "ataca a";
+        addLog(LogEventType.ENEMY_TURN, result.getEnemyType().name(),
+            result.getEnemyType() + " " + accion + " " + nombreJugador() + " e inflige "
+                + combat.getDanioAplicado() + " daño. HP jugador: "
+                + combat.getHpRestanteObjetivo() + "/" + combat.getHpMaxObjetivo() + ".",
+            "danio=" + combat.getDanioAplicado());
+    }
+
+    /**
+     * Registra daño periódico y expiraciones de efectos.
+     *
+     * @param actor unidad afectada
+     * @param result resultado de procesamiento
+     * @param hpActual HP actual, o negativo si no se quiere mostrar
+     * @param hpMax HP máximo, o negativo si no se quiere mostrar
+     */
+    private void registrarResultadoEfectos(String actor, EffectProcessingResult result, int hpActual, int hpMax) {
+        if (result == null || !result.tieneEventos()) {
+            return;
+        }
+        if (result.getDanioAplicado() > 0) {
+            String hpTexto = hpActual >= 0 && hpMax >= 0 ? " HP: " + hpActual + "/" + hpMax + "." : "";
+            addLog(LogEventType.STATE, actor,
+                actor + " recibe " + result.getDanioAplicado() + " daño por efectos." + hpTexto,
+                "danioEfectos=" + result.getDanioAplicado());
+        }
+        EffectType[] expirados = result.getEfectosExpirados();
+        for (int i = 0; i < expirados.length; i++) {
+            addLog(LogEventType.STATE, actor, expirados[i] + " expira en " + actor + ".", "efecto=" + expirados[i]);
         }
     }
 

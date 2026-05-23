@@ -12,12 +12,14 @@ import Valdris.model.enums.CellType;
 import Valdris.model.enums.CharacterType;
 import Valdris.model.enums.EffectType;
 import Valdris.model.enums.EnemyType;
+import Valdris.model.enums.LogEventType;
 import Valdris.model.enums.MiniBossType;
 import Valdris.model.enums.Phase;
 import Valdris.model.items.Accessory;
 import Valdris.model.items.Armor;
 import Valdris.model.items.Item;
 import Valdris.model.items.Weapon;
+import Valdris.model.log.GameLogEntry;
 import Valdris.model.map.Cell;
 import Valdris.model.map.Chest;
 import Valdris.model.map.Container;
@@ -135,7 +137,7 @@ public final class LectorJSON {
         state.salas = extraerSalas(dungeon);
         state.enemigos = extraerEnemigos(dungeon);
         state.pasadizosActivos = extraerPasadizosActivos(dungeon);
-        state.log = tm.getLogTextos();
+        state.logEventos = extraerLog(tm);
         return state;
     }
 
@@ -190,7 +192,7 @@ public final class LectorJSON {
         summary.itemsInventario = idsItems(player.getInventario());
         summary.itemsNarrativos = idsItems(player.getItemsNarrativos());
         summary.salasExploradas = extraerSalasExploradas(dungeon);
-        summary.log = tm.getLogTextos();
+        summary.logEventos = extraerLog(tm);
         return summary;
     }
 
@@ -393,6 +395,25 @@ public final class LectorJSON {
             }
         }
         return strings(activos);
+    }
+
+    /**
+     * Extrae el log estructurado del turn manager.
+     */
+    private static GameState.GameLogEntryDTO[] extraerLog(TurnManager tm) {
+        GameState.GameLogEntryDTO[] result = new GameState.GameLogEntryDTO[tm.getLog().getSize()];
+        for (int i = 0; i < tm.getLog().getSize(); i++) {
+            GameLogEntry entry = tm.getLog().get(i);
+            GameState.GameLogEntryDTO dto = new GameState.GameLogEntryDTO();
+            dto.turno = entry.getTurno();
+            dto.tipo = entry.getTipo().name();
+            dto.actor = entry.getActor();
+            dto.salaId = entry.getSalaId();
+            dto.mensaje = entry.getMensaje();
+            dto.detalle = entry.getDetalle();
+            result[i] = dto;
+        }
+        return result;
     }
 
     // -- Restauración ---------------------------------------------------------
@@ -649,11 +670,30 @@ public final class LectorJSON {
         }
         tm.setTurnoGlobal(state.turnoGlobal);
         tm.setLastDialogue(state.lastDialogue);
-        if (state.log != null) {
-            for (int i = 0; i < state.log.length; i++) {
-                tm.addLog(state.log[i]);
+        if (state.logEventos != null) {
+            for (int i = 0; i < state.logEventos.length; i++) {
+                GameLogEntry entry = crearLogEntry(state.logEventos[i]);
+                tm.addLogEntry(entry);
             }
         }
+    }
+
+    /**
+     * Reconstruye una entrada de log desde DTO.
+     */
+    private static GameLogEntry crearLogEntry(GameState.GameLogEntryDTO dto) {
+        if (dto == null || dto.mensaje == null) {
+            return null;
+        }
+        LogEventType tipo = LogEventType.GAME;
+        if (dto.tipo != null) {
+            try {
+                tipo = LogEventType.valueOf(dto.tipo);
+            } catch (IllegalArgumentException e) {
+                tipo = LogEventType.GAME;
+            }
+        }
+        return new GameLogEntry(dto.turno, tipo, dto.actor, dto.salaId, dto.mensaje, dto.detalle);
     }
 
     // -- Efectos --------------------------------------------------------------

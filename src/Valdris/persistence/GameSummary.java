@@ -30,6 +30,6 @@ public class GameSummary {
     /** IDs de salas exploradas. */
     public String[] salasExploradas;
 
-    /** Log completo de operaciones registradas. */
-    public String[] log;
+    /** Log estructurado completo de operaciones registradas. */
+    public GameState.GameLogEntryDTO[] logEventos;
 }

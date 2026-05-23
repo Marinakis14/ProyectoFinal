@@ -1006,7 +1006,7 @@ de UI. También se decidió registrar expiración de efectos relevantes cuando s
 
 Antes de implementar se evaluó cambiar de `ListaSimplementeEnlazada<String>` a un log estructurado con
 `GameLogEntry`. El equipo aceptó crear `LogEventType`, colocar `GameLogEntry` en `Valdris.model.log`,
-mantener compatibilidad textual con `getLogTextos()` y partir el trabajo en dos sub-bloques. Este sub-bloque
+mantener salida textual de utilidad con `getLogTextos()` y partir el trabajo en dos sub-bloques. Este sub-bloque
 cubre la base del log estructurado y `CombatResult`; IA, efectos y persistencia estructurada quedan para el
 siguiente sub-bloque.
 
@@ -1016,14 +1016,15 @@ siguiente sub-bloque.
 - Cambios manuales necesarios: actualización de tests que asumían log como texto exacto
 
 **Problemas encontrados:**
-- Cambiar `TurnManager.getLog()` a `ListaSimplementeEnlazada<GameLogEntry>` afectaba a persistencia, que todavía
-  guardaba `String[] log`.
+- Cambiar `TurnManager.getLog()` a `ListaSimplementeEnlazada<GameLogEntry>` afectaba a persistencia, que en ese
+  momento aún guardaba texto plano.
 - Los tests de persistencia esperaban entradas exactas como `"Movimiento registrado."`, pero el log textual ahora
   sale formateado con turno y tipo.
 
 **Solución aplicada:**
-- Se añadió `TurnManager.getLogTextos()` para conservar salida textual durante la transición.
-- `LectorJSON` sigue guardando `String[] log` usando `getLogTextos()` hasta completar la persistencia estructurada.
+- Se añadió `TurnManager.getLogTextos()` como utilidad visual para UI, tests y resúmenes textuales.
+- En este sub-bloque `LectorJSON` quedó temporalmente conectado a esa salida textual hasta completar el diseño
+  único estructurado en la sesión siguiente.
 - Se creó `CombatResult` para devolver daño aplicado, fallo por `BLIND`, muerte, HP restante, efectos aplicados y drop.
 - `CombatManager` devuelve `CombatResult` en ataques del jugador, ataques enemigos y AOE del Destructor.
 - `TurnManager` registra eventos estructurados para movimiento, recogida, uso de item, combate, accesos, sala,
@@ -1045,6 +1046,74 @@ siguiente sub-bloque.
 
 ---
 
+### Sesión 21 — 23 mayo 2026 — Codex
+
+**Clases o ficheros trabajados:**
+- `LogEventType`
+- `GameLogEntry`
+- `AIActionResult`
+- `IAEnemigo`
+- `EffectProcessingResult`
+- `Unit`
+- `TurnManager`
+- `GameState`
+- `GameSummary`
+- `LectorJSON`
+- `IAEnemigoTest`
+- `TurnManagerTest`
+- `UnitTest`
+- `GameStateTest`
+- `LectorJSONTest`
+- `TypeEnumsTest`
+- `GameLogEntryTest`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Prompt usado (detalle):**
+El equipo pidió revisar si alguna decisión del bloque anterior había sido conservadora por posibles partidas
+antiguas. Se aclaró que no existen partidas guardadas reales que conservar, por lo que el log estructurado debe
+ser el diseño único y no una capa paralela al texto plano. También se decidió que `LogEventType.SYSTEM` era una
+categoría demasiado técnica y debía reemplazarse por `GAME`, reservada para eventos globales de partida. Por
+último, se cerró que `ejecutarUsoItem(null)` ya no debe saltar fase: el método correcto para no usar item es
+`saltarUsoItem()`.
+
+**Resultado:**
+- Compila: SÍ
+- Tests pasan: SÍ
+- Cambios manuales necesarios: actualización de tests de persistencia, IA, turnos y enums
+
+**Problemas encontrados:**
+- `GameState` y `GameSummary` seguían exponiendo `String[] log`.
+- `LectorJSON` reconstruía logs de texto usando la sobrecarga legacy de `TurnManager`.
+- `Unit.procesarEfectos()` modificaba estado pero no devolvía información para registrar daño o expiraciones.
+- `IAEnemigo.executeTurn(...)` ejecutaba acciones enemigas pero no devolvía información para log detallado.
+
+**Solución aplicada:**
+- Se eliminó el log textual de persistencia y se añadió `GameLogEntryDTO[] logEventos` como único formato persistido.
+- `LectorJSON` extrae y reconstruye `GameLogEntry` desde DTOs estructurados.
+- Se añadió `AIActionResult` para describir ataques, movimiento, invocaciones, efectos aplicados y esperas de IA.
+- `IAEnemigo.executeTurn(...)`, `ejecutarAtaque(...)` e `invocarBerserker(...)` devuelven resultados estructurados.
+- Se añadió `EffectProcessingResult` y `Unit.procesarEfectos()` devuelve daño aplicado y efectos expirados.
+- `TurnManager` registra acciones concretas de enemigos, daño por efectos y expiración de efectos.
+- Si un enemigo muere por efectos al inicio de su turno, la IA resuelve su drop, lo retira de la sala y mantiene el turno del resto de enemigos.
+- `ejecutarUsoItem(null)` lanza `GameStateException`; `saltarUsoItem()` queda como única API para saltar esa fase.
+- `LogEventType.SYSTEM` se reemplazó por `LogEventType.GAME`.
+
+**Decisiones técnicas:**
+- El log estructurado es el diseño único de persistencia.
+- `getLogTextos()` se mantiene solo como utilidad de visualización.
+- Guardado y carga de partida no se registran dentro del log jugable.
+- No se modificó `MisEstructurasDeDatos`.
+
+**Verificación:**
+- `.\mvnw.cmd -q "-Dtest=IAEnemigoTest,TurnManagerTest,UnitTest,GameStateTest,LectorJSONTest,TypeEnumsTest,GameLogEntryTest" test`
+- `.\mvnw.cmd -q test`
+- Resultado suite completa: `371 tests, 0 failures, 0 errors, 0 skipped`
+
+**Commit sugerido:** `git commit -m "feat: completar log estructurado"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas
@@ -1059,6 +1128,7 @@ siguiente sub-bloque.
 - [x] LogEventType
 - [x] Phase
 - [x] Effect
+- [x] EffectProcessingResult
 - [x] Item (abstracta)
 - [x] NarrativeItem
 - [x] Weapon
@@ -1089,6 +1159,7 @@ siguiente sub-bloque.
 - [x] CombatResult
 - [x] ArbolDecisionIA
 - [x] IAEnemigo
+- [x] AIActionResult
 - [x] TurnManager
 - [x] ItemGenerator
 - [x] PuzzleManager
@@ -1156,7 +1227,7 @@ siguiente sub-bloque.
 Resultado:
 
 ```text
-367 tests, 0 failures, 0 errors, 0 skipped
+371 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---

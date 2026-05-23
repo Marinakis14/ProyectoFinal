@@ -36,6 +36,6 @@ public enum LogEventType {
     /** Aplicación, daño o expiración de efectos de estado. */
     STATE,
 
-    /** Eventos internos reservados para compatibilidad o mensajes generales. */
-    SYSTEM
+    /** Eventos globales de partida, como inicio, victoria o derrota. */
+    GAME
 }

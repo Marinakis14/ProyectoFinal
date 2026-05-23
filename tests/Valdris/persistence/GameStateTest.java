@@ -30,7 +30,7 @@ class GameStateTest {
         state.itemsInventario = new String[] {"W1", "P3"};
         state.itemsNarrativos = new String[] {"AC1"};
         state.pasadizosActivos = new String[] {"S1_SECRET"};
-        state.log = new String[] {"Entrada en sala S1-A."};
+        state.logEventos = new GameState.GameLogEntryDTO[] {crearLogDTO()};
 
         assertEquals("S1-A", state.idRoomActual);
         assertEquals("KAEL", state.tipoPersonaje);
@@ -39,7 +39,7 @@ class GameStateTest {
         assertEquals("W1", state.itemsInventario[0]);
         assertEquals("AC1", state.itemsNarrativos[0]);
         assertEquals("S1_SECRET", state.pasadizosActivos[0]);
-        assertEquals("Entrada en sala S1-A.", state.log[0]);
+        assertEquals("Entrada en sala S1-A.", state.logEventos[0].mensaje);
     }
 
     @Test
@@ -47,6 +47,8 @@ class GameStateTest {
         GameState.EffectStateDTO effect = new GameState.EffectStateDTO();
         effect.tipo = "SLOW";
         effect.turnos = 2;
+
+        GameState.GameLogEntryDTO log = crearLogDTO();
 
         GameState.ContainerStateDTO container = new GameState.ContainerStateDTO();
         container.id = "CHEST_S1";
@@ -78,6 +80,7 @@ class GameStateTest {
 
         assertEquals("SLOW", enemy.efectos[0].tipo);
         assertEquals(2, enemy.efectos[0].turnos);
+        assertEquals("ROOM", log.tipo);
         assertTrue(room.explorada);
         assertEquals(2, room.correctSequence[0]);
         assertEquals("DOOR_LOCKED", room.celdas[0].tipo);
@@ -110,7 +113,7 @@ class GameStateTest {
         summary.itemsInventario = new String[] {"W12"};
         summary.itemsNarrativos = new String[] {"AC1", "AC2", "AC3", "AC4"};
         summary.salasExploradas = new String[] {"S1-A", "S5-D"};
-        summary.log = new String[] {"Ataque final."};
+        summary.logEventos = new GameState.GameLogEntryDTO[] {crearLogDTO()};
 
         assertEquals("DORATH", summary.tipoPersonaje);
         assertEquals("S5-D", summary.idRoomActual);
@@ -119,6 +122,20 @@ class GameStateTest {
         assertEquals("W12", summary.itemsInventario[0]);
         assertEquals("AC4", summary.itemsNarrativos[3]);
         assertEquals("S5-D", summary.salasExploradas[1]);
-        assertEquals("Ataque final.", summary.log[0]);
+        assertEquals("Entrada en sala S1-A.", summary.logEventos[0].mensaje);
+    }
+
+    /**
+     * Crea una entrada de log serializable.
+     */
+    private GameState.GameLogEntryDTO crearLogDTO() {
+        GameState.GameLogEntryDTO dto = new GameState.GameLogEntryDTO();
+        dto.turno = 1;
+        dto.tipo = "ROOM";
+        dto.actor = "KAEL";
+        dto.salaId = "S1-A";
+        dto.mensaje = "Entrada en sala S1-A.";
+        dto.detalle = "salaId=S1-A";
+        return dto;
     }
 }

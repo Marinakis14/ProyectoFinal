@@ -37,7 +37,7 @@ class GameLogEntryTest {
 
         // Assert
         assertEquals(0, entry.getTurno());
-        assertEquals(LogEventType.SYSTEM, entry.getTipo());
+        assertEquals(LogEventType.GAME, entry.getTipo());
         assertEquals("", entry.getMensaje());
     }
 
@@ -56,11 +56,11 @@ class GameLogEntryTest {
     @Test
     void toString_devuelveFormatoVisibleSinActor() {
         // Arrange
-        GameLogEntry entry = new GameLogEntry(1, LogEventType.SYSTEM, null, null,
+        GameLogEntry entry = new GameLogEntry(1, LogEventType.GAME, null, null,
             "Evento restaurado.", null);
 
         // Act + Assert
-        assertEquals("Turno 1 | SYSTEM | Evento restaurado.", entry.toString());
+        assertEquals("Turno 1 | GAME | Evento restaurado.", entry.toString());
     }
 
     @Test

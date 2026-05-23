@@ -3,8 +3,10 @@ package Valdris.logic.turn;
 import Valdris.exceptions.GameStateException;
 import Valdris.exceptions.InvalidAttackException;
 import Valdris.exceptions.InvalidMoveException;
+import Valdris.model.effects.Effect;
 import Valdris.model.enums.CellType;
 import Valdris.model.enums.CharacterType;
+import Valdris.model.enums.EffectType;
 import Valdris.model.enums.EnemyType;
 import Valdris.model.enums.LogEventType;
 import Valdris.model.enums.Phase;
@@ -264,17 +266,15 @@ class TurnManagerTest {
     }
 
     @Test
-    void ejecutarUsoItem_nullEquivaleASaltarUsoItem() throws GameStateException {
+    void ejecutarUsoItem_nullLanzaGameStateException() throws GameStateException {
         // Arrange
         turnManager.saltarMovimiento();
         turnManager.saltarRecogida();
 
-        // Act
-        turnManager.ejecutarUsoItem(null);
-
-        // Assert
-        assertTrue(player.isHaUsadoItem());
-        assertEquals(Phase.ATTACK, turnManager.getFaseActual());
+        // Act + Assert
+        assertThrows(GameStateException.class, () -> turnManager.ejecutarUsoItem(null));
+        assertFalse(player.isHaUsadoItem());
+        assertEquals(Phase.USE_ITEM, turnManager.getFaseActual());
     }
 
     // -- Ataque --------------------------------------------------------------
@@ -504,16 +504,16 @@ class TurnManagerTest {
     @Test
     void addLog_guardaHistorialAcumulativo() {
         // Act
-        turnManager.addLog("Evento 1");
-        turnManager.addLog("Evento 2");
-        turnManager.addLog(null);
+        turnManager.addLog(LogEventType.GAME, null, "Evento 1", null);
+        turnManager.addLog(LogEventType.GAME, null, "Evento 2", null);
+        turnManager.addLog(LogEventType.GAME, null, null, null);
 
         // Assert
         assertEquals(2, turnManager.getLog().getSize());
-        assertEquals(LogEventType.SYSTEM, turnManager.getLog().get(0).getTipo());
+        assertEquals(LogEventType.GAME, turnManager.getLog().get(0).getTipo());
         assertEquals("Evento 1", turnManager.getLog().get(0).getMensaje());
         assertEquals("Evento 2", turnManager.getLog().get(1).getMensaje());
-        assertEquals("Turno 0 | SYSTEM | Evento 1", turnManager.getLogTextos()[0]);
+        assertEquals("Turno 0 | GAME | Evento 1", turnManager.getLogTextos()[0]);
     }
 
     @Test
@@ -624,6 +624,62 @@ class TurnManagerTest {
         assertEquals(0, invocado.getTurnosSinActuar());
     }
 
+    @Test
+    void ejecutarTurnoEnemigos_registraAccionConcretaDeEnemigo() throws GameStateException {
+        // Arrange
+        Enemy warrior = new Enemy(EnemyType.WARRIOR, 2, 3, "R1");
+        room.addEnemigo(warrior);
+        int hpInicial = player.getHp();
+        turnManager.cederTurno();
+
+        // Act
+        turnManager.ejecutarTurnoEnemigos();
+
+        // Assert
+        assertTrue(player.getHp() < hpInicial);
+        assertTrue(existeLog(LogEventType.ENEMY_TURN, "inflige"));
+    }
+
+    @Test
+    void ejecutarTurnoEnemigos_registraDanioYExpiracionDeEfectosDelJugador() throws GameStateException {
+        // Arrange
+        player.addEfecto(new Effect(EffectType.BURN, 1));
+        turnManager.cederTurno();
+
+        // Act
+        turnManager.ejecutarTurnoEnemigos();
+
+        // Assert
+        assertTrue(existeLog(LogEventType.STATE, "recibe 3 daño por efectos"));
+        assertTrue(existeLog(LogEventType.STATE, "BURN expira"));
+    }
+
+    @Test
+    void ejecutarTurnoEnemigos_enemigoMuertoPorEfectosNoSaltaAlSiguiente()
+        throws GameStateException, InvalidMoveException {
+        // Arrange
+        Enemy quemado = new Enemy(EnemyType.WARRIOR, 1, 1, "R1");
+        quemado.setHp(1);
+        quemado.setDropItem(new Weapon("W-DROP", "Botin", 5, 0, 1));
+        quemado.addEfecto(new Effect(EffectType.BURN, 1));
+        room.addEnemigo(quemado);
+
+        Enemy atacante = new Enemy(EnemyType.WARRIOR, 2, 3, "R1");
+        room.addEnemigo(atacante);
+        int hpInicial = player.getHp();
+        turnManager.cederTurno();
+
+        // Act
+        turnManager.ejecutarTurnoEnemigos();
+
+        // Assert
+        assertFalse(room.getEnemigos().contains(quemado));
+        assertSame(quemado.getDropItem(), room.getCell(1, 1).getItem());
+        assertTrue(player.getHp() < hpInicial);
+        assertTrue(existeLog(LogEventType.COMBAT, "muere por efectos"));
+        assertTrue(existeLog(LogEventType.ENEMY_TURN, "Turno enemigo resuelto"));
+    }
+
     // -- Métodos auxiliares --------------------------------------------------
 
     /**
@@ -635,5 +691,22 @@ class TurnManagerTest {
         turnManager.saltarMovimiento();
         turnManager.saltarRecogida();
         turnManager.saltarUsoItem();
+    }
+
+    /**
+     * Busca una entrada de log por tipo y fragmento de mensaje.
+     *
+     * @param tipo tipo esperado
+     * @param fragmento fragmento del mensaje
+     * @return true si existe
+     */
+    private boolean existeLog(LogEventType tipo, String fragmento) {
+        for (int i = 0; i < turnManager.getLog().getSize(); i++) {
+            if (turnManager.getLog().get(i).getTipo() == tipo
+                && turnManager.getLog().get(i).getMensaje().contains(fragmento)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -11,10 +11,10 @@ import Valdris.model.map.Room;
  * Bresenham para recorrer las celdas intermedias entre origen y destino sin
  * comprobar las celdas extremas.</p>
  *
- * <p>Por decisión de diseño actual, las paredes y las escaleras ascendentes
- * bloquean visión cuando aparecen como celdas intermedias. Las escaleras
- * descendentes, trampas, runas, palancas y puertas no se tratan como obstáculos
- * visuales dentro de una sala.</p>
+ * <p>Por decisión de diseño actual, las paredes, las escaleras ascendentes y
+ * las unidades bloquean visión cuando aparecen como celdas intermedias. Las
+ * escaleras descendentes, trampas, runas, palancas y puertas no se tratan como
+ * obstáculos visuales dentro de una sala.</p>
  */
 public final class LineaDeVision {
 
@@ -32,8 +32,9 @@ public final class LineaDeVision {
      * Indica si hay vision directa entre dos celdas de una sala.
      *
      * <p>Las celdas de origen y destino no se comprueban, porque pueden estar
-     * ocupadas por las unidades implicadas en el ataque. Si alguna posicion esta
-     * fuera de rango, devuelve false.</p>
+     * ocupadas por las unidades implicadas en el ataque. Las unidades solo
+     * bloquean si están en una celda intermedia. Si alguna posición está fuera
+     * de rango, devuelve false.</p>
      *
      * @param room sala consultada
      * @param f1 fila de origen

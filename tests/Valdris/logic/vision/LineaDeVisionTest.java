@@ -1,8 +1,12 @@
 package Valdris.logic.vision;
 
 import Valdris.exceptions.InvalidMoveException;
+import Valdris.model.enums.CharacterType;
 import Valdris.model.enums.CellType;
+import Valdris.model.enums.EnemyType;
 import Valdris.model.map.Room;
+import Valdris.model.units.Enemy;
+import Valdris.model.units.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -154,6 +158,39 @@ class LineaDeVisionTest {
     void tieneVision_runaNoBloqueaVision() throws InvalidMoveException {
         // Arrange
         room.setCellType(2, 3, CellType.RUNE);
+
+        // Act + Assert
+        assertTrue(LineaDeVision.tieneVision(room, 2, 1, 2, 5));
+    }
+
+    // -- Unidades -----------------------------------------------------------
+
+    @Test
+    void tieneVision_unidadIntermediaBloqueaVision() throws InvalidMoveException {
+        // Arrange
+        Enemy enemigo = new Enemy(EnemyType.WARRIOR, 2, 3, room.getId());
+        room.getCell(2, 3).setUnit(enemigo);
+
+        // Act + Assert
+        assertFalse(LineaDeVision.tieneVision(room, 2, 1, 2, 5));
+    }
+
+    @Test
+    void tieneVision_unidadEnOrigenNoBloquea() throws InvalidMoveException {
+        // Arrange
+        Player jugador = new Player(CharacterType.KAEL);
+        jugador.setPosicion(2, 1);
+        room.getCell(2, 1).setUnit(jugador);
+
+        // Act + Assert
+        assertTrue(LineaDeVision.tieneVision(room, 2, 1, 2, 5));
+    }
+
+    @Test
+    void tieneVision_unidadEnDestinoNoBloquea() throws InvalidMoveException {
+        // Arrange
+        Enemy enemigo = new Enemy(EnemyType.WARRIOR, 2, 5, room.getId());
+        room.getCell(2, 5).setUnit(enemigo);
 
         // Act + Assert
         assertTrue(LineaDeVision.tieneVision(room, 2, 1, 2, 5));

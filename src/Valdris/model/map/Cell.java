@@ -169,10 +169,14 @@ public class Cell implements Comparable<Cell> {
     /**
      * Indica si la celda bloquea línea de visión y ataques a distancia.
      *
+     * <p>Las unidades también bloquean visión cuando ocupan una celda
+     * intermedia. La línea de visión no consulta origen ni destino, así que el
+     * atacante y el objetivo no se bloquean a sí mismos.</p>
+     *
      * @return true si la celda corta la visión como obstáculo intermedio
      */
     public boolean bloqueaVision() {
-        return tipo == CellType.WALL || tipo == CellType.STAIRS_UP;
+        return unit != null || tipo == CellType.WALL || tipo == CellType.STAIRS_UP;
     }
 
     /**

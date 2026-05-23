@@ -225,9 +225,15 @@ class CellTest {
     }
 
     @Test
-    void bloqueaVision_paredYStairsUpBloqueanPeroStairsDownNo() {
+    void bloqueaVision_paredStairsUpYUnidadBloqueanPeroStairsDownNo() {
+        // Arrange
+        Cell ocupada = new Cell(CellType.FLOOR);
+        ocupada.setUnit(jugador);
+
+        // Act + Assert
         assertTrue(new Cell(CellType.WALL).bloqueaVision());
         assertTrue(new Cell(CellType.STAIRS_UP).bloqueaVision());
+        assertTrue(ocupada.bloqueaVision());
         assertFalse(new Cell(CellType.STAIRS_DOWN).bloqueaVision());
         assertFalse(new Cell(CellType.DOOR).bloqueaVision());
         assertFalse(new Cell(CellType.RUNE).bloqueaVision());

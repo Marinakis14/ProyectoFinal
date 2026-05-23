@@ -6,6 +6,7 @@ import Valdris.exceptions.InvalidMoveException;
 import Valdris.model.enums.CellType;
 import Valdris.model.enums.CharacterType;
 import Valdris.model.enums.EnemyType;
+import Valdris.model.enums.LogEventType;
 import Valdris.model.enums.Phase;
 import Valdris.model.items.Accessory;
 import Valdris.model.items.Weapon;
@@ -202,6 +203,8 @@ class TurnManagerTest {
         assertEquals(1, player.getInventario().getSize());
         assertSame(arma, player.getInventario().get(0));
         assertEquals(Phase.PICKUP, turnManager.getFaseActual());
+        assertEquals(LogEventType.PICKUP, turnManager.getLog().get(0).getTipo());
+        assertEquals(LogEventType.MOVEMENT, turnManager.getLog().get(1).getTipo());
     }
 
     // -- Contenedores --------------------------------------------------------
@@ -293,6 +296,8 @@ class TurnManagerTest {
         assertTrue(enemigo.getHp() < hpAntes);
         assertTrue(player.isHaAtacado());
         assertEquals(Phase.ENEMY_TURN, turnManager.getFaseActual());
+        assertEquals(LogEventType.COMBAT, turnManager.getLog().get(3).getTipo());
+        assertTrue(turnManager.getLog().get(3).getMensaje().contains("inflige"));
     }
 
     @Test
@@ -487,6 +492,7 @@ class TurnManagerTest {
         assertEquals("Kael reconoce la sala.", turnManager.consumeLastDialogue());
         assertNull(turnManager.getLastDialogue());
         assertEquals(2, turnManager.getLog().getSize());
+        assertEquals(LogEventType.ROOM, turnManager.getLog().get(0).getTipo());
 
         // Act
         turnManager.onRoomEnter();
@@ -504,8 +510,10 @@ class TurnManagerTest {
 
         // Assert
         assertEquals(2, turnManager.getLog().getSize());
-        assertEquals("Evento 1", turnManager.getLog().get(0));
-        assertEquals("Evento 2", turnManager.getLog().get(1));
+        assertEquals(LogEventType.SYSTEM, turnManager.getLog().get(0).getTipo());
+        assertEquals("Evento 1", turnManager.getLog().get(0).getMensaje());
+        assertEquals("Evento 2", turnManager.getLog().get(1).getMensaje());
+        assertEquals("Turno 0 | SYSTEM | Evento 1", turnManager.getLogTextos()[0]);
     }
 
     @Test

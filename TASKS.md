@@ -28,7 +28,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | Capas 2, 3 y 4 | Completadas y testeadas |
 | Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga, TurnManager, ItemGenerator, PuzzleManager y DungeonGenerator completados |
 | Capa 6 inicial | GameState, LoadedGame, GameSummary y LectorJSON completados |
-| Tests JUnit actuales | 360 tests pasando |
+| Tests JUnit actuales | 367 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
 ---
@@ -257,6 +257,13 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 63 | Colocar enemigos con posiciones aleatorias dentro de casillas seguras | ✅ Completado |
 | 64 | Evitar duplicados de enemigos en una misma celda durante generación | ✅ Completado |
 | 65 | Asignar drops garantizados AC1-AC4 a mini-bosses de Zona 1-4 | ✅ Completado |
+| 66 | Crear `LogEventType` para clasificar eventos del log de partida | ✅ Completado |
+| 67 | Crear `GameLogEntry` como evento estructurado comparable | ✅ Completado |
+| 68 | Adaptar `TurnManager` a `ListaSimplementeEnlazada<GameLogEntry>` | ✅ Completado |
+| 69 | Añadir `getLogTextos()` en `TurnManager` para compatibilidad textual | ✅ Completado |
+| 70 | Crear `CombatResult` para devolver resultados completos de combate | ✅ Completado |
+| 71 | Adaptar `CombatManager` para devolver `CombatResult` en ataques y AOE | ✅ Completado |
+| 72 | Registrar eventos estructurados de movimiento, recogida, item, combate, acceso, sala y puzzle en `TurnManager` | ✅ Completado |
 
 ---
 
@@ -314,6 +321,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 26 | `DungeonGeneratorTest` | ✅ Completado |
 | 27 | `GameStateTest` | ✅ Completado |
 | 28 | `LectorJSONTest` | ✅ Completado |
+| 29 | `GameLogEntryTest` | ✅ Completado |
 
 ---
 
@@ -339,6 +347,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 16 | Suite tras diálogos, puzzles, pasadizos ocultos y log acumulativo | ✅ Correcta |
 | 17 | Suite tras enemigos nuevos, mini-bosses, items narrativos y `DungeonGenerator` | ✅ Correcta |
 | 18 | Suite tras persistencia (`GameState`, `LoadedGame`, `GameSummary`, `LectorJSON`) | ✅ Correcta |
+| 19 | Suite tras sub-bloque 1 de log estructurado y `CombatResult` | ✅ Correcta |
 
 Última verificación completa:
 
@@ -349,7 +358,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 Resultado:
 
 ```text
-360 tests, 0 failures, 0 errors, 0 skipped
+367 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---
@@ -413,6 +422,10 @@ Resultado:
 | 53 | `GameSummary` se crea ahora con datos fiables: personaje, sala, HP, turno, inventarios, salas exploradas y log | ✅ Aceptada |
 | 54 | Los enemigos muertos se guardan con `vivo=false` y no se reinsertan al reconstruir la partida | ✅ Aceptada |
 | 55 | Los JSON de partida y resumen se escriben y leen explícitamente en UTF-8 | ✅ Aceptada |
+| 56 | El log interno pasa a eventos estructurados con `GameLogEntry` antes de JavaFX | ✅ Aceptada |
+| 57 | `LogEventType` se usa para evitar categorías de log escritas como texto libre | ✅ Aceptada |
+| 58 | `CombatResult` se usa para registrar daño, fallo por BLIND, muerte, drops y efectos sin deducirlo desde HP | ✅ Aceptada |
+| 59 | Durante la transición, persistencia conserva `String[] log` usando `TurnManager.getLogTextos()` | ✅ Aceptada |
 
 ---
 
@@ -422,5 +435,5 @@ Resultado:
 |---:|-----------------|--------|
 | 1 | Definir habilidades especiales finales de mini-bosses | ⬜ Pendiente |
 | 2 | Definir `MalacharAlly` y `ParasitoEnemy` para el boss final | ⬜ Pendiente |
-| 3 | Enriquecer y completar mensajes del log de operaciones | ⬜ Pendiente |
+| 3 | Completar sub-bloque 2 de log: `AIActionResult`, efectos y persistencia estructurada | ⬜ Pendiente |
 | 4 | Implementar capa JavaFX | ⬜ Pendiente |

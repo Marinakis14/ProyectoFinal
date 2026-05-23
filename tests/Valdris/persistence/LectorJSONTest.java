@@ -65,7 +65,7 @@ class LectorJSONTest {
         assertTrue(contiene(state.itemsInventario, "P3"));
         assertTrue(contiene(state.itemsNarrativos, "AC1"));
         assertTrue(contiene(state.pasadizosActivos, "S1_SECRET"));
-        assertTrue(contiene(state.log, "Movimiento registrado."));
+        assertTrue(contieneTexto(state.log, "Movimiento registrado."));
 
         GameState.RoomStateDTO s2c = buscarSala(state, "S2-C");
         assertNotNull(s2c);
@@ -199,7 +199,7 @@ class LectorJSONTest {
         assertTrue(contiene(summary.itemsInventario, "P3"));
         assertTrue(contiene(summary.itemsNarrativos, "AC1"));
         assertTrue(contiene(summary.salasExploradas, "S2-C"));
-        assertTrue(contiene(summary.log, "Movimiento registrado."));
+        assertTrue(contieneTexto(summary.log, "Movimiento registrado."));
     }
 
     @Test
@@ -214,7 +214,7 @@ class LectorJSONTest {
         try (FileReader reader = new FileReader(archivo, StandardCharsets.UTF_8)) {
             GameSummary summary = new Gson().fromJson(reader, GameSummary.class);
             assertEquals("KAEL", summary.tipoPersonaje);
-            assertTrue(contiene(summary.log, "Ataque registrado."));
+            assertTrue(contieneTexto(summary.log, "Ataque registrado."));
         }
     }
 
@@ -311,6 +311,21 @@ class LectorJSONTest {
         }
         for (int i = 0; i < valores.length; i++) {
             if (esperado.equals(valores[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Indica si un array contiene un texto como fragmento de alguna entrada.
+     */
+    private boolean contieneTexto(String[] valores, String esperado) {
+        if (valores == null) {
+            return false;
+        }
+        for (int i = 0; i < valores.length; i++) {
+            if (valores[i] != null && valores[i].contains(esperado)) {
                 return true;
             }
         }

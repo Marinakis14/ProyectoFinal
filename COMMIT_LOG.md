@@ -982,6 +982,69 @@ pero solo con datos fiables disponibles ahora.
 
 ---
 
+### Sesión 20 — 23 mayo 2026 — Codex
+
+**Clases o ficheros trabajados:**
+- `LogEventType`
+- `GameLogEntry`
+- `CombatResult`
+- `TurnManager`
+- `CombatManager`
+- `LectorJSON`
+- `TypeEnumsTest`
+- `GameLogEntryTest`
+- `CombatManagerTest`
+- `TurnManagerTest`
+- `LectorJSONTest`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Prompt usado (detalle):**
+El equipo decidió cerrar antes de JavaFX los puntos pendientes del log de operaciones. Se acordó que el
+guardado y cargado de partida no entran en el log de partida, sino que más adelante se mostrarán como mensajes
+de UI. También se decidió registrar expiración de efectos relevantes cuando se procesen en turno.
+
+Antes de implementar se evaluó cambiar de `ListaSimplementeEnlazada<String>` a un log estructurado con
+`GameLogEntry`. El equipo aceptó crear `LogEventType`, colocar `GameLogEntry` en `Valdris.model.log`,
+mantener compatibilidad textual con `getLogTextos()` y partir el trabajo en dos sub-bloques. Este sub-bloque
+cubre la base del log estructurado y `CombatResult`; IA, efectos y persistencia estructurada quedan para el
+siguiente sub-bloque.
+
+**Resultado:**
+- Compila: SÍ
+- Tests pasan: SÍ
+- Cambios manuales necesarios: actualización de tests que asumían log como texto exacto
+
+**Problemas encontrados:**
+- Cambiar `TurnManager.getLog()` a `ListaSimplementeEnlazada<GameLogEntry>` afectaba a persistencia, que todavía
+  guardaba `String[] log`.
+- Los tests de persistencia esperaban entradas exactas como `"Movimiento registrado."`, pero el log textual ahora
+  sale formateado con turno y tipo.
+
+**Solución aplicada:**
+- Se añadió `TurnManager.getLogTextos()` para conservar salida textual durante la transición.
+- `LectorJSON` sigue guardando `String[] log` usando `getLogTextos()` hasta completar la persistencia estructurada.
+- Se creó `CombatResult` para devolver daño aplicado, fallo por `BLIND`, muerte, HP restante, efectos aplicados y drop.
+- `CombatManager` devuelve `CombatResult` en ataques del jugador, ataques enemigos y AOE del Destructor.
+- `TurnManager` registra eventos estructurados para movimiento, recogida, uso de item, combate, accesos, sala,
+  puzzle y turno enemigo.
+
+**Decisiones técnicas:**
+- `GameLogEntry` implementa `Comparable<GameLogEntry>` para poder almacenarse en la LSE propia.
+- `LogEventType` evita usar categorías de log como texto libre.
+- La persistencia JSON estructurada del log se deja para el sub-bloque 2.
+- No se modificó `MisEstructurasDeDatos`.
+
+**Verificación:**
+- `.\mvnw.cmd -q -DskipTests compile`
+- `.\mvnw.cmd -q "-Dtest=CombatManagerTest,TurnManagerTest,LectorJSONTest,GameStateTest,TypeEnumsTest,GameLogEntryTest" test`
+- `.\mvnw.cmd -q test`
+- Resultado suite completa: `367 tests, 0 failures, 0 errors, 0 skipped`
+
+**Commit sugerido:** pendiente al cerrar el bloque completo de log estructurado.
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas
@@ -993,6 +1056,7 @@ pero solo con datos fiables disponibles ahora.
 - [x] CharacterType
 - [x] EnemyType
 - [x] MiniBossType
+- [x] LogEventType
 - [x] Phase
 - [x] Effect
 - [x] Item (abstracta)
@@ -1001,6 +1065,7 @@ pero solo con datos fiables disponibles ahora.
 - [x] Armor
 - [x] Potion
 - [x] Accessory
+- [x] GameLogEntry
 
 **Bloque 2 — Unidades**
 - [x] Unit (abstracta)
@@ -1021,6 +1086,7 @@ pero solo con datos fiables disponibles ahora.
 - [x] BFSCaminoMinimo
 - [x] LineaDeVision
 - [x] CombatManager
+- [x] CombatResult
 - [x] ArbolDecisionIA
 - [x] IAEnemigo
 - [x] TurnManager
@@ -1077,6 +1143,7 @@ pero solo con datos fiables disponibles ahora.
 - [x] DungeonGeneratorTest
 - [x] GameStateTest
 - [x] LectorJSONTest
+- [x] GameLogEntryTest
 
 ---
 
@@ -1089,7 +1156,7 @@ pero solo con datos fiables disponibles ahora.
 Resultado:
 
 ```text
-360 tests, 0 failures, 0 errors, 0 skipped
+367 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---

@@ -7,10 +7,13 @@ import Valdris.exceptions.InvalidMoveException;
 import Valdris.logic.ai.IAEnemigo;
 import Valdris.logic.bfs.BFSMovimiento;
 import Valdris.logic.combat.CombatManager;
+import Valdris.logic.combat.CombatResult;
 import Valdris.logic.puzzle.PuzzleManager;
 import Valdris.model.enums.CellType;
+import Valdris.model.enums.LogEventType;
 import Valdris.model.enums.Phase;
 import Valdris.model.items.Item;
+import Valdris.model.log.GameLogEntry;
 import Valdris.model.map.Cell;
 import Valdris.model.map.Container;
 import Valdris.model.map.Room;
@@ -60,8 +63,8 @@ public class TurnManager {
     /** Contador de turnos enemigos resueltos. */
     private int turnoGlobal;
 
-    /** Historial acumulativo de acciones de la partida. */
-    private final ListaSimplementeEnlazada<String> log;
+    /** Historial acumulativo y estructurado de acciones de la partida. */
+    private final ListaSimplementeEnlazada<GameLogEntry> log;
 
     /** Último diálogo generado al entrar en una sala. */
     private String lastDialogue;
@@ -110,11 +113,17 @@ public class TurnManager {
         Room room = getRoomActualObligatoria();
         validarDestinoMovimiento(room, filaDestino, colDestino);
 
+        int filaOrigen = player.getFilaActual();
+        int colOrigen = player.getColActual();
         moverJugadorEnSala(room, filaDestino, colDestino);
         resolverItemDeSuelo(room.getCell(filaDestino, colDestino));
         activarTriggerActual();
         activarRunaActual();
         player.setHaMovido(true);
+        addLog(LogEventType.MOVEMENT, nombreJugador(),
+            nombreJugador() + " se mueve de (" + filaOrigen + "," + colOrigen + ") a ("
+                + filaDestino + "," + colDestino + ") en " + room.getId() + ".",
+            "origen=" + filaOrigen + "," + colOrigen + ";destino=" + filaDestino + "," + colDestino);
 
         faseActual = Phase.PICKUP;
     }
@@ -130,6 +139,8 @@ public class TurnManager {
             throw new GameStateException("El jugador ya resolvió el movimiento este turno.");
         }
         player.setHaMovido(true);
+        addLog(LogEventType.MOVEMENT, nombreJugador(),
+            nombreJugador() + " decide no moverse en " + idSalaActual() + ".", null);
         faseActual = Phase.PICKUP;
     }
 
@@ -151,7 +162,11 @@ public class TurnManager {
         Container container = buscarContenedorAdyacente();
         if (container != null) {
             container.abrir(player);
-            addLog("Contenedor abierto junto al jugador.");
+            addLog(LogEventType.PICKUP, nombreJugador(),
+                nombreJugador() + " abre " + container.getNombre() + ".", "containerId=" + container.getId());
+        } else {
+            addLog(LogEventType.PICKUP, nombreJugador(),
+                nombreJugador() + " no encuentra contenedores adyacentes.", null);
         }
 
         player.setHaRecogido(true);
@@ -169,6 +184,8 @@ public class TurnManager {
             throw new GameStateException("El jugador ya resolvió la recogida este turno.");
         }
         player.setHaRecogido(true);
+        addLog(LogEventType.PICKUP, nombreJugador(),
+            nombreJugador() + " decide no recoger ni interactuar.", null);
         faseActual = Phase.USE_ITEM;
     }
 
@@ -198,7 +215,9 @@ public class TurnManager {
         }
 
         resolverAcceso(acceso);
-        addLog("Acceso usado hacia " + acceso.getSalaDestino().getId() + ".");
+        addLog(LogEventType.ACCESS, nombreJugador(),
+            nombreJugador() + " usa un acceso hacia " + acceso.getSalaDestino().getId() + ".",
+            "destino=" + acceso.getSalaDestino().getId());
         player.setHaRecogido(true);
         faseActual = Phase.USE_ITEM;
     }
@@ -219,7 +238,8 @@ public class TurnManager {
             throw new GameStateException("No hay palanca adyacente al jugador.");
         }
         PuzzleManager.resolverActivacion(getRoomActualObligatoria(), palanca, dungeon, player);
-        addLog("Palanca activada.");
+        addLog(LogEventType.PUZZLE, nombreJugador(),
+            nombreJugador() + " activa una palanca en " + idSalaActual() + ".", null);
         player.setHaRecogido(true);
         faseActual = Phase.USE_ITEM;
     }
@@ -302,7 +322,9 @@ public class TurnManager {
             return false;
         }
         puerta.setTipo(CellType.DOOR);
-        addLog("Puerta desbloqueada con " + puerta.getRequiredItemId() + ".");
+        addLog(LogEventType.ACCESS, nombreJugador(),
+            nombreJugador() + " desbloquea una puerta con " + puerta.getRequiredItemId() + ".",
+            "itemId=" + puerta.getRequiredItemId());
         return true;
     }
 
@@ -345,7 +367,12 @@ public class TurnManager {
         }
         if (item != null) {
             player.equip(item);
-            addLog("Item usado: " + item.getId() + ".");
+            addLog(LogEventType.ITEM, nombreJugador(),
+                nombreJugador() + " usa " + item.getId() + " - " + item.getNombre() + ".",
+                "itemId=" + item.getId());
+        } else {
+            addLog(LogEventType.ITEM, nombreJugador(),
+                nombreJugador() + " decide no usar item.", null);
         }
         player.setHaUsadoItem(true);
         faseActual = Phase.ATTACK;
@@ -376,8 +403,8 @@ public class TurnManager {
             throw new InvalidAttackException("Debe seleccionarse un enemigo objetivo.");
         }
 
-        CombatManager.resolverAtaqueJugador(player, objetivo, getRoomActualObligatoria());
-        addLog("Ataque del jugador contra " + objetivo.getTipo() + ".");
+        CombatResult result = CombatManager.resolverAtaqueJugador(player, objetivo, getRoomActualObligatoria());
+        registrarResultadoAtaqueJugador(objetivo, result);
         player.setHaAtacado(true);
         faseActual = Phase.ENEMY_TURN;
     }
@@ -386,6 +413,7 @@ public class TurnManager {
      * Cede el turno directamente a los enemigos desde cualquier fase del jugador.
      */
     public void cederTurno() {
+        addLog(LogEventType.COMBAT, nombreJugador(), nombreJugador() + " cede el turno.", null);
         faseActual = Phase.ENEMY_TURN;
     }
 
@@ -416,7 +444,8 @@ public class TurnManager {
 
         player.procesarEfectos();
         player.resetAcciones();
-        addLog("Turno enemigo resuelto.");
+        addLog(LogEventType.ENEMY_TURN, "ENEMIGOS",
+            "Turno enemigo resuelto en " + room.getId() + ".", "enemigosIniciales=" + enemigosIniciales);
         faseActual = Phase.MOVEMENT;
     }
 
@@ -469,13 +498,16 @@ public class TurnManager {
     public void onRoomEnter() throws GameStateException {
         Room room = getRoomActualObligatoria();
         room.setExplorada(true);
-        addLog("Entrada en sala " + room.getId() + ".");
+        addLog(LogEventType.ROOM, nombreJugador(),
+            nombreJugador() + " entra en " + room.getId() + " - " + room.getNombre() + ".",
+            "salaId=" + room.getId());
 
         lastDialogue = null;
         if (room.hasCharacterDialogue(player.getTipo()) && !room.wasDialogueShown(player.getTipo())) {
             lastDialogue = room.getCharacterDialogue(player.getTipo());
             room.markDialogueShown(player.getTipo());
-            addLog("Diálogo mostrado en sala " + room.getId() + ".");
+            addLog(LogEventType.ROOM, nombreJugador(),
+                "Diálogo de " + nombreJugador() + " mostrado en " + room.getId() + ".", null);
         }
     }
 
@@ -495,7 +527,8 @@ public class TurnManager {
             String target = room.getSecretTarget(actual.getTriggerId());
             boolean activado = dungeon.activateHiddenPassage(target);
             if (activado) {
-                addLog("Pasadizo oculto activado: " + target + ".");
+                addLog(LogEventType.ACCESS, nombreJugador(),
+                    "Pasadizo oculto activado: " + target + ".", "target=" + target);
             }
             return activado;
         } catch (InvalidMoveException e) {
@@ -518,7 +551,8 @@ public class TurnManager {
             }
             boolean activada = PuzzleManager.resolverActivacion(room, actual, dungeon, player);
             if (activada) {
-                addLog("Runa activada.");
+                addLog(LogEventType.PUZZLE, nombreJugador(),
+                    nombreJugador() + " activa una runa en " + room.getId() + ".", null);
             }
             return activada;
         } catch (InvalidMoveException e) {
@@ -565,23 +599,54 @@ public class TurnManager {
     }
 
     /**
-     * Añade una entrada al historial acumulativo de partida.
+     * Añade una entrada textual general al historial acumulativo.
      *
-     * @param texto texto del evento
+     * <p>Esta sobrecarga se conserva para restaurar logs de texto plano desde
+     * persistencia y para pruebas sencillas. Las acciones reales de juego deben
+     * usar la sobrecarga estructurada con {@link LogEventType}.</p>
+     *
+     * @param texto texto del evento legacy
      */
     public void addLog(String texto) {
         if (texto != null && !texto.isEmpty()) {
-            log.addEnd(texto);
+            addLog(LogEventType.SYSTEM, null, texto, null);
         }
     }
 
     /**
-     * Devuelve el historial completo de la partida.
+     * Añade una entrada estructurada al historial acumulativo.
+     *
+     * @param tipo tipo de evento
+     * @param actor actor principal
+     * @param mensaje mensaje visible
+     * @param detalle detalle opcional
+     */
+    public void addLog(LogEventType tipo, String actor, String mensaje, String detalle) {
+        if (mensaje != null && !mensaje.isEmpty()) {
+            log.addEnd(new GameLogEntry(turnoGlobal, tipo, actor, idSalaActual(), mensaje, detalle));
+        }
+    }
+
+    /**
+     * Devuelve el historial estructurado completo de la partida.
      *
      * @return lista acumulativa de eventos
      */
-    public ListaSimplementeEnlazada<String> getLog() {
+    public ListaSimplementeEnlazada<GameLogEntry> getLog() {
         return log;
+    }
+
+    /**
+     * Devuelve el historial como textos visibles.
+     *
+     * @return array con cada entrada formateada
+     */
+    public String[] getLogTextos() {
+        String[] textos = new String[log.getSize()];
+        for (int i = 0; i < log.getSize(); i++) {
+            textos[i] = log.get(i).toString();
+        }
+        return textos;
     }
 
     /**
@@ -730,6 +795,64 @@ public class TurnManager {
         }
         Item item = celda.removeItem();
         player.addItem(item);
+        addLog(LogEventType.PICKUP, nombreJugador(),
+            nombreJugador() + " recoge " + item.getId() + " - " + item.getNombre() + ".",
+            "itemId=" + item.getId());
+    }
+
+    /**
+     * Registra el resultado de un ataque del jugador.
+     *
+     * @param objetivo enemigo atacado
+     * @param result resultado de combate
+     */
+    private void registrarResultadoAtaqueJugador(Enemy objetivo, CombatResult result) {
+        if (result.isFalloPorBlind()) {
+            addLog(LogEventType.COMBAT, nombreJugador(),
+                nombreJugador() + " falla el ataque contra " + objetivo.getTipo() + " por BLIND.", null);
+            return;
+        }
+        addLog(LogEventType.COMBAT, nombreJugador(),
+            nombreJugador() + " inflige " + result.getDanioAplicado() + " daño a " + objetivo.getTipo()
+                + ". HP enemigo: " + result.getHpRestanteObjetivo() + "/" + result.getHpMaxObjetivo() + ".",
+            "objetivo=" + objetivo.getTipo() + ";danio=" + result.getDanioAplicado());
+        if (result.getEfectoPrimarioAplicado() != null) {
+            addLog(LogEventType.STATE, nombreJugador(),
+                objetivo.getTipo() + " recibe " + result.getEfectoPrimarioAplicado() + ".", null);
+        }
+        if (result.getEfectoSecundarioAplicado() != null) {
+            addLog(LogEventType.STATE, nombreJugador(),
+                objetivo.getTipo() + " recibe " + result.getEfectoSecundarioAplicado() + ".", null);
+        }
+        if (result.isObjetivoMuerto()) {
+            addLog(LogEventType.COMBAT, nombreJugador(), objetivo.getTipo() + " muere.", null);
+            if (result.getDropItemId() != null) {
+                addLog(LogEventType.PICKUP, objetivo.getTipo().name(),
+                    objetivo.getTipo() + " deja caer " + result.getDropItemId() + ".",
+                    "dropItemId=" + result.getDropItemId());
+            }
+        }
+    }
+
+    /**
+     * Devuelve el nombre del jugador para logs.
+     *
+     * @return nombre del personaje
+     */
+    private String nombreJugador() {
+        return player.getTipo().name();
+    }
+
+    /**
+     * Devuelve la sala actual para logs sin lanzar excepciones.
+     *
+     * @return id de sala, o null si no hay sala actual
+     */
+    private String idSalaActual() {
+        if (dungeon == null || dungeon.getRoomActual() == null) {
+            return null;
+        }
+        return dungeon.getRoomActual().getId();
     }
 
     /**

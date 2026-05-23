@@ -135,7 +135,7 @@ public final class LectorJSON {
         state.salas = extraerSalas(dungeon);
         state.enemigos = extraerEnemigos(dungeon);
         state.pasadizosActivos = extraerPasadizosActivos(dungeon);
-        state.log = strings(tm.getLog());
+        state.log = tm.getLogTextos();
         return state;
     }
 
@@ -190,7 +190,7 @@ public final class LectorJSON {
         summary.itemsInventario = idsItems(player.getInventario());
         summary.itemsNarrativos = idsItems(player.getItemsNarrativos());
         summary.salasExploradas = extraerSalasExploradas(dungeon);
-        summary.log = strings(tm.getLog());
+        summary.log = tm.getLogTextos();
         return summary;
     }
 

@@ -140,4 +140,26 @@ class TypeEnumsTest {
         // Act + Assert
         assertArrayEquals(esperado, MiniBossType.values());
     }
+
+    // -- LogEventType --------------------------------------------------------
+
+    @Test
+    void logEventType_contieneTiposDeEventoEnOrdenEsperado() {
+        // Arrange
+        LogEventType[] esperado = {
+            LogEventType.MOVEMENT,
+            LogEventType.PICKUP,
+            LogEventType.ITEM,
+            LogEventType.COMBAT,
+            LogEventType.ENEMY_TURN,
+            LogEventType.PUZZLE,
+            LogEventType.ACCESS,
+            LogEventType.ROOM,
+            LogEventType.STATE,
+            LogEventType.SYSTEM
+        };
+
+        // Act + Assert
+        assertArrayEquals(esperado, LogEventType.values());
+    }
 }

@@ -88,10 +88,10 @@ public final class CombatManager {
      *
      * @param jugador jugador atacante
      * @param enemigo enemigo defensor
-     * @return danio infligido
+     * @return resultado estructurado del ataque
      * @throws InvalidAttackException si el ataque no es valido
      */
-    public static int resolverAtaqueJugador(Player jugador, Enemy enemigo)
+    public static CombatResult resolverAtaqueJugador(Player jugador, Enemy enemigo)
         throws InvalidAttackException {
 
         return resolverAtaqueJugador(jugador, enemigo, null);
@@ -107,10 +107,10 @@ public final class CombatManager {
      * @param jugador jugador atacante
      * @param enemigo enemigo defensor
      * @param room sala donde ocurre el ataque, o null si solo se calcula danio
-     * @return danio infligido
+     * @return resultado estructurado del ataque
      * @throws InvalidAttackException si el ataque no es valido
      */
-    public static int resolverAtaqueJugador(Player jugador, Enemy enemigo, Room room)
+    public static CombatResult resolverAtaqueJugador(Player jugador, Enemy enemigo, Room room)
         throws InvalidAttackException {
 
         validarUnidades(jugador, enemigo);
@@ -118,18 +118,22 @@ public final class CombatManager {
 
         if (fallaAtaquePorBlind(jugador)) {
             jugador.consumirBonusAtaqueTemporal();
-            return 0;
+            return new CombatResult(0, true, false, enemigo.getHp(), enemigo.getHpMax(),
+                null, null, null);
         }
 
         int danio = calcularDanio(jugador, enemigo);
         jugador.consumirBonusAtaqueTemporal();
         enemigo.recibirDanio(danio);
-        aplicarEfectoDeArma(jugador, enemigo);
+        EffectType[] efectosAplicados = aplicarEfectoDeArma(jugador, enemigo);
 
+        String dropItemId = null;
         if (!enemigo.isVivo()) {
+            dropItemId = enemigo.getDropItem() == null ? null : enemigo.getDropItem().getId();
             enemigo.onDeath(room);
         }
-        return danio;
+        return new CombatResult(danio, false, !enemigo.isVivo(), enemigo.getHp(), enemigo.getHpMax(),
+            efectosAplicados[0], efectosAplicados[1], dropItemId);
     }
 
     /**
@@ -140,22 +144,24 @@ public final class CombatManager {
      *
      * @param enemigo enemigo atacante
      * @param jugador jugador defensor
-     * @return danio infligido
+     * @return resultado estructurado del ataque
      * @throws InvalidAttackException si el ataque no es valido
      */
-    public static int resolverAtaqueEnemigo(Enemy enemigo, Player jugador)
+    public static CombatResult resolverAtaqueEnemigo(Enemy enemigo, Player jugador)
         throws InvalidAttackException {
 
         validarUnidades(enemigo, jugador);
         if (fallaAtaquePorBlind(enemigo)) {
-            return 0;
+            return new CombatResult(0, true, false, jugador.getHp(), jugador.getHpMax(),
+                null, null, null);
         }
         int danio = calcularDanio(enemigo, jugador);
         if (jugador.tieneEfecto(EffectType.CURSE)) {
             danio += 3;
         }
         jugador.recibirDanio(danio);
-        return danio;
+        return new CombatResult(danio, false, !jugador.isVivo(), jugador.getHp(), jugador.getHpMax(),
+            null, null, null);
     }
 
     /**
@@ -168,10 +174,10 @@ public final class CombatManager {
      * @param destructor enemigo de tipo Destructor
      * @param room sala donde ocurre el ataque
      * @param jugador jugador potencialmente afectado
-     * @return danio total aplicado al jugador
+     * @return resultado estructurado del AOE
      * @throws InvalidAttackException si faltan datos de combate
      */
-    public static int resolverAOEDestructor(Enemy destructor, Room room, Player jugador)
+    public static CombatResult resolverAOEDestructor(Enemy destructor, Room room, Player jugador)
         throws InvalidAttackException {
 
         if (destructor == null || room == null || jugador == null) {
@@ -179,11 +185,13 @@ public final class CombatManager {
         }
         int distancia = distanciaManhattan(destructor, jugador);
         if (distancia > RADIO_DESTRUCTOR) {
-            return 0;
+            return new CombatResult(0, false, false, jugador.getHp(), jugador.getHpMax(),
+                null, null, null);
         }
         int danio = destructor.getDanoBase();
         jugador.recibirDanio(danio);
-        return danio;
+        return new CombatResult(danio, false, !jugador.isVivo(), jugador.getHp(), jugador.getHpMax(),
+            null, null, null);
     }
 
     // -- Rango ----------------------------------------------------------------
@@ -290,24 +298,29 @@ public final class CombatManager {
     }
 
     /**
-     * Aplica el efecto especial del arma del jugador si se activa.
+     * Aplica los efectos especiales del arma del jugador si se activan.
      *
      * @param jugador jugador atacante
      * @param enemigo enemigo afectado
+     * @return array de dos posiciones con efecto primario y secundario aplicados
      */
-    private static void aplicarEfectoDeArma(Player jugador, Enemy enemigo) {
+    private static EffectType[] aplicarEfectoDeArma(Player jugador, Enemy enemigo) {
+        EffectType[] aplicados = new EffectType[2];
         Weapon arma = jugador.getArmaEquipada();
         if (arma == null) {
-            return;
+            return aplicados;
         }
         EffectType efecto = arma.tryAplicarEfecto();
         if (efecto != null) {
             enemigo.addEfecto(new Effect(efecto, getDuracionEfectoArma(efecto)));
+            aplicados[0] = efecto;
         }
         EffectType efectoSecundario = arma.tryAplicarEfectoSecundario();
         if (efectoSecundario != null) {
             enemigo.addEfecto(new Effect(efectoSecundario, getDuracionEfectoArma(efectoSecundario)));
+            aplicados[1] = efectoSecundario;
         }
+        return aplicados;
     }
 
     /**

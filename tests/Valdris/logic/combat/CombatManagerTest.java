@@ -145,11 +145,12 @@ class CombatManagerTest {
         int hpInicial = enemigo.getHp();
 
         // Act
-        int danio = CombatManager.resolverAtaqueJugador(jugador, enemigo);
+        CombatResult result = CombatManager.resolverAtaqueJugador(jugador, enemigo);
 
         // Assert
-        assertTrue(danio > 0);
-        assertEquals(hpInicial - danio, enemigo.getHp());
+        assertTrue(result.getDanioAplicado() > 0);
+        assertFalse(result.isFalloPorBlind());
+        assertEquals(hpInicial - result.getDanioAplicado(), enemigo.getHp());
     }
 
     @Test
@@ -170,10 +171,11 @@ class CombatManagerTest {
         jugador.equip(arma);
 
         // Act
-        CombatManager.resolverAtaqueJugador(jugador, enemigo);
+        CombatResult result = CombatManager.resolverAtaqueJugador(jugador, enemigo);
 
         // Assert
         assertTrue(enemigo.tieneEfecto(EffectType.BURN));
+        assertEquals(EffectType.BURN, result.getEfectoPrimarioAplicado());
     }
 
     @Test
@@ -185,11 +187,13 @@ class CombatManagerTest {
         jugador.equip(arma);
 
         // Act
-        CombatManager.resolverAtaqueJugador(jugador, enemigo);
+        CombatResult result = CombatManager.resolverAtaqueJugador(jugador, enemigo);
 
         // Assert
         assertTrue(enemigo.tieneEfecto(EffectType.SLOW));
         assertTrue(enemigo.tieneEfecto(EffectType.BLIND));
+        assertEquals(EffectType.SLOW, result.getEfectoPrimarioAplicado());
+        assertEquals(EffectType.BLIND, result.getEfectoSecundarioAplicado());
     }
 
     @Test
@@ -198,10 +202,10 @@ class CombatManagerTest {
         jugador.addBonusAtaqueTemporal(5);
 
         // Act
-        int danio = CombatManager.resolverAtaqueJugador(jugador, enemigo);
+        CombatResult result = CombatManager.resolverAtaqueJugador(jugador, enemigo);
 
         // Assert
-        assertTrue(danio > 0);
+        assertTrue(result.getDanioAplicado() > 0);
         assertEquals(0, jugador.getBonusAtaqueTemporal());
     }
 
@@ -216,10 +220,12 @@ class CombatManagerTest {
         room.addEnemigo(enemigo);
 
         // Act
-        CombatManager.resolverAtaqueJugador(jugador, enemigo, room);
+        CombatResult result = CombatManager.resolverAtaqueJugador(jugador, enemigo, room);
 
         // Assert
         assertFalse(enemigo.isVivo());
+        assertTrue(result.isObjetivoMuerto());
+        assertEquals("W-DROP", result.getDropItemId());
         assertSame(drop, room.getCell(enemigo.getFilaActual(), enemigo.getColActual()).getItem());
     }
 
@@ -231,9 +237,10 @@ class CombatManagerTest {
         int hpInicial = jugador.getHp();
 
         // Act
-        int danio = CombatManager.resolverAtaqueEnemigo(enemigo, jugador);
+        CombatResult result = CombatManager.resolverAtaqueEnemigo(enemigo, jugador);
 
         // Assert
+        int danio = result.getDanioAplicado();
         assertTrue(danio >= 7);
         assertTrue(danio <= 22);
         assertEquals(hpInicial - danio, jugador.getHp());
@@ -245,9 +252,10 @@ class CombatManagerTest {
         jugador.addEfecto(new Effect(EffectType.CURSE, 2));
 
         // Act
-        int danio = CombatManager.resolverAtaqueEnemigo(enemigo, jugador);
+        CombatResult result = CombatManager.resolverAtaqueEnemigo(enemigo, jugador);
 
         // Assert
+        int danio = result.getDanioAplicado();
         assertTrue(danio >= 10);
         assertTrue(danio <= 25);
         assertEquals(jugador.getHpMax() - danio, jugador.getHp());
@@ -260,10 +268,10 @@ class CombatManagerTest {
         jugador.equip(armadura);
 
         // Act
-        int danio = CombatManager.resolverAtaqueEnemigo(enemigo, jugador);
+        CombatResult result = CombatManager.resolverAtaqueEnemigo(enemigo, jugador);
 
         // Assert
-        assertEquals(0, danio);
+        assertEquals(0, result.getDanioAplicado());
         assertEquals(jugador.getHpMax(), jugador.getHp());
     }
 
@@ -286,6 +294,23 @@ class CombatManagerTest {
         assertFalse(CombatManager.fallaAtaquePorBlind(null, 0.0));
     }
 
+    @Test
+    void resolverAtaqueJugador_conBlindDevuelveFalloEstructurado() throws InvalidAttackException {
+        // Arrange
+        jugador.addEfecto(new Effect(EffectType.BLIND, 2));
+        jugador.addBonusAtaqueTemporal(5);
+
+        // Act
+        CombatResult result = CombatManager.resolverAtaqueJugador(jugador, enemigo);
+
+        // Assert
+        if (result.isFalloPorBlind()) {
+            assertEquals(0, result.getDanioAplicado());
+            assertEquals(enemigo.getHpMax(), enemigo.getHp());
+            assertEquals(0, jugador.getBonusAtaqueTemporal());
+        }
+    }
+
     // -- resolverAOEDestructor ----------------------------------------------
 
     @Test
@@ -295,11 +320,11 @@ class CombatManagerTest {
         jugador.setPosicion(2, 4);
 
         // Act
-        int danio = CombatManager.resolverAOEDestructor(destructor, room, jugador);
+        CombatResult result = CombatManager.resolverAOEDestructor(destructor, room, jugador);
 
         // Assert
-        assertEquals(destructor.getDanoBase(), danio);
-        assertEquals(jugador.getHpMax() - danio, jugador.getHp());
+        assertEquals(destructor.getDanoBase(), result.getDanioAplicado());
+        assertEquals(jugador.getHpMax() - result.getDanioAplicado(), jugador.getHp());
     }
 
     @Test
@@ -309,10 +334,10 @@ class CombatManagerTest {
         jugador.setPosicion(4, 4);
 
         // Act
-        int danio = CombatManager.resolverAOEDestructor(destructor, room, jugador);
+        CombatResult result = CombatManager.resolverAOEDestructor(destructor, room, jugador);
 
         // Assert
-        assertEquals(0, danio);
+        assertEquals(0, result.getDanioAplicado());
         assertEquals(jugador.getHpMax(), jugador.getHp());
     }
 

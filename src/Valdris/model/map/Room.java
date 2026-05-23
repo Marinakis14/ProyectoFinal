@@ -6,6 +6,7 @@ import Valdris.exceptions.InvalidMoveException;
 import Valdris.model.enums.CharacterType;
 import Valdris.model.enums.CellType;
 import Valdris.model.units.Enemy;
+import Valdris.model.units.MalacharAlly;
 
 /**
  * Representa una sala jugable dentro del dungeon.
@@ -42,6 +43,9 @@ public class Room implements Comparable<Room> {
 
     /** Lista de enemigos vivos presentes en la sala. */
     private final ListaSimplementeEnlazada<Enemy> enemigos;
+
+    /** Aliado NPC especial de la sala final, o null si no existe. */
+    private MalacharAlly allyNpc;
 
     /** Indica si la sala tiene límite de turnos. */
     private boolean hasRoomTimer;
@@ -123,6 +127,7 @@ public class Room implements Comparable<Room> {
         this.cols = cols;
         this.celdas = new Cell[filas][cols];
         this.enemigos = new ListaSimplementeEnlazada<>();
+        this.allyNpc = null;
         this.hasRoomTimer = false;
         this.turnosRestantes = -1;
         this.explorada = false;
@@ -205,6 +210,36 @@ public class Room implements Comparable<Room> {
         enemigos.del(enemy);
         if (isEnRango(enemy.getFilaActual(), enemy.getColActual())) {
             celdas[enemy.getFilaActual()][enemy.getColActual()].removeUnit();
+        }
+    }
+
+    /**
+     * Coloca o elimina el aliado NPC especial de la sala.
+     *
+     * <p>El aliado no entra en la lista de enemigos. Su presencia se refleja en
+     * la celda para bloquear movimiento y línea de visión como cualquier otra
+     * unidad.</p>
+     *
+     * @param allyNpc aliado que se coloca, o null para retirarlo
+     */
+    public void setAllyNpc(MalacharAlly allyNpc) {
+        limpiarAllyNpcDeCelda();
+        this.allyNpc = allyNpc;
+        if (allyNpc != null && isEnRango(allyNpc.getFilaActual(), allyNpc.getColActual())) {
+            celdas[allyNpc.getFilaActual()][allyNpc.getColActual()].setUnit(allyNpc);
+        }
+    }
+
+    /**
+     * Limpia la celda ocupada por el aliado actual si sigue apuntando a él.
+     */
+    private void limpiarAllyNpcDeCelda() {
+        if (allyNpc == null || !isEnRango(allyNpc.getFilaActual(), allyNpc.getColActual())) {
+            return;
+        }
+        Cell cell = celdas[allyNpc.getFilaActual()][allyNpc.getColActual()];
+        if (cell.getUnit() == allyNpc) {
+            cell.removeUnit();
         }
     }
 
@@ -595,6 +630,15 @@ public class Room implements Comparable<Room> {
      */
     public ListaSimplementeEnlazada<Enemy> getEnemigos() {
         return enemigos;
+    }
+
+    /**
+     * Devuelve el aliado NPC especial de esta sala.
+     *
+     * @return aliado NPC, o null si la sala no lo tiene
+     */
+    public MalacharAlly getAllyNpc() {
+        return allyNpc;
     }
 
     /**

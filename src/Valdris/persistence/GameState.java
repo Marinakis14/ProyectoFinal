@@ -26,6 +26,21 @@ public class GameState {
     /** Último diálogo pendiente para la interfaz. */
     public String lastDialogue;
 
+    /** Resultado actual de la partida, como GameResult.name(). */
+    public String gameResult;
+
+    /** Texto de desenlace o derrota. */
+    public String endingText;
+
+    /** Frase final de Malachar si existe. */
+    public String finalQuote;
+
+    /** Motivo de derrota si existe. */
+    public String defeatReason;
+
+    /** Indica si el combate final ya comenzó. */
+    public boolean finalCombatStarted;
+
     // -- Estado del jugador --------------------------------------------------
 
     /** HP actual del jugador. */
@@ -87,6 +102,9 @@ public class GameState {
     /** Log estructurado acumulativo de la partida. */
     public GameLogEntryDTO[] logEventos;
 
+    /** Estado de Malachar como aliado final, o null si aún no apareció. */
+    public MalacharStateDTO malachar;
+
     // -- DTOs internos --------------------------------------------------------
 
     /**
@@ -123,6 +141,27 @@ public class GameState {
 
         /** Detalle estructurado opcional. */
         public String detalle;
+    }
+
+    /**
+     * Estado serializable de Malachar como aliado NPC.
+     */
+    public static class MalacharStateDTO {
+
+        /** Fila actual. */
+        public int fila;
+
+        /** Columna actual. */
+        public int col;
+
+        /** HP actual. */
+        public int hp;
+
+        /** Turnos de recuperación pendientes. */
+        public int turnosRecuperacion;
+
+        /** Efectos activos. */
+        public EffectStateDTO[] efectos;
     }
 
     /**
@@ -252,6 +291,24 @@ public class GameState {
 
         /** Si el enemigo está marcado como mini-jefe. */
         public boolean esMiniJefe;
+
+        /** Fase del Parásito si aplica. */
+        public int parasitoPhase;
+
+        /** Cooldown AOE del Parásito si aplica. */
+        public int parasitoAoeCooldown;
+
+        /** Si Devorar Luz ya fue usado. */
+        public boolean parasitoDevorarLuzUsado;
+
+        /** Si el Parásito tiene transición pendiente. */
+        public boolean parasitoPhaseTransitionPending;
+
+        /** Si Devorar Luz está pendiente por transición. */
+        public boolean parasitoDevorarLuzPendiente;
+
+        /** Si debe saltar su próximo turno por transición. */
+        public boolean parasitoSkipNextActionByTransition;
 
         /** Efectos activos. */
         public EffectStateDTO[] efectos;

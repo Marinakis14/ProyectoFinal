@@ -12,6 +12,7 @@ import Valdris.model.enums.CellType;
 import Valdris.model.enums.CharacterType;
 import Valdris.model.enums.EffectType;
 import Valdris.model.enums.EnemyType;
+import Valdris.model.enums.GameResult;
 import Valdris.model.enums.LogEventType;
 import Valdris.model.enums.MiniBossType;
 import Valdris.model.enums.Phase;
@@ -27,7 +28,9 @@ import Valdris.model.map.Dungeon;
 import Valdris.model.map.HiddenPassage;
 import Valdris.model.map.Room;
 import Valdris.model.units.Enemy;
+import Valdris.model.units.MalacharAlly;
 import Valdris.model.units.MiniBossEnemy;
+import Valdris.model.units.ParasitoEnemy;
 import Valdris.model.units.Player;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -119,6 +122,11 @@ public final class LectorJSON {
         state.faseActual = tm.getFaseActual().name();
         state.turnoGlobal = tm.getTurnoGlobal();
         state.lastDialogue = tm.getLastDialogue();
+        state.gameResult = tm.getGameResult().name();
+        state.endingText = tm.getEndingText();
+        state.finalQuote = tm.getFinalQuote();
+        state.defeatReason = tm.getDefeatReason();
+        state.finalCombatStarted = tm.isFinalCombatStarted();
         state.hpJugador = player.getHp();
         state.filaJugador = player.getFilaActual();
         state.colJugador = player.getColActual();
@@ -138,6 +146,7 @@ public final class LectorJSON {
         state.enemigos = extraerEnemigos(dungeon);
         state.pasadizosActivos = extraerPasadizosActivos(dungeon);
         state.logEventos = extraerLog(tm);
+        state.malachar = extraerMalachar(dungeon);
         return state;
     }
 
@@ -161,6 +170,7 @@ public final class LectorJSON {
         restaurarPasadizos(dungeon, state.pasadizosActivos);
         restaurarJugador(player, state);
         limpiarUnidadesDeSalas(dungeon);
+        restaurarMalachar(dungeon, state.malachar);
         restaurarEnemigos(dungeon, state.enemigos);
         restaurarSalaActual(dungeon, player, state);
         restaurarTurnManager(tm, state);
@@ -189,6 +199,10 @@ public final class LectorJSON {
         summary.idRoomActual = dungeon.getRoomActual().getId();
         summary.hpJugador = player.getHp();
         summary.turnoGlobal = tm.getTurnoGlobal();
+        summary.gameResult = tm.getGameResult().name();
+        summary.endingText = tm.getEndingText();
+        summary.finalQuote = tm.getFinalQuote();
+        summary.defeatReason = tm.getDefeatReason();
         summary.itemsInventario = idsItems(player.getInventario());
         summary.itemsNarrativos = idsItems(player.getItemsNarrativos());
         summary.salasExploradas = extraerSalasExploradas(dungeon);
@@ -378,6 +392,15 @@ public final class LectorJSON {
         dto.dropItemId = idItem(enemy.getDropItem());
         dto.turnosSinActuar = enemy.getTurnosSinActuar();
         dto.esMiniJefe = enemy.isMiniJefe();
+        if (enemy instanceof ParasitoEnemy) {
+            ParasitoEnemy parasito = (ParasitoEnemy) enemy;
+            dto.parasitoPhase = parasito.getPhase();
+            dto.parasitoAoeCooldown = parasito.getAoeCooldown();
+            dto.parasitoDevorarLuzUsado = parasito.isDevorarLuzUsado();
+            dto.parasitoPhaseTransitionPending = parasito.isPhaseTransitionPending();
+            dto.parasitoDevorarLuzPendiente = parasito.isDevorarLuzPendiente();
+            dto.parasitoSkipNextActionByTransition = parasito.isSkipNextActionByTransition();
+        }
         dto.efectos = efectos(enemy.getEfectosActivos());
         return dto;
     }
@@ -414,6 +437,24 @@ public final class LectorJSON {
             result[i] = dto;
         }
         return result;
+    }
+
+    /**
+     * Extrae el estado de Malachar si ya apareció en la sala final.
+     */
+    private static GameState.MalacharStateDTO extraerMalachar(Dungeon dungeon) {
+        Room salaFinal = dungeon.getRoomById("S5-D");
+        MalacharAlly malachar = salaFinal == null ? null : salaFinal.getAllyNpc();
+        if (malachar == null) {
+            return null;
+        }
+        GameState.MalacharStateDTO dto = new GameState.MalacharStateDTO();
+        dto.fila = malachar.getFilaActual();
+        dto.col = malachar.getColActual();
+        dto.hp = malachar.getHp();
+        dto.turnosRecuperacion = malachar.getTurnosRecuperacion();
+        dto.efectos = efectos(malachar.getEfectosActivos());
+        return dto;
     }
 
     // -- Restauración ---------------------------------------------------------
@@ -592,7 +633,29 @@ public final class LectorJSON {
                 }
             }
             room.getEnemigos().clear();
+            room.setAllyNpc(null);
         }
+    }
+
+    /**
+     * Restaura a Malachar como aliado separado de la lista de enemigos.
+     */
+    private static void restaurarMalachar(Dungeon dungeon, GameState.MalacharStateDTO dto) {
+        if (dto == null) {
+            return;
+        }
+        Room salaFinal = dungeon.getRoomById("S5-D");
+        if (salaFinal == null || !salaFinal.isEnRango(dto.fila, dto.col)) {
+            return;
+        }
+        MalacharAlly malachar = new MalacharAlly(dto.fila, dto.col);
+        malachar.setHp(dto.hp);
+        malachar.setTurnosRecuperacion(dto.turnosRecuperacion);
+        restaurarEfectos(malachar.getEfectosActivos(), dto.efectos);
+        if (dto.turnosRecuperacion > 0) {
+            malachar.setTurnosRecuperacion(dto.turnosRecuperacion);
+        }
+        salaFinal.setAllyNpc(malachar);
     }
 
     /**
@@ -614,6 +677,7 @@ public final class LectorJSON {
                 enemy.setDropItem(ItemGenerator.crearItem(dto.dropItemId));
                 enemy.setTurnosSinActuar(dto.turnosSinActuar);
                 enemy.setMiniJefe(dto.esMiniJefe);
+                restaurarEstadoParasito(enemy, dto);
                 restaurarEfectos(enemy.getEfectosActivos(), dto.efectos);
                 room.addEnemigo(enemy);
             }
@@ -621,10 +685,29 @@ public final class LectorJSON {
     }
 
     /**
+     * Restaura campos específicos del Parásito.
+     */
+    private static void restaurarEstadoParasito(Enemy enemy, GameState.EnemyStateDTO dto) {
+        if (!(enemy instanceof ParasitoEnemy)) {
+            return;
+        }
+        ParasitoEnemy parasito = (ParasitoEnemy) enemy;
+        parasito.setPhase(dto.parasitoPhase);
+        parasito.setAoeCooldown(dto.parasitoAoeCooldown);
+        parasito.setDevorarLuzUsado(dto.parasitoDevorarLuzUsado);
+        parasito.setPhaseTransitionPending(dto.parasitoPhaseTransitionPending);
+        parasito.setDevorarLuzPendiente(dto.parasitoDevorarLuzPendiente);
+        parasito.setSkipNextActionByTransition(dto.parasitoSkipNextActionByTransition);
+    }
+
+    /**
      * Crea un enemigo normal o mini-boss desde DTO.
      */
     private static Enemy crearEnemigo(GameState.EnemyStateDTO dto) {
         try {
+            if (dto.tipoEnemigo != null && EnemyType.valueOf(dto.tipoEnemigo) == EnemyType.PARASITO) {
+                return new ParasitoEnemy(dto.fila, dto.col, dto.idSala);
+            }
             if (dto.miniBossType != null) {
                 return new MiniBossEnemy(MiniBossType.valueOf(dto.miniBossType), dto.fila, dto.col, dto.idSala);
             }
@@ -670,6 +753,15 @@ public final class LectorJSON {
         }
         tm.setTurnoGlobal(state.turnoGlobal);
         tm.setLastDialogue(state.lastDialogue);
+        try {
+            tm.setGameResult(state.gameResult == null ? GameResult.IN_PROGRESS : GameResult.valueOf(state.gameResult));
+        } catch (IllegalArgumentException e) {
+            tm.setGameResult(GameResult.IN_PROGRESS);
+        }
+        tm.setEndingText(state.endingText);
+        tm.setFinalQuote(state.finalQuote);
+        tm.setDefeatReason(state.defeatReason);
+        tm.setFinalCombatStarted(state.finalCombatStarted);
         if (state.logEventos != null) {
             for (int i = 0; i < state.logEventos.length; i++) {
                 GameLogEntry entry = crearLogEntry(state.logEventos[i]);

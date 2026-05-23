@@ -457,7 +457,7 @@ Resultado:
 
 | Nº | Tarea pendiente | Estado |
 |---:|-----------------|--------|
-| 1 | Definir `MalacharAlly` como aliado NPC del combate final | ⬜ Pendiente |
-| 2 | Definir `ParasitoEnemy`, sus fases, derrota y desenlace final | ⬜ Pendiente |
-| 3 | Implementar sistema de game over y desenlace final | ⬜ Pendiente |
+| 1 | Definir `MalacharAlly` como aliado NPC del combate final | ✅ Completado |
+| 2 | Definir `ParasitoEnemy`, sus fases, derrota y desenlace final | ✅ Completado |
+| 3 | Implementar sistema de game over y desenlace final | ✅ Completado |
 | 4 | Implementar capa JavaFX | ⬜ Pendiente |

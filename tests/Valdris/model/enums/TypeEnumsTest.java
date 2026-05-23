@@ -78,7 +78,8 @@ class TypeEnumsTest {
             EnemyType.SUMMONER,
             EnemyType.CONSTRUCTO,
             EnemyType.SOMBRA_ABSORBIDA,
-            EnemyType.ECO_DE_MAGIA
+            EnemyType.ECO_DE_MAGIA,
+            EnemyType.PARASITO
         };
 
         // Act + Assert

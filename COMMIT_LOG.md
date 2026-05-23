@@ -1175,6 +1175,39 @@ También se fijó que los especiales respetan BLIND y que el sistema completo de
 
 ---
 
+## 23 mayo 2026 — Bloque final antes de JavaFX
+
+### Objetivo
+
+Cerrar la lógica jugable final antes de empezar la capa JavaFX: Malachar como aliado NPC, Parásito
+como enemigo final con fases, desenlace de victoria/derrota y persistencia del estado especial.
+
+### Decisiones aplicadas
+
+- Se añadió `GameResult` separado de `Phase`, porque el resultado de partida no forma parte del
+  ciclo táctico de turno.
+- `MalacharAlly` se implementó como `Unit`, no como `Enemy`, para que bloquee celda y visión pero
+  no pueda ser atacado por el jugador ni tratado como objetivo enemigo.
+- `ParasitoEnemy` extiende `Enemy` y usa `EnemyType.PARASITO` para persistencia e identidad de log.
+- El Parásito tiene tres fases con stats dinámicas, transiciones con acción consumida y Devorar Luz
+  como explosión global garantizada al entrar en fase 3.
+- Los AOE del Parásito atraviesan paredes y unidades, afectan al jugador y a Malachar, y no usan
+  línea de visión.
+- `Room` guarda a Malachar en un campo separado de `enemigos`.
+- `TurnManager` gestiona inicio explícito del combate final, turno aliado, turno especial del
+  Parásito, victoria por sacrificio y derrota si el jugador cae antes del desenlace.
+- `GameState`, `GameSummary` y `LectorJSON` guardan/cargan resultado final, textos de desenlace,
+  estado de Malachar y campos especiales del Parásito.
+
+### Verificación
+
+- Se añadieron tests de `MalacharAlly`, `ParasitoEnemy`, flujo final en `TurnManager` y persistencia
+  del combate final.
+- Se actualizó `TypeEnumsTest` para incluir `EnemyType.PARASITO`.
+- Suite completa ejecutada con `mvn test`: correcta.
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas

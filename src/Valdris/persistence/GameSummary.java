@@ -21,6 +21,18 @@ public class GameSummary {
     /** Turno global alcanzado. */
     public int turnoGlobal;
 
+    /** Resultado final o estado actual de la partida. */
+    public String gameResult;
+
+    /** Texto de desenlace o derrota. */
+    public String endingText;
+
+    /** Frase final de Malachar. */
+    public String finalQuote;
+
+    /** Motivo de derrota si existe. */
+    public String defeatReason;
+
     /** IDs de inventario normal. */
     public String[] itemsInventario;
 

@@ -13,9 +13,13 @@ import Valdris.logic.combat.CombatResult;
 import Valdris.logic.puzzle.PuzzleManager;
 import Valdris.model.effects.EffectProcessingResult;
 import Valdris.model.enums.CellType;
+import Valdris.model.enums.CharacterType;
 import Valdris.model.enums.EffectType;
+import Valdris.model.enums.EnemyType;
+import Valdris.model.enums.GameResult;
 import Valdris.model.enums.LogEventType;
 import Valdris.model.enums.Phase;
+import Valdris.model.effects.Effect;
 import Valdris.model.items.Item;
 import Valdris.model.log.GameLogEntry;
 import Valdris.model.map.Cell;
@@ -23,7 +27,10 @@ import Valdris.model.map.Container;
 import Valdris.model.map.Room;
 import Valdris.model.map.Dungeon;
 import Valdris.model.units.Enemy;
+import Valdris.model.units.MalacharAlly;
+import Valdris.model.units.ParasitoEnemy;
 import Valdris.model.units.Player;
+import Valdris.model.units.Unit;
 
 /**
  * Gestiona el ciclo de turnos del juego.
@@ -53,6 +60,33 @@ public class TurnManager {
         {0, 1}
     };
 
+    /** ID de la sala final del Núcleo. */
+    private static final String SALA_FINAL_ID = "S5-D";
+
+    /** Posición fija de Malachar en la sala final. */
+    private static final int MALACHAR_FILA = 7;
+
+    /** Posición fija de Malachar en la sala final. */
+    private static final int MALACHAR_COL = 3;
+
+    /** Posición donde se manifiesta el Parásito. */
+    private static final int PARASITO_FILA = 5;
+
+    /** Posición donde se manifiesta el Parásito. */
+    private static final int PARASITO_COL = 8;
+
+    /** Radio de los pulsos en área del Parásito. */
+    private static final int RADIO_PULSO_PARASITO = 2;
+
+    /** Daño fijo de Pulso del Núcleo. */
+    private static final int DANIO_PULSO_NUCLEO = 12;
+
+    /** Daño fijo de Pulso Intensificado. */
+    private static final int DANIO_PULSO_INTENSIFICADO = 15;
+
+    /** Daño fijo de Devorar Luz. */
+    private static final int DANIO_DEVORAR_LUZ = 20;
+
     // -- Atributos ------------------------------------------------------------
 
     /** Fase actual del ciclo de turnos. */
@@ -73,6 +107,21 @@ public class TurnManager {
     /** Último diálogo generado al entrar en una sala. */
     private String lastDialogue;
 
+    /** Resultado actual de la partida. */
+    private GameResult gameResult;
+
+    /** Texto de desenlace final, si la partida terminó. */
+    private String endingText;
+
+    /** Frase final de Malachar asociada al personaje. */
+    private String finalQuote;
+
+    /** Motivo de derrota, si existe. */
+    private String defeatReason;
+
+    /** Indica si el combate final contra el Parásito ya comenzó. */
+    private boolean finalCombatStarted;
+
     // -- Constructor ----------------------------------------------------------
 
     /**
@@ -88,6 +137,11 @@ public class TurnManager {
         this.turnoGlobal = 0;
         this.log = new ListaSimplementeEnlazada<>();
         this.lastDialogue = null;
+        this.gameResult = GameResult.IN_PROGRESS;
+        this.endingText = null;
+        this.finalQuote = null;
+        this.defeatReason = null;
+        this.finalCombatStarted = false;
     }
 
     // -- Acciones del jugador -------------------------------------------------
@@ -409,8 +463,13 @@ public class TurnManager {
 
         CombatResult result = CombatManager.resolverAtaqueJugador(player, objetivo, getRoomActualObligatoria());
         registrarResultadoAtaqueJugador(objetivo, result);
+        if (objetivo instanceof ParasitoEnemy) {
+            resolverEstadoParasitoTrasDanio((ParasitoEnemy) objetivo, getRoomActualObligatoria());
+        }
         player.setHaAtacado(true);
-        faseActual = Phase.ENEMY_TURN;
+        if (gameResult == GameResult.IN_PROGRESS) {
+            faseActual = Phase.ENEMY_TURN;
+        }
     }
 
     /**
@@ -419,6 +478,47 @@ public class TurnManager {
     public void cederTurno() {
         addLog(LogEventType.COMBAT, nombreJugador(), nombreJugador() + " cede el turno.", null);
         faseActual = Phase.ENEMY_TURN;
+    }
+
+    // -- Combate final --------------------------------------------------------
+
+    /**
+     * Inicia el combate final tras hablar con Malachar.
+     *
+     * <p>El jugador debe estar en S5-D y adyacente a Malachar. Al iniciarse el
+     * diálogo, el Parásito se manifiesta en su posición fija y el ciclo táctico
+     * vuelve a movimiento para que la batalla empiece limpia.</p>
+     *
+     * @throws GameStateException si no se cumplen las condiciones del combate final
+     */
+    public void iniciarCombateFinal() throws GameStateException {
+        validarPartidaEnCurso();
+        Room room = getRoomActualObligatoria();
+        if (!SALA_FINAL_ID.equals(room.getId())) {
+            throw new GameStateException("El combate final solo puede iniciarse en " + SALA_FINAL_ID + ".");
+        }
+        if (finalCombatStarted) {
+            throw new GameStateException("El combate final ya está iniciado.");
+        }
+
+        MalacharAlly malachar = asegurarMalacharEnSalaFinal(room);
+        if (distanciaManhattan(player.getFilaActual(), player.getColActual(),
+            malachar.getFilaActual(), malachar.getColActual()) != 1) {
+            throw new GameStateException("El jugador debe estar junto a Malachar para iniciar el diálogo.");
+        }
+        if (!room.isEnRango(PARASITO_FILA, PARASITO_COL)) {
+            throw new GameStateException("La posición del Parásito no pertenece a la sala final.");
+        }
+
+        ParasitoEnemy parasito = new ParasitoEnemy(PARASITO_FILA, PARASITO_COL, room.getId());
+        room.addEnemigo(parasito);
+        finalCombatStarted = true;
+        lastDialogue = crearDialogoMalachar(player.getTipo());
+        addLog(LogEventType.ROOM, "Malachar", lastDialogue, "finalDialogue=true");
+        addLog(LogEventType.GAME, "PARASITO",
+            "El Parásito se manifiesta en el Núcleo Profundo.", "phase=1");
+        player.resetAcciones();
+        faseActual = Phase.MOVEMENT;
     }
 
     // -- Turno enemigo --------------------------------------------------------
@@ -434,10 +534,18 @@ public class TurnManager {
      */
     public void ejecutarTurnoEnemigos() throws GameStateException {
         validarFase(Phase.ENEMY_TURN);
+        validarPartidaEnCurso();
 
         Room room = getRoomActualObligatoria();
         turnoGlobal++;
         room.decrementarTimer();
+
+        if (finalCombatStarted) {
+            ejecutarTurnoAliadoFinal(room);
+            if (gameResult != GameResult.IN_PROGRESS) {
+                return;
+            }
+        }
 
         ListaSimplementeEnlazada<Enemy> enemigos = room.getEnemigos();
         Enemy[] enemigosTurno = new Enemy[enemigos.getSize()];
@@ -448,16 +556,26 @@ public class TurnManager {
         int enemigosIniciales = enemigosTurno.length;
         for (int i = 0; i < enemigosTurno.length; i++) {
             Enemy enemy = enemigosTurno[i];
-            AIActionResult result = IAEnemigo.executeTurn(enemy, room, player, null);
-            registrarResultadoIA(result);
+            if (enemy instanceof ParasitoEnemy) {
+                ejecutarTurnoParasito((ParasitoEnemy) enemy, room);
+            } else {
+                AIActionResult result = IAEnemigo.executeTurn(enemy, room, player, null);
+                registrarResultadoIA(result);
+            }
+            if (gameResult != GameResult.IN_PROGRESS) {
+                return;
+            }
         }
 
         EffectProcessingResult efectosJugador = player.procesarEfectos();
         registrarResultadoEfectos(nombreJugador(), efectosJugador, player.getHp(), player.getHpMax());
+        comprobarDerrotaJugador("efectos de estado");
         player.resetAcciones();
         addLog(LogEventType.ENEMY_TURN, "ENEMIGOS",
             "Turno enemigo resuelto en " + room.getId() + ".", "enemigosIniciales=" + enemigosIniciales);
-        faseActual = Phase.MOVEMENT;
+        if (gameResult == GameResult.IN_PROGRESS) {
+            faseActual = Phase.MOVEMENT;
+        }
     }
 
     // -- Cambio de sala -------------------------------------------------------
@@ -519,6 +637,11 @@ public class TurnManager {
             room.markDialogueShown(player.getTipo());
             addLog(LogEventType.ROOM, nombreJugador(),
                 "Diálogo de " + nombreJugador() + " mostrado en " + room.getId() + ".", null);
+        }
+        if (SALA_FINAL_ID.equals(room.getId()) && !finalCombatStarted) {
+            asegurarMalacharEnSalaFinal(room);
+            addLog(LogEventType.ROOM, "Malachar",
+                "Malachar espera en silencio en el Núcleo.", "fila=" + MALACHAR_FILA + ";col=" + MALACHAR_COL);
         }
     }
 
@@ -677,6 +800,51 @@ public class TurnManager {
     }
 
     /**
+     * Devuelve el resultado actual de partida.
+     *
+     * @return resultado de partida
+     */
+    public GameResult getGameResult() {
+        return gameResult;
+    }
+
+    /**
+     * Devuelve el texto de desenlace final.
+     *
+     * @return texto final, o null si la partida sigue en curso
+     */
+    public String getEndingText() {
+        return endingText;
+    }
+
+    /**
+     * Devuelve la frase final de Malachar.
+     *
+     * @return frase final, o null si no existe
+     */
+    public String getFinalQuote() {
+        return finalQuote;
+    }
+
+    /**
+     * Devuelve el motivo de derrota.
+     *
+     * @return motivo de derrota, o null si no hay derrota
+     */
+    public String getDefeatReason() {
+        return defeatReason;
+    }
+
+    /**
+     * Indica si el combate final ya comenzó.
+     *
+     * @return true si el Parásito ya se manifestó
+     */
+    public boolean isFinalCombatStarted() {
+        return finalCombatStarted;
+    }
+
+    /**
      * Restaura la fase actual desde persistencia.
      *
      * @param faseActual fase guardada
@@ -709,7 +877,584 @@ public class TurnManager {
         this.lastDialogue = lastDialogue;
     }
 
+    /**
+     * Restaura el resultado de partida desde persistencia.
+     *
+     * @param gameResult resultado guardado
+     */
+    public void setGameResult(GameResult gameResult) {
+        if (gameResult != null) {
+            this.gameResult = gameResult;
+        }
+    }
+
+    /**
+     * Restaura el texto de desenlace.
+     *
+     * @param endingText texto guardado
+     */
+    public void setEndingText(String endingText) {
+        this.endingText = endingText;
+    }
+
+    /**
+     * Restaura la frase final.
+     *
+     * @param finalQuote frase guardada
+     */
+    public void setFinalQuote(String finalQuote) {
+        this.finalQuote = finalQuote;
+    }
+
+    /**
+     * Restaura el motivo de derrota.
+     *
+     * @param defeatReason motivo guardado
+     */
+    public void setDefeatReason(String defeatReason) {
+        this.defeatReason = defeatReason;
+    }
+
+    /**
+     * Restaura si el combate final ya estaba iniciado.
+     *
+     * @param finalCombatStarted estado guardado
+     */
+    public void setFinalCombatStarted(boolean finalCombatStarted) {
+        this.finalCombatStarted = finalCombatStarted;
+    }
+
     // -- Métodos auxiliares ---------------------------------------------------
+
+    /**
+     * Ejecuta el turno aliado de Malachar en el combate final.
+     *
+     * @param room sala final
+     */
+    private void ejecutarTurnoAliadoFinal(Room room) {
+        MalacharAlly malachar = room.getAllyNpc();
+        ParasitoEnemy parasito = buscarParasito(room);
+        if (malachar == null || parasito == null || !parasito.isVivo()) {
+            return;
+        }
+        if (malachar.procesarRecuperacionTurno()) {
+            addLog(LogEventType.STATE, "Malachar",
+                "Malachar permanece paralizado y se recupera. Turnos restantes: "
+                    + malachar.getTurnosRecuperacion() + ".",
+                "recuperacion=" + malachar.getTurnosRecuperacion());
+            return;
+        }
+
+        try {
+            if (CombatManager.estaEnRango(malachar, parasito, room)) {
+                int danio = CombatManager.calcularDanio(malachar, parasito);
+                parasito.recibirDanio(danio);
+                addLog(LogEventType.COMBAT, "Malachar",
+                    "Malachar golpea al Parásito e inflige " + danio + " daño. HP Parásito: "
+                        + parasito.getHp() + "/" + parasito.getHpMax() + ".",
+                    "danio=" + danio + ";phase=" + parasito.getPhase());
+                resolverEstadoParasitoTrasDanio(parasito, room);
+            } else if (moverUnidadHacia(malachar, room, parasito.getFilaActual(), parasito.getColActual())) {
+                addLog(LogEventType.ENEMY_TURN, "Malachar",
+                    "Malachar avanza hacia el Parásito.", "fila=" + malachar.getFilaActual()
+                        + ";col=" + malachar.getColActual());
+            } else {
+                addLog(LogEventType.ENEMY_TURN, "Malachar",
+                    "Malachar no encuentra una ruta clara hacia el Parásito.", null);
+            }
+        } catch (InvalidAttackException e) {
+            addLog(LogEventType.ENEMY_TURN, "Malachar",
+                "Malachar no consigue canalizar su ataque.", "ATAQUE_INVALIDO");
+        }
+    }
+
+    /**
+     * Ejecuta el turno especial del Parásito.
+     *
+     * @param parasito Parásito activo
+     * @param room sala final
+     */
+    private void ejecutarTurnoParasito(ParasitoEnemy parasito, Room room) {
+        if (parasito == null || !parasito.isVivo()) {
+            resolverEstadoParasitoTrasDanio(parasito, room);
+            return;
+        }
+
+        boolean paralizado = parasito.tieneEfecto(EffectType.PARALYSIS);
+        EffectProcessingResult efectos = parasito.procesarEfectos();
+        registrarResultadoEfectos("Parásito", efectos, parasito.getHp(), parasito.getHpMax());
+        resolverEstadoParasitoTrasDanio(parasito, room);
+        if (gameResult != GameResult.IN_PROGRESS || !parasito.isVivo()) {
+            return;
+        }
+        if (parasito.consumirSaltoPorTransicion()) {
+            addLog(LogEventType.ENEMY_TURN, "Parásito",
+                "El Parásito termina de recomponer su nueva forma.", "phase=" + parasito.getPhase());
+            return;
+        }
+        if (paralizado) {
+            addLog(LogEventType.ENEMY_TURN, "Parásito", "El Parásito no actúa por PARALYSIS.", null);
+            return;
+        }
+
+        if (parasito.getPhase() == ParasitoEnemy.FASE_CORAZA) {
+            ejecutarAtaqueDirectoParasito(parasito, room, "Zarpazo del Umbral", false);
+        } else if (parasito.getPhase() == ParasitoEnemy.FASE_DESGARRADA) {
+            ejecutarAccionFaseDosParasito(parasito, room);
+        } else {
+            ejecutarAccionFaseTresParasito(parasito, room);
+        }
+    }
+
+    /**
+     * Ejecuta la prioridad de acciones de fase 2.
+     */
+    private void ejecutarAccionFaseDosParasito(ParasitoEnemy parasito, Room room) {
+        if (parasito.isAoeListo() && hayObjetivoEnRadioPulso(parasito, room)) {
+            ejecutarPulsoParasito(parasito, room, "Pulso del Núcleo", DANIO_PULSO_NUCLEO);
+            parasito.resetAoeCooldown();
+            return;
+        }
+        boolean actuo = ejecutarAtaqueDirectoParasito(parasito, room, "Zarpazo Maldito", true);
+        if (!actuo) {
+            moverParasitoHaciaJugador(parasito, room);
+        }
+        if (!parasito.isAoeListo()) {
+            parasito.incrementarAoeCooldown();
+        }
+    }
+
+    /**
+     * Ejecuta la prioridad de acciones de fase 3.
+     */
+    private void ejecutarAccionFaseTresParasito(ParasitoEnemy parasito, Room room) {
+        if (parasito.isAoeListo() && hayObjetivoEnRadioPulso(parasito, room)) {
+            ejecutarPulsoParasito(parasito, room, "Pulso Intensificado", DANIO_PULSO_INTENSIFICADO);
+            parasito.resetAoeCooldown();
+            return;
+        }
+        boolean actuo = ejecutarAtaqueDirectoParasito(parasito, room, "Desgarro Profundo", false);
+        if (!actuo) {
+            moverParasitoHaciaJugador(parasito, room);
+        }
+        if (!parasito.isAoeListo()) {
+            parasito.incrementarAoeCooldown();
+        }
+    }
+
+    /**
+     * Ejecuta un ataque directo del Parásito contra el jugador.
+     *
+     * @return true si atacó, false si estaba fuera de rango o visión
+     */
+    private boolean ejecutarAtaqueDirectoParasito(ParasitoEnemy parasito, Room room, String nombreAtaque,
+                                                  boolean aplicaCurse) {
+        if (!CombatManager.estaEnRango(parasito, player, room)) {
+            return false;
+        }
+        try {
+            CombatResult combat = CombatManager.resolverAtaqueEnemigo(parasito, player);
+            AIActionResult result = new AIActionResult(AccionIA.ATACAR, EnemyType.PARASITO, room.getId(),
+                parasito.getFilaActual(), parasito.getColActual(), parasito.getFilaActual(),
+                parasito.getColActual(), combat, null, null, null, -1, -1, null, null,
+                "Parásito", nombreAtaque);
+            registrarCombateEnemigo(result);
+            if (aplicaCurse && !combat.isFalloPorBlind()) {
+                player.addEfecto(new Effect(EffectType.CURSE, 2));
+                addLog(LogEventType.STATE, "Parásito",
+                    "Zarpazo Maldito aplica CURSE a " + nombreJugador() + ".", "efecto=CURSE");
+            }
+            comprobarDerrotaJugador(nombreAtaque);
+            return true;
+        } catch (InvalidAttackException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Ejecuta un AOE del Parásito que atraviesa paredes y unidades.
+     */
+    private void ejecutarPulsoParasito(ParasitoEnemy parasito, Room room, String nombreAtaque, int danio) {
+        player.recibirDanio(danio);
+        CombatResult combat = new CombatResult(danio, false, !player.isVivo(), player.getHp(), player.getHpMax(),
+            null, null, null);
+        AIActionResult result = new AIActionResult(AccionIA.AOE, EnemyType.PARASITO, room.getId(),
+            parasito.getFilaActual(), parasito.getColActual(), parasito.getFilaActual(),
+            parasito.getColActual(), combat, null, null, null, -1, -1, null, null,
+            "Parásito", nombreAtaque);
+        registrarCombateEnemigo(result);
+        aplicarDanioAOEAMalachar(room, nombreAtaque, danio);
+        comprobarDerrotaJugador(nombreAtaque);
+    }
+
+    /**
+     * Ejecuta Devorar Luz como explosión global de transición.
+     */
+    private void ejecutarDevorarLuz(ParasitoEnemy parasito, Room room) {
+        player.recibirDanio(DANIO_DEVORAR_LUZ);
+        player.addEfecto(new Effect(EffectType.BLIND, 2));
+        addLog(LogEventType.ENEMY_TURN, "Parásito",
+            "El Parásito usa Devorar Luz: " + DANIO_DEVORAR_LUZ
+                + " daño fijo y BLIND sobre " + nombreJugador() + ". HP jugador: "
+                + player.getHp() + "/" + player.getHpMax() + ".",
+            "habilidad=Devorar Luz;danio=" + DANIO_DEVORAR_LUZ);
+        aplicarDanioAOEAMalachar(room, "Devorar Luz", DANIO_DEVORAR_LUZ);
+        comprobarDerrotaJugador("Devorar Luz");
+    }
+
+    /**
+     * Aplica daño de AOE a Malachar si está presente.
+     */
+    private void aplicarDanioAOEAMalachar(Room room, String nombreAtaque, int danio) {
+        MalacharAlly malachar = room.getAllyNpc();
+        if (malachar == null) {
+            return;
+        }
+        if (!"Devorar Luz".equals(nombreAtaque)) {
+            ParasitoEnemy parasito = buscarParasito(room);
+            if (parasito == null || distanciaManhattan(malachar.getFilaActual(), malachar.getColActual(),
+                parasito.getFilaActual(), parasito.getColActual()) > RADIO_PULSO_PARASITO) {
+                return;
+            }
+        }
+        int hpAntes = malachar.getHp();
+        malachar.recibirDanio(danio);
+        addLog(LogEventType.COMBAT, "Parásito",
+            nombreAtaque + " alcanza a Malachar e inflige " + danio + " daño. HP Malachar: "
+                + malachar.getHp() + "/" + malachar.getHpMax() + ".",
+            "objetivo=Malachar;danio=" + danio + ";hpAntes=" + hpAntes);
+    }
+
+    /**
+     * Resuelve transiciones o victoria tras dañar al Parásito.
+     */
+    private void resolverEstadoParasitoTrasDanio(ParasitoEnemy parasito, Room room) {
+        if (parasito == null) {
+            return;
+        }
+        if (!parasito.isVivo() && parasito.getPhase() == ParasitoEnemy.FASE_ESENCIA) {
+            triggerEnding(player.getTipo());
+            return;
+        }
+        if (parasito.consumirTransicionPendiente()) {
+            addLog(LogEventType.GAME, "Parásito",
+                "El Parásito cambia a fase " + parasito.getPhase() + " y recompone su forma. HP: "
+                    + parasito.getHp() + "/" + parasito.getHpMax() + ".",
+                "phase=" + parasito.getPhase());
+            if (parasito.consumirDevorarLuzPendiente()) {
+                ejecutarDevorarLuz(parasito, room);
+            }
+        }
+    }
+
+    /**
+     * Mueve al Parásito hacia el jugador si no puede atacar.
+     */
+    private void moverParasitoHaciaJugador(ParasitoEnemy parasito, Room room) {
+        int filaOrigen = parasito.getFilaActual();
+        int colOrigen = parasito.getColActual();
+        boolean movido = moverUnidadHacia(parasito, room, player.getFilaActual(), player.getColActual());
+        if (movido) {
+            addLog(LogEventType.ENEMY_TURN, "Parásito",
+                "El Parásito se mueve de (" + filaOrigen + "," + colOrigen + ") a ("
+                    + parasito.getFilaActual() + "," + parasito.getColActual() + ").",
+                "origen=" + filaOrigen + "," + colOrigen + ";destino="
+                    + parasito.getFilaActual() + "," + parasito.getColActual());
+        } else {
+            addLog(LogEventType.ENEMY_TURN, "Parásito",
+                "El Parásito no encuentra una ruta hacia " + nombreJugador() + ".", null);
+        }
+    }
+
+    /**
+     * Indica si jugador o Malachar están en radio de pulso.
+     */
+    private boolean hayObjetivoEnRadioPulso(ParasitoEnemy parasito, Room room) {
+        if (distanciaManhattan(parasito.getFilaActual(), parasito.getColActual(),
+            player.getFilaActual(), player.getColActual()) <= RADIO_PULSO_PARASITO) {
+            return true;
+        }
+        MalacharAlly malachar = room.getAllyNpc();
+        return malachar != null && distanciaManhattan(parasito.getFilaActual(), parasito.getColActual(),
+            malachar.getFilaActual(), malachar.getColActual()) <= RADIO_PULSO_PARASITO;
+    }
+
+    /**
+     * Busca el Parásito vivo o persistido en la sala.
+     */
+    private ParasitoEnemy buscarParasito(Room room) {
+        if (room == null) {
+            return null;
+        }
+        for (int i = 0; i < room.getEnemigos().getSize(); i++) {
+            Enemy enemy = room.getEnemigos().get(i);
+            if (enemy instanceof ParasitoEnemy) {
+                return (ParasitoEnemy) enemy;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Asegura que Malachar existe en la sala final.
+     */
+    private MalacharAlly asegurarMalacharEnSalaFinal(Room room) throws GameStateException {
+        if (room == null || !SALA_FINAL_ID.equals(room.getId())) {
+            throw new GameStateException("Malachar solo puede colocarse en la sala final.");
+        }
+        MalacharAlly malachar = room.getAllyNpc();
+        if (malachar == null) {
+            malachar = new MalacharAlly(MALACHAR_FILA, MALACHAR_COL);
+            room.setAllyNpc(malachar);
+        }
+        return malachar;
+    }
+
+    /**
+     * Mueve una unidad hacia una celda adyacente al objetivo.
+     */
+    private boolean moverUnidadHacia(Unit unit, Room room, int filaObjetivo, int colObjetivo) {
+        if (unit == null || room == null || unit.getMovEfectivo() <= 0) {
+            return false;
+        }
+        Cell destino = buscarMejorDestinoAdyacente(unit, room, filaObjetivo, colObjetivo);
+        if (destino == null) {
+            return false;
+        }
+        Posicion posicion = buscarPosicion(room, destino);
+        if (posicion == null) {
+            return false;
+        }
+        ListaSimplementeEnlazada<Cell> camino = BFSMovimiento.getCamino(room,
+            unit.getFilaActual(), unit.getColActual(), posicion.getFila(), posicion.getCol());
+        if (camino.getSize() <= 1) {
+            return false;
+        }
+        int pasos = Math.min(unit.getMovEfectivo(), camino.getSize() - 1);
+        Posicion pasoDestino = buscarPosicion(room, camino.get(pasos));
+        return pasoDestino != null && moverUnidadA(unit, room, pasoDestino.getFila(), pasoDestino.getCol());
+    }
+
+    /**
+     * Busca la mejor celda adyacente libre a un objetivo.
+     */
+    private Cell buscarMejorDestinoAdyacente(Unit unit, Room room, int filaObjetivo, int colObjetivo) {
+        Cell mejor = null;
+        int mejorLongitud = -1;
+        for (int i = 0; i < DIRECCIONES.length; i++) {
+            int fila = filaObjetivo + DIRECCIONES[i][0];
+            int col = colObjetivo + DIRECCIONES[i][1];
+            if (!room.isEnRango(fila, col)) {
+                continue;
+            }
+            try {
+                Cell cell = room.getCell(fila, col);
+                if (!cell.isWalkable()) {
+                    continue;
+                }
+                ListaSimplementeEnlazada<Cell> camino = BFSMovimiento.getCamino(room,
+                    unit.getFilaActual(), unit.getColActual(), fila, col);
+                int longitud = camino.getSize();
+                if (longitud > 0 && (mejor == null || longitud < mejorLongitud)) {
+                    mejor = cell;
+                    mejorLongitud = longitud;
+                }
+            } catch (InvalidMoveException e) {
+                // Se ignora una coordenada inválida.
+            }
+        }
+        return mejor;
+    }
+
+    /**
+     * Mueve una unidad dentro de una sala sincronizando su celda.
+     */
+    private boolean moverUnidadA(Unit unit, Room room, int fila, int col) {
+        try {
+            Cell destino = room.getCell(fila, col);
+            if (!destino.isWalkable()) {
+                return false;
+            }
+            if (room.isEnRango(unit.getFilaActual(), unit.getColActual())) {
+                Cell origen = room.getCell(unit.getFilaActual(), unit.getColActual());
+                if (origen.getUnit() == unit) {
+                    origen.removeUnit();
+                }
+            }
+            unit.setPosicion(fila, col);
+            destino.setUnit(unit);
+            return true;
+        } catch (InvalidMoveException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Busca las coordenadas de una celda dentro de la sala.
+     */
+    private Posicion buscarPosicion(Room room, Cell cell) {
+        if (room == null || cell == null) {
+            return null;
+        }
+        for (int fila = 0; fila < room.getFilas(); fila++) {
+            for (int col = 0; col < room.getCols(); col++) {
+                try {
+                    if (room.getCell(fila, col) == cell) {
+                        return new Posicion(fila, col);
+                    }
+                } catch (InvalidMoveException e) {
+                    // La iteración respeta límites.
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Activa la victoria final.
+     *
+     * @param tipo personaje que alcanza el desenlace
+     */
+    public void triggerEnding(CharacterType tipo) {
+        if (gameResult != GameResult.IN_PROGRESS) {
+            return;
+        }
+        gameResult = GameResult.VICTORY;
+        endingText = crearEndingText(tipo);
+        finalQuote = crearFinalQuote(tipo);
+        defeatReason = null;
+        player.setHp(0);
+        try {
+            Room room = getRoomActualObligatoria();
+            if (room.getAllyNpc() != null) {
+                room.getAllyNpc().setHp(0);
+            }
+        } catch (GameStateException e) {
+            // El final puede registrarse aunque no haya sala actual coherente.
+        }
+        addLog(LogEventType.GAME, "Valdris",
+            "El Parásito desaparece. " + nombreJugador() + " y Malachar se sacrifican para salvar Valdris.",
+            "result=VICTORY");
+    }
+
+    /**
+     * Activa una derrota de partida.
+     */
+    private void triggerDefeat(String motivo) {
+        if (gameResult != GameResult.IN_PROGRESS) {
+            return;
+        }
+        gameResult = GameResult.DEFEAT;
+        defeatReason = motivo;
+        endingText = "El Núcleo Profundo consume la última esperanza de Valdris.";
+        finalQuote = null;
+        addLog(LogEventType.GAME, "Valdris", "Derrota: " + motivo + ".", "result=DEFEAT");
+    }
+
+    /**
+     * Comprueba si el jugador ha caído.
+     */
+    private void comprobarDerrotaJugador(String motivo) {
+        if (!player.isVivo() && gameResult == GameResult.IN_PROGRESS) {
+            triggerDefeat(nombreJugador() + " cae por " + motivo);
+        }
+    }
+
+    /**
+     * Valida que la partida no haya terminado.
+     */
+    private void validarPartidaEnCurso() throws GameStateException {
+        if (gameResult != GameResult.IN_PROGRESS) {
+            throw new GameStateException("La partida ya ha terminado: " + gameResult);
+        }
+    }
+
+    /**
+     * Calcula distancia Manhattan entre dos coordenadas.
+     */
+    private int distanciaManhattan(int filaA, int colA, int filaB, int colB) {
+        return Math.abs(filaA - filaB) + Math.abs(colA - colB);
+    }
+
+    /**
+     * Crea el diálogo principal de Malachar.
+     */
+    private String crearDialogoMalachar(CharacterType tipo) {
+        if (tipo == CharacterType.SYRA) {
+            return "Malachar revela a Syra que el Parásito está devorando la raíz mágica de Valdris.";
+        }
+        if (tipo == CharacterType.DORATH) {
+            return "Malachar confirma a Dorath que la Orden ocultó que el sello siempre fue temporal.";
+        }
+        return "Malachar explica a Kael que el sello no fue una prisión, sino una contención desesperada.";
+    }
+
+    /**
+     * Crea el texto de desenlace final.
+     */
+    private String crearEndingText(CharacterType tipo) {
+        if (tipo == CharacterType.SYRA) {
+            return "Syra cae pronunciando los nombres antiguos de Lireth mientras la vida vuelve al bosque.";
+        }
+        if (tipo == CharacterType.DORATH) {
+            return "Dorath entrega la verdad al futuro: los textos sobreviven y la Orden ya no puede enterrarla.";
+        }
+        return "Kael cumple la deuda del sello y su sacrificio permite que Valdris vuelva a respirar.";
+    }
+
+    /**
+     * Crea la frase final de Malachar.
+     */
+    private String crearFinalQuote(CharacterType tipo) {
+        if (tipo == CharacterType.SYRA) {
+            return "Que Lireth recuerde tu nombre cuando vuelva a crecer.";
+        }
+        if (tipo == CharacterType.DORATH) {
+            return "La verdad también puede ser una forma de misericordia.";
+        }
+        return "No heredaste mi culpa, Kael. La cerraste.";
+    }
+
+    /**
+     * Coordenada auxiliar de sala.
+     */
+    private static final class Posicion {
+
+        /** Fila de la posición. */
+        private final int fila;
+
+        /** Columna de la posición. */
+        private final int col;
+
+        /**
+         * Crea una posición.
+         *
+         * @param fila fila
+         * @param col columna
+         */
+        private Posicion(int fila, int col) {
+            this.fila = fila;
+            this.col = col;
+        }
+
+        /**
+         * Devuelve la fila.
+         *
+         * @return fila
+         */
+        private int getFila() {
+            return fila;
+        }
+
+        /**
+         * Devuelve la columna.
+         *
+         * @return columna
+         */
+        private int getCol() {
+            return col;
+        }
+    }
 
     /**
      * Valida que el gestor esté en la fase esperada.
@@ -718,6 +1463,7 @@ public class TurnManager {
      * @throws GameStateException si la fase actual no coincide
      */
     private void validarFase(Phase esperada) throws GameStateException {
+        validarPartidaEnCurso();
         if (faseActual != esperada) {
             throw new GameStateException("Fase inválida. Esperada: " + esperada + ", actual: " + faseActual);
         }

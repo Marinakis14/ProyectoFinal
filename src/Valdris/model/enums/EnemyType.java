@@ -92,5 +92,12 @@ public enum EnemyType {
      * HP 35, ataque 22, defensa 5, movimiento 2 y rango 3. Ataca a distancia e
      * ignora 3 puntos de defensa del jugador.
      */
-    ECO_DE_MAGIA
+    ECO_DE_MAGIA,
+
+    /**
+     * Entidad final del Núcleo Profundo.
+     * Sus estadísticas reales dependen de {@code ParasitoEnemy}, que cambia de
+     * fase durante el combate final.
+     */
+    PARASITO
 }

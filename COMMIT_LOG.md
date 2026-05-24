@@ -1420,6 +1420,37 @@ item y cierre el modal tras una acción correcta.
 
 ---
 
+### Sesión 28 — 24 mayo 2026 — Codex
+
+**Objetivo:** JavaFX subbloque 6: integrar carga básica desde menú y autoguardado en checkpoints.
+
+**Archivos trabajados:**
+- `src/Valdris/ui/model/GameModel.java`
+- `src/Valdris/ui/view/MainMenuView.java`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- Añadido slot único de guardado `partida_valdris.json` como ruta compartida por JavaFX.
+- Añadido autoguardado desde `GameModel` al entrar en los checkpoints acordados: sala inicial, pasillos de transición y antes de mini-boss/final.
+- Evitado repetir guardado mientras el jugador permanece dentro del mismo checkpoint.
+- Añadida carga real desde `MainMenuView` usando `LectorJSON.cargarPartida(...)`, `LoadedGame`, `GameModel` y `GameController`.
+- Sustituido el placeholder de carga por un diálogo de error si la partida no existe o no se puede reconstruir.
+- Mantenido fuera de `GameView` cualquier botón de carga o guardado manual.
+
+**Decisiones aplicadas:**
+- De momento existe una única partida guardada para no aumentar complejidad.
+- El guardado es automático y solo ocurre en puntos importantes de progreso.
+- El mensaje visual de guardado correcto es `Progreso guardado.`.
+
+**Verificación:**
+- Compilación ejecutada con `mvn -DskipTests compile`: correcta.
+- Suite completa ejecutada con `mvn test`: correcta.
+
+**Commit sugerido:** `git commit -m "feat(ui): add checkpoint autosave"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas

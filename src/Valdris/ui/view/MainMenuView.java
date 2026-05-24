@@ -1,6 +1,11 @@
 package Valdris.ui.view;
 
+import Valdris.exceptions.GameStateException;
+import Valdris.persistence.LectorJSON;
+import Valdris.persistence.LoadedGame;
 import Valdris.ui.MainApp;
+import Valdris.ui.controller.GameController;
+import Valdris.ui.model.GameModel;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -51,13 +56,30 @@ public class MainMenuView {
     }
 
     /**
-     * Muestra el mensaje temporal de carga pendiente.
+     * Carga la partida guardada y abre la pantalla de juego.
      */
-    public void mostrarCargaPendiente() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+    public void cargarPartida() {
+        try {
+            LoadedGame loadedGame = LectorJSON.cargarPartida(GameModel.SAVE_PATH);
+            GameModel modelo = new GameModel(loadedGame);
+            GameController controller = new GameController(modelo);
+            GameView gameView = new GameView(stage, modelo, controller);
+            stage.setScene(gameView.getScene());
+        } catch (GameStateException e) {
+            mostrarErrorCarga(e.getMessage());
+        }
+    }
+
+    /**
+     * Muestra un error al cargar la partida.
+     *
+     * @param mensaje detalle del problema encontrado
+     */
+    public void mostrarErrorCarga(String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Cargar partida");
-        alert.setHeaderText(null);
-        alert.setContentText("La carga de partida se implementará en un bloque posterior.");
+        alert.setHeaderText("No se pudo cargar la partida");
+        alert.setContentText(mensaje);
         alert.showAndWait();
     }
 
@@ -93,7 +115,7 @@ public class MainMenuView {
         nuevaPartida.setOnAction(event -> iniciarNuevaPartida());
 
         Button cargarPartida = crearBotonMenu("Cargar partida");
-        cargarPartida.setOnAction(event -> mostrarCargaPendiente());
+        cargarPartida.setOnAction(event -> cargarPartida());
 
         Button salir = crearBotonMenu("Salir");
         salir.setOnAction(event -> salir());

@@ -320,7 +320,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 12 | Añadir resaltado BFS de celdas alcanzables en fase `MOVEMENT` | ✅ Completado |
 | 13 | Añadir acción JavaFX para iniciar combate final con Malachar | ✅ Completado |
 | 14 | Implementar `InventoryView` en modo lectura y uso desde `USE_ITEM` | ✅ Completado |
-| 15 | Implementar guardado/carga desde JavaFX | ⬜ Pendiente |
+| 15 | Implementar autoguardado en checkpoints y carga básica desde JavaFX | ✅ Completado |
 | 16 | Implementar diálogos y pantalla final | ⬜ Pendiente |
 
 ---
@@ -392,6 +392,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 24 | Suite tras JavaFX subbloque 3: pantalla principal solo lectura | ✅ Correcta |
 | 25 | Suite tras JavaFX subbloque 4: control de turno básico | ✅ Correcta |
 | 26 | Suite tras JavaFX subbloque 5: inventario modal | ✅ Correcta |
+| 27 | Suite tras JavaFX subbloque 6: autoguardado en checkpoints y carga básica | ✅ Correcta |
 
 Última verificación completa:
 
@@ -478,6 +479,7 @@ Resultado:
 | 65 | El Golem deja de ocupar 2x2 y funciona como unidad 1x1 con Pisotón Sísmico de radio 2 | ✅ Aceptada |
 | 66 | Las habilidades especiales de mini-bosses usan cooldown, respetan BLIND y se registran en el log | ✅ Aceptada |
 | 67 | Si un especial cargado no alcanza al jugador tras intentar moverse, se pierde el intento y se reinicia cooldown | ✅ Aceptada |
+| 68 | JavaFX usa un único slot `partida_valdris.json` y autoguarda solo al entrar en checkpoints acordados | ✅ Aceptada |
 
 ---
 

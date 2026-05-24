@@ -137,11 +137,11 @@ class UnitTest {
         EffectProcessingResult result = unidad.procesarEfectos();
 
         // Assert
-        assertEquals(29, unidad.getHp());
+        assertEquals(32, unidad.getHp());
         assertFalse(unidad.tieneEfecto(EffectType.BURN));
         assertTrue(unidad.tieneEfecto(EffectType.CURSE));
         assertEquals(1, unidad.getEfectosActivos().getSize());
-        assertEquals(6, result.getDanioAplicado());
+        assertEquals(3, result.getDanioAplicado());
         assertEquals(1, result.getEfectosExpirados().length);
         assertEquals(EffectType.BURN, result.getEfectosExpirados()[0]);
     }

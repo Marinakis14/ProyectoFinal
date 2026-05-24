@@ -2,6 +2,7 @@ package Valdris.logic.ai;
 
 import Valdris.exceptions.InvalidMoveException;
 import Valdris.logic.ai.ArbolDecisionIA.AccionIA;
+import Valdris.model.effects.Effect;
 import Valdris.model.enums.CellType;
 import Valdris.model.enums.CharacterType;
 import Valdris.model.enums.EffectType;
@@ -53,6 +54,23 @@ class MiniBossAITest {
         assertEquals(AccionIA.HABILIDAD_ESPECIAL, result.getAccion());
         assertEquals("Estocada Corrupta", result.getHabilidadEspecial());
         assertEquals(35, result.getCombatResult().getDanioAplicado());
+    }
+
+    @Test
+    void habilidadEspecial_sumaDanioPorCursePrevio() {
+        // Arrange
+        MiniBossEnemy alcalde = crearBoss(MiniBossType.ALCALDE_CORRUPTO, 3, 3);
+        alcalde.setTurnosSinActuar(3);
+        player.setPosicion(3, 4);
+        player.addEfecto(new Effect(EffectType.CURSE, 2));
+        int hpInicial = player.getHp();
+
+        // Act
+        AIActionResult result = IAEnemigo.executeTurn(alcalde, room, player, null);
+
+        // Assert
+        assertEquals(38, result.getCombatResult().getDanioAplicado());
+        assertEquals(hpInicial - 38, player.getHp());
     }
 
     @Test
@@ -109,6 +127,23 @@ class MiniBossAITest {
         assertEquals(0, guardian.getTurnosSinActuar());
         assertEquals("Sentencia Arcana", result.getHabilidadEspecial());
         assertEquals(EffectType.CURSE, result.getEfectoAplicado());
+        assertTrue(player.tieneEfecto(EffectType.CURSE));
+    }
+
+    @Test
+    void guardianNoSumaCurseQueAplicaEnEseMismoGolpe() {
+        // Arrange
+        MiniBossEnemy guardian = crearBoss(MiniBossType.GUARDIAN_SIN_NOMBRE, 3, 3);
+        guardian.setTurnosSinActuar(2);
+        player.setPosicion(3, 4);
+        int hpInicial = player.getHp();
+
+        // Act
+        AIActionResult result = IAEnemigo.executeTurn(guardian, room, player, null);
+
+        // Assert
+        assertEquals(20, result.getCombatResult().getDanioAplicado());
+        assertEquals(hpInicial - 20, player.getHp());
         assertTrue(player.tieneEfecto(EffectType.CURSE));
     }
 

@@ -233,15 +233,15 @@ Versión v5.0 Final — Sistema turnos + IA + Mapa + Items completos + Balanceo 
 | Efecto | Duración | Impacto jugador | Impacto enemigo | Fuente |
 |--------|----------|----------------|----------------|--------|
 | SLOW | 2 turnos | Mov = `ceil(mov / 2.0)` | — | Controlador, Arco Élfico (W6), Arco del Eclipse (W11) |
-| BLIND | 2 turnos | Mov = `ceil(mov / 2.0)` | — | Controlador, Espada del Vacío (W10), Arco del Eclipse (W11) |
-| CURSE | 2 turnos | Daño recibido +3 por turno | — | Controlador |
+| BLIND | 2 turnos | 25% de fallo de ataque | 25% de fallo de ataque | Controlador, Espada del Vacío (W10), Arco del Eclipse (W11) |
+| CURSE | 2 turnos | Daño enemigo recibido +3 mientras está activo | — | Controlador |
 | PARÁLISIS | 1 turno | Sin mov ni ataque | Sin mov ni ataque | Bastón Arcano (W9) 30%, Grimorio Abismal (W12) 30% |
 | QUEMA | 1 turno | — | +3 daño al inicio del turno | Tomo de Llamas (W7) 25% |
 
 **Notas de implementación:**
 - SLOW aplicado a jugador: Kael (3) → 2 | Syra (5) → 3 | Dorath (2) → 1.
 - Inmune a SLOW: Escudo de Raíces (A3). Inmune a CURSE: Manto de los Cinco Sellos (A8).
-- Efectos almacenados en LSE en clase `Unit`. Se decrementan al final de cada turno del afectado.
+- Efectos almacenados en LSE en clase `Unit`. Se decrementan al final de cada turno del afectado. CURSE no aplica daño periódico; BURN/QUEMA sí aplica +3 al procesar efectos.
 - Arco del Eclipse (W11) es el **único** arma que aplica dos efectos simultáneos (SLOW + BLIND).
 
 ---

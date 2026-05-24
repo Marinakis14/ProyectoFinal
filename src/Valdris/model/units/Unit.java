@@ -180,9 +180,8 @@ public abstract class Unit {
     /**
      * Procesa los efectos activos de la unidad.
      *
-     * <p>Los efectos de daño directo, como CURSE y BURN, aplican 3 puntos de
-     * daño. Después se decrementa la duración de todos los efectos y se eliminan
-     * los que han expirado.</p>
+     * <p>BURN aplica 3 puntos de daño directo. Después se decrementa la duración
+     * de todos los efectos y se eliminan los que han expirado.</p>
      *
      * @return resumen del daño aplicado y efectos expirados
      */
@@ -196,7 +195,7 @@ public abstract class Unit {
                 continue;
             }
 
-            if (effect.getTipo() == EffectType.CURSE || effect.getTipo() == EffectType.BURN) {
+            if (effect.getTipo() == EffectType.BURN) {
                 recibirDanio(3);
                 danioTotal += 3;
             }

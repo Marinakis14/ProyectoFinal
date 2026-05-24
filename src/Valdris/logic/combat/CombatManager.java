@@ -155,10 +155,7 @@ public final class CombatManager {
             return new CombatResult(0, true, false, jugador.getHp(), jugador.getHpMax(),
                 null, null, null);
         }
-        int danio = calcularDanio(enemigo, jugador);
-        if (jugador.tieneEfecto(EffectType.CURSE)) {
-            danio += 3;
-        }
+        int danio = aplicarBonusCurse(jugador, calcularDanio(enemigo, jugador));
         jugador.recibirDanio(danio);
         return new CombatResult(danio, false, !jugador.isVivo(), jugador.getHp(), jugador.getHpMax(),
             null, null, null);
@@ -188,10 +185,25 @@ public final class CombatManager {
             return new CombatResult(0, false, false, jugador.getHp(), jugador.getHpMax(),
                 null, null, null);
         }
-        int danio = destructor.getDanoBase();
+        int danio = aplicarBonusCurse(jugador, destructor.getDanoBase());
         jugador.recibirDanio(danio);
         return new CombatResult(danio, false, !jugador.isVivo(), jugador.getHp(), jugador.getHpMax(),
             null, null, null);
+    }
+
+    /**
+     * Aplica el bonus de CURSE al daño enemigo recibido por el jugador.
+     *
+     * @param jugador jugador que recibe el daño
+     * @param danioBase daño enemigo antes de CURSE
+     * @return daño final tras aplicar CURSE si procede
+     */
+    public static int aplicarBonusCurse(Player jugador, int danioBase) {
+        int danio = Math.max(0, danioBase);
+        if (jugador != null && jugador.tieneEfecto(EffectType.CURSE)) {
+            danio += 3;
+        }
+        return danio;
     }
 
     // -- Rango ----------------------------------------------------------------

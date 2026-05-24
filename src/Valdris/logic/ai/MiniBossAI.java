@@ -119,7 +119,7 @@ public final class MiniBossAI {
         if (CombatManager.fallaAtaquePorBlind(boss, Math.random())) {
             combat = new CombatResult(0, true, false, player.getHp(), player.getHpMax(), null, null, null);
         } else {
-            int danio = getDanioEspecial(boss);
+            int danio = CombatManager.aplicarBonusCurse(player, getDanioEspecial(boss));
             player.recibirDanio(danio);
             if (efecto != null) {
                 player.addEfecto(new Effect(efecto, getDuracionEfectoEspecial(efecto)));

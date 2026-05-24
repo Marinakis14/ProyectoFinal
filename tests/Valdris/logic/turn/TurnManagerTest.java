@@ -8,6 +8,7 @@ import Valdris.model.enums.CellType;
 import Valdris.model.enums.CharacterType;
 import Valdris.model.enums.EffectType;
 import Valdris.model.enums.EnemyType;
+import Valdris.model.enums.GameResult;
 import Valdris.model.enums.LogEventType;
 import Valdris.model.enums.MiniBossType;
 import Valdris.model.enums.Phase;
@@ -18,6 +19,7 @@ import Valdris.model.map.Dungeon;
 import Valdris.model.map.Room;
 import Valdris.model.units.Enemy;
 import Valdris.model.units.MiniBossEnemy;
+import Valdris.model.units.ParasitoEnemy;
 import Valdris.model.units.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -89,7 +91,7 @@ class TurnManagerTest {
     }
 
     @Test
-    void testCederTurno_vaAENEMY_TURN() {
+    void testCederTurno_vaAENEMY_TURN() throws GameStateException {
         // Act
         turnManager.cederTurno();
 
@@ -300,6 +302,32 @@ class TurnManagerTest {
         assertEquals(Phase.ENEMY_TURN, turnManager.getFaseActual());
         assertEquals(LogEventType.COMBAT, turnManager.getLog().get(3).getTipo());
         assertTrue(turnManager.getLog().get(3).getMensaje().contains("inflige"));
+    }
+
+    @Test
+    void ejecutarAtaque_mataEnemigoLoRetiraDeSalaYLimpiaCeldaConservandoDrop()
+        throws GameStateException, InvalidAttackException, InvalidMoveException {
+
+        // Arrange
+        Weapon arma = new Weapon("W-KILL", "Mandoble", 100, 0, 1);
+        Weapon drop = new Weapon("W-DROP", "Botin", 5, 0, 1);
+        Enemy enemigo = new Enemy(EnemyType.WARRIOR, 2, 3, "R1");
+        enemigo.setHp(1);
+        enemigo.setDropItem(drop);
+        room.addEnemigo(enemigo);
+        player.setArmaEquipada(arma);
+        avanzarHastaAtaqueSinAcciones();
+
+        // Act
+        turnManager.ejecutarAtaque(enemigo);
+
+        // Assert
+        assertFalse(enemigo.isVivo());
+        assertEquals(0, room.getEnemigos().getSize());
+        assertNull(room.getCell(2, 3).getUnit());
+        assertSame(drop, room.getCell(2, 3).getItem());
+        assertTrue(existeLog(LogEventType.COMBAT, "muere"));
+        assertTrue(existeLog(LogEventType.PICKUP, "deja caer"));
     }
 
     @Test
@@ -596,13 +624,35 @@ class TurnManagerTest {
     }
 
     @Test
-    void ejecutarTurnoEnemigos_timerAgotadoLanzaGameStateException() {
+    void ejecutarTurnoEnemigos_timerAgotadoLanzaGameStateException() throws GameStateException {
         // Arrange
         room.setTurnosRestantes(1);
         turnManager.cederTurno();
 
         // Act + Assert
         assertThrows(GameStateException.class, () -> turnManager.ejecutarTurnoEnemigos());
+    }
+
+    @Test
+    void accionesPublicasJugador_lanzanGameStateExceptionSiPartidaTerminada() {
+        // Arrange
+        turnManager.setGameResult(GameResult.VICTORY);
+
+        // Act + Assert
+        assertThrows(GameStateException.class, () -> turnManager.ejecutarMovimiento(2, 3));
+        assertThrows(GameStateException.class, () -> turnManager.saltarMovimiento());
+        assertThrows(GameStateException.class, () -> turnManager.ejecutarRecogida());
+        assertThrows(GameStateException.class, () -> turnManager.saltarRecogida());
+        assertThrows(GameStateException.class, () -> turnManager.usarAccesoAdyacente());
+        assertThrows(GameStateException.class, () -> turnManager.activarPalancaAdyacente());
+        assertThrows(GameStateException.class, () -> turnManager.ejecutarUsoItem(null));
+        assertThrows(GameStateException.class, () -> turnManager.saltarUsoItem());
+        assertThrows(GameStateException.class, () -> turnManager.ejecutarAtaque(new Enemy(EnemyType.WARRIOR, 2, 3, "R1")));
+        assertThrows(GameStateException.class, () -> turnManager.cederTurno());
+        assertThrows(GameStateException.class, () -> turnManager.activarTriggerActual());
+        assertThrows(GameStateException.class, () -> turnManager.activarRunaActual());
+        assertThrows(GameStateException.class, () -> turnManager.ejecutarTurnoEnemigos());
+        assertEquals(Phase.MOVEMENT, turnManager.getFaseActual());
     }
 
     @Test
@@ -700,6 +750,26 @@ class TurnManagerTest {
         assertTrue(existeLog(LogEventType.ENEMY_TURN, "Alcalde Corrupto"));
     }
 
+    @Test
+    void ejecutarTurnoEnemigos_pulsoParasitoSumaDanioPorCurse() throws GameStateException {
+
+        // Arrange
+        ParasitoEnemy parasito = new ParasitoEnemy(2, 0, "R1");
+        parasito.setPhase(ParasitoEnemy.FASE_DESGARRADA);
+        parasito.setAoeCooldown(2);
+        room.addEnemigo(parasito);
+        player.addEfecto(new Effect(EffectType.CURSE, 2));
+        int hpJugadorInicial = player.getHp();
+        turnManager.cederTurno();
+
+        // Act
+        turnManager.ejecutarTurnoEnemigos();
+
+        // Assert
+        assertEquals(hpJugadorInicial - 15, player.getHp());
+        assertTrue(existeLog(LogEventType.ENEMY_TURN, "Pulso del Núcleo"));
+    }
+
     // -- Métodos auxiliares --------------------------------------------------
 
     /**
@@ -729,4 +799,5 @@ class TurnManagerTest {
         }
         return false;
     }
+
 }

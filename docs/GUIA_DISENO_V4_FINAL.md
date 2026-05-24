@@ -191,12 +191,12 @@ public class TurnManager {
         ENEMY_TURNS, CHECK_CONDITIONS, TURN_END
     }
 
-    public void nextTurn() { ... }
-    public void addLog(String msg) { ... }
-    public void onRoomEnter() { ... }
-    public void changeRoom(String dir) { ... }
-    public void triggerEnding(CharacterType t) { ... }
-    public void reconstruirReferencias() { ... }
+    public void nextTurn() { }
+    public void addLog(String msg) { }
+    public void onRoomEnter() { }
+    public void changeRoom(String dir) { }
+    public void triggerEnding(CharacterType t) { }
+    public void reconstruirReferencias() { }
 }
 ```
 
@@ -274,7 +274,7 @@ public void decrementarEfectos(Player p) {
 |--------|----------|---------|----------------|
 | SLOW | 2 turnos | movePoints = `Math.max(1, Math.ceil(original/2.0))` | setMovePointsModificado(). Al expirar: restaurar. |
 | BLIND | 2 turnos | movePoints = `Math.ceil(original/2.0)` — Kael(3)→2, Syra(5)→3, Dorath(2)→1 | Mismo mecanismo. JavaFX no muestra resaltado BFS. |
-| CURSE | 2 turnos | Daño recibido x1.5 | En calcularDanio(): `if tieneEfecto(CURSE) daño*=1.5` |
+| CURSE | 2 turnos | Daño enemigo recibido +3 | Regla actualizada en V5: `if tieneEfecto(CURSE) daño += 3` en daño enemigo, sin afectar daño ambiental. |
 
 ---
 

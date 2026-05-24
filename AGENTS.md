@@ -168,8 +168,8 @@ danio = max(0, (int)(atacante.getAtaqueTotal() * aleatorio) - defEfectiva)
 | Efecto    | Duracion | Impacto                              |
 |-----------|----------|--------------------------------------|
 | SLOW      | 2 turnos | mov = ceil(movBase / 2.0)            |
-| BLIND     | 2 turnos | mov = ceil(movBase / 2.0)            |
-| CURSE     | 2 turnos | +3 danio recibido por turno          |
+| BLIND     | 2 turnos | 25% de fallo de ataque               |
+| CURSE     | 2 turnos | +3 danio de ataques enemigos recibidos |
 | PARALYSIS | 1 turno  | sin movimiento ni ataque             |
 | BURN      | 1 turno  | +3 danio al inicio del turno         |
 

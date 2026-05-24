@@ -461,10 +461,13 @@ public class TurnManager {
             throw new InvalidAttackException("Debe seleccionarse un enemigo objetivo.");
         }
 
-        CombatResult result = CombatManager.resolverAtaqueJugador(player, objetivo, getRoomActualObligatoria());
+        Room roomActual = getRoomActualObligatoria();
+        CombatResult result = CombatManager.resolverAtaqueJugador(player, objetivo, roomActual);
         registrarResultadoAtaqueJugador(objetivo, result);
         if (objetivo instanceof ParasitoEnemy) {
-            resolverEstadoParasitoTrasDanio((ParasitoEnemy) objetivo, getRoomActualObligatoria());
+            resolverEstadoParasitoTrasDanio((ParasitoEnemy) objetivo, roomActual);
+        } else {
+            retirarEnemigoDerrotado(roomActual, objetivo, result);
         }
         player.setHaAtacado(true);
         if (gameResult == GameResult.IN_PROGRESS) {
@@ -474,8 +477,11 @@ public class TurnManager {
 
     /**
      * Cede el turno directamente a los enemigos desde cualquier fase del jugador.
+     *
+     * @throws GameStateException si la partida ya terminó
      */
-    public void cederTurno() {
+    public void cederTurno() throws GameStateException {
+        validarPartidaEnCurso();
         addLog(LogEventType.COMBAT, nombreJugador(), nombreJugador() + " cede el turno.", null);
         faseActual = Phase.ENEMY_TURN;
     }
@@ -652,6 +658,7 @@ public class TurnManager {
      * @throws GameStateException si no hay sala actual
      */
     public boolean activarTriggerActual() throws GameStateException {
+        validarPartidaEnCurso();
         try {
             Room room = getRoomActualObligatoria();
             Cell actual = room.getCell(player.getFilaActual(), player.getColActual());
@@ -677,6 +684,7 @@ public class TurnManager {
      * @throws GameStateException si no hay sala actual
      */
     public boolean activarRunaActual() throws GameStateException {
+        validarPartidaEnCurso();
         try {
             Room room = getRoomActualObligatoria();
             Cell actual = room.getCell(player.getFilaActual(), player.getColActual());
@@ -1075,8 +1083,9 @@ public class TurnManager {
      * Ejecuta un AOE del Parásito que atraviesa paredes y unidades.
      */
     private void ejecutarPulsoParasito(ParasitoEnemy parasito, Room room, String nombreAtaque, int danio) {
-        player.recibirDanio(danio);
-        CombatResult combat = new CombatResult(danio, false, !player.isVivo(), player.getHp(), player.getHpMax(),
+        int danioJugador = CombatManager.aplicarBonusCurse(player, danio);
+        player.recibirDanio(danioJugador);
+        CombatResult combat = new CombatResult(danioJugador, false, !player.isVivo(), player.getHp(), player.getHpMax(),
             null, null, null);
         AIActionResult result = new AIActionResult(AccionIA.AOE, EnemyType.PARASITO, room.getId(),
             parasito.getFilaActual(), parasito.getColActual(), parasito.getFilaActual(),
@@ -1091,13 +1100,14 @@ public class TurnManager {
      * Ejecuta Devorar Luz como explosión global de transición.
      */
     private void ejecutarDevorarLuz(ParasitoEnemy parasito, Room room) {
-        player.recibirDanio(DANIO_DEVORAR_LUZ);
+        int danioJugador = CombatManager.aplicarBonusCurse(player, DANIO_DEVORAR_LUZ);
+        player.recibirDanio(danioJugador);
         player.addEfecto(new Effect(EffectType.BLIND, 2));
         addLog(LogEventType.ENEMY_TURN, "Parásito",
-            "El Parásito usa Devorar Luz: " + DANIO_DEVORAR_LUZ
-                + " daño fijo y BLIND sobre " + nombreJugador() + ". HP jugador: "
+            "El Parásito usa Devorar Luz: " + danioJugador
+                + " daño y BLIND sobre " + nombreJugador() + ". HP jugador: "
                 + player.getHp() + "/" + player.getHpMax() + ".",
-            "habilidad=Devorar Luz;danio=" + DANIO_DEVORAR_LUZ);
+            "habilidad=Devorar Luz;danio=" + danioJugador);
         aplicarDanioAOEAMalachar(room, "Devorar Luz", DANIO_DEVORAR_LUZ);
         comprobarDerrotaJugador("Devorar Luz");
     }
@@ -1588,6 +1598,24 @@ public class TurnManager {
     }
 
     /**
+     * Retira de la sala a un enemigo derrotado por el ataque del jugador.
+     *
+     * <p>El drop ya se ha colocado antes en {@link CombatManager}, por lo que
+     * esta limpieza solo elimina la unidad y la entrada de la lista de enemigos
+     * vivos. El Parásito se excluye porque su muerte activa el desenlace final y
+     * se gestiona con reglas propias de fase.</p>
+     *
+     * @param room sala donde ocurre el combate
+     * @param objetivo enemigo atacado
+     * @param result resultado del ataque
+     */
+    private void retirarEnemigoDerrotado(Room room, Enemy objetivo, CombatResult result) {
+        if (room != null && objetivo != null && result != null && result.isObjetivoMuerto()) {
+            room.removeEnemigo(objetivo);
+        }
+    }
+
+    /**
      * Registra el resultado de una acción enemiga.
      *
      * @param result resultado de IA
@@ -1662,11 +1690,17 @@ public class TurnManager {
                 "habilidad=" + result.getHabilidadEspecial() + ";danio=" + combat.getDanioAplicado());
         } else {
             String accion = result.getAccion() == AccionIA.AOE ? "alcanza con AOE a" : "ataca a";
+            String detalleHabilidad = result.getAccion() == AccionIA.AOE
+                && result.getHabilidadEspecial() != null ? " con " + result.getHabilidadEspecial() : "";
+            String detalleLog = "danio=" + combat.getDanioAplicado();
+            if (result.getHabilidadEspecial() != null) {
+                detalleLog = "habilidad=" + result.getHabilidadEspecial() + ";" + detalleLog;
+            }
             addLog(LogEventType.ENEMY_TURN, actor,
-                actor + " " + accion + " " + nombreJugador() + " e inflige "
+                actor + " " + accion + " " + nombreJugador() + detalleHabilidad + " e inflige "
                     + combat.getDanioAplicado() + " daño. HP jugador: "
                     + combat.getHpRestanteObjetivo() + "/" + combat.getHpMaxObjetivo() + ".",
-                "danio=" + combat.getDanioAplicado());
+                detalleLog);
         }
         if (combat.isObjetivoMuerto()) {
             addLog(LogEventType.COMBAT, actor, nombreJugador() + " cae derrotado por " + actor + ".", null);

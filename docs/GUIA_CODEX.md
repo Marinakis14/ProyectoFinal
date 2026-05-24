@@ -95,8 +95,8 @@ Enum de efectos de estado que pueden afectar a unidades (jugador y enemigos).
 ```java
 public enum EffectType {
     SLOW,      // reduce mov a ceil(mov/2.0). Duración: 2 turnos
-    BLIND,     // reduce mov a ceil(mov/2.0). Duración: 2 turnos
-    CURSE,     // +3 daño recibido por turno. Duración: 2 turnos
+    BLIND,     // 25% de fallo de ataque. Duración: 2 turnos
+    CURSE,     // +3 daño recibido de ataques enemigos. Duración: 2 turnos
     PARALYSIS, // sin movimiento ni ataque. Duración: 1 turno
     BURN       // +3 daño al inicio del turno del afectado. Duración: 1 turno
 }
@@ -303,8 +303,8 @@ Clase base de `Player` y `Enemy`. Contiene todos los stats comunes y la gestión
 | `isVivo()` | Devuelve `hp > 0`. | `boolean` |
 | `addEfecto(Effect ef)` | Añadir a efectosActivos. Si ya existe el mismo tipo, reemplazar. | `void` |
 | `tieneEfecto(EffectType tipo)` | true si efectosActivos contiene un Effect del tipo dado. | `boolean` |
-| `procesarEfectos()` | Aplicar efecto CURSE/BURN si activos (daño). Luego decrementar todos. Eliminar los expirados. | `void` |
-| `getMovEfectivo()` | Si SLOW o BLIND activos: `ceil(movBase/2.0)`. Sino: `movBase`. | `int` |
+| `procesarEfectos()` | Aplicar daño de BURN si está activo. Luego decrementar todos los efectos, incluido CURSE, y eliminar los expirados. | `void` |
+| `getMovEfectivo()` | Si SLOW activo: `ceil(movBase/2.0)`. BLIND no modifica el movimiento. Sino: `movBase`. | `int` |
 | `getDefensaTotal()` | `defensaBase` + bonus de armadura equipada. | `int` |
 | `getAtaqueTotal()` | ataqueBase del arma equipada + afinidad + bonus de accesorio. | `int` |
 | `setPosicion(int fila, int col)` | Actualiza filaActual y colActual. | `void` |
@@ -534,14 +534,14 @@ return true;
 ### 5.3. CombatManager — Capa 5 — Clase estática
 **Paquete:** `Valdris.logic.combat`
 
-Gestiona toda la lógica de combate. **Fórmula oficial:** `daño = max(0, ataque * random[0.5-1.5] - defensaEfectiva)`. La defensa efectiva se reduce por la penetración del arma del atacante.
+Gestiona toda la lógica de combate. **Fórmula oficial:** `daño = max(0, ataque * random[0.5-1.5] - defensaEfectiva)`. La defensa efectiva se reduce por la penetración del arma del atacante. Si el atacante tiene BLIND, el ataque tiene un 25% de probabilidad de fallar antes de calcular daño.
 
 | Firma | Descripción | Retorna |
 |-------|-------------|---------|
 | `calcularDanio(Unit atacante, Unit defensor)` | `aleatorio = Math.random()*1.0+0.5`. `defEf = max(0, defensor.getDefensaTotal()-pen)`. `return max(0, (int)(ataqueTotal*aleatorio) - defEf)`. | `int` |
-| `resolverAtaqueJugador(Player jugador, Enemy enemigo)` | Calcular daño. `enemigo.recibirDanio(danio)`. Si arma tiene efecto especial: tryAplicarEfecto() y si no null addEfecto al enemigo. Si !enemigo.isVivo(): `enemigo.onDeath(room)`. | `int` |
-| `resolverAtaqueEnemigo(Enemy enemigo, Player jugador)` | Calcular daño. Si jugador.tieneEfecto(CURSE): danio+=3. `jugador.recibirDanio(danio)`. | `int` |
-| `resolverAOEDestructor(Enemy destructor, Room room, Player jugador)` | Calcular celdas en radio 2. Por cada celda: si hay jugador, infligir `destructor.getDanoBase()` directamente (sin fórmula aleatoria). | `int` |
+| `resolverAtaqueJugador(Player jugador, Enemy enemigo)` | Si jugador tiene BLIND y falla la tirada del 25%, devuelve fallo sin daño. Si acierta, calcula daño, aplica efectos del arma y si !enemigo.isVivo(): `enemigo.onDeath(room)`. | `CombatResult` |
+| `resolverAtaqueEnemigo(Enemy enemigo, Player jugador)` | Si enemigo tiene BLIND y falla la tirada del 25%, devuelve fallo sin daño. Si acierta, calcula daño. Si jugador.tieneEfecto(CURSE): danio+=3. `jugador.recibirDanio(danio)`. | `CombatResult` |
+| `resolverAOEDestructor(Enemy destructor, Room room, Player jugador)` | Calcular celdas en radio 2. Por cada celda: si hay jugador, infligir `destructor.getDanoBase()` directamente (sin fórmula aleatoria) y sumar CURSE si el jugador lo tiene activo. | `CombatResult` |
 | `estaEnRango(Unit atacante, Unit defensor)` | Calcular distancia Manhattan. Si <= `atacante.getRangoEfectivo()`: true. Para arcos/mágicos: además verificar `LineaDeVision.tieneVision()`. | `boolean` |
 
 ---

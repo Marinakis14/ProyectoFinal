@@ -112,7 +112,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 2 | Implementar gestión común de HP, daño, curación y vida | ✅ Completado |
 | 3 | Implementar lista de efectos activos en `Unit` | ✅ Completado |
 | 4 | Implementar reemplazo de efectos repetidos | ✅ Completado |
-| 5 | Implementar procesamiento de efectos `CURSE` y `BURN` | ✅ Completado |
+| 5 | Implementar `BURN` como daño periódico y `CURSE` como bonus al daño enemigo recibido | ✅ Completado |
 | 6 | Implementar movimiento efectivo reducido por `SLOW` | ✅ Completado |
 | 7 | Implementar `Player` | ✅ Completado |
 | 8 | Implementar inventario y equipo del jugador | ✅ Completado |

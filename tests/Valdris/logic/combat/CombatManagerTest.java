@@ -328,6 +328,21 @@ class CombatManagerTest {
     }
 
     @Test
+    void resolverAOEDestructor_sumaDanioPorCurse() throws InvalidAttackException {
+        // Arrange
+        Enemy destructor = new Enemy(EnemyType.DESTRUCTOR, 2, 2, "R-COMBAT");
+        jugador.setPosicion(2, 4);
+        jugador.addEfecto(new Effect(EffectType.CURSE, 2));
+
+        // Act
+        CombatResult result = CombatManager.resolverAOEDestructor(destructor, room, jugador);
+
+        // Assert
+        assertEquals(destructor.getDanoBase() + 3, result.getDanioAplicado());
+        assertEquals(jugador.getHpMax() - result.getDanioAplicado(), jugador.getHp());
+    }
+
+    @Test
     void resolverAOEDestructor_fueraDeRadioNoInfligeDano() throws InvalidAttackException {
         // Arrange
         Enemy destructor = new Enemy(EnemyType.DESTRUCTOR, 0, 0, "R-COMBAT");

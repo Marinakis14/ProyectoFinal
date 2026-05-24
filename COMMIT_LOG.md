@@ -1397,6 +1397,9 @@ Resultado:
 - [22 mayo 2026] Se decide que W11 use dos efectos en `Weapon`: `SLOW` y `BLIND`.
 - [22 mayo 2026] Se decide que P4 limpie `CURSE` y `BLIND`, y que P5 aplique bonus temporal al
   siguiente ataque.
+- [24 mayo 2026] Se decide que `CURSE` no aplica daño periódico: suma +3 a todo daño enemigo
+  recibido mientras está activo, sin afectar daño ambiental como puzzles. `BURN` mantiene el
+  daño periódico al procesar efectos.
 - [22 mayo 2026] Se decide que `ItemGenerator` genere items reales o `null`, no materiales.
 - [22 mayo 2026] Se aplaza la definición cerrada de mini-bosses y accesorios AC1-AC4 para antes de
   `DungeonGenerator`.

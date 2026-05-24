@@ -311,8 +311,8 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 3 | Implementar `MainMenuView` con nueva partida, carga pendiente y salida | ✅ Completado |
 | 4 | Implementar `CharacterSelectView` con Kael, Syra y Dorath | ✅ Completado |
 | 5 | Mostrar mensajes temporales para carga y creación de partida hasta conectar `GameModel` | ✅ Completado |
-| 6 | Implementar `GameModelListener` | ⬜ Pendiente |
-| 7 | Implementar `GameModel` | ⬜ Pendiente |
+| 6 | Implementar `GameModelListener` | ✅ Completado |
+| 7 | Implementar `GameModel` | ✅ Completado |
 | 8 | Implementar `GameView` principal | ⬜ Pendiente |
 | 9 | Implementar `GameController` | ⬜ Pendiente |
 | 10 | Implementar `CombatLogView` | ⬜ Pendiente |
@@ -385,6 +385,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 20 | Suite tras sub-bloque 2 de log estructurado, IA, efectos y persistencia final | ✅ Correcta |
 | 21 | Suite tras habilidades especiales de mini-bosses | ✅ Correcta |
 | 22 | Suite tras JavaFX subbloque 1: arranque, menú inicial y selección de personaje | ✅ Correcta |
+| 23 | Suite tras JavaFX subbloque 2: modelo observable y partida nueva real | ✅ Correcta |
 
 Última verificación completa:
 

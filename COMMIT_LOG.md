@@ -1251,6 +1251,49 @@ real muestren mensajes temporales controlados.
 
 ---
 
+### Sesión 24 — 24 mayo 2026 — Codex
+
+**Clases o ficheros trabajados:**
+- `GameModelListener` en `Valdris.ui.model`
+- `GameModel` en `Valdris.ui.model`
+- `CharacterSelectView` en `Valdris.ui.view`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Prompt usado (detalle):**
+El equipo autorizó el subbloque 2 de JavaFX, dejando fijado que `GameModelListener`
+debe resolver la restricción de `ListaSimplementeEnlazada<T extends Comparable<T>)`
+mediante un `compareTo`, y que `GameView` debe quedar fuera de este subbloque.
+El objetivo era crear una partida real desde la selección de personaje sin renderizar todavía
+la pantalla principal.
+
+**Resultado:**
+- Compila: SÍ
+- Tests pasan: SÍ
+- Cambios manuales necesarios: ninguno
+
+**Problemas encontrados:**
+- Ninguno bloqueante. La LSE exige `Comparable`, por lo que el listener se definió como comparable.
+
+**Solución aplicada:**
+- Se creó `GameModelListener` con `compareTo` por identidad para poder almacenarlo en la LSE propia.
+- Se creó `GameModel` con referencias a `Dungeon`, `Player`, `TurnManager`, listeners y último mensaje.
+- `GameModel` genera el mundo, crea el jugador, crea `TurnManager` y coloca al jugador en la sala inicial con `changeRoom(...)`.
+- `CharacterSelectView` ahora crea un `GameModel` real y muestra una confirmación temporal hasta que exista `GameView`.
+
+**Decisiones técnicas:**
+- `GameModel.addListener(...)` evita duplicados por referencia, no por comparación, para no depender del hash de identidad.
+- `GameModel` no ejecuta acciones jugables; solo inicializa estado y notifica cambios.
+- Los errores de inicialización se exponen con `GameStateException` y se muestran desde JavaFX con un `Alert`.
+- `GameView` se mantiene fuera de este subbloque.
+
+**Verificación:**
+- Suite completa ejecutada con `mvn test`: `401 tests, 0 failures, 0 errors, 0 skipped`.
+
+**Commit sugerido:** `git commit -m "feat(ui): add game model initialization"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas
@@ -1314,8 +1357,8 @@ real muestren mensajes temporales controlados.
 **Bloque 6 — JavaFX**
 - [x] MainApp
 - [x] MainMenuView
-- [ ] GameModelListener
-- [ ] GameModel
+- [x] GameModelListener
+- [x] GameModel
 - [x] CharacterSelectView
 - [ ] GameView
 - [ ] GameController

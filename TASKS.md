@@ -319,7 +319,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 11 | Conectar movimiento, ataque y acciones básicas de turno desde JavaFX | ✅ Completado |
 | 12 | Añadir resaltado BFS de celdas alcanzables en fase `MOVEMENT` | ✅ Completado |
 | 13 | Añadir acción JavaFX para iniciar combate final con Malachar | ✅ Completado |
-| 14 | Implementar `InventoryView` | ⬜ Pendiente |
+| 14 | Implementar `InventoryView` en modo lectura y uso desde `USE_ITEM` | ✅ Completado |
 | 15 | Implementar guardado/carga desde JavaFX | ⬜ Pendiente |
 | 16 | Implementar diálogos y pantalla final | ⬜ Pendiente |
 
@@ -391,6 +391,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 23 | Suite tras JavaFX subbloque 2: modelo observable y partida nueva real | ✅ Correcta |
 | 24 | Suite tras JavaFX subbloque 3: pantalla principal solo lectura | ✅ Correcta |
 | 25 | Suite tras JavaFX subbloque 4: control de turno básico | ✅ Correcta |
+| 26 | Suite tras JavaFX subbloque 5: inventario modal | ✅ Correcta |
 
 Última verificación completa:
 

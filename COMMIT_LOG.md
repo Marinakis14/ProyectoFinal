@@ -1378,6 +1378,48 @@ Se detectó que además de las acciones tácticas normales faltaba contemplar `s
 
 ---
 
+### Sesión 27 — 24 mayo 2026 — Codex
+
+**Clases o ficheros trabajados:**
+- `InventoryView` en `Valdris.ui.view`
+- `GameController` en `Valdris.ui.controller`
+- `GameView` en `Valdris.ui.view`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Prompt usado (detalle):**
+El equipo autorizó el subbloque 5 de JavaFX, aceptando que el inventario pueda abrirse en cualquier fase,
+que fuera de `USE_ITEM` funcione como modo lectura, y que durante `USE_ITEM` permita usar o equipar un
+item y cierre el modal tras una acción correcta.
+
+**Resultado:**
+- Compila: SÍ
+- Tests pasan: SÍ
+- Cambios manuales necesarios: ninguno
+
+**Problemas encontrados:**
+- La pausa accidental de la conversación ocurrió antes de hacer cambios. Se comprobó `git status` y el
+  workspace estaba limpio, por lo que no hubo cambios parciales.
+
+**Solución aplicada:**
+- Se creó `InventoryView` como ventana modal con equipo, inventario normal e items narrativos.
+- `GameView` habilita el botón `Inventario` en todo momento.
+- `GameController` abre el modal y ejecuta `TurnManager.ejecutarUsoItem(item)` desde el inventario.
+- Los items narrativos se muestran solo en lectura.
+
+**Decisiones técnicas:**
+- El inventario se puede consultar en cualquier fase.
+- Los botones `Usar` se deshabilitan fuera de `USE_ITEM`.
+- El modal se cierra automáticamente si el item se usa o equipa correctamente.
+- Si `ejecutarUsoItem(...)` falla, el modal permanece abierto y el error se muestra en el log.
+
+**Verificación:**
+- Suite completa ejecutada con `mvn test`: `401 tests, 0 failures, 0 errors, 0 skipped`.
+
+**Commit sugerido:** `git commit -m "feat(ui): add inventory modal"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas
@@ -1446,7 +1488,7 @@ Se detectó que además de las acciones tácticas normales faltaba contemplar `s
 - [x] CharacterSelectView
 - [x] GameView
 - [x] GameController
-- [ ] InventoryView
+- [x] InventoryView
 - [x] CombatLogView
 
 ### Checklist de tests implementados

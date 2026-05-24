@@ -5,11 +5,13 @@ import Valdris.exceptions.InvalidAttackException;
 import Valdris.exceptions.InvalidMoveException;
 import Valdris.logic.turn.TurnManager;
 import Valdris.model.enums.Phase;
+import Valdris.model.items.Item;
 import Valdris.model.map.Cell;
 import Valdris.model.map.Room;
 import Valdris.model.units.Enemy;
 import Valdris.model.units.Unit;
 import Valdris.ui.model.GameModel;
+import Valdris.ui.view.InventoryView;
 import Valdris.ui.view.MainMenuView;
 import javafx.stage.Stage;
 
@@ -152,6 +154,33 @@ public class GameController {
             modelo.notificarMensaje(null);
         } catch (GameStateException e) {
             modelo.notificarMensaje(e.getMessage());
+        }
+    }
+
+    /**
+     * Abre el inventario en ventana modal.
+     *
+     * @param owner ventana propietaria
+     */
+    public void onBotonInventario(Stage owner) {
+        InventoryView inventoryView = new InventoryView(modelo, this, owner);
+        inventoryView.show();
+    }
+
+    /**
+     * Usa o equipa un item desde el inventario.
+     *
+     * @param item item seleccionado
+     * @return true si el item se uso correctamente
+     */
+    public boolean onUsarItemInventario(Item item) {
+        try {
+            modelo.getTurnManager().ejecutarUsoItem(item);
+            modelo.notificarMensaje(null);
+            return true;
+        } catch (GameStateException e) {
+            modelo.notificarMensaje(e.getMessage());
+            return false;
         }
     }
 

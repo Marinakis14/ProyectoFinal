@@ -268,7 +268,7 @@ public class GameView implements GameModelListener {
         agregarBotonesDeTurno(room);
         panelLateral.getChildren().add(crearSeparador());
         Button inventario = crearBoton("Inventario");
-        inventario.setDisable(true);
+        inventario.setOnAction(event -> controller.onBotonInventario(stage));
         Button menu = crearBoton("Menú principal");
         menu.setOnAction(event -> controller.onBotonMenuPrincipal(stage));
         panelLateral.getChildren().addAll(inventario, menu);

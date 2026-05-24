@@ -19,6 +19,7 @@ import Valdris.ui.model.GameModelListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
@@ -63,6 +64,9 @@ public class GameView implements GameModelListener {
     /** Escena principal. */
     private final Scene scene;
 
+    /** Evita abrir la pantalla final mas de una vez. */
+    private boolean pantallaFinalMostrada;
+
     /**
      * Crea la vista principal de la partida.
      *
@@ -79,6 +83,7 @@ public class GameView implements GameModelListener {
         this.panelLateral = new VBox(10);
         this.logCombate = new CombatLogView();
         this.scene = new Scene(root, MainApp.WINDOW_WIDTH, MainApp.WINDOW_HEIGHT);
+        this.pantallaFinalMostrada = false;
 
         construirLayout();
         modelo.addListener(this);
@@ -107,6 +112,8 @@ public class GameView implements GameModelListener {
         if (modelo.getUltimoMensaje() != null && !modelo.getUltimoMensaje().isEmpty()) {
             logCombate.addMensaje(modelo.getUltimoMensaje());
         }
+        mostrarDialogoPendiente();
+        mostrarPantallaFinalSiProcede();
     }
 
     /**
@@ -272,6 +279,46 @@ public class GameView implements GameModelListener {
         Button menu = crearBoton("Menú principal");
         menu.setOnAction(event -> controller.onBotonMenuPrincipal(stage));
         panelLateral.getChildren().addAll(inventario, menu);
+    }
+
+    /**
+     * Muestra el dialogo narrativo pendiente de la sala actual.
+     */
+    private void mostrarDialogoPendiente() {
+        String dialogo = modelo.consumirDialogoPendiente();
+        if (dialogo == null || dialogo.isEmpty()) {
+            return;
+        }
+        logCombate.addMensaje("Diálogo: " + dialogo);
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Diálogo");
+        alert.setHeaderText(nombreSalaActual());
+        alert.setContentText(dialogo);
+        alert.showAndWait();
+    }
+
+    /**
+     * Cambia a la pantalla final cuando la partida ya termino.
+     */
+    private void mostrarPantallaFinalSiProcede() {
+        if (!pantallaFinalMostrada && modelo.isPartidaTerminada()) {
+            pantallaFinalMostrada = true;
+            controller.onMostrarPantallaFinal(stage);
+        }
+    }
+
+    /**
+     * Devuelve el nombre visible de la sala actual.
+     *
+     * @return nombre de sala para el dialogo
+     */
+    private String nombreSalaActual() {
+        Room room = modelo.getDungeon().getRoomActual();
+        if (room == null) {
+            return "Valdris";
+        }
+        return room.getId() + " - " + room.getNombre();
     }
 
     /**

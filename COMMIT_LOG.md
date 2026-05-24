@@ -1451,6 +1451,40 @@ item y cierre el modal tras una acción correcta.
 
 ---
 
+### Sesión 29 — 24 mayo 2026 — Codex
+
+**Objetivo:** JavaFX subbloque 7: integrar diálogos narrativos, pantalla final y exportación manual del resumen.
+
+**Archivos trabajados:**
+- `src/Valdris/ui/model/GameModel.java`
+- `src/Valdris/ui/controller/GameController.java`
+- `src/Valdris/ui/view/GameView.java`
+- `src/Valdris/ui/view/MainMenuView.java`
+- `src/Valdris/ui/view/FinalView.java`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- Añadida fachada en `GameModel` para consumir diálogos pendientes, consultar resultado final y exportar el resumen final.
+- Creada `FinalView` como pantalla dedicada para victoria o derrota.
+- Integrada exportación manual de `resumen_valdris.json` desde la pantalla final.
+- `GameView` muestra automáticamente los diálogos de sala en modal y los deja también en el log visual.
+- `GameView` cambia a pantalla final cuando `GameResult` deja de ser `IN_PROGRESS`.
+- `MainMenuView` abre directamente `FinalView` si se carga una partida ya terminada.
+
+**Decisiones aplicadas:**
+- Los diálogos se muestran una sola vez usando el estado ya marcado por `Room` y `TurnManager`.
+- La exportación del resumen final no es automática; el jugador la solicita con un botón.
+- La pantalla final mantiene navegación al menú principal y no añade carga manual dentro de partida.
+
+**Verificación:**
+- Compilación ejecutada con `mvn -DskipTests compile`: correcta.
+- Suite completa ejecutada con `mvn test`: correcta.
+
+**Commit sugerido:** `git commit -m "feat(ui): add ending screen"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas
@@ -1521,6 +1555,7 @@ item y cierre el modal tras una acción correcta.
 - [x] GameController
 - [x] InventoryView
 - [x] CombatLogView
+- [x] FinalView
 
 ### Checklist de tests implementados
 

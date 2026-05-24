@@ -28,6 +28,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | Capas 2, 3 y 4 | Completadas y testeadas |
 | Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga, TurnManager, ItemGenerator, PuzzleManager y DungeonGenerator completados |
 | Capa 6 inicial | GameState, LoadedGame, GameSummary y LectorJSON completados |
+| Capa 7 JavaFX | Pantallas principales, partida, inventario, autoguardado, diálogos y pantalla final completados |
 | Tests JUnit actuales | 401 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
@@ -321,7 +322,8 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 13 | Añadir acción JavaFX para iniciar combate final con Malachar | ✅ Completado |
 | 14 | Implementar `InventoryView` en modo lectura y uso desde `USE_ITEM` | ✅ Completado |
 | 15 | Implementar autoguardado en checkpoints y carga básica desde JavaFX | ✅ Completado |
-| 16 | Implementar diálogos y pantalla final | ⬜ Pendiente |
+| 16 | Implementar diálogos y pantalla final | ✅ Completado |
+| 17 | Implementar exportación manual de `resumen_valdris.json` desde la pantalla final | ✅ Completado |
 
 ---
 
@@ -393,6 +395,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 25 | Suite tras JavaFX subbloque 4: control de turno básico | ✅ Correcta |
 | 26 | Suite tras JavaFX subbloque 5: inventario modal | ✅ Correcta |
 | 27 | Suite tras JavaFX subbloque 6: autoguardado en checkpoints y carga básica | ✅ Correcta |
+| 28 | Suite tras JavaFX subbloque 7: diálogos y pantalla final | ✅ Correcta |
 
 Última verificación completa:
 
@@ -480,6 +483,8 @@ Resultado:
 | 66 | Las habilidades especiales de mini-bosses usan cooldown, respetan BLIND y se registran en el log | ✅ Aceptada |
 | 67 | Si un especial cargado no alcanza al jugador tras intentar moverse, se pierde el intento y se reinicia cooldown | ✅ Aceptada |
 | 68 | JavaFX usa un único slot `partida_valdris.json` y autoguarda solo al entrar en checkpoints acordados | ✅ Aceptada |
+| 69 | Los diálogos narrativos de sala se muestran automáticamente en modal y se consumen una sola vez desde `GameModel` | ✅ Aceptada |
+| 70 | La pantalla final permite exportar manualmente `resumen_valdris.json`; no se exporta automáticamente | ✅ Aceptada |
 
 ---
 
@@ -490,4 +495,4 @@ Resultado:
 | 1 | Definir `MalacharAlly` como aliado NPC del combate final | ✅ Completado |
 | 2 | Definir `ParasitoEnemy`, sus fases, derrota y desenlace final | ✅ Completado |
 | 3 | Implementar sistema de game over y desenlace final | ✅ Completado |
-| 4 | Implementar capa JavaFX | 🔄 En progreso |
+| 4 | Implementar capa JavaFX | ✅ Completado |

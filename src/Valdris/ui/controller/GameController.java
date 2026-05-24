@@ -11,6 +11,7 @@ import Valdris.model.map.Room;
 import Valdris.model.units.Enemy;
 import Valdris.model.units.Unit;
 import Valdris.ui.model.GameModel;
+import Valdris.ui.view.FinalView;
 import Valdris.ui.view.InventoryView;
 import Valdris.ui.view.MainMenuView;
 import javafx.stage.Stage;
@@ -177,6 +178,33 @@ public class GameController {
         try {
             modelo.getTurnManager().ejecutarUsoItem(item);
             modelo.notificarMensaje(null);
+            return true;
+        } catch (GameStateException e) {
+            modelo.notificarMensaje(e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Muestra la pantalla final de una partida terminada.
+     *
+     * @param stage ventana principal de la aplicacion
+     */
+    public void onMostrarPantallaFinal(Stage stage) {
+        if (stage != null) {
+            FinalView finalView = new FinalView(stage, modelo, this);
+            stage.setScene(finalView.getScene());
+        }
+    }
+
+    /**
+     * Exporta el resumen final de la partida.
+     *
+     * @return true si se exporto correctamente
+     */
+    public boolean onExportarResumenFinal() {
+        try {
+            modelo.exportarResumenFinal();
             return true;
         } catch (GameStateException e) {
             modelo.notificarMensaje(e.getMessage());

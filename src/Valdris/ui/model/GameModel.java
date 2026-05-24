@@ -6,6 +6,7 @@ import Valdris.exceptions.InvalidMoveException;
 import Valdris.logic.generation.DungeonGenerator;
 import Valdris.logic.turn.TurnManager;
 import Valdris.model.enums.CharacterType;
+import Valdris.model.enums.GameResult;
 import Valdris.model.map.Dungeon;
 import Valdris.model.map.Room;
 import Valdris.model.units.Player;
@@ -23,6 +24,9 @@ public class GameModel {
 
     /** Ruta fija del unico slot de guardado actual. */
     public static final String SAVE_PATH = "partida_valdris.json";
+
+    /** Ruta fija del resumen exportado al terminar una partida. */
+    public static final String SUMMARY_PATH = "resumen_valdris.json";
 
     /** Dungeon activo de la partida. */
     private final Dungeon dungeon;
@@ -165,6 +169,101 @@ public class GameModel {
             || "PASILLO_3_4".equals(salaId)
             || "PASILLO_4_5".equals(salaId)
             || "PASILLO_FINAL".equals(salaId);
+    }
+
+    /**
+     * Consume el ultimo dialogo pendiente generado por la logica de sala.
+     *
+     * @return dialogo consumido, o null si no hay dialogo nuevo
+     */
+    public String consumirDialogoPendiente() {
+        return turnManager.consumeLastDialogue();
+    }
+
+    /**
+     * Indica si la partida ya termino con victoria o derrota.
+     *
+     * @return true si la partida no sigue en progreso
+     */
+    public boolean isPartidaTerminada() {
+        return getResultadoPartida() != GameResult.IN_PROGRESS;
+    }
+
+    /**
+     * Devuelve el resultado actual de la partida.
+     *
+     * @return resultado de partida
+     */
+    public GameResult getResultadoPartida() {
+        return turnManager.getGameResult();
+    }
+
+    /**
+     * Devuelve el texto de desenlace registrado por la logica.
+     *
+     * @return texto final, o null si no existe
+     */
+    public String getTextoDesenlace() {
+        return turnManager.getEndingText();
+    }
+
+    /**
+     * Devuelve la frase final de Malachar.
+     *
+     * @return frase final, o null si no existe
+     */
+    public String getFraseFinal() {
+        return turnManager.getFinalQuote();
+    }
+
+    /**
+     * Devuelve el motivo de derrota registrado.
+     *
+     * @return motivo de derrota, o null si no existe
+     */
+    public String getMotivoDerrota() {
+        return turnManager.getDefeatReason();
+    }
+
+    /**
+     * Devuelve el turno global actual.
+     *
+     * @return contador de turnos de la partida
+     */
+    public int getTurnoGlobal() {
+        return turnManager.getTurnoGlobal();
+    }
+
+    /**
+     * Devuelve el ID de la sala actual para vistas finales o paneles.
+     *
+     * @return id de sala, o guion si no hay sala actual
+     */
+    public String getIdSalaActual() {
+        String salaId = idSalaActual();
+        return salaId == null ? "-" : salaId;
+    }
+
+    /**
+     * Devuelve el nombre visible de la sala actual.
+     *
+     * @return nombre de sala, o guion si no hay sala actual
+     */
+    public String getNombreSalaActual() {
+        Room room = dungeon.getRoomActual();
+        return room == null ? "-" : room.getNombre();
+    }
+
+    /**
+     * Exporta el resumen final de la partida al fichero acordado.
+     *
+     * @throws GameStateException si la partida no termino o si no se puede escribir el JSON
+     */
+    public void exportarResumenFinal() throws GameStateException {
+        if (!isPartidaTerminada()) {
+            throw new GameStateException("El resumen final solo puede exportarse al terminar la partida.");
+        }
+        LectorJSON.exportarResumen(dungeon, player, turnManager, SUMMARY_PATH);
     }
 
     /**

@@ -63,8 +63,13 @@ public class MainMenuView {
             LoadedGame loadedGame = LectorJSON.cargarPartida(GameModel.SAVE_PATH);
             GameModel modelo = new GameModel(loadedGame);
             GameController controller = new GameController(modelo);
-            GameView gameView = new GameView(stage, modelo, controller);
-            stage.setScene(gameView.getScene());
+            if (modelo.isPartidaTerminada()) {
+                FinalView finalView = new FinalView(stage, modelo, controller);
+                stage.setScene(finalView.getScene());
+            } else {
+                GameView gameView = new GameView(stage, modelo, controller);
+                stage.setScene(gameView.getScene());
+            }
         } catch (GameStateException e) {
             mostrarErrorCarga(e.getMessage());
         }

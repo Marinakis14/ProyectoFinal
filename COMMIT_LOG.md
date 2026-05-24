@@ -1208,6 +1208,49 @@ como enemigo final con fases, desenlace de victoria/derrota y persistencia del e
 
 ---
 
+### Sesión 23 — 24 mayo 2026 — Codex
+
+**Clases o ficheros trabajados:**
+- `MainApp` en `Valdris.ui`
+- `MainMenuView` en `Valdris.ui.view`
+- `CharacterSelectView` en `Valdris.ui.view`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Prompt usado (detalle):**
+El equipo pidió empezar la capa JavaFX por el subbloque 1, dejando antes fijado el alcance:
+arranque de aplicación, menú inicial y selección de personaje. Se acordó que la pantalla inicial
+debe permitir nueva partida, carga futura y salida; que la selección muestre Kael, Syra y Dorath
+con stats y textos correctamente acentuados; y que los botones todavía no conectados a la partida
+real muestren mensajes temporales controlados.
+
+**Resultado:**
+- Compila: SÍ
+- Tests pasan: SÍ
+- Cambios manuales necesarios: ninguno
+
+**Problemas encontrados:**
+- Ninguno bloqueante. La capa `ui` estaba limpia y sin clases Java tras el saneamiento realizado por el equipo.
+
+**Solución aplicada:**
+- Se creó `MainApp` como punto de entrada JavaFX con ventana fija de 1280x720.
+- Se creó `MainMenuView` con botones `Nueva partida`, `Cargar partida` y `Salir`.
+- Se creó `CharacterSelectView` con tarjetas para Kael, Syra y Dorath, incluyendo stats, rol y descripción.
+- `Cargar partida` y `Elegir` muestran avisos temporales hasta que se implemente `GameModel` y la carga real.
+
+**Decisiones técnicas:**
+- JavaFX se implementa de forma programática, sin FXML en este subbloque.
+- El menú inicial precede a la selección de personaje para permitir carga de partida en un bloque posterior.
+- Se usan textos visuales con tildes correctas.
+- Este subbloque no llama todavía a `DungeonGenerator`, `Player` ni `TurnManager`.
+
+**Verificación:**
+- Suite completa ejecutada con `mvn test`: `401 tests, 0 failures, 0 errors, 0 skipped`.
+
+**Commit sugerido:** `git commit -m "feat(ui): add initial JavaFX navigation"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas
@@ -1269,10 +1312,11 @@ como enemigo final con fases, desenlace de victoria/derrota y persistencia del e
 - [x] LectorJSON
 
 **Bloque 6 — JavaFX**
-- [ ] MainApp
+- [x] MainApp
+- [x] MainMenuView
 - [ ] GameModelListener
 - [ ] GameModel
-- [ ] CharacterSelectView
+- [x] CharacterSelectView
 - [ ] GameView
 - [ ] GameController
 - [ ] InventoryView
@@ -1321,7 +1365,7 @@ como enemigo final con fases, desenlace de victoria/derrota y persistencia del e
 Resultado:
 
 ```text
-379 tests, 0 failures, 0 errors, 0 skipped
+401 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---

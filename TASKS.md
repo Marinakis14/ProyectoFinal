@@ -28,7 +28,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | Capas 2, 3 y 4 | Completadas y testeadas |
 | Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga, TurnManager, ItemGenerator, PuzzleManager y DungeonGenerator completados |
 | Capa 6 inicial | GameState, LoadedGame, GameSummary y LectorJSON completados |
-| Tests JUnit actuales | 379 tests pasando |
+| Tests JUnit actuales | 401 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
 ---
@@ -302,6 +302,26 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 
 ---
 
+## Capa 7 — JavaFX
+
+| Nº | Tarea | Estado |
+|---:|-------|--------|
+| 1 | Fijar pantallas principales y dividir JavaFX en subbloques revisables | ✅ Completado |
+| 2 | Implementar `MainApp` como punto de entrada JavaFX | ✅ Completado |
+| 3 | Implementar `MainMenuView` con nueva partida, carga pendiente y salida | ✅ Completado |
+| 4 | Implementar `CharacterSelectView` con Kael, Syra y Dorath | ✅ Completado |
+| 5 | Mostrar mensajes temporales para carga y creación de partida hasta conectar `GameModel` | ✅ Completado |
+| 6 | Implementar `GameModelListener` | ⬜ Pendiente |
+| 7 | Implementar `GameModel` | ⬜ Pendiente |
+| 8 | Implementar `GameView` principal | ⬜ Pendiente |
+| 9 | Implementar `GameController` | ⬜ Pendiente |
+| 10 | Implementar `CombatLogView` | ⬜ Pendiente |
+| 11 | Implementar `InventoryView` | ⬜ Pendiente |
+| 12 | Implementar guardado/carga desde JavaFX | ⬜ Pendiente |
+| 13 | Implementar diálogos y pantalla final | ⬜ Pendiente |
+
+---
+
 ## Tests implementados
 
 | Nº | Test | Estado |
@@ -364,6 +384,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 19 | Suite tras sub-bloque 1 de log estructurado y `CombatResult` | ✅ Correcta |
 | 20 | Suite tras sub-bloque 2 de log estructurado, IA, efectos y persistencia final | ✅ Correcta |
 | 21 | Suite tras habilidades especiales de mini-bosses | ✅ Correcta |
+| 22 | Suite tras JavaFX subbloque 1: arranque, menú inicial y selección de personaje | ✅ Correcta |
 
 Última verificación completa:
 
@@ -374,7 +395,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 Resultado:
 
 ```text
-379 tests, 0 failures, 0 errors, 0 skipped
+401 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---
@@ -460,4 +481,4 @@ Resultado:
 | 1 | Definir `MalacharAlly` como aliado NPC del combate final | ✅ Completado |
 | 2 | Definir `ParasitoEnemy`, sus fases, derrota y desenlace final | ✅ Completado |
 | 3 | Implementar sistema de game over y desenlace final | ✅ Completado |
-| 4 | Implementar capa JavaFX | ⬜ Pendiente |
+| 4 | Implementar capa JavaFX | 🔄 En progreso |

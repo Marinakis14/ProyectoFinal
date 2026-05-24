@@ -3,6 +3,7 @@ package Valdris.ui.view;
 import Valdris.exceptions.GameStateException;
 import Valdris.model.enums.CharacterType;
 import Valdris.ui.MainApp;
+import Valdris.ui.controller.GameController;
 import Valdris.ui.model.GameModel;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -98,18 +99,16 @@ public class CharacterSelectView {
     }
 
     /**
-     * Crea una partida real y muestra una confirmacion temporal hasta tener GameView.
+     * Crea una partida real y abre la pantalla principal.
      *
      * @param tipo personaje elegido
      */
     public void iniciarJuego(CharacterType tipo) {
         try {
             GameModel modelo = new GameModel(tipo);
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Nueva partida");
-            alert.setHeaderText(nombrePersonaje(tipo));
-            alert.setContentText(crearMensajePartidaCreada(modelo));
-            alert.showAndWait();
+            GameController controller = new GameController(modelo);
+            GameView gameView = new GameView(stage, modelo, controller);
+            stage.setScene(gameView.getScene());
         } catch (GameStateException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error al crear partida");
@@ -252,14 +251,4 @@ public class CharacterSelectView {
         return "#7ba4d8";
     }
 
-    /**
-     * Crea el mensaje temporal de confirmacion de partida.
-     *
-     * @param modelo modelo recien creado
-     * @return mensaje visible para el jugador
-     */
-    private String crearMensajePartidaCreada(GameModel modelo) {
-        return modelo.getUltimoMensaje()
-            + "\nLa pantalla principal del juego se conectará en el siguiente subbloque.";
-    }
 }

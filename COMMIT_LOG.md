@@ -1294,6 +1294,49 @@ la pantalla principal.
 
 ---
 
+### Sesión 25 — 24 mayo 2026 — Codex
+
+**Clases o ficheros trabajados:**
+- `GameController` en `Valdris.ui.controller`
+- `GameView` en `Valdris.ui.view`
+- `CombatLogView` en `Valdris.ui.view`
+- `CharacterSelectView` en `Valdris.ui.view`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Prompt usado (detalle):**
+El equipo autorizó el subbloque 3 de JavaFX sin pedir más decisiones. Se acordó implementar
+una pantalla principal solo lectura, conectar la selección de personaje a esa pantalla, mostrar
+mapa, panel lateral y log, dejar el inventario visible pero deshabilitado, y no conectar todavía
+acciones jugables de turno.
+
+**Resultado:**
+- Compila: SÍ
+- Tests pasan: SÍ
+- Cambios manuales necesarios: ninguno
+
+**Problemas encontrados:**
+- Ninguno bloqueante.
+
+**Solución aplicada:**
+- Se creó `GameController` mínimo con navegación al menú principal.
+- Se creó `CombatLogView` para mostrar los últimos cinco mensajes del log de partida.
+- Se creó `GameView` con `BorderPane`, mapa central en `GridPane`, panel lateral de estado y log inferior.
+- `CharacterSelectView` ahora crea `GameModel`, `GameController`, `GameView` y cambia la escena al elegir personaje.
+
+**Decisiones técnicas:**
+- El mapa se renderiza en modo solo lectura con `StackPane` por celda.
+- El jugador se muestra con `K`, `S` o `D`; enemigos con `E`; items con `*`; contenedores con `C`.
+- Las trampas no se revelan visualmente en este subbloque y se muestran como suelo.
+- El botón `Inventario` queda visible pero deshabilitado hasta el subbloque correspondiente.
+
+**Verificación:**
+- Suite completa ejecutada con `mvn test`: `401 tests, 0 failures, 0 errors, 0 skipped`.
+
+**Commit sugerido:** `git commit -m "feat(ui): add read-only game screen"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas
@@ -1360,10 +1403,10 @@ la pantalla principal.
 - [x] GameModelListener
 - [x] GameModel
 - [x] CharacterSelectView
-- [ ] GameView
-- [ ] GameController
+- [x] GameView
+- [x] GameController
 - [ ] InventoryView
-- [ ] CombatLogView
+- [x] CombatLogView
 
 ### Checklist de tests implementados
 

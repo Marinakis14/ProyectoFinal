@@ -313,9 +313,9 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 5 | Mostrar mensajes temporales para carga y creación de partida hasta conectar `GameModel` | ✅ Completado |
 | 6 | Implementar `GameModelListener` | ✅ Completado |
 | 7 | Implementar `GameModel` | ✅ Completado |
-| 8 | Implementar `GameView` principal | ⬜ Pendiente |
-| 9 | Implementar `GameController` | ⬜ Pendiente |
-| 10 | Implementar `CombatLogView` | ⬜ Pendiente |
+| 8 | Implementar `GameView` principal en modo solo lectura | ✅ Completado |
+| 9 | Implementar `GameController` mínimo para navegación | ✅ Completado |
+| 10 | Implementar `CombatLogView` con últimos 5 mensajes | ✅ Completado |
 | 11 | Implementar `InventoryView` | ⬜ Pendiente |
 | 12 | Implementar guardado/carga desde JavaFX | ⬜ Pendiente |
 | 13 | Implementar diálogos y pantalla final | ⬜ Pendiente |
@@ -386,6 +386,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 21 | Suite tras habilidades especiales de mini-bosses | ✅ Correcta |
 | 22 | Suite tras JavaFX subbloque 1: arranque, menú inicial y selección de personaje | ✅ Correcta |
 | 23 | Suite tras JavaFX subbloque 2: modelo observable y partida nueva real | ✅ Correcta |
+| 24 | Suite tras JavaFX subbloque 3: pantalla principal solo lectura | ✅ Correcta |
 
 Última verificación completa:
 

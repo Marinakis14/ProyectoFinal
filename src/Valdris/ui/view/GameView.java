@@ -1,7 +1,11 @@
 package Valdris.ui.view;
 
+import MisEstructurasDeDatos.ListasPilasYColas.ListaSimplementeEnlazada;
 import Valdris.exceptions.InvalidMoveException;
+import Valdris.logic.bfs.BFSMovimiento;
 import Valdris.model.enums.CellType;
+import Valdris.model.enums.GameResult;
+import Valdris.model.enums.Phase;
 import Valdris.model.items.Item;
 import Valdris.model.map.Cell;
 import Valdris.model.map.Container;
@@ -100,6 +104,9 @@ public class GameView implements GameModelListener {
         renderizarSala(modelo.getDungeon().getRoomActual());
         actualizarPanelLateral();
         logCombate.mostrarMensajes(modelo.getTurnManager().getLogTextos());
+        if (modelo.getUltimoMensaje() != null && !modelo.getUltimoMensaje().isEmpty()) {
+            logCombate.addMensaje(modelo.getUltimoMensaje());
+        }
     }
 
     /**
@@ -158,9 +165,16 @@ public class GameView implements GameModelListener {
             Cell cell = room.getCell(fila, col);
             Rectangle fondo = new Rectangle(CELL_SIZE, CELL_SIZE);
             fondo.setFill(colorCelda(cell));
-            fondo.setStroke(Color.web("#111111"));
+            if (isCeldaAlcanzableEnMovimiento(room, cell)) {
+                fondo.setStroke(Color.web("#3fbf5f"));
+                fondo.setStrokeWidth(3);
+            } else {
+                fondo.setStroke(Color.web("#111111"));
+                fondo.setStrokeWidth(1);
+            }
             stack.getChildren().add(fondo);
             agregarContenidoCelda(stack, cell);
+            stack.setOnMouseClicked(event -> controller.onCeldaClick(fila, col));
         } catch (InvalidMoveException e) {
             Rectangle fondo = new Rectangle(CELL_SIZE, CELL_SIZE);
             fondo.setFill(Color.BLACK);
@@ -251,11 +265,66 @@ public class GameView implements GameModelListener {
         panelLateral.getChildren().add(crearDato("Turno", String.valueOf(modelo.getTurnManager().getTurnoGlobal())));
 
         panelLateral.getChildren().add(crearSeparador());
+        agregarBotonesDeTurno(room);
+        panelLateral.getChildren().add(crearSeparador());
         Button inventario = crearBoton("Inventario");
         inventario.setDisable(true);
         Button menu = crearBoton("Menú principal");
         menu.setOnAction(event -> controller.onBotonMenuPrincipal(stage));
         panelLateral.getChildren().addAll(inventario, menu);
+    }
+
+    /**
+     * Agrega botones de accion tactica habilitados segun la fase actual.
+     *
+     * @param room sala actual
+     */
+    private void agregarBotonesDeTurno(Room room) {
+        Phase fase = modelo.getTurnManager().getFaseActual();
+        boolean partidaActiva = modelo.getTurnManager().getGameResult() == GameResult.IN_PROGRESS;
+
+        Button saltarMovimiento = crearBoton("Saltar movimiento");
+        saltarMovimiento.setDisable(!partidaActiva || fase != Phase.MOVEMENT);
+        saltarMovimiento.setOnAction(event -> controller.onSaltarMovimiento());
+
+        Button recoger = crearBoton("Recoger");
+        recoger.setDisable(!partidaActiva || fase != Phase.PICKUP);
+        recoger.setOnAction(event -> controller.onRecoger());
+
+        Button usarAcceso = crearBoton("Usar acceso");
+        usarAcceso.setDisable(!partidaActiva || fase != Phase.PICKUP);
+        usarAcceso.setOnAction(event -> controller.onUsarAcceso());
+
+        Button activarPalanca = crearBoton("Activar palanca");
+        activarPalanca.setDisable(!partidaActiva || fase != Phase.PICKUP);
+        activarPalanca.setOnAction(event -> controller.onActivarPalanca());
+
+        Button saltarRecogida = crearBoton("Saltar recogida");
+        saltarRecogida.setDisable(!partidaActiva || fase != Phase.PICKUP);
+        saltarRecogida.setOnAction(event -> controller.onSaltarRecogida());
+
+        Button saltarUsoItem = crearBoton("Saltar uso item");
+        saltarUsoItem.setDisable(!partidaActiva || fase != Phase.USE_ITEM);
+        saltarUsoItem.setOnAction(event -> controller.onSaltarUsoItem());
+
+        Button cederTurno = crearBoton("Ceder turno");
+        cederTurno.setDisable(!partidaActiva);
+        cederTurno.setOnAction(event -> controller.onCederTurno());
+
+        Button combateFinal = crearBoton("Iniciar combate final");
+        combateFinal.setDisable(!puedeIntentarCombateFinal(room));
+        combateFinal.setOnAction(event -> controller.onIniciarCombateFinal());
+
+        panelLateral.getChildren().addAll(
+            saltarMovimiento,
+            recoger,
+            usarAcceso,
+            activarPalanca,
+            saltarRecogida,
+            saltarUsoItem,
+            cederTurno,
+            combateFinal
+        );
     }
 
     /**
@@ -297,7 +366,7 @@ public class GameView implements GameModelListener {
      * @return separador
      */
     private Label crearSeparador() {
-        Label label = new Label("────────────────────");
+        Label label = new Label("--------------------");
         label.setStyle("-fx-text-fill: #5e5140;");
         return label;
     }
@@ -369,5 +438,35 @@ public class GameView implements GameModelListener {
             return "D";
         }
         return "K";
+    }
+
+    /**
+     * Indica si una celda debe resaltarse como alcanzable por movimiento.
+     *
+     * @param room sala actual
+     * @param cell celda consultada
+     * @return true si la celda esta en rango BFS durante MOVEMENT
+     */
+    private boolean isCeldaAlcanzableEnMovimiento(Room room, Cell cell) {
+        if (modelo.getTurnManager().getFaseActual() != Phase.MOVEMENT || room == null || cell == null) {
+            return false;
+        }
+        Player player = modelo.getPlayer();
+        ListaSimplementeEnlazada<Cell> alcanzables = BFSMovimiento.getCellsInRange(
+            room, player.getFilaActual(), player.getColActual(), player.getMovEfectivo());
+        return alcanzables.contains(cell);
+    }
+
+    /**
+     * Indica si el boton de combate final debe estar disponible.
+     *
+     * @param room sala actual
+     * @return true si se puede intentar iniciar el combate final
+     */
+    private boolean puedeIntentarCombateFinal(Room room) {
+        return room != null
+            && "S5-D".equals(room.getId())
+            && !modelo.getTurnManager().isFinalCombatStarted()
+            && modelo.getTurnManager().getGameResult() == GameResult.IN_PROGRESS;
     }
 }

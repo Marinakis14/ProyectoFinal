@@ -1337,6 +1337,47 @@ acciones jugables de turno.
 
 ---
 
+### Sesión 26 — 24 mayo 2026 — Codex
+
+**Clases o ficheros trabajados:**
+- `GameController` en `Valdris.ui.controller`
+- `GameView` en `Valdris.ui.view`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Prompt usado (detalle):**
+El equipo pidió revisar de nuevo la API pública de `TurnManager` antes de implementar el subbloque 4.
+Se detectó que además de las acciones tácticas normales faltaba contemplar `saltarRecogida()` y
+`iniciarCombateFinal()`. El equipo decidió incluir ambas en el subbloque 4.
+
+**Resultado:**
+- Compila: SÍ
+- Tests pasan: SÍ
+- Cambios manuales necesarios: ninguno
+
+**Problemas encontrados:**
+- Ninguno bloqueante.
+
+**Solución aplicada:**
+- `GameController` conecta clicks de celda a movimiento o ataque según fase.
+- `GameController` conecta botones para saltar movimiento, recoger, saltar recogida, usar acceso,
+  activar palanca, saltar uso de item, ceder turno e iniciar combate final.
+- `GameView` muestra botones tácticos habilitados según fase.
+- `GameView` resalta con borde verde las celdas alcanzables por BFS en fase `MOVEMENT`.
+- Los errores de `InvalidMoveException`, `InvalidAttackException` y `GameStateException` se muestran en el log visual mediante `GameModel`.
+
+**Decisiones técnicas:**
+- `Ceder turno` llama a `cederTurno()` y después a `ejecutarTurnoEnemigos()` para devolver el flujo al jugador.
+- El inventario sigue deshabilitado hasta el subbloque específico.
+- `Iniciar combate final` queda disponible en S5-D si el combate final no ha empezado; si no se cumplen condiciones, `TurnManager` informa el error.
+
+**Verificación:**
+- Suite completa ejecutada con `mvn test`: `401 tests, 0 failures, 0 errors, 0 skipped`.
+
+**Commit sugerido:** `git commit -m "feat(ui): connect basic turn controls"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas

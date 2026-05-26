@@ -29,7 +29,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga, TurnManager, ItemGenerator, PuzzleManager y DungeonGenerator completados |
 | Capa 6 inicial | GameState, LoadedGame, GameSummary y LectorJSON completados |
 | Capa 7 JavaFX | Pantallas principales, partida, inventario, autoguardado, diálogos, pantalla final, correcciones jugables, redistribución de pantalla, sprites de unidades, feedback visual de puzzles, distancia a salida y contadores de turno completados |
-| Tests JUnit actuales | 418 tests pasando |
+| Tests JUnit actuales | 478 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
 ---
@@ -397,6 +397,21 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 32 | `ParasitoEnemyTest` | ✅ Completado |
 | 33 | `TurnManagerFinalBossTest` | ✅ Completado |
 | 34 | `LectorJSONFinalBossTest` | ✅ Completado |
+| 35 | `MisEstructurasDeDatos.Arbolesbinarios.ArbolBinarioDeBusquedaEnterosTest` | ✅ Completado |
+| 36 | `MisEstructurasDeDatos.Arbolesbinarios.ArbolBinarioDeBusquedaEquilibradoTest` | ✅ Completado |
+| 37 | `MisEstructurasDeDatos.Arbolesbinarios.ArbolBinarioDeBusquedaTest` | ✅ Completado |
+| 38 | `MisEstructurasDeDatos.Arbolesbinarios.NodoTest` | ✅ Completado |
+| 39 | `MisEstructurasDeDatos.Arbolesbinarios.MainTest` | ✅ Completado |
+| 40 | `MisEstructurasDeDatos.Grafos.AristaTest` | ✅ Completado |
+| 41 | `MisEstructurasDeDatos.Grafos.DatosGrafoJsonTest` | ✅ Completado |
+| 42 | `MisEstructurasDeDatos.Grafos.GrafoTest` | ✅ Completado |
+| 43 | `MisEstructurasDeDatos.Grafos.LectorGrafoJsonTest` | ✅ Completado |
+| 44 | `MisEstructurasDeDatos.Grafos.NodoTest` | ✅ Completado |
+| 45 | `MisEstructurasDeDatos.Grafos.TripletaJsonTest` | ✅ Completado |
+| 46 | `MisEstructurasDeDatos.ListasPilasYColas.ListaSimplementeEnlazadaTest` | ✅ Completado |
+| 47 | `MisEstructurasDeDatos.ListasPilasYColas.ListaCircularTest` | ✅ Completado |
+| 48 | `MisEstructurasDeDatos.ListasPilasYColas.ColaTest` | ✅ Completado |
+| 49 | `MisEstructurasDeDatos.ListasPilasYColas.PilaTest` | ✅ Completado |
 
 ---
 
@@ -447,6 +462,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 41 | Suite tras lógica final con `MalacharAlly`, `ParasitoEnemy`, desenlace y persistencia del boss final | ✅ Correcta |
 | 42 | Suite tras límites de turno global/sala y contadores visibles en JavaFX | ✅ Correcta |
 | 43 | Suite tras saneamiento documental de `TASKS.md` y `COMMIT_LOG.md` | ✅ Correcta |
+| 44 | Suite tras reubicar, corregir y completar tests de `MisEstructurasDeDatos` | ✅ Correcta |
 
 Última verificación completa:
 
@@ -457,7 +473,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 Resultado:
 
 ```text
-418 tests, 0 failures, 0 errors, 0 skipped
+478 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---

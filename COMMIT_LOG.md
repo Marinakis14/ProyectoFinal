@@ -2006,6 +2006,54 @@ item y cierre el modal tras una acción correcta.
 
 ---
 
+### Sesion 44 — 26 mayo 2026 — Codex
+
+**Objetivo:** Integrar los tests de estructuras propias pegados desde otro proyecto, corrigiendo rutas, paquetes e imports para que formen parte de la suite Maven del proyecto.
+
+**Archivos trabajados:**
+- `tests/MisEstructurasDeDatos/Arbolesbinarios/ArbolBinarioDeBusquedaEnterosTest.java`
+- `tests/MisEstructurasDeDatos/Arbolesbinarios/ArbolBinarioDeBusquedaEquilibradoTest.java`
+- `tests/MisEstructurasDeDatos/Arbolesbinarios/ArbolBinarioDeBusquedaTest.java`
+- `tests/MisEstructurasDeDatos/Arbolesbinarios/MainTest.java`
+- `tests/MisEstructurasDeDatos/Arbolesbinarios/NodoTest.java`
+- `tests/MisEstructurasDeDatos/Grafos/AristaTest.java`
+- `tests/MisEstructurasDeDatos/Grafos/DatosGrafoJsonTest.java`
+- `tests/MisEstructurasDeDatos/Grafos/GrafoTest.java`
+- `tests/MisEstructurasDeDatos/Grafos/LectorGrafoJsonTest.java`
+- `tests/MisEstructurasDeDatos/Grafos/NodoTest.java`
+- `tests/MisEstructurasDeDatos/Grafos/TripletaJsonTest.java`
+- `tests/MisEstructurasDeDatos/ListasPilasYColas/ListaSimplementeEnlazadaTest.java`
+- `tests/MisEstructurasDeDatos/ListasPilasYColas/ListaCircularTest.java`
+- `tests/MisEstructurasDeDatos/ListasPilasYColas/ColaTest.java`
+- `tests/MisEstructurasDeDatos/ListasPilasYColas/PilaTest.java`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- Reubicados los tests desde `tests/java/Hoja2a/...` y `tests/java/Hoja2b/...` a rutas coherentes con los paquetes reales `MisEstructurasDeDatos.Arbolesbinarios` y `MisEstructurasDeDatos.Grafos`.
+- Corregidos los `package` que usaban `java.Hoja2a...` y `java.Hoja2b...`, evitando declarar tests bajo `java.*`.
+- Corregidos imports a `MisEstructurasDeDatos.ListasPilasYColas.ListaSimplementeEnlazada`.
+- Normalizados imports estaticos de JUnit para compilar todos los `assertEquals`, `assertTrue`, `assertFalse`, `assertNotEquals`, etc.
+- Reescritos los tests en UTF-8 sin BOM para que `javac` no falle con `illegal character: '\ufeff'`.
+- Añadidos tests directos para `ListaSimplementeEnlazada`, `ListaCircular`, `Cola` y `Pila`.
+- Registrados 60 tests adicionales de estructuras propias.
+
+**Problemas encontrados:**
+- Maven no usaba una carpeta `test`; el proyecto tiene `tests` como `testSourceDirectory`.
+- Los tests venian de otro proyecto y no coincidían con los paquetes reales del repositorio.
+- La primera reescritura mecanica dejo BOM al principio de los ficheros.
+- `LectorGrafoJsonTest` imprime un error esperado al probar la carga de un fichero inexistente.
+
+**Solucion aplicada:**
+- Mantener los tests dentro del arbol Maven actual y hacer que pertenezcan al mismo paquete que las clases probadas, lo que permite acceder a constructores y metodos con visibilidad de paquete/protegida sin modificar `MisEstructurasDeDatos`.
+
+**Verificacion:**
+- Suite completa ejecutada con `mvn test`: correcta, 478 tests.
+
+**Commit sugerido:** `git commit -m "test: integrate data structure tests"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas
@@ -2109,6 +2157,25 @@ item y cierre el modal tras una acción correcta.
 - [x] GameStateTest
 - [x] LectorJSONTest
 - [x] GameLogEntryTest
+- [x] MalacharAllyTest
+- [x] ParasitoEnemyTest
+- [x] TurnManagerFinalBossTest
+- [x] LectorJSONFinalBossTest
+- [x] MisEstructurasDeDatos.Arbolesbinarios.ArbolBinarioDeBusquedaEnterosTest
+- [x] MisEstructurasDeDatos.Arbolesbinarios.ArbolBinarioDeBusquedaEquilibradoTest
+- [x] MisEstructurasDeDatos.Arbolesbinarios.ArbolBinarioDeBusquedaTest
+- [x] MisEstructurasDeDatos.Arbolesbinarios.NodoTest
+- [x] MisEstructurasDeDatos.Arbolesbinarios.MainTest
+- [x] MisEstructurasDeDatos.Grafos.AristaTest
+- [x] MisEstructurasDeDatos.Grafos.DatosGrafoJsonTest
+- [x] MisEstructurasDeDatos.Grafos.GrafoTest
+- [x] MisEstructurasDeDatos.Grafos.LectorGrafoJsonTest
+- [x] MisEstructurasDeDatos.Grafos.NodoTest
+- [x] MisEstructurasDeDatos.Grafos.TripletaJsonTest
+- [x] MisEstructurasDeDatos.ListasPilasYColas.ListaSimplementeEnlazadaTest
+- [x] MisEstructurasDeDatos.ListasPilasYColas.ListaCircularTest
+- [x] MisEstructurasDeDatos.ListasPilasYColas.ColaTest
+- [x] MisEstructurasDeDatos.ListasPilasYColas.PilaTest
 
 ---
 
@@ -2121,7 +2188,7 @@ item y cierre el modal tras una acción correcta.
 Resultado:
 
 ```text
-418 tests, 0 failures, 0 errors, 0 skipped
+478 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---

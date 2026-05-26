@@ -28,6 +28,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -80,6 +81,9 @@ public class GameView implements GameModelListener {
     /** Evita abrir la pantalla final mas de una vez. */
     private boolean pantallaFinalMostrada;
 
+    /** Indica si el camino global debe resaltarse en el mapa. */
+    private boolean caminoRevelado;
+
     /**
      * Crea la vista principal de la partida.
      *
@@ -99,6 +103,7 @@ public class GameView implements GameModelListener {
         this.logCombate = new CombatLogView();
         this.scene = new Scene(root, MainApp.WINDOW_WIDTH, MainApp.WINDOW_HEIGHT);
         this.pantallaFinalMostrada = false;
+        this.caminoRevelado = false;
 
         construirLayout();
         configurarAtajosTeclado();
@@ -201,7 +206,10 @@ public class GameView implements GameModelListener {
             Cell cell = room.getCell(fila, col);
             Rectangle fondo = new Rectangle(CELL_SIZE, CELL_SIZE);
             fondo.setFill(colorCelda(room, cell));
-            if (isCeldaAlcanzableEnMovimiento(room, cell)) {
+            if (isCeldaEnCaminoRevelado(cell)) {
+                fondo.setStroke(Color.web("#45c7d8"));
+                fondo.setStrokeWidth(4);
+            } else if (isCeldaAlcanzableEnMovimiento(room, cell)) {
                 fondo.setStroke(Color.web("#3fbf5f"));
                 fondo.setStrokeWidth(3);
             } else if (isEnemigoAtacable(room, cell)) {
@@ -413,7 +421,7 @@ public class GameView implements GameModelListener {
         panelLateral.getChildren().add(crearDato("Fase", modelo.getTurnManager().getFaseActual().name()));
         panelLateral.getChildren().add(crearDato("Turno global", textoTurnoGlobal()));
         panelLateral.getChildren().add(crearDato("Turnos sala", textoTurnosSala()));
-        panelLateral.getChildren().add(crearDato("Salida", textoSalidaMasCercana()));
+        panelLateral.getChildren().add(crearDatoSalida());
 
         panelLateral.getChildren().add(crearSeparador());
         agregarBotonesDeTurno(room);
@@ -511,6 +519,9 @@ public class GameView implements GameModelListener {
             } else if (code == KeyCode.I) {
                 controller.onBotonInventario(stage);
                 event.consume();
+            } else if (code == KeyCode.V) {
+                alternarCaminoRevelado();
+                event.consume();
             }
         });
     }
@@ -597,7 +608,7 @@ public class GameView implements GameModelListener {
         combateFinal.setOnAction(event -> controller.onIniciarCombateFinal());
 
         if (partidaActiva && fase == Phase.ATTACK) {
-            panelLateral.getChildren().add(crearAyuda("Selecciona un enemigo resaltado en rojo para atacar."));
+            panelLateral.getChildren().add(crearAyuda("Ataca enemigo rojo."));
         }
 
         GridPane acciones = new GridPane();
@@ -612,6 +623,25 @@ public class GameView implements GameModelListener {
         agregarBotonAccion(acciones, cederTurno, 6);
         agregarBotonAccion(acciones, combateFinal, 7);
         panelLateral.getChildren().add(acciones);
+    }
+
+    /**
+     * Activa o desactiva el resaltado de la ruta global hacia el objetivo.
+     */
+    private void alternarCaminoRevelado() {
+        boolean nuevoEstado = !caminoRevelado;
+        if (nuevoEstado && modelo.getTurnManager().getCaminoReveladoSalaActual().isEmpty()) {
+            logCombate.addMensaje("No hay ruta disponible hacia el Nucleo.");
+            return;
+        }
+        caminoRevelado = nuevoEstado;
+        renderizarSala(modelo.getDungeon().getRoomActual());
+        actualizarPanelLateral();
+        if (caminoRevelado) {
+            logCombate.addMensaje("Ruta revelada hacia el Núcleo.");
+        } else {
+            logCombate.addMensaje("Ruta oculta.");
+        }
     }
 
     /**
@@ -673,6 +703,36 @@ public class GameView implements GameModelListener {
     }
 
     /**
+     * Crea la fila de salida con el acceso directo para revelar la ruta.
+     *
+     * @return fila visual con distancia y boton de ruta
+     */
+    private HBox crearDatoSalida() {
+        HBox row = new HBox(8);
+        row.setAlignment(Pos.CENTER_LEFT);
+
+        Label nombreLabel = new Label("Salida:");
+        nombreLabel.setMinWidth(55);
+        nombreLabel.setStyle("-fx-text-fill: #c9b99c;");
+
+        Label valorLabel = new Label(textoSalidaMasCercana());
+        valorLabel.setWrapText(true);
+        valorLabel.setMaxWidth(Double.MAX_VALUE);
+        valorLabel.setStyle("-fx-text-fill: #f5f0e6;");
+        HBox.setHgrow(valorLabel, Priority.ALWAYS);
+
+        Button ruta = crearBoton(caminoRevelado ? "Ocultar" : "Ruta (V)");
+        ruta.setPrefWidth(86);
+        ruta.setMinWidth(86);
+        ruta.setPrefHeight(30);
+        ruta.setDisable(modelo.getTurnManager().getGameResult() != GameResult.IN_PROGRESS);
+        ruta.setOnAction(event -> alternarCaminoRevelado());
+
+        row.getChildren().addAll(nombreLabel, valorLabel, ruta);
+        return row;
+    }
+
+    /**
      * Crea un separador visual simple.
      *
      * @return separador
@@ -692,6 +752,7 @@ public class GameView implements GameModelListener {
     private Label crearAyuda(String texto) {
         Label label = new Label(texto);
         label.setWrapText(true);
+        label.setMaxWidth(Double.MAX_VALUE);
         label.setStyle("-fx-text-fill: #d7c8aa;");
         return label;
     }
@@ -887,7 +948,7 @@ public class GameView implements GameModelListener {
     }
 
     /**
-     * Devuelve el texto visible de distancia a la salida abierta mas cercana.
+     * Devuelve el texto visible de distancia al objetivo global.
      *
      * @return mensaje de salida para el panel de estado
      */
@@ -895,14 +956,21 @@ public class GameView implements GameModelListener {
         if (modelo.getTurnManager().hayEnemigosVivosSalaActual()) {
             return "Derrota a todos los enemigos.";
         }
-        int distancia = modelo.getTurnManager().getDistanciaSalidaAbiertaMasCercana();
-        if (distancia < 0) {
-            return "No hay salidas abiertas.";
+        int distancia = modelo.getTurnManager().getDistanciaSalidaGlobal();
+        int salas = modelo.getTurnManager().getSalasHastaObjetivoGlobal();
+        String siguiente = modelo.getTurnManager().getIdSiguienteSalaObjetivoGlobal();
+        if (distancia == 0 && salas == 0) {
+            return "Objetivo alcanzado.";
         }
-        if (distancia == 1) {
-            return "1 casilla";
+        if (distancia < 0 || salas < 0) {
+            return "Sin ruta al Núcleo.";
         }
-        return distancia + " casillas";
+        String textoDistancia = distancia == 1 ? "1 casilla" : distancia + " casillas";
+        String textoSalas = salas == 1 ? "1 sala" : salas + " salas";
+        if (siguiente == null || siguiente.isEmpty()) {
+            return textoDistancia + ", " + textoSalas;
+        }
+        return textoDistancia + ", " + textoSalas + " -> " + siguiente;
     }
 
     /**
@@ -1055,6 +1123,20 @@ public class GameView implements GameModelListener {
         ListaSimplementeEnlazada<Cell> alcanzables = BFSMovimiento.getCellsInRange(
             room, player.getFilaActual(), player.getColActual(), player.getMovEfectivo());
         return contieneCeldaPorReferencia(alcanzables, cell);
+    }
+
+    /**
+     * Indica si una celda forma parte del camino global revelado.
+     *
+     * @param cell celda consultada
+     * @return true si debe resaltarse con el color de ruta revelada
+     */
+    private boolean isCeldaEnCaminoRevelado(Cell cell) {
+        if (!caminoRevelado || cell == null) {
+            return false;
+        }
+        ListaSimplementeEnlazada<Cell> camino = modelo.getTurnManager().getCaminoReveladoSalaActual();
+        return contieneCeldaPorReferencia(camino, cell);
     }
 
     /**

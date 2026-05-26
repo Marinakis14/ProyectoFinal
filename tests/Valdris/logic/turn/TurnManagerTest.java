@@ -1,8 +1,10 @@
 package Valdris.logic.turn;
 
+import MisEstructurasDeDatos.ListasPilasYColas.ListaSimplementeEnlazada;
 import Valdris.exceptions.GameStateException;
 import Valdris.exceptions.InvalidAttackException;
 import Valdris.exceptions.InvalidMoveException;
+import Valdris.logic.generation.DungeonGenerator;
 import Valdris.model.effects.Effect;
 import Valdris.model.enums.CellType;
 import Valdris.model.enums.CharacterType;
@@ -14,6 +16,7 @@ import Valdris.model.enums.MiniBossType;
 import Valdris.model.enums.Phase;
 import Valdris.model.items.Accessory;
 import Valdris.model.items.Weapon;
+import Valdris.model.map.Cell;
 import Valdris.model.map.Chest;
 import Valdris.model.map.Dungeon;
 import Valdris.model.map.Room;
@@ -453,6 +456,172 @@ class TurnManagerTest {
         // Act + Assert
         assertTrue(turnManager.hayEnemigosVivosSalaActual());
         assertEquals(-1, turnManager.getDistanciaSalidaAbiertaMasCercana());
+    }
+
+    @Test
+    void getCaminoReveladoSalaActual_eligeRutaConMenorCosteGlobal()
+        throws InvalidMoveException {
+
+        // Arrange
+        Room destinoLargo = new Room("R-LARGO", "Rama larga", 5, 5);
+        Room intermedia = new Room("R-MEDIA", "Intermedia", 5, 5);
+        Room destinoCorto = new Room("R-CORTO", "Rama corta", 5, 5);
+        Room finalRoom = new Room("S5-D", "Nucleo", 5, 5);
+        dungeon.conectar(room, destinoLargo, "ruta larga");
+        dungeon.conectar(destinoLargo, intermedia, "paso largo");
+        dungeon.conectar(intermedia, finalRoom, "final largo");
+        dungeon.conectar(room, destinoCorto, "ruta corta");
+        dungeon.conectar(destinoCorto, finalRoom, "final corto");
+        room.setCellType(2, 4, CellType.DOOR);
+        room.getCell(2, 4).setDestinoAcceso(destinoLargo, 1, 1);
+        room.setCellType(4, 2, CellType.DOOR);
+        room.getCell(4, 2).setDestinoAcceso(destinoCorto, 1, 1);
+
+        // Act
+        ListaSimplementeEnlazada<Cell> camino = turnManager.getCaminoReveladoSalaActual();
+
+        // Assert
+        assertEquals("R-CORTO", turnManager.getIdSiguienteSalaObjetivoGlobal());
+        assertEquals(1, turnManager.getDistanciaSalidaGlobal());
+        assertEquals(2, turnManager.getSalasHastaObjetivoGlobal());
+        assertSame(room.getCell(4, 2), camino.get(camino.getSize() - 1));
+    }
+
+    @Test
+    void getCaminoReveladoSalaActual_desempataPorIdDeDestino()
+        throws InvalidMoveException {
+
+        // Arrange
+        Room destinoA = new Room("A_DEST", "Destino A", 5, 5);
+        Room destinoB = new Room("B_DEST", "Destino B", 5, 5);
+        Room finalRoom = new Room("S5-D", "Nucleo", 5, 5);
+        dungeon.conectar(room, destinoA, "ruta A");
+        dungeon.conectar(destinoA, finalRoom, "final A");
+        dungeon.conectar(room, destinoB, "ruta B");
+        dungeon.conectar(destinoB, finalRoom, "final B");
+        room.setCellType(2, 4, CellType.DOOR);
+        room.getCell(2, 4).setDestinoAcceso(destinoB, 1, 1);
+        room.setCellType(4, 2, CellType.DOOR);
+        room.getCell(4, 2).setDestinoAcceso(destinoA, 1, 1);
+
+        // Act
+        ListaSimplementeEnlazada<Cell> camino = turnManager.getCaminoReveladoSalaActual();
+
+        // Assert
+        assertEquals("A_DEST", turnManager.getIdSiguienteSalaObjetivoGlobal());
+        assertEquals(1, turnManager.getDistanciaSalidaGlobal());
+        assertEquals(2, turnManager.getSalasHastaObjetivoGlobal());
+        assertSame(room.getCell(4, 2), camino.get(camino.getSize() - 1));
+    }
+
+    @Test
+    void getCaminoReveladoSalaActual_muestraRutaAunqueQuedenEnemigosVivos()
+        throws InvalidMoveException {
+
+        // Arrange
+        Room finalRoom = new Room("S5-D", "Nucleo", 5, 5);
+        dungeon.conectar(room, finalRoom, "ruta final");
+        room.setCellType(2, 4, CellType.DOOR);
+        room.getCell(2, 4).setDestinoAcceso(finalRoom, 1, 1);
+        room.addEnemigo(new Enemy(EnemyType.WARRIOR, 1, 1, "R1"));
+
+        // Act
+        ListaSimplementeEnlazada<Cell> camino = turnManager.getCaminoReveladoSalaActual();
+
+        // Assert
+        assertTrue(turnManager.hayEnemigosVivosSalaActual());
+        assertEquals("S5-D", turnManager.getIdSiguienteSalaObjetivoGlobal());
+        assertEquals(1, turnManager.getDistanciaSalidaGlobal());
+        assertFalse(camino.isEmpty());
+        assertSame(room.getCell(2, 4), camino.get(camino.getSize() - 1));
+    }
+
+    @Test
+    void getCaminoReveladoSalaActual_ignoraUnidadesEnRutaVisual()
+        throws InvalidMoveException {
+
+        // Arrange
+        Room finalRoom = new Room("S5-D", "Nucleo", 5, 5);
+        dungeon.conectar(room, finalRoom, "ruta final");
+        room.setCellType(2, 4, CellType.DOOR);
+        room.getCell(2, 4).setDestinoAcceso(finalRoom, 1, 1);
+        room.addEnemigo(new Enemy(EnemyType.WARRIOR, 2, 3, "R1"));
+
+        // Act
+        ListaSimplementeEnlazada<Cell> camino = turnManager.getCaminoReveladoSalaActual();
+
+        // Assert
+        assertTrue(turnManager.hayEnemigosVivosSalaActual());
+        assertFalse(camino.isEmpty());
+        assertSame(room.getCell(2, 4), camino.get(camino.getSize() - 1));
+    }
+
+    @Test
+    void getCaminoReveladoSalaActual_usaPuertaBloqueadaDeProgreso()
+        throws InvalidMoveException {
+
+        // Arrange
+        Room intermedia = new Room("R-BLOQUEADA", "Puerta de puzzle", 5, 5);
+        Room finalRoom = new Room("S5-D", "Nucleo", 5, 5);
+        dungeon.addRoom(intermedia);
+        dungeon.addRoom(finalRoom);
+        dungeon.conectar(intermedia, finalRoom, "ruta tras puzzle");
+        room.setCellType(2, 4, CellType.DOOR_LOCKED);
+        room.getCell(2, 4).setDestinoAcceso(intermedia, 1, 1);
+        room.getCell(2, 4).setTriggerId("PUZZLE_TEST");
+
+        // Act
+        ListaSimplementeEnlazada<Cell> camino = turnManager.getCaminoReveladoSalaActual();
+
+        // Assert
+        assertEquals("R-BLOQUEADA", turnManager.getIdSiguienteSalaObjetivoGlobal());
+        assertEquals(1, turnManager.getDistanciaSalidaGlobal());
+        assertEquals(2, turnManager.getSalasHastaObjetivoGlobal());
+        assertFalse(camino.isEmpty());
+        assertSame(room.getCell(2, 4), camino.get(camino.getSize() - 1));
+    }
+
+    @Test
+    void getCaminoReveladoSalaActual_funcionaEnMundoGeneradoDesdeS1A()
+        throws InvalidMoveException {
+
+        // Arrange
+        double[] tiradas = new double[80];
+        double[] tiradasDrops = new double[160];
+        Dungeon generado = DungeonGenerator.generarMundo(tiradas, tiradas, tiradas, tiradasDrops);
+        Room salaInicial = generado.getRoomById("S1-A");
+        Player jugador = new Player(CharacterType.KAEL);
+        jugador.setPosicion(salaInicial.getFilaJugador(), salaInicial.getColJugador());
+        salaInicial.getCell(jugador.getFilaActual(), jugador.getColActual()).setUnit(jugador);
+        TurnManager managerGenerado = new TurnManager(generado, jugador);
+
+        // Act
+        ListaSimplementeEnlazada<Cell> camino = managerGenerado.getCaminoReveladoSalaActual();
+
+        // Assert
+        assertEquals("S1-B", managerGenerado.getIdSiguienteSalaObjetivoGlobal());
+        assertTrue(managerGenerado.getSalasHastaObjetivoGlobal() > 0);
+        assertFalse(camino.isEmpty());
+    }
+
+    @Test
+    void getCaminoReveladoSalaActual_devuelveVacioSiNoHayRutaGlobal()
+        throws InvalidMoveException {
+
+        // Arrange
+        Room destino = new Room("R-SIN-FINAL", "Sin final", 5, 5);
+        dungeon.conectar(room, destino, "ruta sin final");
+        room.setCellType(2, 4, CellType.DOOR);
+        room.getCell(2, 4).setDestinoAcceso(destino, 1, 1);
+
+        // Act
+        ListaSimplementeEnlazada<Cell> camino = turnManager.getCaminoReveladoSalaActual();
+
+        // Assert
+        assertTrue(camino.isEmpty());
+        assertNull(turnManager.getIdSiguienteSalaObjetivoGlobal());
+        assertEquals(-1, turnManager.getDistanciaSalidaGlobal());
+        assertEquals(-1, turnManager.getSalasHastaObjetivoGlobal());
     }
 
     @Test

@@ -28,8 +28,8 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | Capas 2, 3 y 4 | Completadas y testeadas |
 | Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga, TurnManager, ItemGenerator, PuzzleManager y DungeonGenerator completados |
 | Capa 6 inicial | GameState, LoadedGame, GameSummary y LectorJSON completados |
-| Capa 7 JavaFX | Pantallas principales, partida, inventario, autoguardado, diálogos, pantalla final, correcciones jugables, redistribución de pantalla, sprites de unidades, feedback visual de puzzles, distancia a salida y contadores de turno completados |
-| Tests JUnit actuales | 478 tests pasando |
+| Capa 7 JavaFX | Pantallas principales, partida, inventario, autoguardado, diálogos, pantalla final, correcciones jugables, redistribución de pantalla, sprites de unidades, feedback visual de puzzles, distancia/ruta global a salida y contadores de turno completados |
+| Tests JUnit actuales | 485 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
 ---
@@ -289,6 +289,12 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 89 | Aplicar un segundo aumento de +5 al daño base de todas las armas oficiales W1-W12 | ✅ Completado |
 | 90 | Convertir los drops de enemigos normales en garantizados al 100%, incluyendo `CONSTRUCTO`, `SOMBRA_ABSORBIDA` y `ECO_DE_MAGIA` | ✅ Completado |
 | 91 | Bloquear el uso de puertas y escaleras mientras queden enemigos vivos en la sala actual | ✅ Completado |
+| 92 | Calcular la mejor ruta global hacia `S5-D` combinando distancia de celdas y distancia de salas | ✅ Completado |
+| 93 | Exponer desde `TurnManager` el camino de celdas de la sala actual para revelar la ruta al objetivo | ✅ Completado |
+| 94 | Resolver empates de ruta global de forma determinista por coste, distancia e id de sala destino | ✅ Completado |
+| 95 | Permitir revelar la ruta visual aunque los enemigos sigan bloqueando el uso real del acceso | ✅ Completado |
+| 96 | Considerar puertas bloqueadas conocidas como ruta de progreso para que la guía no falle antes de resolver puzzles | ✅ Completado |
+| 97 | Calcular el camino visual ignorando unidades para que los enemigos no oculten la guía de ruta | ✅ Completado |
 
 ---
 
@@ -356,6 +362,8 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 36 | Revertir el +3 de defensa de armaduras y escudos oficiales A1-A8 manteniendo defensa base 3 en personajes | ✅ Completado |
 | 37 | Mostrar en la pantalla de partida la distancia a la salida abierta más cercana o el bloqueo por enemigos/salidas cerradas | ✅ Completado |
 | 38 | Mostrar nombre de sala, turno global y turnos de sala en la pantalla principal | ✅ Completado |
+| 39 | Añadir acción y atajo `V` para revelar u ocultar la ruta global hacia el Núcleo con resaltado propio | ✅ Completado |
+| 40 | Reubicar la acción de ruta junto al dato de salida y compactar el log para que no tape mensajes en partida | ✅ Completado |
 
 ---
 
@@ -463,6 +471,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 42 | Suite tras límites de turno global/sala y contadores visibles en JavaFX | ✅ Correcta |
 | 43 | Suite tras saneamiento documental de `TASKS.md` y `COMMIT_LOG.md` | ✅ Correcta |
 | 44 | Suite tras reubicar, corregir y completar tests de `MisEstructurasDeDatos` | ✅ Correcta |
+| 45 | Suite tras ruta global hacia `S5-D`, acción JavaFX de revelar camino con enemigos vivos, puertas bloqueadas de progreso, unidades en ruta y ajuste visual de panel/log | ✅ Correcta |
 
 Última verificación completa:
 
@@ -473,7 +482,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 Resultado:
 
 ```text
-478 tests, 0 failures, 0 errors, 0 skipped
+485 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---
@@ -570,6 +579,10 @@ Resultado:
 | 86 | La distancia visible a salida se mide hasta la celda desde la que puede usarse la puerta/escalera abierta; si el jugador ya está al lado, marca 0 casillas | ✅ Aceptada |
 | 87 | La partida tiene 500 turnos globales; las salas normales tienen 20/25, mini-bosses 35, S5-D 50, y puzzles/pasillos no tienen límite de sala | ✅ Aceptada |
 | 88 | `partida_valdris.json` y `resumen_valdris.json` se versionan como ficheros de entrega para facilitar la revisión de guardado, carga y resumen final | ✅ Aceptada |
+| 89 | Si dos accesos tienen el mismo coste global hacia `S5-D`, se elige de forma estable por distancia de salas, distancia de celdas, id de destino y coordenadas | ✅ Aceptada |
+| 90 | Revelar ruta es una ayuda visual y puede mostrarse aunque queden enemigos vivos; usar la puerta o escalera sigue bloqueado hasta limpiar la sala | ✅ Aceptada |
+| 91 | La ruta revelada considera puertas bloqueadas conocidas como continuidad de progreso, sin desbloquear ni permitir cruzar esas puertas hasta resolver sus condiciones | ✅ Aceptada |
+| 92 | El camino visual de la ruta ignora unidades ocupantes porque es una guía de progreso posterior al combate, no una ruta de movimiento ejecutable en el turno actual | ✅ Aceptada |
 
 ---
 

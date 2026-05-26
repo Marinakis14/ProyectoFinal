@@ -2054,6 +2054,54 @@ item y cierre el modal tras una acción correcta.
 
 ---
 
+### Sesion 45 — 26 mayo 2026 — Codex
+
+**Objetivo:** Sustituir la distancia local a una salida por una ruta global hacia `S5-D` y añadir una acción visual para revelar el camino recomendado.
+
+**Archivos trabajados:**
+- `src/Valdris/logic/turn/TurnManager.java`
+- `src/Valdris/ui/view/GameView.java`
+- `src/Valdris/ui/view/CombatLogView.java`
+- `tests/Valdris/logic/turn/TurnManagerTest.java`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- `TurnManager` calcula ahora la mejor salida global hacia `S5-D`, sumando distancia en celdas dentro de la sala actual y distancia de salas restantes.
+- Añadidas consultas públicas para distancia global, salas restantes, siguiente sala destino y camino de celdas revelable.
+- Si varias salidas tienen el mismo coste, el desempate queda fijado por distancia de salas, distancia de celdas, id de destino y coordenadas.
+- `GameView` muestra la distancia global con número de casillas, salas restantes y siguiente sala.
+- Añadido botón y atajo `V` para revelar u ocultar la ruta recomendada, con resaltado azul propio en el mapa.
+- Reubicado el botón de ruta junto al dato de salida para que quede siempre visible sin añadir una quinta fila a la rejilla de acciones.
+- Compactado `CombatLogView` retirando el margen inferior excesivo para recuperar espacio real de mensajes.
+- Acortado el texto de ayuda de ataque para evitar cortes y desplazamientos del panel lateral.
+- El cálculo de ruta revelada deja de bloquearse por enemigos vivos: el acceso sigue sin poder usarse hasta derrotarlos, pero la ayuda visual puede orientar al jugador.
+- El cálculo de ruta revelada considera puertas bloqueadas conocidas como continuidad de progreso, para que la guía funcione antes de resolver puzzles obligatorios.
+- El camino visual de celdas ignora unidades ocupantes para que un enemigo sobre la ruta no oculte la guía hacia la puerta.
+- El camino revelado incluye también la celda de puerta o escalera objetivo para que el destino quede claro en el mapa.
+- Añadidos tests para elegir la ruta de menor coste global, desempatar por id de destino y devolver vacío si no existe ruta hacia `S5-D`.
+- Añadido test para comprobar que la ruta visual se muestra aunque queden enemigos vivos en la sala.
+- Añadidos tests para una puerta de progreso bloqueada fuera del grafo activo y para la ruta en una partida generada desde `S1-A`.
+- Añadido test para enemigo ocupando una celda del camino visual hacia el acceso recomendado.
+
+**Problemas encontrados:**
+- El cálculo anterior solo miraba la salida abierta más cercana de la sala actual, por lo que podía recomendar una puerta corta que alejase al jugador del objetivo final.
+- La primera ubicación del botón de ruta como novena acción creaba una quinta fila, empujaba el panel lateral y dejaba el log demasiado abajo en partida real.
+- La primera versión de la ruta global reutilizaba la misma restricción que el uso real de accesos y devolvía camino vacío mientras hubiera enemigos vivos, por eso el botón cambiaba pero no se pintaban casillas.
+- La segunda versión dependía solo del grafo activo hasta `S5-D`; como los puzzles obligatorios registran puertas bloqueadas antes de activar su arista, la partida nueva mostraba siempre que no había ruta disponible.
+- El BFS de celdas usado por movimiento evita unidades, pero para una ayuda visual eso hacía que un enemigo situado en el pasillo pudiera ocultar la ruta.
+
+**Solución aplicada:**
+- Combinar `BFSMovimiento` para el camino dentro de sala con `BFSCaminoMinimo` para el tramo entre salas, manteniendo `TurnManager` sin dependencias de JavaFX.
+
+**Verificación:**
+- Suite completa ejecutada con `mvn test`: correcta, 485 tests.
+- `git diff --check`: correcto.
+
+**Commit sugerido:** `git commit -m "feat(ui): reveal global route to final room"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas
@@ -2188,7 +2236,7 @@ item y cierre el modal tras una acción correcta.
 Resultado:
 
 ```text
-478 tests, 0 failures, 0 errors, 0 skipped
+485 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---

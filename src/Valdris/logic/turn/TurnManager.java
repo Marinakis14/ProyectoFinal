@@ -385,6 +385,85 @@ public class TurnManager {
     }
 
     /**
+     * Calcula la distancia de celdas hasta el mejor acceso hacia la sala final.
+     *
+     * <p>La ruta elegida minimiza el coste total: pasos dentro de la sala actual
+     * hasta una celda de uso del acceso mas numero de salas restantes hasta
+     * {@code S5-D}. Si hay empate, se prioriza menor distancia de sala, menor
+     * distancia de celdas y finalmente el id de la sala destino.</p>
+     *
+     * @return distancia en casillas hasta el acceso elegido, o -1 si no hay ruta
+     */
+    public int getDistanciaSalidaGlobal() {
+        try {
+            Room room = getRoomActualObligatoria();
+            if (SALA_FINAL_ID.equals(room.getId())) {
+                return 0;
+            }
+            RutaObjetivo ruta = buscarMejorRutaObjetivoGlobal(room);
+            return ruta == null ? -1 : ruta.distanciaCeldas;
+        } catch (GameStateException | InvalidMoveException e) {
+            return -1;
+        }
+    }
+
+    /**
+     * Calcula el numero minimo de conexiones de sala hasta la sala final.
+     *
+     * @return numero de salas restantes, o -1 si no hay ruta
+     */
+    public int getSalasHastaObjetivoGlobal() {
+        try {
+            Room room = getRoomActualObligatoria();
+            return getDistanciaSalasHastaObjetivo(room);
+        } catch (GameStateException e) {
+            return -1;
+        }
+    }
+
+    /**
+     * Devuelve el id de la siguiente sala que conviene tomar hacia el objetivo.
+     *
+     * @return id de sala destino elegida, o null si no hay ruta
+     */
+    public String getIdSiguienteSalaObjetivoGlobal() {
+        try {
+            Room room = getRoomActualObligatoria();
+            if (SALA_FINAL_ID.equals(room.getId())) {
+                return room.getId();
+            }
+            RutaObjetivo ruta = buscarMejorRutaObjetivoGlobal(room);
+            return ruta == null || ruta.destino == null ? null : ruta.destino.getId();
+        } catch (GameStateException | InvalidMoveException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Devuelve el camino de celdas que debe resaltarse para llegar al acceso global.
+     *
+     * <p>El camino pertenece siempre a la sala actual. Incluye la celda actual
+     * del jugador, la celda desde la que puede usarse la puerta o escalera
+     * elegida y la propia celda de acceso para que la interfaz pueda mostrar el
+     * objetivo de forma clara aunque el acceso no sea transitable.</p>
+     *
+     * @return camino de celdas en la sala actual, o lista vacia si no hay ruta
+     */
+    public ListaSimplementeEnlazada<Cell> getCaminoReveladoSalaActual() {
+        ListaSimplementeEnlazada<Cell> vacio = new ListaSimplementeEnlazada<>();
+        try {
+            Room room = getRoomActualObligatoria();
+            if (SALA_FINAL_ID.equals(room.getId())) {
+                return vacio;
+            }
+            RutaObjetivo ruta = buscarMejorRutaObjetivoGlobal(room);
+            return ruta == null ? vacio : copiarCamino(ruta.caminoCeldas);
+        } catch (GameStateException | InvalidMoveException e) {
+            return vacio;
+        }
+    }
+
+    /**
      * Ejecuta el cambio de sala de un acceso ya seleccionado.
      *
      * @param acceso puerta o escalera usada
@@ -2050,6 +2129,456 @@ public class TurnManager {
     }
 
     /**
+     * Comprueba si una celda puede formar parte de la ruta orientativa al objetivo.
+     *
+     * @param cell celda consultada
+     * @return true si es un acceso conocido hacia otra sala
+     */
+    private boolean esAccesoRutaObjetivo(Cell cell) {
+        if (cell == null || !cell.hasDestinoAcceso()) {
+            return false;
+        }
+        return cell.getTipo() == CellType.DOOR || cell.getTipo() == CellType.DOOR_LOCKED || cell.isStairs();
+    }
+
+    /**
+     * Busca la mejor salida global desde una sala hacia la sala final.
+     *
+     * @param room sala actual
+     * @return ruta elegida, o null si no hay ruta viable
+     * @throws InvalidMoveException si alguna celda configurada no puede leerse
+     */
+    private RutaObjetivo buscarMejorRutaObjetivoGlobal(Room room) throws InvalidMoveException {
+        if (room == null) {
+            return null;
+        }
+        RutaObjetivo mejor = null;
+        for (int fila = 0; fila < room.getFilas(); fila++) {
+            for (int col = 0; col < room.getCols(); col++) {
+                Cell acceso = room.getCell(fila, col);
+                if (!esAccesoRutaObjetivo(acceso)) {
+                    continue;
+                }
+                Room destino = acceso.getSalaDestino();
+                int distanciaSalas = getDistanciaSalasHastaObjetivo(destino);
+                if (distanciaSalas < 0) {
+                    continue;
+                }
+                for (int i = 0; i < DIRECCIONES.length; i++) {
+                    int filaUso = fila + DIRECCIONES[i][0];
+                    int colUso = col + DIRECCIONES[i][1];
+                    if (!room.isEnRango(filaUso, colUso)
+                        || !acceso.isUsableFrom(filaUso, colUso, fila, col)) {
+                        continue;
+                    }
+                    ListaSimplementeEnlazada<Cell> camino =
+                        getCaminoHastaCelda(room, filaUso, colUso);
+                    if (camino.isEmpty()) {
+                        continue;
+                    }
+                    ListaSimplementeEnlazada<Cell> caminoVisual = copiarCamino(camino);
+                    caminoVisual.addEnd(acceso);
+                    RutaObjetivo candidata = new RutaObjetivo(destino, fila, col,
+                        filaUso, colUso, camino.getSize() - 1, distanciaSalas, caminoVisual);
+                    if (esMejorRuta(candidata, mejor)) {
+                        mejor = candidata;
+                    }
+                }
+            }
+        }
+        return mejor;
+    }
+
+    /**
+     * Decide si una candidata mejora la ruta actual.
+     *
+     * @param candidata ruta candidata
+     * @param actual ruta actualmente elegida
+     * @return true si candidata debe sustituir a actual
+     */
+    private boolean esMejorRuta(RutaObjetivo candidata, RutaObjetivo actual) {
+        if (candidata == null) {
+            return false;
+        }
+        if (actual == null) {
+            return true;
+        }
+        int costeCandidata = candidata.getCosteTotal();
+        int costeActual = actual.getCosteTotal();
+        if (costeCandidata != costeActual) {
+            return costeCandidata < costeActual;
+        }
+        if (candidata.distanciaSalas != actual.distanciaSalas) {
+            return candidata.distanciaSalas < actual.distanciaSalas;
+        }
+        if (candidata.distanciaCeldas != actual.distanciaCeldas) {
+            return candidata.distanciaCeldas < actual.distanciaCeldas;
+        }
+        String idCandidata = candidata.destino == null ? "" : candidata.destino.getId();
+        String idActual = actual.destino == null ? "" : actual.destino.getId();
+        int comparacionId = idCandidata.compareTo(idActual);
+        if (comparacionId != 0) {
+            return comparacionId < 0;
+        }
+        if (candidata.filaAcceso != actual.filaAcceso) {
+            return candidata.filaAcceso < actual.filaAcceso;
+        }
+        if (candidata.colAcceso != actual.colAcceso) {
+            return candidata.colAcceso < actual.colAcceso;
+        }
+        if (candidata.filaUso != actual.filaUso) {
+            return candidata.filaUso < actual.filaUso;
+        }
+        return candidata.colUso < actual.colUso;
+    }
+
+    /**
+     * Calcula la distancia de salas desde una sala hasta la sala final.
+     *
+     * @param origen sala de origen
+     * @return numero de conexiones hasta S5-D, o -1 si no hay ruta
+     */
+    private int getDistanciaSalasHastaObjetivo(Room origen) {
+        if (origen == null || dungeon == null) {
+            return -1;
+        }
+        Room finalRoom = dungeon.getRoomById(SALA_FINAL_ID);
+        if (finalRoom == null) {
+            return -1;
+        }
+        return getDistanciaSalasPorRutaObjetivo(origen, finalRoom);
+    }
+
+    /**
+     * Calcula distancia entre salas usando grafo activo y accesos conocidos de celdas.
+     *
+     * <p>La ruta visual debe orientar al jugador hacia el objetivo final aunque
+     * una puerta de progreso siga cerrada por un puzzle. Por eso se consideran
+     * las conexiones activas del grafo y tambien los destinos configurados en
+     * puertas cerradas conocidas.</p>
+     *
+     * @param origen sala de origen
+     * @param destino sala final
+     * @return numero de conexiones, o -1 si no hay ruta conocida
+     */
+    private int getDistanciaSalasPorRutaObjetivo(Room origen, Room destino) {
+        if (origen == null || destino == null || dungeon == null) {
+            return -1;
+        }
+        int capacidad = dungeon.getGrafo().getNodos().getSize();
+        Room[] cola = new Room[capacidad];
+        int[] distancias = new int[capacidad];
+        Room[] visitadas = new Room[capacidad];
+        int visitadasSize = 0;
+        int inicio = 0;
+        int fin = 0;
+
+        cola[fin] = origen;
+        distancias[fin] = 0;
+        fin++;
+        visitadas[visitadasSize] = origen;
+        visitadasSize++;
+
+        while (inicio < fin) {
+            Room actual = cola[inicio];
+            int distanciaActual = distancias[inicio];
+            inicio++;
+
+            if (mismaSala(actual, destino)) {
+                return distanciaActual;
+            }
+
+            ListaSimplementeEnlazada<Room> vecinos = getSalasRutaObjetivo(actual);
+            for (int i = 0; i < vecinos.getSize(); i++) {
+                Room vecino = vecinos.get(i);
+                if (vecino == null || contieneSala(visitadas, visitadasSize, vecino) || fin >= capacidad) {
+                    continue;
+                }
+                cola[fin] = vecino;
+                distancias[fin] = distanciaActual + 1;
+                fin++;
+                visitadas[visitadasSize] = vecino;
+                visitadasSize++;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Devuelve vecinas de una sala para la ruta orientativa al objetivo.
+     *
+     * @param room sala consultada
+     * @return salas vecinas activas o configuradas como accesos conocidos
+     */
+    private ListaSimplementeEnlazada<Room> getSalasRutaObjetivo(Room room) {
+        ListaSimplementeEnlazada<Room> vecinos = new ListaSimplementeEnlazada<>();
+        if (room == null || dungeon == null) {
+            return vecinos;
+        }
+
+        ListaSimplementeEnlazada<Room> adyacentes = dungeon.getSalasAdyacentes(room);
+        for (int i = 0; i < adyacentes.getSize(); i++) {
+            addSalaSiNoExiste(vecinos, adyacentes.get(i));
+        }
+
+        for (int fila = 0; fila < room.getFilas(); fila++) {
+            for (int col = 0; col < room.getCols(); col++) {
+                try {
+                    Cell acceso = room.getCell(fila, col);
+                    if (esAccesoRutaObjetivo(acceso)) {
+                        addSalaSiNoExiste(vecinos, acceso.getSalaDestino());
+                    }
+                } catch (InvalidMoveException e) {
+                    // Las coordenadas vienen del rango de la sala; si falla se ignora esa celda.
+                }
+            }
+        }
+        return vecinos;
+    }
+
+    /**
+     * Anade una sala a una lista si no aparece ya por id.
+     *
+     * @param salas lista destino
+     * @param sala sala candidata
+     */
+    private void addSalaSiNoExiste(ListaSimplementeEnlazada<Room> salas, Room sala) {
+        if (sala == null || contieneSala(salas, sala)) {
+            return;
+        }
+        salas.addEnd(sala);
+    }
+
+    /**
+     * Comprueba si una lista contiene una sala por id.
+     *
+     * @param salas lista consultada
+     * @param sala sala buscada
+     * @return true si existe una sala equivalente
+     */
+    private boolean contieneSala(ListaSimplementeEnlazada<Room> salas, Room sala) {
+        if (salas == null) {
+            return false;
+        }
+        for (int i = 0; i < salas.getSize(); i++) {
+            if (mismaSala(salas.get(i), sala)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Comprueba si un array parcial contiene una sala por id.
+     *
+     * @param salas array consultado
+     * @param size posiciones validas del array
+     * @param sala sala buscada
+     * @return true si existe una sala equivalente
+     */
+    private boolean contieneSala(Room[] salas, int size, Room sala) {
+        for (int i = 0; i < size; i++) {
+            if (mismaSala(salas[i], sala)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Compara dos salas por identificador.
+     *
+     * @param a primera sala
+     * @param b segunda sala
+     * @return true si representan la misma sala
+     */
+    private boolean mismaSala(Room a, Room b) {
+        if (a == null || b == null || a.getId() == null) {
+            return false;
+        }
+        return a.getId().equals(b.getId());
+    }
+
+    /**
+     * Calcula el camino BFS hasta una celda transitable.
+     *
+     * @param room sala actual
+     * @param filaDestino fila destino
+     * @param colDestino columna destino
+     * @return camino encontrado, o lista vacia si no hay ruta
+     */
+    private ListaSimplementeEnlazada<Cell> getCaminoHastaCelda(Room room, int filaDestino, int colDestino) {
+        ListaSimplementeEnlazada<Cell> camino = new ListaSimplementeEnlazada<>();
+        if (room == null || !room.isEnRango(player.getFilaActual(), player.getColActual())
+            || !room.isEnRango(filaDestino, colDestino)) {
+            return camino;
+        }
+        if (player.getFilaActual() == filaDestino && player.getColActual() == colDestino) {
+            agregarCeldaSiExiste(room, player.getFilaActual(), player.getColActual(), camino);
+            return camino;
+        }
+        Cell destino = getCellSegura(room, filaDestino, colDestino);
+        if (!esTransitableRutaVisual(destino)) {
+            return camino;
+        }
+
+        boolean[][] visitado = new boolean[room.getFilas()][room.getCols()];
+        int[][] padreFila = crearMatrizPadres(room);
+        int[][] padreCol = crearMatrizPadres(room);
+        int capacidad = room.getFilas() * room.getCols();
+        int[] colaFila = new int[capacidad];
+        int[] colaCol = new int[capacidad];
+        int inicio = 0;
+        int fin = 0;
+
+        colaFila[fin] = player.getFilaActual();
+        colaCol[fin] = player.getColActual();
+        fin++;
+        visitado[player.getFilaActual()][player.getColActual()] = true;
+
+        boolean encontrado = false;
+        while (inicio < fin && !encontrado) {
+            int filaActual = colaFila[inicio];
+            int colActual = colaCol[inicio];
+            inicio++;
+
+            for (int i = 0; i < DIRECCIONES.length; i++) {
+                int nuevaFila = filaActual + DIRECCIONES[i][0];
+                int nuevaCol = colActual + DIRECCIONES[i][1];
+                if (!room.isEnRango(nuevaFila, nuevaCol) || visitado[nuevaFila][nuevaCol]) {
+                    continue;
+                }
+                Cell celda = getCellSegura(room, nuevaFila, nuevaCol);
+                if (!esTransitableRutaVisual(celda)) {
+                    continue;
+                }
+                visitado[nuevaFila][nuevaCol] = true;
+                padreFila[nuevaFila][nuevaCol] = filaActual;
+                padreCol[nuevaFila][nuevaCol] = colActual;
+                colaFila[fin] = nuevaFila;
+                colaCol[fin] = nuevaCol;
+                fin++;
+                if (nuevaFila == filaDestino && nuevaCol == colDestino) {
+                    encontrado = true;
+                    break;
+                }
+            }
+        }
+
+        if (encontrado) {
+            reconstruirCaminoRutaVisual(room, filaDestino, colDestino, padreFila, padreCol, camino);
+        }
+        return camino;
+    }
+
+    /**
+     * Crea matriz de padres inicializada.
+     *
+     * @param room sala usada para dimensiones
+     * @return matriz con -1
+     */
+    private int[][] crearMatrizPadres(Room room) {
+        int[][] matriz = new int[room.getFilas()][room.getCols()];
+        for (int fila = 0; fila < room.getFilas(); fila++) {
+            for (int col = 0; col < room.getCols(); col++) {
+                matriz[fila][col] = -1;
+            }
+        }
+        return matriz;
+    }
+
+    /**
+     * Reconstruye el camino visual desde destino hasta el jugador.
+     *
+     * @param room sala consultada
+     * @param filaDestino fila destino
+     * @param colDestino columna destino
+     * @param padreFila padres de fila
+     * @param padreCol padres de columna
+     * @param camino lista donde se inserta el resultado
+     */
+    private void reconstruirCaminoRutaVisual(Room room, int filaDestino, int colDestino,
+                                             int[][] padreFila, int[][] padreCol,
+                                             ListaSimplementeEnlazada<Cell> camino) {
+        int fila = filaDestino;
+        int col = colDestino;
+        while (fila != -1 && col != -1) {
+            agregarCeldaSiExiste(room, fila, col, camino);
+            if (fila == player.getFilaActual() && col == player.getColActual()) {
+                break;
+            }
+            int siguienteFila = padreFila[fila][col];
+            int siguienteCol = padreCol[fila][col];
+            fila = siguienteFila;
+            col = siguienteCol;
+        }
+    }
+
+    /**
+     * Inserta una celda al principio si la coordenada existe.
+     *
+     * @param room sala consultada
+     * @param fila fila de celda
+     * @param col columna de celda
+     * @param camino camino destino
+     */
+    private void agregarCeldaSiExiste(Room room, int fila, int col, ListaSimplementeEnlazada<Cell> camino) {
+        Cell celda = getCellSegura(room, fila, col);
+        if (celda != null) {
+            camino.addStart(celda);
+        }
+    }
+
+    /**
+     * Comprueba si una celda puede formar parte de la ruta visual.
+     *
+     * @param cell celda consultada
+     * @return true si la ruta puede atravesarla
+     */
+    private boolean esTransitableRutaVisual(Cell cell) {
+        if (cell == null) {
+            return false;
+        }
+        if (cell.getTipo() == CellType.WALL || cell.isAccessCell() || cell.getTipo() == CellType.LEVER) {
+            return false;
+        }
+        return cell.getContainer() == null;
+    }
+
+    /**
+     * Obtiene una celda evitando propagar excepciones de coordenada.
+     *
+     * @param room sala consultada
+     * @param fila fila solicitada
+     * @param col columna solicitada
+     * @return celda encontrada, o null si no existe
+     */
+    private Cell getCellSegura(Room room, int fila, int col) {
+        try {
+            return room.getCell(fila, col);
+        } catch (InvalidMoveException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Copia una lista de celdas conservando el orden.
+     *
+     * @param original camino original
+     * @return copia del camino
+     */
+    private ListaSimplementeEnlazada<Cell> copiarCamino(ListaSimplementeEnlazada<Cell> original) {
+        ListaSimplementeEnlazada<Cell> copia = new ListaSimplementeEnlazada<>();
+        if (original == null) {
+            return copia;
+        }
+        for (int i = 0; i < original.getSize(); i++) {
+            copia.addEnd(original.get(i));
+        }
+        return copia;
+    }
+
+    /**
      * Calcula la distancia minima desde el jugador hasta una celda de uso de un acceso.
      *
      * @param room sala actual
@@ -2131,6 +2660,70 @@ public class TurnManager {
             }
         } catch (GameStateException | InvalidMoveException e) {
             // Si no hay sala actual coherente, changeRoom validará el nuevo destino.
+        }
+    }
+
+    /**
+     * Datos internos de una ruta candidata hacia el objetivo global.
+     */
+    private static final class RutaObjetivo {
+
+        /** Sala destino inmediata. */
+        private final Room destino;
+
+        /** Fila del acceso. */
+        private final int filaAcceso;
+
+        /** Columna del acceso. */
+        private final int colAcceso;
+
+        /** Fila de la celda desde la que se usa el acceso. */
+        private final int filaUso;
+
+        /** Columna de la celda desde la que se usa el acceso. */
+        private final int colUso;
+
+        /** Distancia de celdas hasta la celda de uso. */
+        private final int distanciaCeldas;
+
+        /** Distancia de salas desde el destino inmediato hasta S5-D. */
+        private final int distanciaSalas;
+
+        /** Camino de celdas hasta la celda de uso. */
+        private final ListaSimplementeEnlazada<Cell> caminoCeldas;
+
+        /**
+         * Crea una ruta candidata.
+         *
+         * @param destino sala destino inmediata
+         * @param filaAcceso fila del acceso
+         * @param colAcceso columna del acceso
+         * @param filaUso fila usable
+         * @param colUso columna usable
+         * @param distanciaCeldas distancia de celdas
+         * @param distanciaSalas distancia de salas restante
+         * @param caminoCeldas camino en la sala actual
+         */
+        private RutaObjetivo(Room destino, int filaAcceso, int colAcceso,
+                             int filaUso, int colUso, int distanciaCeldas, int distanciaSalas,
+                             ListaSimplementeEnlazada<Cell> caminoCeldas) {
+            this.destino = destino;
+            this.filaAcceso = filaAcceso;
+            this.colAcceso = colAcceso;
+            this.filaUso = filaUso;
+            this.colUso = colUso;
+            this.distanciaCeldas = distanciaCeldas;
+            this.distanciaSalas = distanciaSalas;
+            this.caminoCeldas = caminoCeldas;
+        }
+
+        /**
+         * Devuelve el coste total usado para ordenar rutas.
+         *
+         * @return coste total de celdas y salas restantes
+         */
+        private int getCosteTotal() {
+            return distanciaCeldas + distanciaSalas;
         }
     }
 }

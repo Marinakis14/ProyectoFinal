@@ -25,10 +25,10 @@ public class CombatLogView {
      */
     public CombatLogView() {
         this.root = new VBox(4);
-        this.root.setPadding(new Insets(10, 10, 46, 10));
+        this.root.setPadding(new Insets(8, 10, 8, 10));
         this.root.setStyle("-fx-background-color: #111111; -fx-border-color: #3b3429; -fx-border-width: 1 0 0 0;");
-        this.root.setPrefHeight(170);
-        this.root.setMinHeight(150);
+        this.root.setPrefHeight(138);
+        this.root.setMinHeight(128);
         this.labels = new Label[MAX_MENSAJES];
         agregarTitulo();
         inicializarLabels();

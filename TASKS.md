@@ -28,8 +28,8 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | Capas 2, 3 y 4 | Completadas y testeadas |
 | Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga, TurnManager, ItemGenerator, PuzzleManager y DungeonGenerator completados |
 | Capa 6 inicial | GameState, LoadedGame, GameSummary y LectorJSON completados |
-| Capa 7 JavaFX | Pantallas principales, partida, inventario, autoguardado, diálogos, pantalla final, correcciones jugables, redistribución de pantalla, sprites de unidades, feedback visual de puzzles y distancia a salida completados |
-| Tests JUnit actuales | 415 tests pasando |
+| Capa 7 JavaFX | Pantallas principales, partida, inventario, autoguardado, diálogos, pantalla final, correcciones jugables, redistribución de pantalla, sprites de unidades, feedback visual de puzzles, distancia a salida y contadores de turno completados |
+| Tests JUnit actuales | 418 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
 ---
@@ -355,6 +355,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 35 | Añadir atajos de teclado visibles en los botones de acción de la pantalla de partida | ✅ Completado |
 | 36 | Revertir el +3 de defensa de armaduras y escudos oficiales A1-A8 manteniendo defensa base 3 en personajes | ✅ Completado |
 | 37 | Mostrar en la pantalla de partida la distancia a la salida abierta más cercana o el bloqueo por enemigos/salidas cerradas | ✅ Completado |
+| 38 | Mostrar nombre de sala, turno global y turnos de sala en la pantalla principal | ✅ Completado |
 
 ---
 
@@ -392,6 +393,10 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 28 | `LectorJSONTest` | ✅ Completado |
 | 29 | `GameLogEntryTest` | ✅ Completado |
 | 30 | `MiniBossAITest` | ✅ Completado |
+| 31 | `MalacharAllyTest` | ✅ Completado |
+| 32 | `ParasitoEnemyTest` | ✅ Completado |
+| 33 | `TurnManagerFinalBossTest` | ✅ Completado |
+| 34 | `LectorJSONFinalBossTest` | ✅ Completado |
 
 ---
 
@@ -439,6 +444,9 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 38 | Suite tras agrupación visual de inventario y atajos de teclado de acciones JavaFX | ✅ Correcta |
 | 39 | Suite tras revertir defensa extra de A1-A8 y mantener defensa base de personajes | ✅ Correcta |
 | 40 | Suite tras tests de conectividad estructural y distancia a salida abierta más cercana | ✅ Correcta |
+| 41 | Suite tras lógica final con `MalacharAlly`, `ParasitoEnemy`, desenlace y persistencia del boss final | ✅ Correcta |
+| 42 | Suite tras límites de turno global/sala y contadores visibles en JavaFX | ✅ Correcta |
+| 43 | Suite tras saneamiento documental de `TASKS.md` y `COMMIT_LOG.md` | ✅ Correcta |
 
 Última verificación completa:
 
@@ -449,7 +457,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 Resultado:
 
 ```text
-415 tests, 0 failures, 0 errors, 0 skipped
+418 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---
@@ -545,6 +553,7 @@ Resultado:
 | 85 | La defensa base de personajes se mantiene en 3, pero A1-A8 vuelven a sus defensas originales para no sobrerreducir el daño recibido | ✅ Aceptada |
 | 86 | La distancia visible a salida se mide hasta la celda desde la que puede usarse la puerta/escalera abierta; si el jugador ya está al lado, marca 0 casillas | ✅ Aceptada |
 | 87 | La partida tiene 500 turnos globales; las salas normales tienen 20/25, mini-bosses 35, S5-D 50, y puzzles/pasillos no tienen límite de sala | ✅ Aceptada |
+| 88 | `partida_valdris.json` y `resumen_valdris.json` se versionan como ficheros de entrega para facilitar la revisión de guardado, carga y resumen final | ✅ Aceptada |
 
 ---
 

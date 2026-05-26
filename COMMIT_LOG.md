@@ -1975,6 +1975,37 @@ item y cierre el modal tras una acción correcta.
 
 ---
 
+### Sesión 43 — 26 mayo 2026 — Codex
+
+**Objetivo:** Sincronizar la documentación de seguimiento tras el commit de los últimos cambios y dejar claro el estado real de tests y ficheros de entrega.
+
+**Archivos trabajados:**
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- `TASKS.md` pasa de 415 a 418 tests registrados.
+- Añadidos al checklist los tests finales `MalacharAllyTest`, `ParasitoEnemyTest`, `TurnManagerFinalBossTest` y `LectorJSONFinalBossTest`.
+- Añadidas verificaciones para boss final, persistencia del combate final, límites de turno y saneamiento documental.
+- Registrada la decisión de conservar versionados `partida_valdris.json` y `resumen_valdris.json` como ficheros de entrega.
+- Actualizada la metodología final para sustituir referencias obsoletas a continuar con `DungeonGenerator` por una guía de pulido final.
+
+**Problemas encontrados:**
+- `TASKS.md` había quedado desfasado frente a `COMMIT_LOG.md`: seguía indicando 415 tests y no listaba varios tests finales.
+- La sección de metodología recomendada aún hablaba de tareas ya completadas.
+
+**Solución aplicada:**
+- Sincronizar ambos ficheros sin tocar lógica de juego ni los nuevos documentos añadidos para evaluación.
+
+**Verificación:**
+- `rg "^import java\.util" src tests`: sin resultados.
+- `git diff --check`: correcto, solo avisos esperados de normalización LF/CRLF.
+- Suite completa ejecutada con `mvn test`: correcta, 418 tests.
+
+**Commit sugerido:** `git commit -m "docs: sync project progress records"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas
@@ -2128,17 +2159,14 @@ Resultado:
 - Hacer commits pequeños al cerrar cada ficha, clase o bloque funcional, siguiendo el flujo
   previsto en `AGENTS.md`, para que GitHub muestre un historial útil y revisable.
 
-### Metodología recomendada para lo que queda
+### Metodología recomendada para el pulido final
 
-- Cerrar las reglas de mini-bosses y accesorios AC1-AC4 antes de implementar `DungeonGenerator`.
-- Fijar la estructura exacta de generación de zonas, salas, accesos, puzzles y pasadizos antes de
-  implementar `DungeonGenerator`.
-- Continuar con `DungeonGenerator`.
-- Mantener la decisión de radio Manhattan en IA y combate salvo que el equipo la cambie explícitamente.
-- Mantener `BFSMovimiento` para movimientos dentro de sala; `BFSCaminoMinimo` queda para caminos entre salas.
-- Mantener `mvn test` completo al cerrar cada bloque.
-- Actualizar `TASKS.md` y `COMMIT_LOG.md` al terminar cada grupo de tareas.
-- Hacer commit después de cada tarea cerrada y verificada, no solo al final de varias capas.
+- Mantener cambios pequeños y revisables, centrados en errores jugables, claridad de interfaz o documentación de entrega.
+- Ejecutar `mvn test` completo antes de cerrar cada bloque de cambios.
+- Revisar manualmente guardado, carga, inventario, combate final, derrota y pantalla final cuando se toque JavaFX o persistencia.
+- Mantener sincronizados `TASKS.md` y `COMMIT_LOG.md` al terminar cada tarea relevante.
+- Conservar `partida_valdris.json` y `resumen_valdris.json` como ficheros versionados de entrega para facilitar la revisión de persistencia y resumen final.
+- Hacer commit solo tras revisión del equipo y con un mensaje descriptivo.
 
 ---
 
@@ -2187,3 +2215,5 @@ Resultado:
 - [22 mayo 2026] Se decide guardar pasadizos ocultos fuera del grafo hasta que un trigger o puzzle
   los active.
 - [22 mayo 2026] Se decide que `changeRoom(...)` llame automáticamente a `onRoomEnter()`.
+- [26 mayo 2026] Se decide conservar versionados `partida_valdris.json` y `resumen_valdris.json`
+  como ejemplos de entrega para guardado, carga y exportación de resumen final.

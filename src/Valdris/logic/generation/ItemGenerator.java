@@ -217,31 +217,40 @@ public final class ItemGenerator {
     }
 
     /**
-     * Crea un drop usando tiradas deterministas.
+     * Crea un drop garantizado usando tiradas deterministas.
      *
      * @param tipo tipo de enemigo derrotado
-     * @param tiradaDrop tirada para determinar si hay drop
+     * @param tiradaDrop tirada conservada por compatibilidad; ya no decide si hay drop
      * @param tiradaOpcion tirada para elegir entre los items posibles
-     * @return item generado, o null si no hay drop
+     * @return item generado, o null si el tipo no tiene drop
      */
     public static Item crearDropEnemigo(EnemyType tipo, double tiradaDrop, double tiradaOpcion) {
         if (tipo == null) {
             return null;
         }
         if (tipo == EnemyType.WARRIOR || tipo == EnemyType.BERSERKER) {
-            return crearDropConProbabilidad(0.40, tiradaDrop, tiradaOpcion, "P1", "A1");
+            return crearDropGarantizado(tiradaOpcion, "P1", "A1");
         }
         if (tipo == EnemyType.GUARDIAN) {
-            return crearDropConProbabilidad(0.50, tiradaDrop, tiradaOpcion, "P2", "A2");
+            return crearDropGarantizado(tiradaOpcion, "P2", "A2");
         }
         if (tipo == EnemyType.ARCHER || tipo == EnemyType.SNIPER) {
-            return crearDropConProbabilidad(0.45, tiradaDrop, tiradaOpcion, "P1", "AC5");
+            return crearDropGarantizado(tiradaOpcion, "P1", "AC5");
         }
         if (tipo == EnemyType.DESTRUCTOR || tipo == EnemyType.CONTROLLER) {
-            return crearDropConProbabilidad(0.60, tiradaDrop, tiradaOpcion, "P2", "AC6");
+            return crearDropGarantizado(tiradaOpcion, "P2", "AC6");
         }
         if (tipo == EnemyType.SUMMONER) {
-            return crearDropConProbabilidad(0.70, tiradaDrop, tiradaOpcion, "P3", "AC8");
+            return crearDropGarantizado(tiradaOpcion, "P3", "AC8");
+        }
+        if (tipo == EnemyType.CONSTRUCTO) {
+            return crearDropGarantizado(tiradaOpcion, "P5", "A7");
+        }
+        if (tipo == EnemyType.SOMBRA_ABSORBIDA) {
+            return crearDropGarantizado(tiradaOpcion, "P4", "P5");
+        }
+        if (tipo == EnemyType.ECO_DE_MAGIA) {
+            return crearDropGarantizado(tiradaOpcion, "P4", "AC7");
         }
         return null;
     }
@@ -254,7 +263,7 @@ public final class ItemGenerator {
      * @return Espada Oxidada
      */
     private static Weapon crearW1() {
-        Weapon weapon = new Weapon("W1", "Espada Oxidada", 16, 0, 1);
+        Weapon weapon = new Weapon("W1", "Espada Oxidada", 26, 0, 1);
         weapon.setAfinidad(CharacterType.KAEL, 4);
         return weapon;
     }
@@ -265,7 +274,7 @@ public final class ItemGenerator {
      * @return Arco de Madera
      */
     private static Weapon crearW2() {
-        Weapon weapon = new Weapon("W2", "Arco de Madera", 10, 0, 3);
+        Weapon weapon = new Weapon("W2", "Arco de Madera", 20, 0, 3);
         weapon.setAfinidad(CharacterType.SYRA, 4);
         return weapon;
     }
@@ -276,7 +285,7 @@ public final class ItemGenerator {
      * @return Bastón Astillado
      */
     private static Weapon crearW3() {
-        Weapon weapon = new Weapon("W3", "Bastón Astillado", 12, 0, 4);
+        Weapon weapon = new Weapon("W3", "Bastón Astillado", 22, 0, 4);
         weapon.setAfinidad(CharacterType.DORATH, 4);
         return weapon;
     }
@@ -287,7 +296,7 @@ public final class ItemGenerator {
      * @return Espada Larga
      */
     private static Weapon crearW4() {
-        Weapon weapon = new Weapon("W4", "Espada Larga", 18, 0, 1);
+        Weapon weapon = new Weapon("W4", "Espada Larga", 28, 0, 1);
         weapon.setAfinidad(CharacterType.KAEL, 6);
         return weapon;
     }
@@ -298,7 +307,7 @@ public final class ItemGenerator {
      * @return Puñal del Errante
      */
     private static Weapon crearW5() {
-        Weapon weapon = new Weapon("W5", "Puñal del Errante", 14, 0, 1);
+        Weapon weapon = new Weapon("W5", "Puñal del Errante", 24, 0, 1);
         weapon.setAfinidad(CharacterType.SYRA, 5);
         return weapon;
     }
@@ -309,7 +318,7 @@ public final class ItemGenerator {
      * @return Arco Élfico
      */
     private static Weapon crearW6() {
-        Weapon weapon = new Weapon("W6", "Arco Élfico", 16, 0, 4);
+        Weapon weapon = new Weapon("W6", "Arco Élfico", 26, 0, 4);
         weapon.setAfinidad(CharacterType.SYRA, 6);
         weapon.setEfectoEspecial(EffectType.SLOW, 1.0);
         return weapon;
@@ -321,7 +330,7 @@ public final class ItemGenerator {
      * @return Tomo de Llamas
      */
     private static Weapon crearW7() {
-        Weapon weapon = new Weapon("W7", "Tomo de Llamas", 15, 2, 4);
+        Weapon weapon = new Weapon("W7", "Tomo de Llamas", 25, 2, 4);
         weapon.setAfinidad(CharacterType.DORATH, 4);
         weapon.setEfectoEspecial(EffectType.BURN, 0.25);
         return weapon;
@@ -333,7 +342,7 @@ public final class ItemGenerator {
      * @return Martillo de Mina
      */
     private static Weapon crearW8() {
-        Weapon weapon = new Weapon("W8", "Martillo de Mina", 19, 5, 1);
+        Weapon weapon = new Weapon("W8", "Martillo de Mina", 29, 5, 1);
         weapon.setAfinidad(CharacterType.KAEL, 4);
         weapon.setAfinidad(CharacterType.SYRA, -2);
         weapon.setAfinidad(CharacterType.DORATH, -2);
@@ -346,7 +355,7 @@ public final class ItemGenerator {
      * @return Bastón Arcano
      */
     private static Weapon crearW9() {
-        Weapon weapon = new Weapon("W9", "Bastón Arcano", 16, 4, 4);
+        Weapon weapon = new Weapon("W9", "Bastón Arcano", 26, 4, 4);
         weapon.setAfinidad(CharacterType.DORATH, 8);
         weapon.setEfectoEspecial(EffectType.PARALYSIS, 0.30);
         return weapon;
@@ -358,7 +367,7 @@ public final class ItemGenerator {
      * @return Espada del Vacío
      */
     private static Weapon crearW10() {
-        Weapon weapon = new Weapon("W10", "Espada del Vacío", 22, 5, 1);
+        Weapon weapon = new Weapon("W10", "Espada del Vacío", 32, 5, 1);
         weapon.setAfinidad(CharacterType.KAEL, 6);
         weapon.setEfectoEspecial(EffectType.BLIND, 0.20);
         return weapon;
@@ -370,7 +379,7 @@ public final class ItemGenerator {
      * @return Arco del Eclipse
      */
     private static Weapon crearW11() {
-        Weapon weapon = new Weapon("W11", "Arco del Eclipse", 20, 0, 4);
+        Weapon weapon = new Weapon("W11", "Arco del Eclipse", 30, 0, 4);
         weapon.setAfinidad(CharacterType.SYRA, 6);
         weapon.setEfectoEspecial(EffectType.SLOW, 1.0);
         weapon.setEfectoEspecialSecundario(EffectType.BLIND, 1.0);
@@ -383,7 +392,7 @@ public final class ItemGenerator {
      * @return Grimorio Abismal
      */
     private static Weapon crearW12() {
-        Weapon weapon = new Weapon("W12", "Grimorio Abismal", 19, 5, 4);
+        Weapon weapon = new Weapon("W12", "Grimorio Abismal", 29, 5, 4);
         weapon.setAfinidad(CharacterType.DORATH, 8);
         weapon.setEfectoEspecial(EffectType.PARALYSIS, 0.30);
         return weapon;
@@ -411,20 +420,14 @@ public final class ItemGenerator {
     }
 
     /**
-     * Crea un drop si la tirada supera la probabilidad requerida.
+     * Crea uno de los dos drops posibles para un enemigo.
      *
-     * @param probabilidad probabilidad de obtener drop
-     * @param tiradaDrop tirada para drop
      * @param tiradaOpcion tirada para opción
      * @param id0 primera opción de drop
      * @param id1 segunda opción de drop
-     * @return item o null
+     * @return item generado
      */
-    private static Item crearDropConProbabilidad(double probabilidad, double tiradaDrop,
-                                                 double tiradaOpcion, String id0, String id1) {
-        if (normalizarTirada(tiradaDrop) >= probabilidad) {
-            return null;
-        }
+    private static Item crearDropGarantizado(double tiradaOpcion, String id0, String id1) {
         if (elegirIndice(tiradaOpcion, 2) == 0) {
             return crearItem(id0);
         }

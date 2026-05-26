@@ -25,9 +25,12 @@ public class CombatLogView {
      */
     public CombatLogView() {
         this.root = new VBox(4);
-        this.root.setPadding(new Insets(10));
+        this.root.setPadding(new Insets(10, 10, 46, 10));
         this.root.setStyle("-fx-background-color: #111111; -fx-border-color: #3b3429; -fx-border-width: 1 0 0 0;");
+        this.root.setPrefHeight(170);
+        this.root.setMinHeight(150);
         this.labels = new Label[MAX_MENSAJES];
+        agregarTitulo();
         inicializarLabels();
     }
 
@@ -92,8 +95,20 @@ public class CombatLogView {
             label.setFont(Font.font("Monospaced", 12));
             label.setStyle("-fx-text-fill: #d7c8aa;");
             label.setMinHeight(18);
+            label.setWrapText(true);
+            label.setMaxWidth(Double.MAX_VALUE);
             labels[i] = label;
             root.getChildren().add(label);
         }
+    }
+
+    /**
+     * Agrega el titulo visible del panel de log.
+     */
+    private void agregarTitulo() {
+        Label titulo = new Label("Log de acciones");
+        titulo.setFont(Font.font("Serif", 17));
+        titulo.setStyle("-fx-text-fill: #f5f0e6;");
+        root.getChildren().add(titulo);
     }
 }

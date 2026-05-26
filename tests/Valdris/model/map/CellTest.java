@@ -83,6 +83,17 @@ class CellTest {
     }
 
     @Test
+    void isWalkable_palancaNoEsTransitableYRunaSigueSiendolo() {
+        // Arrange
+        Cell palanca = new Cell(CellType.LEVER);
+        Cell runa = new Cell(CellType.RUNE);
+
+        // Act + Assert
+        assertFalse(palanca.isWalkable());
+        assertTrue(runa.isWalkable());
+    }
+
+    @Test
     void isWalkable_puertaOcultaReveladaSigueSiendoAccesoNoTransitable() {
         // Arrange
         Cell puertaOculta = new Cell(CellType.DOOR_HIDDEN);

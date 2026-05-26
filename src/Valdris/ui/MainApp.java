@@ -9,11 +9,11 @@ import javafx.stage.Stage;
  */
 public class MainApp extends Application {
 
-    /** Ancho fijo de la ventana principal. */
-    public static final int WINDOW_WIDTH = 1280;
+    /** Ancho base de la ventana principal antes de maximizar. */
+    public static final int WINDOW_WIDTH = 1600;
 
-    /** Alto fijo de la ventana principal. */
-    public static final int WINDOW_HEIGHT = 720;
+    /** Alto base de la ventana principal antes de maximizar. */
+    public static final int WINDOW_HEIGHT = 900;
 
     /**
      * Inicializa la ventana principal y muestra el menu inicial.
@@ -25,10 +25,13 @@ public class MainApp extends Application {
         primaryStage.setTitle("Valdris: El Núcleo Profundo");
         primaryStage.setWidth(WINDOW_WIDTH);
         primaryStage.setHeight(WINDOW_HEIGHT);
-        primaryStage.setResizable(false);
+        primaryStage.setMinWidth(1280);
+        primaryStage.setMinHeight(720);
+        primaryStage.setResizable(true);
 
         MainMenuView menuView = new MainMenuView(primaryStage);
         primaryStage.setScene(menuView.getScene());
+        primaryStage.setMaximized(true);
         primaryStage.show();
     }
 

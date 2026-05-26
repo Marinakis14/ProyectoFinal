@@ -139,6 +139,9 @@ public final class PuzzleManager {
      * @param player jugador penalizado
      */
     public static void applyFailure(Room room, Player player) {
+        if (room != null) {
+            room.incrementarPuzzleFailureCount();
+        }
         if (player != null) {
             int danio = room == null ? 3 : room.getPuzzleFailureDamage();
             player.recibirDanio(danio);

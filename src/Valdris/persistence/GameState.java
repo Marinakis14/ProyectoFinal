@@ -187,6 +187,9 @@ public class GameState {
         /** Turnos restantes del temporizador. */
         public int turnosRestantes;
 
+        /** Turnos maximos configurados para la sala. */
+        public int turnosMaximos;
+
         /** Si el diálogo de Kael ya fue mostrado. */
         public boolean dialogoKaelMostrado;
 
@@ -204,6 +207,9 @@ public class GameState {
 
         /** Daño de fallo del puzzle. */
         public int puzzleFailureDamage;
+
+        /** Número de fallos acumulados del puzzle. */
+        public int puzzleFailureCount;
 
         /** Secuencia correcta del puzzle. */
         public int[] correctSequence;

@@ -60,7 +60,7 @@ public final class DungeonGenerator {
      * @return dungeon generado
      */
     public static Dungeon generarMundo() {
-        return generarMundo(null, null, null);
+        return generarMundo(null, null, null, null);
     }
 
     /**
@@ -72,19 +72,35 @@ public final class DungeonGenerator {
      * @return dungeon generado
      */
     public static Dungeon generarMundo(double[] tiradasPuzzle, double[] tiradasSpawns, double[] tiradasItems) {
+        return generarMundo(tiradasPuzzle, tiradasSpawns, tiradasItems, null);
+    }
+
+    /**
+     * Genera el mundo usando tiradas deterministas opcionales para tests.
+     *
+     * @param tiradasPuzzle tiradas para ordenar secuencias de puzzles
+     * @param tiradasSpawns tiradas para elegir posiciones de enemigos
+     * @param tiradasItems tiradas para items aleatorios de pasillos
+     * @param tiradasDrops tiradas para drops de enemigos normales
+     * @return dungeon generado
+     */
+    public static Dungeon generarMundo(double[] tiradasPuzzle, double[] tiradasSpawns,
+                                       double[] tiradasItems, double[] tiradasDrops) {
         SecuenciaAleatoria randomPuzzle = new SecuenciaAleatoria(tiradasPuzzle);
         SecuenciaAleatoria randomSpawns = new SecuenciaAleatoria(tiradasSpawns);
         SecuenciaAleatoria randomItems = new SecuenciaAleatoria(tiradasItems);
+        SecuenciaAleatoria randomDrops = new SecuenciaAleatoria(tiradasDrops);
 
         Dungeon dungeon = new Dungeon();
         Rooms rooms = crearRooms();
+        configurarTemporizadores(rooms);
         registrarRooms(dungeon, rooms);
         configurarConexiones(dungeon, rooms);
         configurarPuzzles(rooms, randomPuzzle);
         configurarSecretos(dungeon, rooms);
         configurarDialogos(rooms);
         configurarItems(rooms, randomItems);
-        configurarEnemigos(rooms, randomSpawns);
+        configurarEnemigos(rooms, randomSpawns, randomDrops);
         dungeon.setRoomActual(rooms.s1a);
         return dungeon;
     }
@@ -378,6 +394,70 @@ public final class DungeonGenerator {
     }
 
     /**
+     * Configura los limites de turnos por sala.
+     */
+    private static void configurarTemporizadores(Rooms r) {
+        Room[] rooms = r.toArray();
+        for (int i = 0; i < rooms.length; i++) {
+            Room room = rooms[i];
+            if (esPasillo(room) || esSalaPuzzle(room)) {
+                room.configurarTimerSala(-1);
+            } else if ("S5-D".equals(room.getId())) {
+                room.configurarTimerSala(50);
+            } else if (esSalaMiniBoss(room)) {
+                room.configurarTimerSala(35);
+            } else {
+                room.configurarTimerSala(limiteSalaNormal(room));
+            }
+        }
+    }
+
+    /**
+     * Indica si una sala es un pasillo de transicion sin limite de turnos.
+     */
+    private static boolean esPasillo(Room room) {
+        String id = room.getId();
+        return PASILLO_1_2.equals(id)
+            || PASILLO_2_3.equals(id)
+            || PASILLO_3_4.equals(id)
+            || PASILLO_4_5.equals(id)
+            || PASILLO_FINAL.equals(id);
+    }
+
+    /**
+     * Indica si una sala contiene puzzle principal sin presion de turnos.
+     */
+    private static boolean esSalaPuzzle(Room room) {
+        String id = room.getId();
+        return "S1-C".equals(id)
+            || "S2-C".equals(id)
+            || "S3-B".equals(id)
+            || "S4-C".equals(id);
+    }
+
+    /**
+     * Indica si una sala contiene mini-boss.
+     */
+    private static boolean esSalaMiniBoss(Room room) {
+        String id = room.getId();
+        return "S1-D".equals(id)
+            || "S2-E".equals(id)
+            || "S3-F".equals(id)
+            || "S4-E".equals(id)
+            || "S5-C".equals(id);
+    }
+
+    /**
+     * Devuelve el limite de una sala normal segun su tamano.
+     */
+    private static int limiteSalaNormal(Room room) {
+        if (room.getFilas() >= 9 || room.getCols() >= 9) {
+            return 25;
+        }
+        return 20;
+    }
+
+    /**
      * Coloca cofres e items de pasillo.
      */
     private static void configurarItems(Rooms r, SecuenciaAleatoria random) {
@@ -397,37 +477,44 @@ public final class DungeonGenerator {
     /**
      * Coloca enemigos normales y mini-bosses.
      */
-    private static void configurarEnemigos(Rooms r, SecuenciaAleatoria random) {
-        enemigos(r.s1a, tipos(EnemyType.WARRIOR, EnemyType.WARRIOR, EnemyType.ARCHER), random);
-        enemigos(r.s1b, tipos(EnemyType.WARRIOR, EnemyType.ARCHER), random);
-        enemigos(r.s1c, tipos(EnemyType.CONTROLLER), random);
-        miniBoss(r.s1d, MiniBossType.ALCALDE_CORRUPTO, "AC1", tipos(EnemyType.WARRIOR, EnemyType.WARRIOR), random);
+    private static void configurarEnemigos(Rooms r, SecuenciaAleatoria random, SecuenciaAleatoria randomDrops) {
+        enemigos(r.s1a, tipos(EnemyType.WARRIOR, EnemyType.WARRIOR, EnemyType.ARCHER), random, randomDrops);
+        enemigos(r.s1b, tipos(EnemyType.WARRIOR, EnemyType.ARCHER), random, randomDrops);
+        enemigos(r.s1c, tipos(EnemyType.CONTROLLER), random, randomDrops);
+        miniBoss(r.s1d, MiniBossType.ALCALDE_CORRUPTO, "AC1", tipos(EnemyType.WARRIOR, EnemyType.WARRIOR),
+            random, randomDrops);
 
-        enemigos(r.s2a, tipos(EnemyType.ARCHER, EnemyType.WARRIOR), random);
-        enemigos(r.s2b, tipos(EnemyType.ARCHER, EnemyType.ARCHER, EnemyType.DESTRUCTOR), random);
-        enemigos(r.s2c, tipos(EnemyType.CONTROLLER), random);
-        enemigos(r.s2d, tipos(EnemyType.WARRIOR, EnemyType.WARRIOR, EnemyType.BERSERKER), random);
-        miniBoss(r.s2e, MiniBossType.ESPIRITU_MADRE, "AC2", tipos(EnemyType.ARCHER, EnemyType.ARCHER), random);
-        enemigos(r.s2sec, tipos(EnemyType.GUARDIAN), random);
+        enemigos(r.s2a, tipos(EnemyType.ARCHER, EnemyType.WARRIOR), random, randomDrops);
+        enemigos(r.s2b, tipos(EnemyType.ARCHER, EnemyType.ARCHER, EnemyType.DESTRUCTOR), random, randomDrops);
+        enemigos(r.s2c, tipos(EnemyType.CONTROLLER), random, randomDrops);
+        enemigos(r.s2d, tipos(EnemyType.WARRIOR, EnemyType.WARRIOR, EnemyType.BERSERKER), random, randomDrops);
+        miniBoss(r.s2e, MiniBossType.ESPIRITU_MADRE, "AC2", tipos(EnemyType.ARCHER, EnemyType.ARCHER),
+            random, randomDrops);
+        enemigos(r.s2sec, tipos(EnemyType.GUARDIAN), random, randomDrops);
 
-        enemigos(r.s3a, tipos(EnemyType.WARRIOR, EnemyType.WARRIOR, EnemyType.BERSERKER), random);
-        enemigos(r.s3b, tipos(EnemyType.SUMMONER), random);
-        enemigos(r.s3c, tipos(EnemyType.GUARDIAN, EnemyType.GUARDIAN, EnemyType.ARCHER), random);
-        enemigos(r.s3d, tipos(EnemyType.DESTRUCTOR, EnemyType.DESTRUCTOR, EnemyType.BERSERKER), random);
-        enemigos(r.s3e, tipos(EnemyType.WARRIOR, EnemyType.WARRIOR, EnemyType.WARRIOR, EnemyType.SNIPER), random);
-        miniBoss(r.s3f, MiniBossType.GOLEM, "AC3", tipos(EnemyType.GUARDIAN, EnemyType.GUARDIAN), random);
+        enemigos(r.s3a, tipos(EnemyType.WARRIOR, EnemyType.WARRIOR, EnemyType.BERSERKER), random, randomDrops);
+        enemigos(r.s3b, tipos(EnemyType.SUMMONER), random, randomDrops);
+        enemigos(r.s3c, tipos(EnemyType.GUARDIAN, EnemyType.GUARDIAN, EnemyType.ARCHER), random, randomDrops);
+        enemigos(r.s3d, tipos(EnemyType.DESTRUCTOR, EnemyType.DESTRUCTOR, EnemyType.BERSERKER),
+            random, randomDrops);
+        enemigos(r.s3e, tipos(EnemyType.WARRIOR, EnemyType.WARRIOR, EnemyType.WARRIOR, EnemyType.SNIPER),
+            random, randomDrops);
+        miniBoss(r.s3f, MiniBossType.GOLEM, "AC3", tipos(EnemyType.GUARDIAN, EnemyType.GUARDIAN),
+            random, randomDrops);
 
-        enemigos(r.s4a, tipos(EnemyType.CONSTRUCTO, EnemyType.CONSTRUCTO, EnemyType.CONTROLLER), random);
-        enemigos(r.s4b, tipos(EnemyType.SNIPER, EnemyType.SNIPER, EnemyType.GUARDIAN), random);
-        enemigos(r.s4c, tipos(EnemyType.DESTRUCTOR, EnemyType.CONTROLLER), random);
-        enemigos(r.s4d, tipos(EnemyType.BERSERKER, EnemyType.BERSERKER, EnemyType.BERSERKER), random);
+        enemigos(r.s4a, tipos(EnemyType.CONSTRUCTO, EnemyType.CONSTRUCTO, EnemyType.CONTROLLER), random,
+            randomDrops);
+        enemigos(r.s4b, tipos(EnemyType.SNIPER, EnemyType.SNIPER, EnemyType.GUARDIAN), random, randomDrops);
+        enemigos(r.s4c, tipos(EnemyType.DESTRUCTOR, EnemyType.CONTROLLER), random, randomDrops);
+        enemigos(r.s4d, tipos(EnemyType.BERSERKER, EnemyType.BERSERKER, EnemyType.BERSERKER), random, randomDrops);
         miniBoss(r.s4e, MiniBossType.GUARDIAN_SIN_NOMBRE, "AC4",
-            tipos(EnemyType.CONSTRUCTO, EnemyType.CONSTRUCTO), random);
+            tipos(EnemyType.CONSTRUCTO, EnemyType.CONSTRUCTO), random, randomDrops);
 
-        enemigos(r.s5a, tipos(EnemyType.SOMBRA_ABSORBIDA, EnemyType.SOMBRA_ABSORBIDA, EnemyType.ECO_DE_MAGIA), random);
+        enemigos(r.s5a, tipos(EnemyType.SOMBRA_ABSORBIDA, EnemyType.SOMBRA_ABSORBIDA, EnemyType.ECO_DE_MAGIA),
+            random, randomDrops);
         enemigos(r.s5b, tipos(EnemyType.SOMBRA_ABSORBIDA, EnemyType.SOMBRA_ABSORBIDA,
-            EnemyType.SOMBRA_ABSORBIDA, EnemyType.ECO_DE_MAGIA), random);
-        miniBoss(r.s5c, MiniBossType.EL_FILTRO, null, new EnemyType[0], random);
+            EnemyType.SOMBRA_ABSORBIDA, EnemyType.ECO_DE_MAGIA), random, randomDrops);
+        miniBoss(r.s5c, MiniBossType.EL_FILTRO, null, new EnemyType[0], random, randomDrops);
     }
 
     /**
@@ -461,11 +548,13 @@ public final class DungeonGenerator {
     /**
      * Coloca enemigos normales evitando duplicar casillas.
      */
-    private static void enemigos(Room room, EnemyType[] tipos, SecuenciaAleatoria random) {
+    private static void enemigos(Room room, EnemyType[] tipos, SecuenciaAleatoria random,
+                                 SecuenciaAleatoria randomDrops) {
         boolean[][] ocupadas = new boolean[room.getFilas()][room.getCols()];
         for (int i = 0; i < tipos.length; i++) {
             int[] pos = elegirSpawn(room, ocupadas, random);
             Enemy enemy = new Enemy(tipos[i], pos[0], pos[1], room.getId());
+            enemy.setDropItem(ItemGenerator.crearDropEnemigo(tipos[i], randomDrops.next(), randomDrops.next()));
             room.addEnemigo(enemy);
             ocupadas[pos[0]][pos[1]] = true;
         }
@@ -475,7 +564,8 @@ public final class DungeonGenerator {
      * Coloca un mini-boss y sus acompañantes.
      */
     private static void miniBoss(Room room, MiniBossType tipo, String dropId,
-                                 EnemyType[] acompanantes, SecuenciaAleatoria random) {
+                                 EnemyType[] acompanantes, SecuenciaAleatoria random,
+                                 SecuenciaAleatoria randomDrops) {
         boolean[][] ocupadas = new boolean[room.getFilas()][room.getCols()];
         int fila = room.getFilas() / 2;
         int col = room.getCols() / 2;
@@ -487,6 +577,7 @@ public final class DungeonGenerator {
         for (int i = 0; i < acompanantes.length; i++) {
             int[] pos = elegirSpawn(room, ocupadas, random);
             Enemy enemy = new Enemy(acompanantes[i], pos[0], pos[1], room.getId());
+            enemy.setDropItem(ItemGenerator.crearDropEnemigo(acompanantes[i], randomDrops.next(), randomDrops.next()));
             room.addEnemigo(enemy);
             ocupadas[pos[0]][pos[1]] = true;
         }

@@ -265,12 +265,14 @@ public final class LectorJSON {
         dto.colJugador = room.getColJugador();
         dto.hasRoomTimer = room.hasRoomTimer();
         dto.turnosRestantes = room.getTurnosRestantes();
+        dto.turnosMaximos = room.getTurnosMaximos();
         dto.dialogoKaelMostrado = room.wasDialogueShown(CharacterType.KAEL);
         dto.dialogoSyraMostrado = room.wasDialogueShown(CharacterType.SYRA);
         dto.dialogoDorathMostrado = room.wasDialogueShown(CharacterType.DORATH);
         dto.puzzleResolved = room.isPuzzleResolved();
         dto.puzzleSuccessTarget = room.getPuzzleSuccessTarget();
         dto.puzzleFailureDamage = room.getPuzzleFailureDamage();
+        dto.puzzleFailureCount = room.getPuzzleFailureCount();
         dto.correctSequence = room.getCorrectSequence();
         dto.activeSequence = room.getSecuenciaActivada();
         dto.celdas = extraerCeldas(room);
@@ -483,6 +485,7 @@ public final class LectorJSON {
         room.setFilaJugador(dto.filaJugador);
         room.setColJugador(dto.colJugador);
         if (dto.hasRoomTimer) {
+            room.setTurnosMaximos(dto.turnosMaximos);
             room.setTurnosRestantes(dto.turnosRestantes);
         } else {
             room.setHasRoomTimer(false);
@@ -497,6 +500,7 @@ public final class LectorJSON {
             room.markDialogueShown(CharacterType.DORATH);
         }
         room.setPuzzleFailureDamage(dto.puzzleFailureDamage);
+        room.setPuzzleFailureCount(dto.puzzleFailureCount);
         room.setPuzzleSuccessTarget(dto.puzzleSuccessTarget);
         room.setCorrectSequence(dto.correctSequence);
         if (dto.activeSequence != null) {
@@ -505,6 +509,7 @@ public final class LectorJSON {
             }
         }
         room.setPuzzleResolved(dto.puzzleResolved);
+        room.setPuzzleFailureCount(dto.puzzleFailureCount);
         restaurarCeldas(room, dto.celdas);
     }
 

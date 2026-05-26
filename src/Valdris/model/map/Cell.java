@@ -104,9 +104,9 @@ public class Cell implements Comparable<Cell> {
      * Indica si una unidad puede entrar en esta celda.
      *
      * <p>Una celda no es transitable si es pared, acceso de sala, escalera,
-     * contenedor o si ya hay una unidad ocupándola. Las puertas y escaleras se
-     * usan desde una celda adyacente durante la fase de interacción, no pisando
-     * directamente la celda del acceso.</p>
+     * palanca, contenedor o si ya hay una unidad ocupándola. Las puertas,
+     * escaleras y palancas se usan desde una celda adyacente durante la fase de
+     * interacción, no pisando directamente la celda.</p>
      *
      * @return true si la celda puede usarse como destino de movimiento
      */
@@ -114,7 +114,7 @@ public class Cell implements Comparable<Cell> {
         if (unit != null) {
             return false;
         }
-        if (tipo == CellType.WALL || isAccessCell()) {
+        if (tipo == CellType.WALL || isAccessCell() || tipo == CellType.LEVER) {
             return false;
         }
         if (container != null) {

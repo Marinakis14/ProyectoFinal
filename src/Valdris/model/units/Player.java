@@ -74,7 +74,7 @@ public class Player extends Unit implements Comparable<Player> {
      * @param tipo personaje jugable seleccionado
      */
     public Player(CharacterType tipo) {
-        super(getHpBase(tipo), getAtaqueBase(tipo), 0, getMovBase(tipo), getRangoBase(tipo), 0, 0);
+        super(getHpBase(tipo), getAtaqueBase(tipo), getDefensaBase(tipo), getMovBase(tipo), getRangoBase(tipo), 0, 0);
         this.tipo = tipo;
         this.inventario = new ListaSimplementeEnlazada<>();
         this.itemsNarrativos = new ListaSimplementeEnlazada<>();
@@ -195,8 +195,8 @@ public class Player extends Unit implements Comparable<Player> {
      * Calcula la defensa total del jugador.
      *
      * <p>La defensa se compone de defensa base, armadura, escudo y bonus de
-     * accesorio. En la especificación actual la defensa base de los personajes
-     * jugables es 0.</p>
+     * accesorio. Los personajes jugables tienen una defensa base común para
+     * suavizar el daño recibido durante las primeras zonas.</p>
      *
      * @return defensa total actual
      */
@@ -497,12 +497,22 @@ public class Player extends Unit implements Comparable<Player> {
      */
     private static int getAtaqueBase(CharacterType tipo) {
         if (tipo == CharacterType.SYRA) {
-            return 12;
+            return 22;
         }
         if (tipo == CharacterType.DORATH) {
-            return 14;
+            return 24;
         }
-        return 18;
+        return 28;
+    }
+
+    /**
+     * Devuelve la defensa base asociada a un personaje.
+     *
+     * @param tipo personaje consultado
+     * @return defensa base
+     */
+    private static int getDefensaBase(CharacterType tipo) {
+        return 3;
     }
 
     /**
@@ -513,7 +523,7 @@ public class Player extends Unit implements Comparable<Player> {
      */
     private static int getMovBase(CharacterType tipo) {
         if (tipo == CharacterType.SYRA) {
-            return 5;
+            return 4;
         }
         if (tipo == CharacterType.DORATH) {
             return 2;

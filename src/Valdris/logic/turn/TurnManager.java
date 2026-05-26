@@ -87,6 +87,9 @@ public class TurnManager {
     /** Daño fijo de Devorar Luz. */
     private static final int DANIO_DEVORAR_LUZ = 20;
 
+    /** Limite global de turnos de una partida completa. */
+    private static final int TURNO_GLOBAL_MAXIMO = 500;
+
     // -- Atributos ------------------------------------------------------------
 
     /** Fase actual del ciclo de turnos. */
@@ -268,6 +271,9 @@ public class TurnManager {
         if (acceso == null) {
             throw new GameStateException("No hay puerta o escalera usable junto al jugador.");
         }
+        if (hayEnemigosVivos(getRoomActualObligatoria())) {
+            throw new GameStateException("No se puede usar el acceso hasta derrotar a todos los enemigos.");
+        }
         if (acceso.getTipo() == CellType.DOOR_LOCKED && !intentarDesbloquearPuerta(acceso)) {
             throw new GameStateException("La puerta está bloqueada.");
         }
@@ -295,9 +301,13 @@ public class TurnManager {
         if (palanca == null) {
             throw new GameStateException("No hay palanca adyacente al jugador.");
         }
-        PuzzleManager.resolverActivacion(getRoomActualObligatoria(), palanca, dungeon, player);
+        Room room = getRoomActualObligatoria();
+        boolean estabaResuelto = room.isPuzzleResolved();
+        int hpAntes = player.getHp();
+        PuzzleManager.resolverActivacion(room, palanca, dungeon, player);
         addLog(LogEventType.PUZZLE, nombreJugador(),
             nombreJugador() + " activa una palanca en " + idSalaActual() + ".", null);
+        registrarResultadoPuzzle(room, estabaResuelto, hpAntes);
         player.setHaRecogido(true);
         faseActual = Phase.USE_ITEM;
     }
@@ -324,6 +334,54 @@ public class TurnManager {
             return null;
         }
         return null;
+    }
+
+    /**
+     * Calcula la distancia hasta la celda usable de la salida abierta mas cercana.
+     *
+     * <p>Las puertas y escaleras no son transitables, asi que la distancia se
+     * mide hasta una celda adyacente desde la que el jugador podria usar el
+     * acceso. Si ya esta junto a la salida, devuelve 0. Si hay enemigos vivos o
+     * no existe ninguna salida abierta alcanzable, devuelve -1.</p>
+     *
+     * @return distancia minima en casillas, o -1 si no hay salida usable
+     */
+    public int getDistanciaSalidaAbiertaMasCercana() {
+        try {
+            Room room = getRoomActualObligatoria();
+            if (hayEnemigosVivos(room)) {
+                return -1;
+            }
+            int mejorDistancia = -1;
+            for (int fila = 0; fila < room.getFilas(); fila++) {
+                for (int col = 0; col < room.getCols(); col++) {
+                    Cell acceso = room.getCell(fila, col);
+                    if (!esSalidaAbierta(acceso)) {
+                        continue;
+                    }
+                    int distancia = getDistanciaAAcceso(room, acceso, fila, col);
+                    if (distancia >= 0 && (mejorDistancia < 0 || distancia < mejorDistancia)) {
+                        mejorDistancia = distancia;
+                    }
+                }
+            }
+            return mejorDistancia;
+        } catch (GameStateException | InvalidMoveException e) {
+            return -1;
+        }
+    }
+
+    /**
+     * Indica si la sala actual conserva enemigos vivos.
+     *
+     * @return true si queda al menos un enemigo vivo en la sala actual
+     */
+    public boolean hayEnemigosVivosSalaActual() {
+        try {
+            return hayEnemigosVivos(getRoomActualObligatoria());
+        } catch (GameStateException e) {
+            return false;
+        }
     }
 
     /**
@@ -544,7 +602,13 @@ public class TurnManager {
 
         Room room = getRoomActualObligatoria();
         turnoGlobal++;
-        room.decrementarTimer();
+        if (turnoGlobal >= TURNO_GLOBAL_MAXIMO) {
+            triggerDefeat("se agota el limite global de " + TURNO_GLOBAL_MAXIMO + " turnos");
+            return;
+        }
+        if (!decrementarTimerSalaActual(room)) {
+            return;
+        }
 
         if (finalCombatStarted) {
             ejecutarTurnoAliadoFinal(room);
@@ -581,6 +645,22 @@ public class TurnManager {
             "Turno enemigo resuelto en " + room.getId() + ".", "enemigosIniciales=" + enemigosIniciales);
         if (gameResult == GameResult.IN_PROGRESS) {
             faseActual = Phase.MOVEMENT;
+        }
+    }
+
+    /**
+     * Decrementa el temporizador de la sala y convierte su agotamiento en derrota.
+     *
+     * @param room sala actual
+     * @return true si la partida puede continuar
+     */
+    private boolean decrementarTimerSalaActual(Room room) {
+        try {
+            room.decrementarTimer();
+            return true;
+        } catch (GameStateException e) {
+            triggerDefeat("se agota el limite de turnos de " + room.getId());
+            return false;
         }
     }
 
@@ -622,6 +702,7 @@ public class TurnManager {
         limpiarJugadorDeSalaActual();
         dungeon.setRoomActual(destino);
         moverJugadorEnSala(destino, filaEntrada, colEntrada);
+        destino.reiniciarTimerSala();
         onRoomEnter();
     }
 
@@ -691,10 +772,13 @@ public class TurnManager {
             if (actual.getTipo() != CellType.RUNE) {
                 return false;
             }
+            boolean estabaResuelto = room.isPuzzleResolved();
+            int hpAntes = player.getHp();
             boolean activada = PuzzleManager.resolverActivacion(room, actual, dungeon, player);
             if (activada) {
                 addLog(LogEventType.PUZZLE, nombreJugador(),
                     nombreJugador() + " activa una runa en " + room.getId() + ".", null);
+                registrarResultadoPuzzle(room, estabaResuelto, hpAntes);
             }
             return activada;
         } catch (InvalidMoveException e) {
@@ -738,6 +822,47 @@ public class TurnManager {
      */
     public int getTurnoGlobal() {
         return turnoGlobal;
+    }
+
+    /**
+     * Devuelve el limite global de turnos de la partida.
+     *
+     * @return turnos maximos permitidos
+     */
+    public int getTurnoGlobalMaximo() {
+        return TURNO_GLOBAL_MAXIMO;
+    }
+
+    /**
+     * Devuelve los turnos consumidos en la sala actual.
+     *
+     * @return turnos gastados, o -1 si la sala no tiene limite
+     */
+    public int getTurnosSalaConsumidos() {
+        try {
+            Room room = getRoomActualObligatoria();
+            if (!room.hasRoomTimer()) {
+                return -1;
+            }
+            int consumidos = room.getTurnosMaximos() - room.getTurnosRestantes();
+            return Math.max(consumidos, 0);
+        } catch (GameStateException e) {
+            return -1;
+        }
+    }
+
+    /**
+     * Devuelve el limite de turnos de la sala actual.
+     *
+     * @return turnos maximos de sala, o -1 si no hay limite
+     */
+    public int getTurnosSalaMaximos() {
+        try {
+            Room room = getRoomActualObligatoria();
+            return room.hasRoomTimer() ? room.getTurnosMaximos() : -1;
+        } catch (GameStateException e) {
+            return -1;
+        }
     }
 
     /**
@@ -1513,9 +1638,32 @@ public class TurnManager {
         ListaSimplementeEnlazada<Cell> alcanzables = BFSMovimiento.getCellsInRange(
             room, player.getFilaActual(), player.getColActual(), player.getMovEfectivo());
         Cell destino = room.getCell(filaDestino, colDestino);
-        if (!alcanzables.contains(destino)) {
+        if (!contieneCeldaPorReferencia(alcanzables, destino)) {
             throw new InvalidMoveException("La celda destino no está en el rango de movimiento.");
         }
+    }
+
+    /**
+     * Comprueba si una lista contiene exactamente la misma instancia de celda.
+     *
+     * <p>Las listas propias comparan con {@code compareTo}. Para movimiento se
+     * necesita identidad real de celda, porque dos casillas de suelo vacias no
+     * representan el mismo destino aunque tengan el mismo contenido.</p>
+     *
+     * @param celdas lista consultada
+     * @param buscada celda buscada
+     * @return true si la instancia exacta esta en la lista
+     */
+    private boolean contieneCeldaPorReferencia(ListaSimplementeEnlazada<Cell> celdas, Cell buscada) {
+        if (celdas == null || buscada == null) {
+            return false;
+        }
+        for (int i = 0; i < celdas.getSize(); i++) {
+            if (celdas.get(i) == buscada) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -1613,6 +1761,98 @@ public class TurnManager {
         if (room != null && objetivo != null && result != null && result.isObjetivoMuerto()) {
             room.removeEnemigo(objetivo);
         }
+    }
+
+    /**
+     * Registra el resultado visible de una secuencia de puzzle si acaba de resolverse o fallar.
+     *
+     * @param room sala del puzzle
+     * @param estabaResuelto estado anterior del puzzle
+     * @param hpAntes HP del jugador antes de activar la pieza
+     */
+    private void registrarResultadoPuzzle(Room room, boolean estabaResuelto, int hpAntes) {
+        if (room == null) {
+            return;
+        }
+        if (!estabaResuelto && room.isPuzzleResolved()) {
+            addLog(LogEventType.PUZZLE, "PUZZLE",
+                "Combinación correcta. El mecanismo se ha activado.",
+                "target=" + room.getPuzzleSuccessTarget());
+            return;
+        }
+        int danio = hpAntes - player.getHp();
+        if (danio > 0) {
+            addLog(LogEventType.PUZZLE, "PUZZLE",
+                "Combinación incorrecta. El puzzle se reinicia. " + nombreJugador()
+                    + " recibe " + danio + " daño.",
+                "danio=" + danio);
+            registrarPistaPuzzle(room);
+        }
+    }
+
+    /**
+     * Registra una pista progresiva según los fallos acumulados del puzzle.
+     *
+     * @param room sala del puzzle
+     */
+    private void registrarPistaPuzzle(Room room) {
+        if (room == null) {
+            return;
+        }
+        int[] secuencia = room.getCorrectSequence();
+        int fallos = room.getPuzzleFailureCount();
+        if (secuencia.length == 0 || fallos <= 0) {
+            return;
+        }
+        if (fallos == 1) {
+            addLog(LogEventType.PUZZLE, "PUZZLE",
+                "Pista: empieza por " + posicionVisible(secuencia[0]) + ".",
+                "pista=" + posicionVisible(secuencia[0]));
+        } else if (fallos <= secuencia.length) {
+            addLog(LogEventType.PUZZLE, "PUZZLE",
+                "Pista: la siguiente es la " + posicionVisible(secuencia[fallos - 1]) + ".",
+                "pista=" + posicionVisible(secuencia[fallos - 1]));
+        }
+        if (fallos >= secuencia.length) {
+            String textoSecuencia = textoSecuenciaCorrecta(room);
+            addLog(LogEventType.PUZZLE, "PUZZLE",
+                "Pista: la combinación correcta es: " + textoSecuencia + ".",
+                "secuencia=" + textoSecuencia);
+        }
+    }
+
+    /**
+     * Devuelve la secuencia correcta del puzzle en posiciones visibles para el jugador.
+     *
+     * @param room sala del puzzle
+     * @return texto con posiciones empezando en 1
+     */
+    private String textoSecuenciaCorrecta(Room room) {
+        if (room == null) {
+            return "-";
+        }
+        int[] secuencia = room.getCorrectSequence();
+        if (secuencia.length == 0) {
+            return "-";
+        }
+        String texto = "";
+        for (int i = 0; i < secuencia.length; i++) {
+            if (i > 0) {
+                texto += ", ";
+            }
+            texto += String.valueOf(secuencia[i] + 1);
+        }
+        return texto;
+    }
+
+    /**
+     * Convierte un índice interno de puzzle a posición visible.
+     *
+     * @param indice índice interno desde 0
+     * @return posición visible desde 1
+     */
+    private String posicionVisible(int indice) {
+        return String.valueOf(indice + 1);
     }
 
     /**
@@ -1774,6 +2014,82 @@ public class TurnManager {
             return null;
         }
         return null;
+    }
+
+    /**
+     * Comprueba si quedan enemigos vivos en una sala.
+     *
+     * @param room sala consultada
+     * @return true si hay al menos un enemigo vivo
+     */
+    private boolean hayEnemigosVivos(Room room) {
+        if (room == null) {
+            return false;
+        }
+        ListaSimplementeEnlazada<Enemy> enemigos = room.getEnemigos();
+        for (int i = 0; i < enemigos.getSize(); i++) {
+            Enemy enemy = enemigos.get(i);
+            if (enemy != null && enemy.isVivo()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Comprueba si una celda es una salida abierta que puede contarse en la UI.
+     *
+     * @param cell celda consultada
+     * @return true si es puerta abierta o escalera con destino
+     */
+    private boolean esSalidaAbierta(Cell cell) {
+        if (cell == null || !cell.hasDestinoAcceso()) {
+            return false;
+        }
+        return cell.getTipo() == CellType.DOOR || cell.isStairs();
+    }
+
+    /**
+     * Calcula la distancia minima desde el jugador hasta una celda de uso de un acceso.
+     *
+     * @param room sala actual
+     * @param acceso acceso consultado
+     * @param filaAcceso fila del acceso
+     * @param colAcceso columna del acceso
+     * @return distancia minima, o -1 si no hay ruta
+     */
+    private int getDistanciaAAcceso(Room room, Cell acceso, int filaAcceso, int colAcceso) {
+        int mejorDistancia = -1;
+        for (int i = 0; i < DIRECCIONES.length; i++) {
+            int filaUso = filaAcceso + DIRECCIONES[i][0];
+            int colUso = colAcceso + DIRECCIONES[i][1];
+            if (!room.isEnRango(filaUso, colUso)
+                || !acceso.isUsableFrom(filaUso, colUso, filaAcceso, colAcceso)) {
+                continue;
+            }
+            int distancia = getDistanciaHastaCelda(room, filaUso, colUso);
+            if (distancia >= 0 && (mejorDistancia < 0 || distancia < mejorDistancia)) {
+                mejorDistancia = distancia;
+            }
+        }
+        return mejorDistancia;
+    }
+
+    /**
+     * Calcula la distancia por BFS desde el jugador hasta una celda transitable.
+     *
+     * @param room sala actual
+     * @param filaDestino fila destino
+     * @param colDestino columna destino
+     * @return distancia en pasos, o -1 si no hay camino
+     */
+    private int getDistanciaHastaCelda(Room room, int filaDestino, int colDestino) {
+        ListaSimplementeEnlazada<Cell> camino = BFSMovimiento.getCamino(
+            room, player.getFilaActual(), player.getColActual(), filaDestino, colDestino);
+        if (camino.isEmpty()) {
+            return -1;
+        }
+        return camino.getSize() - 1;
     }
 
     /**

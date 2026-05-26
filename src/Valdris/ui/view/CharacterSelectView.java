@@ -211,12 +211,12 @@ public class CharacterSelectView {
      */
     private String statsPersonaje(CharacterType tipo) {
         if (tipo == CharacterType.SYRA) {
-            return "HP 75\nAtaque 12\nMovimiento 5\nRango 3";
+            return "HP 75\nAtaque 22\nDefensa 3\nMovimiento 4\nRango 3";
         }
         if (tipo == CharacterType.DORATH) {
-            return "HP 80\nAtaque 14\nMovimiento 2\nRango 4";
+            return "HP 80\nAtaque 24\nDefensa 3\nMovimiento 2\nRango 4";
         }
-        return "HP 110\nAtaque 18\nMovimiento 3\nRango 1";
+        return "HP 110\nAtaque 28\nDefensa 3\nMovimiento 3\nRango 1";
     }
 
     /**

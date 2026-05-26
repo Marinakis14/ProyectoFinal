@@ -72,8 +72,15 @@ class LectorJSONTest {
         assertNotNull(s2c);
         assertTrue(s2c.explorada);
         assertEquals(6, s2c.puzzleFailureDamage);
+        assertEquals(2, s2c.puzzleFailureCount);
         assertEquals(1, s2c.activeSequence.length);
         assertTrue(s2c.dialogoKaelMostrado);
+
+        GameState.RoomStateDTO s3e = buscarSala(state, "S3-E");
+        assertNotNull(s3e);
+        assertTrue(s3e.hasRoomTimer);
+        assertEquals(25, s3e.turnosMaximos);
+        assertEquals(18, s3e.turnosRestantes);
 
         GameState.RoomStateDTO s1sec = buscarSala(state, "S1-SEC");
         assertNotNull(s1sec);
@@ -155,6 +162,12 @@ class LectorJSONTest {
         assertTrue(s2c.isExplorada());
         assertTrue(s2c.wasDialogueShown(CharacterType.KAEL));
         assertEquals(1, s2c.getSecuenciaActivada().length);
+        assertEquals(2, s2c.getPuzzleFailureCount());
+
+        Room s3e = loaded.getDungeon().getRoomById("S3-E");
+        assertTrue(s3e.hasRoomTimer());
+        assertEquals(25, s3e.getTurnosMaximos());
+        assertEquals(18, s3e.getTurnosRestantes());
 
         Room s1sec = loaded.getDungeon().getRoomById("S1-SEC");
         Cell celdaCofre = s1sec.getCell(s1sec.getFilas() / 2, s1sec.getCols() / 2);
@@ -252,7 +265,11 @@ class LectorJSONTest {
         Room s2c = dungeon.getRoomById("S2-C");
         s2c.setExplorada(true);
         s2c.markDialogueShown(CharacterType.KAEL);
+        s2c.setPuzzleFailureCount(2);
         s2c.registrarActivacion(s2c.getCorrectSequence()[0]);
+
+        Room s3e = dungeon.getRoomById("S3-E");
+        s3e.setTurnosRestantes(18);
 
         Room s1sec = dungeon.getRoomById("S1-SEC");
         Container chest = s1sec.getCell(s1sec.getFilas() / 2, s1sec.getCols() / 2).getContainer();

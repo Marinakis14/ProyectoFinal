@@ -2,6 +2,7 @@ package Valdris.logic.generation;
 
 import MisEstructurasDeDatos.ListasPilasYColas.ListaSimplementeEnlazada;
 import Valdris.exceptions.InvalidMoveException;
+import Valdris.logic.bfs.BFSMovimiento;
 import Valdris.model.enums.CellType;
 import Valdris.model.enums.EnemyType;
 import Valdris.model.enums.MiniBossType;
@@ -32,7 +33,8 @@ class DungeonGeneratorTest {
     @BeforeEach
     void setUp() {
         double[] tiradas = new double[80];
-        dungeon = DungeonGenerator.generarMundo(tiradas, tiradas, new double[] {0.0, 0.0, 0.0, 0.4});
+        double[] tiradasDrops = new double[160];
+        dungeon = DungeonGenerator.generarMundo(tiradas, tiradas, new double[] {0.0, 0.0, 0.0, 0.4}, tiradasDrops);
     }
 
     // -- Salas ---------------------------------------------------------------
@@ -45,6 +47,24 @@ class DungeonGeneratorTest {
         assertRoom("S3-F", "Cámara del Golem", 10, 11);
         assertRoom(DungeonGenerator.PASILLO_FINAL, "Pasillo Final", 3, 8);
         assertRoom("S5-D", "El Núcleo", 10, 11);
+    }
+
+    @Test
+    void generarMundo_configuraLimitesDeTurnoPorTipoDeSala() {
+        assertTimer("S1-A", 20);
+        assertSinTimer("S1-C");
+        assertSinTimer("S2-C");
+        assertSinTimer("S3-B");
+        assertSinTimer("S4-C");
+        assertTimer("S1-D", 35);
+        assertTimer("S2-E", 35);
+        assertTimer("S3-F", 35);
+        assertTimer("S4-E", 35);
+        assertTimer("S5-C", 35);
+        assertTimer("S3-E", 25);
+        assertSinTimer(DungeonGenerator.PASILLO_1_2);
+        assertSinTimer(DungeonGenerator.PASILLO_FINAL);
+        assertTimer("S5-D", 50);
     }
 
     @Test
@@ -121,6 +141,19 @@ class DungeonGeneratorTest {
     }
 
     @Test
+    void generarMundo_asignaDropsAEnemigosNormales() {
+        // Arrange
+        Room room = dungeon.getRoomById("S1-A");
+
+        // Act
+        Enemy enemy = room.getEnemigos().get(0);
+
+        // Assert
+        assertNotNull(enemy.getDropItem());
+        assertEquals("P1", enemy.getDropItem().getId());
+    }
+
+    @Test
     void generarMundo_noColocaDosEnemigosEnLaMismaCelda() {
         String[] ids = {
             "S1-A", "S1-B", "S1-C", "S1-D", "S1-SEC", DungeonGenerator.PASILLO_1_2,
@@ -144,7 +177,79 @@ class DungeonGeneratorTest {
         }
     }
 
+    // -- Conectividad estructural ------------------------------------------
+
+    @Test
+    void generarMundo_mantieneLlegadasDeAccesosTransitables() throws InvalidMoveException {
+        String[] ids = idsSalas();
+        for (int i = 0; i < ids.length; i++) {
+            Room room = dungeon.getRoomById(ids[i]);
+            limpiarUnidades(room);
+            for (int fila = 0; fila < room.getFilas(); fila++) {
+                for (int col = 0; col < room.getCols(); col++) {
+                    Cell cell = room.getCell(fila, col);
+                    if (cell.isReservedForAccess()) {
+                        assertTrue(cell.isWalkable(), "Llegada bloqueada en " + room.getId()
+                            + " (" + fila + "," + col + ")");
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    void generarMundo_mantieneSalidasAbiertasAlcanzablesDesdeLaEntrada() throws InvalidMoveException {
+        String[] ids = idsSalas();
+        for (int i = 0; i < ids.length; i++) {
+            Room room = dungeon.getRoomById(ids[i]);
+            limpiarUnidades(room);
+            for (int fila = 0; fila < room.getFilas(); fila++) {
+                for (int col = 0; col < room.getCols(); col++) {
+                    Cell cell = room.getCell(fila, col);
+                    if (esSalidaAbierta(cell)) {
+                        assertTrue(tieneCeldaUsoAlcanzable(room, cell, fila, col),
+                            "Salida abierta inalcanzable en " + room.getId()
+                                + " (" + fila + "," + col + ")");
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    void generarMundo_mantieneCofresPuzzlesYTriggersAlcanzables() throws InvalidMoveException {
+        String[] ids = idsSalas();
+        for (int i = 0; i < ids.length; i++) {
+            Room room = dungeon.getRoomById(ids[i]);
+            limpiarUnidades(room);
+            for (int fila = 0; fila < room.getFilas(); fila++) {
+                for (int col = 0; col < room.getCols(); col++) {
+                    Cell cell = room.getCell(fila, col);
+                    if (cell.getContainer() != null || cell.getTipo() == CellType.LEVER) {
+                        assertTrue(tieneCeldaAdyacenteAlcanzable(room, fila, col),
+                            "Interaccion adyacente inalcanzable en " + room.getId()
+                                + " (" + fila + "," + col + ")");
+                    } else if (cell.getTipo() == CellType.RUNE || esTriggerDeSuelo(cell)) {
+                        assertTrue(esCeldaAlcanzable(room, fila, col),
+                            "Objetivo de suelo inalcanzable en " + room.getId()
+                                + " (" + fila + "," + col + ")");
+                    }
+                }
+            }
+        }
+    }
+
     // -- Helpers -------------------------------------------------------------
+
+    private String[] idsSalas() {
+        return new String[] {
+            "S1-A", "S1-B", "S1-C", "S1-D", "S1-SEC", DungeonGenerator.PASILLO_1_2,
+            "S2-A", "S2-B", "S2-C", "S2-D", "S2-E", "S2-SEC", DungeonGenerator.PASILLO_2_3,
+            "S3-A", "S3-B", "S3-C", "S3-D", "S3-E", "S3-F", "S3-SEC", DungeonGenerator.PASILLO_3_4,
+            "S4-A", "S4-B", "S4-C", "S4-D", "S4-E", "S4-SEC", DungeonGenerator.PASILLO_4_5,
+            "S5-A", "S5-B", "S5-C", "S5-SEC", DungeonGenerator.PASILLO_FINAL, "S5-D"
+        };
+    }
 
     private void assertRoom(String id, String nombre, int filas, int cols) {
         Room room = dungeon.getRoomById(id);
@@ -152,6 +257,22 @@ class DungeonGeneratorTest {
         assertEquals(nombre, room.getNombre());
         assertEquals(filas, room.getFilas());
         assertEquals(cols, room.getCols());
+    }
+
+    private void assertTimer(String id, int turnos) {
+        Room room = dungeon.getRoomById(id);
+        assertNotNull(room);
+        assertTrue(room.hasRoomTimer(), id + " deberia tener limite");
+        assertEquals(turnos, room.getTurnosMaximos());
+        assertEquals(turnos, room.getTurnosRestantes());
+    }
+
+    private void assertSinTimer(String id) {
+        Room room = dungeon.getRoomById(id);
+        assertNotNull(room);
+        assertFalse(room.hasRoomTimer(), id + " no deberia tener limite");
+        assertEquals(-1, room.getTurnosMaximos());
+        assertEquals(-1, room.getTurnosRestantes());
     }
 
     private void assertAdyacente(String origen, String destino) {
@@ -227,5 +348,66 @@ class DungeonGeneratorTest {
             assertNotNull(boss.getDropItem());
             assertEquals(dropId, boss.getDropItem().getId());
         }
+    }
+
+    private void limpiarUnidades(Room room) throws InvalidMoveException {
+        for (int i = 0; i < room.getEnemigos().getSize(); i++) {
+            Enemy enemy = room.getEnemigos().get(i);
+            if (room.isEnRango(enemy.getFilaActual(), enemy.getColActual())) {
+                room.getCell(enemy.getFilaActual(), enemy.getColActual()).removeUnit();
+            }
+        }
+    }
+
+    private boolean esSalidaAbierta(Cell cell) {
+        return cell != null && cell.hasDestinoAcceso()
+            && (cell.getTipo() == CellType.DOOR || cell.isStairs());
+    }
+
+    private boolean esTriggerDeSuelo(Cell cell) {
+        return cell != null && cell.hasTrigger() && !cell.isAccessCell()
+            && cell.getTipo() != CellType.LEVER && cell.getTipo() != CellType.RUNE;
+    }
+
+    private boolean tieneCeldaUsoAlcanzable(Room room, Cell acceso, int fila, int col) {
+        int[][] direcciones = {
+            {-1, 0},
+            {1, 0},
+            {0, -1},
+            {0, 1}
+        };
+        for (int i = 0; i < direcciones.length; i++) {
+            int filaUso = fila + direcciones[i][0];
+            int colUso = col + direcciones[i][1];
+            if (room.isEnRango(filaUso, colUso)
+                && acceso.isUsableFrom(filaUso, colUso, fila, col)
+                && esCeldaAlcanzable(room, filaUso, colUso)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean tieneCeldaAdyacenteAlcanzable(Room room, int fila, int col) {
+        int[][] direcciones = {
+            {-1, 0},
+            {1, 0},
+            {0, -1},
+            {0, 1}
+        };
+        for (int i = 0; i < direcciones.length; i++) {
+            int filaUso = fila + direcciones[i][0];
+            int colUso = col + direcciones[i][1];
+            if (room.isEnRango(filaUso, colUso) && esCeldaAlcanzable(room, filaUso, colUso)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean esCeldaAlcanzable(Room room, int fila, int col) {
+        ListaSimplementeEnlazada<Cell> camino = BFSMovimiento.getCamino(
+            room, room.getFilaJugador(), room.getColJugador(), fila, col);
+        return !camino.isEmpty();
     }
 }

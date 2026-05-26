@@ -91,6 +91,16 @@ class TurnManagerTest {
     }
 
     @Test
+    void ejecutarMovimiento_noAceptaSueloFueraDeRangoAunqueSeaEquivalente() throws InvalidMoveException {
+        // Act + Assert
+        assertThrows(InvalidMoveException.class, () -> turnManager.ejecutarMovimiento(0, 0));
+        assertEquals(Phase.MOVEMENT, turnManager.getFaseActual());
+        assertEquals(2, player.getFilaActual());
+        assertEquals(2, player.getColActual());
+        assertSame(player, room.getCell(2, 2).getUnit());
+    }
+
+    @Test
     void testCederTurno_vaAENEMY_TURN() throws GameStateException {
         // Act
         turnManager.cederTurno();
@@ -109,6 +119,7 @@ class TurnManagerTest {
 
         // Assert
         assertEquals(1, turnManager.getTurnoGlobal());
+        assertEquals(500, turnManager.getTurnoGlobalMaximo());
         assertEquals(Phase.MOVEMENT, turnManager.getFaseActual());
     }
 
@@ -368,6 +379,83 @@ class TurnManagerTest {
     }
 
     @Test
+    void usarAccesoAdyacente_conEnemigosVivosNoCambiaSala()
+        throws InvalidMoveException, GameStateException {
+
+        // Arrange
+        Room destino = new Room("R2", "Sala destino", 4, 4);
+        dungeon.conectar(room, destino, "puerta este");
+        room.setCellType(2, 3, CellType.DOOR);
+        room.getCell(2, 3).setDestinoAcceso(destino, 1, 1);
+        room.addEnemigo(new Enemy(EnemyType.WARRIOR, 1, 1, "R1"));
+        turnManager.saltarMovimiento();
+
+        // Act + Assert
+        assertThrows(GameStateException.class, () -> turnManager.usarAccesoAdyacente());
+        assertSame(room, dungeon.getRoomActual());
+        assertEquals(Phase.PICKUP, turnManager.getFaseActual());
+    }
+
+    @Test
+    void getDistanciaSalidaAbiertaMasCercana_devuelveCeroSiJugadorEstaJuntoAPuerta()
+        throws InvalidMoveException {
+
+        // Arrange
+        Room destino = new Room("R2", "Sala destino", 4, 4);
+        dungeon.conectar(room, destino, "puerta este");
+        room.setCellType(2, 3, CellType.DOOR);
+        room.getCell(2, 3).setDestinoAcceso(destino, 1, 1);
+
+        // Act + Assert
+        assertEquals(0, turnManager.getDistanciaSalidaAbiertaMasCercana());
+        assertFalse(turnManager.hayEnemigosVivosSalaActual());
+    }
+
+    @Test
+    void getDistanciaSalidaAbiertaMasCercana_mideHastaCeldaUsableDePuerta()
+        throws InvalidMoveException {
+
+        // Arrange
+        Room destino = new Room("R2", "Sala destino", 4, 4);
+        dungeon.conectar(room, destino, "puerta este");
+        room.setCellType(2, 4, CellType.DOOR);
+        room.getCell(2, 4).setDestinoAcceso(destino, 1, 1);
+
+        // Act + Assert
+        assertEquals(1, turnManager.getDistanciaSalidaAbiertaMasCercana());
+    }
+
+    @Test
+    void getDistanciaSalidaAbiertaMasCercana_devuelveMenosUnoSiNoHaySalidaAbierta()
+        throws InvalidMoveException {
+
+        // Arrange
+        Room destino = new Room("R2", "Sala destino", 4, 4);
+        dungeon.conectar(room, destino, "puerta cerrada");
+        room.setCellType(2, 3, CellType.DOOR_LOCKED);
+        room.getCell(2, 3).setDestinoAcceso(destino, 1, 1);
+
+        // Act + Assert
+        assertEquals(-1, turnManager.getDistanciaSalidaAbiertaMasCercana());
+    }
+
+    @Test
+    void getDistanciaSalidaAbiertaMasCercana_devuelveMenosUnoSiQuedanEnemigosVivos()
+        throws InvalidMoveException {
+
+        // Arrange
+        Room destino = new Room("R2", "Sala destino", 4, 4);
+        dungeon.conectar(room, destino, "puerta este");
+        room.setCellType(2, 3, CellType.DOOR);
+        room.getCell(2, 3).setDestinoAcceso(destino, 1, 1);
+        room.addEnemigo(new Enemy(EnemyType.WARRIOR, 1, 1, "R1"));
+
+        // Act + Assert
+        assertTrue(turnManager.hayEnemigosVivosSalaActual());
+        assertEquals(-1, turnManager.getDistanciaSalidaAbiertaMasCercana());
+    }
+
+    @Test
     void ejecutarMovimiento_noPermitePisarPuerta() throws InvalidMoveException {
         // Arrange
         room.setCellType(2, 3, CellType.DOOR);
@@ -606,6 +694,59 @@ class TurnManagerTest {
         assertTrue(dungeon.isHiddenPassageActive("secret_lever"));
         assertTrue(player.isHaRecogido());
         assertEquals(Phase.USE_ITEM, turnManager.getFaseActual());
+        assertTrue(existeLog(LogEventType.PUZZLE, "Combinación correcta"));
+    }
+
+    @Test
+    void activarPalancaAdyacente_secuenciaIncorrectaRegistraFeedback()
+        throws InvalidMoveException, GameStateException {
+
+        // Arrange
+        room.setCellType(2, 3, CellType.LEVER);
+        room.setCellType(1, 3, CellType.LEVER);
+        room.addLeverCell(room.getCell(2, 3));
+        room.addLeverCell(room.getCell(1, 3));
+        room.setCorrectSequence(new int[] {1, 0});
+        room.setPuzzleFailureDamage(6);
+        int hpAntes = player.getHp();
+        turnManager.saltarMovimiento();
+
+        // Act
+        turnManager.activarPalancaAdyacente();
+        turnManager.saltarUsoItem();
+        turnManager.cederTurno();
+        turnManager.ejecutarTurnoEnemigos();
+        turnManager.ejecutarMovimiento(1, 2);
+        turnManager.activarPalancaAdyacente();
+
+        // Assert
+        assertEquals(hpAntes - 6, player.getHp());
+        assertFalse(room.isPuzzleResolved());
+        assertEquals(0, room.getSecuenciaActivada().length);
+        assertTrue(existeLog(LogEventType.PUZZLE, "Combinación incorrecta"));
+    }
+
+    @Test
+    void activarPalancaAdyacente_muestraPistasProgresivasPorFallo()
+        throws InvalidMoveException, GameStateException {
+
+        // Arrange
+        room.setCellType(2, 3, CellType.LEVER);
+        room.setCellType(1, 3, CellType.LEVER);
+        room.addLeverCell(room.getCell(2, 3));
+        room.addLeverCell(room.getCell(1, 3));
+        room.setCorrectSequence(new int[] {1, 0});
+        room.setPuzzleFailureDamage(1);
+
+        // Act
+        fallarPuzzleDeDosPalancas();
+        fallarPuzzleDeDosPalancas();
+
+        // Assert
+        assertEquals(2, room.getPuzzleFailureCount());
+        assertTrue(existeLog(LogEventType.PUZZLE, "Pista: empieza por 2."));
+        assertTrue(existeLog(LogEventType.PUZZLE, "Pista: la siguiente es la 1."));
+        assertTrue(existeLog(LogEventType.PUZZLE, "Pista: la combinación correcta es: 2, 1."));
     }
 
     // -- Turno enemigo -------------------------------------------------------
@@ -624,13 +765,32 @@ class TurnManagerTest {
     }
 
     @Test
-    void ejecutarTurnoEnemigos_timerAgotadoLanzaGameStateException() throws GameStateException {
+    void ejecutarTurnoEnemigos_timerAgotadoActivaDerrota() throws GameStateException {
         // Arrange
         room.setTurnosRestantes(1);
         turnManager.cederTurno();
 
-        // Act + Assert
-        assertThrows(GameStateException.class, () -> turnManager.ejecutarTurnoEnemigos());
+        // Act
+        turnManager.ejecutarTurnoEnemigos();
+
+        // Assert
+        assertEquals(GameResult.DEFEAT, turnManager.getGameResult());
+        assertTrue(turnManager.getDefeatReason().contains("limite de turnos"));
+    }
+
+    @Test
+    void ejecutarTurnoEnemigos_turnoGlobalMaximoActivaDerrota() throws GameStateException {
+        // Arrange
+        turnManager.setTurnoGlobal(499);
+        turnManager.cederTurno();
+
+        // Act
+        turnManager.ejecutarTurnoEnemigos();
+
+        // Assert
+        assertEquals(500, turnManager.getTurnoGlobal());
+        assertEquals(GameResult.DEFEAT, turnManager.getGameResult());
+        assertTrue(turnManager.getDefeatReason().contains("limite global"));
     }
 
     @Test
@@ -781,6 +941,31 @@ class TurnManagerTest {
         turnManager.saltarMovimiento();
         turnManager.saltarRecogida();
         turnManager.saltarUsoItem();
+    }
+
+    /**
+     * Ejecuta una secuencia incorrecta de dos palancas y deja el turno listo para repetir.
+     *
+     * @throws InvalidMoveException si falla el movimiento de preparación
+     * @throws GameStateException si alguna fase no permite avanzar
+     */
+    private void fallarPuzzleDeDosPalancas() throws InvalidMoveException, GameStateException {
+        if (turnManager.getFaseActual() == Phase.MOVEMENT) {
+            if (player.getFilaActual() == 2 && player.getColActual() == 2) {
+                turnManager.saltarMovimiento();
+            } else {
+                turnManager.ejecutarMovimiento(2, 2);
+            }
+        }
+        turnManager.activarPalancaAdyacente();
+        turnManager.saltarUsoItem();
+        turnManager.cederTurno();
+        turnManager.ejecutarTurnoEnemigos();
+        turnManager.ejecutarMovimiento(1, 2);
+        turnManager.activarPalancaAdyacente();
+        turnManager.saltarUsoItem();
+        turnManager.cederTurno();
+        turnManager.ejecutarTurnoEnemigos();
     }
 
     /**

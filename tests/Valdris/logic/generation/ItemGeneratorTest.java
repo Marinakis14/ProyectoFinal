@@ -69,9 +69,9 @@ class ItemGeneratorTest {
         Weapon w3 = (Weapon) ItemGenerator.crearItem("W3");
 
         // Assert
-        assertEquals(20, w1.getDanoEfectivo(CharacterType.KAEL));
-        assertEquals(14, w2.getDanoEfectivo(CharacterType.SYRA));
-        assertEquals(16, w3.getDanoEfectivo(CharacterType.DORATH));
+        assertEquals(30, w1.getDanoEfectivo(CharacterType.KAEL));
+        assertEquals(24, w2.getDanoEfectivo(CharacterType.SYRA));
+        assertEquals(26, w3.getDanoEfectivo(CharacterType.DORATH));
         assertEquals(1, w1.getRango());
         assertEquals(3, w2.getRango());
         assertEquals(4, w3.getRango());
@@ -90,8 +90,8 @@ class ItemGeneratorTest {
         assertEquals(0.25, w7.getProbEfecto());
 
         assertEquals(5, w8.getPenetracion());
-        assertEquals(23, w8.getDanoEfectivo(CharacterType.KAEL));
-        assertEquals(17, w8.getDanoEfectivo(CharacterType.SYRA));
+        assertEquals(33, w8.getDanoEfectivo(CharacterType.KAEL));
+        assertEquals(27, w8.getDanoEfectivo(CharacterType.SYRA));
 
         assertEquals(4, w9.getPenetracion());
         assertEquals(EffectType.PARALYSIS, w9.getEfectoEspecial());
@@ -209,10 +209,10 @@ class ItemGeneratorTest {
     // -- Drops ---------------------------------------------------------------
 
     @Test
-    void crearDropEnemigo_tiradaSobreProbabilidadDevuelveNull() {
-        assertNull(ItemGenerator.crearDropEnemigo(EnemyType.WARRIOR, 0.40, 0.0));
-        assertNull(ItemGenerator.crearDropEnemigo(EnemyType.GUARDIAN, 0.50, 0.0));
-        assertNull(ItemGenerator.crearDropEnemigo(EnemyType.SUMMONER, 0.70, 0.0));
+    void crearDropEnemigo_tiradaAltaSigueDevolviendoDropGarantizado() {
+        assertEquals("P1", ItemGenerator.crearDropEnemigo(EnemyType.WARRIOR, 0.99, 0.0).getId());
+        assertEquals("P2", ItemGenerator.crearDropEnemigo(EnemyType.GUARDIAN, 0.99, 0.0).getId());
+        assertEquals("P3", ItemGenerator.crearDropEnemigo(EnemyType.SUMMONER, 0.99, 0.0).getId());
         assertNull(ItemGenerator.crearDropEnemigo(null, 0.0, 0.0));
     }
 
@@ -244,5 +244,17 @@ class ItemGeneratorTest {
     void crearDropEnemigo_invocadorDevuelveP3OAC8() {
         assertEquals("P3", ItemGenerator.crearDropEnemigo(EnemyType.SUMMONER, 0.69, 0.0).getId());
         assertEquals("AC8", ItemGenerator.crearDropEnemigo(EnemyType.SUMMONER, 0.69, 0.9).getId());
+    }
+
+    @Test
+    void crearDropEnemigo_enemigosNuevosTienenDropGarantizado() {
+        assertEquals("P5", ItemGenerator.crearDropEnemigo(EnemyType.CONSTRUCTO, 0.99, 0.0).getId());
+        assertEquals("A7", ItemGenerator.crearDropEnemigo(EnemyType.CONSTRUCTO, 0.99, 0.9).getId());
+
+        assertEquals("P4", ItemGenerator.crearDropEnemigo(EnemyType.SOMBRA_ABSORBIDA, 0.99, 0.0).getId());
+        assertEquals("P5", ItemGenerator.crearDropEnemigo(EnemyType.SOMBRA_ABSORBIDA, 0.99, 0.9).getId());
+
+        assertEquals("P4", ItemGenerator.crearDropEnemigo(EnemyType.ECO_DE_MAGIA, 0.99, 0.0).getId());
+        assertEquals("AC7", ItemGenerator.crearDropEnemigo(EnemyType.ECO_DE_MAGIA, 0.99, 0.9).getId());
     }
 }

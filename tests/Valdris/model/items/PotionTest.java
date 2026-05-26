@@ -110,7 +110,7 @@ class PotionTest {
 
         // Assert
         assertEquals(5, jugador.getBonusAtaqueTemporal());
-        assertEquals(23, jugador.getAtaqueTotal());
+        assertEquals(33, jugador.getAtaqueTotal());
     }
 
     @Test

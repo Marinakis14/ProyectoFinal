@@ -46,7 +46,7 @@ class CombatManagerTest {
         int danio = CombatManager.calcularDanio(jugador, enemigo, 1.0);
 
         // Assert
-        assertEquals(10, danio);
+        assertEquals(20, danio);
     }
 
     @Test
@@ -74,7 +74,7 @@ class CombatManagerTest {
         int danio = CombatManager.calcularDanio(jugador, enemigo, 1.0);
 
         // Assert
-        assertEquals(14, danio);
+        assertEquals(24, danio);
     }
 
     @Test
@@ -86,7 +86,7 @@ class CombatManagerTest {
         int danio = CombatManager.calcularDanio(jugador, guardian, 0.5);
 
         // Assert
-        assertEquals(0, danio);
+        assertEquals(4, danio);
     }
 
     @Test
@@ -95,8 +95,8 @@ class CombatManagerTest {
         int danio = CombatManager.calcularDanio(jugador, enemigo);
 
         // Assert
-        assertTrue(danio >= 1);
-        assertTrue(danio <= 19);
+        assertTrue(danio >= 6);
+        assertTrue(danio <= 33);
     }
 
     @Test
@@ -241,8 +241,8 @@ class CombatManagerTest {
 
         // Assert
         int danio = result.getDanioAplicado();
-        assertTrue(danio >= 7);
-        assertTrue(danio <= 22);
+        assertTrue(danio >= 4);
+        assertTrue(danio <= 19);
         assertEquals(hpInicial - danio, jugador.getHp());
     }
 
@@ -256,8 +256,8 @@ class CombatManagerTest {
 
         // Assert
         int danio = result.getDanioAplicado();
-        assertTrue(danio >= 10);
-        assertTrue(danio <= 25);
+        assertTrue(danio >= 7);
+        assertTrue(danio <= 22);
         assertEquals(jugador.getHpMax() - danio, jugador.getHp());
     }
 

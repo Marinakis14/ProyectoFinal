@@ -175,8 +175,8 @@ public class InventoryView {
 
         for (int i = 0; i < items.getSize(); i++) {
             Item item = items.get(i);
-            if (item != null) {
-                contenedor.getChildren().add(crearFilaItem(item, permitirUso));
+            if (item != null && esPrimeraAparicion(items, i)) {
+                contenedor.getChildren().add(crearFilaItem(item, contarItems(items, item.getId()), permitirUso));
             }
         }
     }
@@ -185,10 +185,11 @@ public class InventoryView {
      * Crea la fila visual de un item.
      *
      * @param item item mostrado
+     * @param cantidad cantidad agrupada del item
      * @param permitirUso true si puede mostrarse boton de uso
      * @return fila visual
      */
-    private Node crearFilaItem(Item item, boolean permitirUso) {
+    private Node crearFilaItem(Item item, int cantidad, boolean permitirUso) {
         HBox fila = new HBox(10);
         fila.setAlignment(Pos.CENTER_LEFT);
         fila.setPadding(new Insets(8));
@@ -203,7 +204,9 @@ public class InventoryView {
         Label descripcion = new Label(item.getDescripcion());
         descripcion.setWrapText(true);
         descripcion.setStyle("-fx-text-fill: #c9b99c;");
-        textos.getChildren().addAll(nombre, descripcion);
+        Label cantidadLabel = new Label("Cantidad: " + cantidad);
+        cantidadLabel.setStyle("-fx-text-fill: #d7c8aa;");
+        textos.getChildren().addAll(nombre, cantidadLabel, descripcion);
 
         fila.getChildren().add(textos);
 
@@ -215,6 +218,48 @@ public class InventoryView {
         }
 
         return fila;
+    }
+
+    /**
+     * Indica si un item es la primera aparicion de su ID dentro de la lista.
+     *
+     * @param items lista consultada
+     * @param indice indice del item actual
+     * @return true si no existe otro item con el mismo ID antes
+     */
+    private boolean esPrimeraAparicion(ListaSimplementeEnlazada<Item> items, int indice) {
+        Item item = items.get(indice);
+        if (item == null) {
+            return false;
+        }
+        for (int i = 0; i < indice; i++) {
+            Item anterior = items.get(i);
+            if (anterior != null && item.getId().equals(anterior.getId())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Cuenta cuantas unidades de un item existen en una lista.
+     *
+     * @param items lista consultada
+     * @param id id del item
+     * @return cantidad encontrada
+     */
+    private int contarItems(ListaSimplementeEnlazada<Item> items, String id) {
+        int cantidad = 0;
+        if (items == null || id == null) {
+            return cantidad;
+        }
+        for (int i = 0; i < items.getSize(); i++) {
+            Item item = items.get(i);
+            if (item != null && id.equals(item.getId())) {
+                cantidad++;
+            }
+        }
+        return cantidad;
     }
 
     /**

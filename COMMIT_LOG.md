@@ -1485,6 +1485,496 @@ item y cierre el modal tras una acción correcta.
 
 ---
 
+### Sesión 30 — 24 mayo 2026 — Codex
+
+**Objetivo:** Corregir errores detectados en la primera prueba jugable de JavaFX: movimiento fuera de rango y ataque poco claro.
+
+**Archivos trabajados:**
+- `src/Valdris/logic/turn/TurnManager.java`
+- `src/Valdris/ui/controller/GameController.java`
+- `src/Valdris/ui/view/GameView.java`
+- `tests/Valdris/logic/turn/TurnManagerTest.java`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- Corregida la validación de movimiento para comparar celdas alcanzables por referencia real.
+- Corregido el resaltado JavaFX de movimiento para usar la misma comparación por referencia.
+- Añadido test de regresión que impide mover a una casilla de suelo fuera de rango aunque sea equivalente por `compareTo`.
+- Añadido resaltado rojo para enemigos atacables durante la fase `ATTACK`.
+- Añadido resaltado secundario para enemigos visibles pero no atacables en fase `ATTACK`.
+- Añadidos mensajes más claros cuando se intenta atacar antes de llegar a `ATTACK`.
+- Renombrado visualmente `Ceder turno` a `Saltar ataque` durante la fase de ataque.
+
+**Problemas encontrados:**
+- `ListaSimplementeEnlazada.contains()` usa `compareTo()`, y `Cell.compareTo()` compara tipo/contenido, no coordenadas ni identidad.
+- Eso permitía que una celda de suelo fuera de rango se aceptase como si estuviese en la lista BFS.
+
+**Solución aplicada:**
+- No se modificó `MisEstructurasDeDatos`.
+- No se cambió `Cell.compareTo()`, porque se usa como compatibilidad general con estructuras propias.
+- La validación de movimiento y el resaltado de UI comparan ahora instancias exactas de `Cell`.
+
+**Verificación:**
+- Compilación ejecutada con `mvn -DskipTests compile`: correcta.
+- Test específico ejecutado con `mvn -Dtest=TurnManagerTest test`: correcto.
+- Suite completa ejecutada con `mvn test`: correcta.
+
+**Commit sugerido:** `git commit -m "fix(ui): improve movement and attack feedback"`
+
+---
+
+### Sesión 31 — 24 mayo 2026 — Codex
+
+**Objetivo:** Mejorar la visibilidad de información esencial en la primera versión jugable de JavaFX: vida de enemigos, inventario del jugador y log de acciones.
+
+**Archivos trabajados:**
+- `src/Valdris/ui/view/GameView.java`
+- `src/Valdris/ui/view/CombatLogView.java`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- Añadida vida actual/máxima de los enemigos directamente en la celda del mapa.
+- Convertido el panel lateral en desplazable para que pueda contener más información sin perder controles.
+- Añadido resumen siempre visible de equipo, inventario normal e inventario narrativo del jugador.
+- Mantenido el modal de inventario como vista detallada y zona de uso/equipamiento durante `USE_ITEM`.
+- Ampliado el log inferior a siete mensajes visibles, con título y altura fija.
+
+**Problemas encontrados:**
+- La información existía en el modelo y en el modal, pero la pantalla principal no la enseñaba de forma suficiente durante la partida.
+- El panel lateral no tenía scroll, por lo que añadir más datos podía provocar pérdida visual de botones en resoluciones ajustadas.
+
+**Solución aplicada:**
+- Se mantiene la lógica intacta y la UI solo consulta getters ya existentes de `Player`, `Enemy` y `TurnManager`.
+- La pantalla principal muestra ahora información resumida; el modal conserva el detalle completo del inventario.
+
+**Verificación:**
+- Compilación ejecutada con `mvn -DskipTests compile`: correcta.
+- Suite completa ejecutada con `mvn test`: correcta.
+
+**Commit sugerido:** `git commit -m "fix(ui): show combat status panels"`
+
+---
+
+### Sesión 32 — 24 mayo 2026 — Codex
+
+**Objetivo:** Redistribuir la pantalla principal para aprovechar mejor el espacio disponible y abrir el juego ocupando la pantalla completa de trabajo.
+
+**Archivos trabajados:**
+- `src/Valdris/ui/MainApp.java`
+- `src/Valdris/ui/view/GameView.java`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- Aumentado el tamaño base de la ventana a `1600x900`.
+- La ventana principal ahora es redimensionable, tiene tamaño mínimo `1280x720` y se abre maximizada.
+- La pantalla de juego pasa a usar panel izquierdo para estado, sala y acciones.
+- El mapa queda en el centro y aumenta el tamaño visual de celda.
+- El inventario y el equipo pasan a un panel derecho independiente, visible junto al resto de información.
+- Los botones de acción se organizan en dos columnas para reducir altura ocupada.
+
+**Problemas encontrados:**
+- Con una sola columna lateral, inventario, acciones y estado competían por el mismo espacio vertical.
+- La ventana fija `1280x720` hacía que la interfaz pareciese pequeña y obligaba a comprimir demasiada información.
+
+**Solución aplicada:**
+- No se cambia lógica de juego.
+- La UI usa el ancho de una ventana maximizada para separar estado/acciones, mapa e inventario.
+- Se usa ventana maximizada en lugar de modo fullscreen exclusivo para evitar ocultar controles del sistema y permitir redimensionar.
+
+**Verificación:**
+- Compilación ejecutada con `mvn -DskipTests compile`: correcta.
+- Suite completa ejecutada con `mvn test`: correcta.
+
+**Commit sugerido:** `git commit -m "fix(ui): improve game screen layout"`
+
+---
+
+### Sesión 33 — 24 mayo 2026 — Codex
+
+**Objetivo:** Mejorar la lectura del mapa sustituyendo letras simples por representaciones visuales del jugador y los enemigos.
+
+**Archivos trabajados:**
+- `src/Valdris/ui/view/GameView.java`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- Añadido mini-sprite visual para el jugador dentro de su celda.
+- El color del jugador cambia según personaje: Kael, Syra o Dorath.
+- Añadido mini-sprite visual para enemigos con silueta y ojos.
+- El color de los enemigos cambia por familia: cuerpo a cuerpo, distancia, mágicos, constructos o entidades oscuras.
+- Se mantiene el HP actual/máximo debajo del sprite enemigo.
+
+**Problemas encontrados:**
+- Las letras `K`, `S`, `D` y `E` no diferenciaban bien unidades en el tablero.
+- La vida de los enemigos era visible, pero la celda seguía pareciendo demasiado textual.
+
+**Solución aplicada:**
+- Se usan formas JavaFX (`Circle`, `Polygon`) para crear sprites ligeros sin depender de rutas de imagen externas.
+- No se cambia lógica de juego ni persistencia.
+
+**Verificación:**
+- Compilación ejecutada con `mvn -DskipTests compile`: correcta.
+- Suite completa ejecutada con `mvn test`: correcta.
+
+**Commit sugerido:** `git commit -m "fix(ui): add unit sprites to map"`
+
+---
+
+### Sesión 34 — 24 mayo 2026 — Codex
+
+**Objetivo:** Mejorar el feedback de puzzles y estados para que la primera sala de palancas no parezca inactiva o confusa.
+
+**Archivos trabajados:**
+- `src/Valdris/logic/turn/TurnManager.java`
+- `src/Valdris/ui/view/GameView.java`
+- `src/Valdris/ui/view/CombatLogView.java`
+- `tests/Valdris/logic/turn/TurnManagerTest.java`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- `TurnManager` registra mensajes explícitos cuando una secuencia de puzzle termina correctamente o falla.
+- Las palancas y runas activadas se muestran en verde durante la secuencia actual; si el puzzle queda resuelto, permanecen verdes.
+- El panel de estado muestra los efectos activos del jugador con turnos restantes.
+- El log inferior aumenta su padding inferior para que los últimos mensajes queden ligeramente más arriba.
+- Se añade test de regresión para verificar el mensaje de combinación incorrecta y reinicio del puzzle.
+
+**Problemas encontrados:**
+- El `CONTROLLER` de la primera sala de puzzle no tiene por qué hacer daño directo: su acción normal es aplicar efectos, pero la UI no mostraba esos efectos.
+- `PuzzleManager` resolvía éxito o fallo de secuencia, pero la pantalla no dejaba claro qué había pasado.
+
+**Solución aplicada:**
+- Se mantiene la IA existente y se mejora la visibilidad de sus consecuencias.
+- El estado de puzzle se infiere desde `Room.getSecuenciaActivada()` y `Room.isPuzzleResolved()` sin añadir estado duplicado en `Cell`.
+
+**Verificación:**
+- Compilación ejecutada con `mvn -DskipTests compile`: correcta.
+- Suite completa ejecutada con `mvn test`: correcta.
+
+**Commit sugerido:** `git commit -m "fix(ui): improve puzzle and status feedback"`
+
+---
+
+### Sesión 35 — 26 mayo 2026 — Codex
+
+**Objetivo:** Ajustar el recorte inferior del log y añadir pistas progresivas tras los fallos de puzzle.
+
+**Archivos trabajados:**
+- `src/Valdris/ui/view/CombatLogView.java`
+- `src/Valdris/model/map/Room.java`
+- `src/Valdris/logic/puzzle/PuzzleManager.java`
+- `src/Valdris/logic/turn/TurnManager.java`
+- `src/Valdris/persistence/GameState.java`
+- `src/Valdris/persistence/LectorJSON.java`
+- `tests/Valdris/logic/turn/TurnManagerTest.java`
+- `tests/Valdris/persistence/LectorJSONTest.java`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- El log vuelve a mostrar cinco mensajes y reserva una franja inferior vacía para que las últimas líneas no queden cortadas.
+- `Room` guarda un contador de fallos acumulados del puzzle.
+- `PuzzleManager.applyFailure(...)` incrementa el contador cuando una secuencia completa falla.
+- `TurnManager` muestra pistas progresivas: primero `Pista: empieza por ...`, después `Pista: la siguiente es la ...`.
+- Cuando ya se han revelado todas las piezas de la secuencia, también muestra `Pista: la combinación correcta es: ...`.
+- La secuencia de las pistas se muestra con posiciones visibles empezando en 1, coherente con el orden real de activación del puzzle.
+- `GameState` y `LectorJSON` guardan y restauran el contador de fallos.
+- Se añade test de regresión para las pistas progresivas y se amplían comprobaciones de persistencia.
+
+**Problemas encontrados:**
+- El ejemplo `1,0,1` describe una máscara binaria, pero la lógica real del proyecto usa una secuencia ordenada de palancas/runas.
+
+**Solución aplicada:**
+- La pista muestra el orden correcto de activación, por ejemplo `2, 1`, usando numeración natural para el jugador.
+
+**Verificación:**
+- Compilación ejecutada con `mvn -DskipTests compile`: correcta.
+- Suite completa ejecutada con `mvn test`: correcta.
+
+**Commit sugerido:** `git commit -m "fix(ui): add progressive puzzle hints"`
+
+---
+
+### Sesión 36 — 26 mayo 2026 — Codex
+
+**Objetivo:** Corregir nuevos problemas jugables detectados en pruebas: palancas ocultas por unidades, daño demasiado bajo y movilidad excesiva de Syra con el anillo temprano.
+
+**Archivos trabajados:**
+- `src/Valdris/model/map/Cell.java`
+- `src/Valdris/model/units/Player.java`
+- `src/Valdris/logic/generation/ItemGenerator.java`
+- `src/Valdris/ui/view/CharacterSelectView.java`
+- `tests/Valdris/model/map/CellTest.java`
+- `tests/Valdris/model/units/PlayerTest.java`
+- `tests/Valdris/model/items/PotionTest.java`
+- `tests/Valdris/logic/combat/CombatManagerTest.java`
+- `tests/Valdris/logic/generation/ItemGeneratorTest.java`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- `Cell.isWalkable()` considera `LEVER` no transitable para impedir que jugador o enemigos se coloquen sobre palancas.
+- Las runas siguen siendo transitables porque su interacción actual se activa al pisarlas.
+- Aumentado en +5 el ataque base de Kael, Syra y Dorath.
+- Aumentado en +5 el daño base de todas las armas oficiales W1-W12.
+- Reducido el movimiento base de Syra de 5 a 4.
+- Actualizados los textos visibles de selección de personaje con los nuevos stats.
+- Añadido test para fijar que `LEVER` no es transitable y `RUNE` sí lo es.
+- Actualizados tests de jugador, combate, pociones e items al nuevo balance.
+
+**Problemas encontrados:**
+- La primera ejecución de tests falló porque varias expectativas seguían fijadas al daño antiguo de Kael.
+- No era correcto hacer `RUNE` no transitable sin rediseñar la activación de runas.
+
+**Solución aplicada:**
+- Se actualizan las expectativas de test al balance aprobado.
+- Se limita el cambio de transitabilidad a `LEVER`.
+
+**Verificación:**
+- Compilación ejecutada con `mvn -DskipTests compile`: correcta.
+- Suite completa ejecutada con `mvn test`: correcta, 405 tests.
+
+**Commit sugerido:** `git commit -m "fix(balance): adjust puzzle cells and damage"`
+
+---
+
+### Sesión 37 — 26 mayo 2026 — Codex
+
+**Objetivo:** Mejorar la supervivencia del jugador y conectar los drops de enemigos normales detectados como pieza pendiente durante la prueba jugable.
+
+**Archivos trabajados:**
+- `src/Valdris/model/units/Player.java`
+- `src/Valdris/logic/generation/ItemGenerator.java`
+- `src/Valdris/logic/generation/DungeonGenerator.java`
+- `src/Valdris/ui/view/CharacterSelectView.java`
+- `tests/Valdris/model/units/PlayerTest.java`
+- `tests/Valdris/logic/combat/CombatManagerTest.java`
+- `tests/Valdris/logic/generation/ItemGeneratorTest.java`
+- `tests/Valdris/logic/generation/DungeonGeneratorTest.java`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- Los tres personajes jugables pasan a tener defensa base 3.
+- Las armaduras y escudos oficiales A1-A8 reciben +3 defensa.
+- `AC8` no se modifica y mantiene su bonus de defensa actual.
+- La pantalla de selección de personaje muestra ahora `Defensa 3`.
+- `DungeonGenerator` asigna drops probabilísticos a enemigos normales usando `ItemGenerator.crearDropEnemigo(...)`.
+- Los acompañantes normales de mini-bosses también reciben drops probabilísticos.
+- Los mini-bosses mantienen sus drops narrativos fijos.
+- Se añade una sobrecarga determinista de `generarMundo(...)` con tiradas de drops para tests.
+- Se añade test de regresión para confirmar que un enemigo normal generado recibe drop cuando la tirada lo permite.
+
+**Problemas encontrados:**
+- El sistema de drops ya existía en `Enemy`, `CombatManager`, `TurnManager` e `ItemGenerator`, pero los enemigos normales creados por `DungeonGenerator` no recibían ningún `dropItem`.
+
+**Solución aplicada:**
+- Conectar la asignación de drops en la generación del mundo sin tocar la resolución de muerte, que ya colocaba correctamente el item en la celda.
+
+**Verificación:**
+- Compilación ejecutada con `mvn -DskipTests compile`: correcta.
+- Suite completa ejecutada con `mvn test`: correcta, 406 tests.
+
+**Commit sugerido:** `git commit -m "fix(balance): add defense and normal enemy drops"`
+
+---
+
+### Sesión 38 — 26 mayo 2026 — Codex
+
+**Objetivo:** Reforzar de nuevo el daño del jugador, hacer los drops más satisfactorios y evitar que el jugador pueda abandonar una sala sin derrotar a los enemigos.
+
+**Archivos trabajados:**
+- `src/Valdris/model/units/Player.java`
+- `src/Valdris/logic/generation/ItemGenerator.java`
+- `src/Valdris/logic/turn/TurnManager.java`
+- `src/Valdris/ui/view/CharacterSelectView.java`
+- `tests/Valdris/model/units/PlayerTest.java`
+- `tests/Valdris/model/items/PotionTest.java`
+- `tests/Valdris/logic/combat/CombatManagerTest.java`
+- `tests/Valdris/logic/generation/ItemGeneratorTest.java`
+- `tests/Valdris/logic/turn/TurnManagerTest.java`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- Aplicado un segundo +5 al ataque base de Kael, Syra y Dorath.
+- Aplicado un segundo +5 al daño base de las armas oficiales W1-W12.
+- Actualizada la pantalla de selección de personaje con los nuevos valores de ataque.
+- `ItemGenerator.crearDropEnemigo(...)` ahora devuelve drops garantizados para enemigos normales.
+- Añadidos drops para `CONSTRUCTO`, `SOMBRA_ABSORBIDA` y `ECO_DE_MAGIA`.
+- `TurnManager.usarAccesoAdyacente()` bloquea puertas y escaleras mientras queden enemigos vivos en la sala actual.
+- Se mantienen las demás condiciones de acceso: fase correcta, puerta/escala usable, llave, puzzle, orientación y llegada válida.
+- Añadidos tests para drops garantizados de enemigos nuevos y para impedir cambiar de sala con enemigos vivos.
+
+**Problemas encontrados:**
+- La firma determinista de `crearDropEnemigo(tipo, tiradaDrop, tiradaOpcion)` conservaba una tirada de probabilidad que ya no decide nada.
+
+**Solución aplicada:**
+- Se mantiene el parámetro por compatibilidad con tests y llamadas existentes, pero se documenta que ya no decide si hay drop.
+
+**Verificación:**
+- Compilación ejecutada con `mvn -DskipTests compile`: correcta.
+- Suite completa ejecutada con `mvn test`: correcta, 408 tests.
+
+**Commit sugerido:** `git commit -m "fix(balance): increase damage and gate room exits"`
+
+---
+
+### Sesión 39 — 26 mayo 2026 — Codex
+
+**Objetivo:** Mejorar la lectura del inventario y agilizar las acciones repetidas de turno con atajos de teclado visibles.
+
+**Archivos trabajados:**
+- `src/Valdris/ui/view/GameView.java`
+- `src/Valdris/ui/view/InventoryView.java`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- El resumen lateral de inventario agrupa items repetidos por ID y muestra cantidades con formato `xN`.
+- El modal de inventario agrupa items repetidos por ID y muestra una línea `Cantidad: N`.
+- El uso de un item agrupado sigue actuando sobre una unidad concreta del grupo.
+- Añadidos atajos de teclado en la pantalla de partida:
+  - `M`: saltar movimiento.
+  - `R`: recoger.
+  - `A`: usar acceso.
+  - `L`: activar palanca.
+  - `S`: saltar recogida.
+  - `U`: saltar uso de item.
+  - `C`: ceder turno o saltar ataque.
+  - `F`: combate final.
+  - `I`: abrir inventario completo.
+- Los botones muestran la tecla asociada con texto compacto para mantener la disposición de dos columnas.
+
+**Problemas encontrados:**
+- No convenía cambiar la estructura real del inventario porque afectaría a persistencia, uso de items y equipamiento.
+
+**Solución aplicada:**
+- La agrupación se implementa solo en la capa visual, recorriendo la lista propia y agrupando por `item.getId()`.
+
+**Verificación:**
+- Compilación ejecutada con `mvn -DskipTests compile`: correcta.
+- Suite completa ejecutada con `mvn test`: correcta, 408 tests.
+
+**Commit sugerido:** `git commit -m "fix(ui): group inventory and add shortcuts"`
+
+---
+
+### Sesión 40 — 26 mayo 2026 — Codex
+
+**Objetivo:** Ajustar el balance defensivo tras nuevas pruebas, manteniendo la defensa base de personajes pero retirando el refuerzo extra de items defensivos.
+
+**Archivos trabajados:**
+- `src/Valdris/logic/generation/ItemGenerator.java`
+- `tests/Valdris/logic/generation/ItemGeneratorTest.java`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- A1-A8 vuelven a sus valores defensivos anteriores al ajuste de +3.
+- Se mantiene la defensa base 3 de Kael, Syra y Dorath.
+- `AC8` sigue sin cambios.
+- Actualizado `ItemGeneratorTest` para fijar de nuevo la defensa original de A3 y A8.
+
+**Problemas encontrados:**
+- Ninguno en código; el ajuste responde a balance jugable tras pruebas.
+
+**Solución aplicada:**
+- Revertir solo la defensa extra de armaduras y escudos oficiales, sin tocar ataque, drops, accesos ni defensa base de personajes.
+
+**Verificación:**
+- Compilación ejecutada con `mvn -DskipTests compile`: correcta.
+- Suite completa ejecutada con `mvn test`: correcta, 408 tests.
+
+**Commit sugerido:** `git commit -m "fix(balance): restore armor defense values"`
+
+---
+
+### Sesión 41 — 26 mayo 2026 — Codex
+
+**Objetivo:** Añadir tests de conectividad estructural y mostrar en la partida la distancia a la salida abierta más cercana.
+
+**Archivos trabajados:**
+- `src/Valdris/logic/turn/TurnManager.java`
+- `src/Valdris/ui/view/GameView.java`
+- `tests/Valdris/logic/turn/TurnManagerTest.java`
+- `tests/Valdris/logic/generation/DungeonGeneratorTest.java`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- Añadida consulta pública en `TurnManager` para calcular la distancia mínima hasta la celda desde la que se puede usar una puerta o escalera abierta.
+- Añadida consulta pública para saber si quedan enemigos vivos en la sala actual.
+- `GameView` muestra en el panel de estado la salida más cercana:
+  - `0 casillas` si el jugador ya está junto a la salida.
+  - `N casillas` si hay una ruta caminable hasta una salida abierta.
+  - `Derrota a todos los enemigos.` si la regla de accesos bloquea la salida por enemigos vivos.
+  - `No hay salidas abiertas.` si no existe ninguna puerta/escalera abierta alcanzable.
+- Añadidos tests de `TurnManager` para fijar distancia 0, distancia positiva, puerta cerrada y bloqueo por enemigos vivos.
+- Añadidos tests de conectividad en `DungeonGeneratorTest` para proteger llegadas de accesos, salidas abiertas, cofres, palancas, runas y triggers de suelo.
+
+**Problemas encontrados:**
+- Ninguno. La regla encaja con `BFSMovimiento` y con el modelo actual de accesos no transitables.
+
+**Solución aplicada:**
+- Reutilizar BFS por celdas y `Cell.isUsableFrom(...)` para que el cálculo respete paredes, contenedores, unidades, orientación de escaleras y puertas cerradas/ocultas.
+
+**Verificación:**
+- Compilación ejecutada con `mvn -DskipTests compile`: correcta.
+- Suite completa ejecutada con `mvn test`: correcta, 415 tests.
+- `git diff --check`: correcto, solo avisos esperados de normalización LF/CRLF.
+
+**Commit sugerido:** `git commit -m "feat(ui): show nearest exit distance"`
+
+---
+
+### Sesión 42 — 26 mayo 2026 — Codex
+
+**Objetivo:** Añadir límite global de turnos, límites por sala y contadores visibles en la pantalla de juego.
+
+**Archivos trabajados:**
+- `src/Valdris/model/map/Room.java`
+- `src/Valdris/logic/turn/TurnManager.java`
+- `src/Valdris/logic/generation/DungeonGenerator.java`
+- `src/Valdris/persistence/GameState.java`
+- `src/Valdris/persistence/LectorJSON.java`
+- `src/Valdris/ui/view/GameView.java`
+- `tests/Valdris/model/map/RoomTest.java`
+- `tests/Valdris/logic/turn/TurnManagerTest.java`
+- `tests/Valdris/logic/generation/DungeonGeneratorTest.java`
+- `tests/Valdris/persistence/LectorJSONTest.java`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- `Room` conserva ahora `turnosMaximos` además de `turnosRestantes`, con métodos para configurar y reiniciar el temporizador de sala.
+- `TurnManager` fija 500 turnos globales y `DungeonGenerator` configura límites por sala: normales 20/25, mini-bosses 35, S5-D 50, puzzles y pasillos sin límite.
+- `TurnManager` activa derrota limpia si se agota el límite global o el temporizador de la sala, sin lanzar una excepción jugable al usuario.
+- Al entrar en una sala se reinicia su temporizador; al cargar partida se respeta el valor persistido porque la reconstrucción coloca al jugador sin `changeRoom(...)`.
+- `GameState` y `LectorJSON` persisten el máximo y los turnos restantes de cada sala.
+- `GameView` muestra el nombre de la sala en grande sobre el mapa y sustituye `Nombre` por los contadores `Turno global` y `Turnos sala`.
+- Añadidos tests de temporizador de sala, derrota por tiempo, configuración del generador y persistencia de máximos/restantes.
+
+**Problemas encontrados:**
+- Ninguno. La carga existente seguía siendo compatible; en partidas antiguas sin `turnosMaximos`, el máximo se reconstruye a partir de los turnos restantes.
+
+**Solución aplicada:**
+- Mantener el contador real en lógica pura y exponer solo getters simples para la UI, sin duplicar estado en JavaFX.
+
+**Verificación:**
+- Compilación ejecutada con `mvn -DskipTests compile`: correcta.
+- Suite completa ejecutada con `mvn test`: correcta, 418 tests.
+- `rg "import java\.util" src tests`: sin resultados.
+- `git diff --check`: correcto, solo avisos esperados de normalización LF/CRLF.
+
+**Commit sugerido:** `git commit -m "feat(turns): add room and global turn limits"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas
@@ -1600,7 +2090,7 @@ item y cierre el modal tras una acción correcta.
 Resultado:
 
 ```text
-401 tests, 0 failures, 0 errors, 0 skipped
+418 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---

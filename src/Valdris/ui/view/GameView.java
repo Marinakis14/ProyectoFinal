@@ -3,6 +3,8 @@ package Valdris.ui.view;
 import MisEstructurasDeDatos.ListasPilasYColas.ListaSimplementeEnlazada;
 import Valdris.exceptions.InvalidMoveException;
 import Valdris.logic.bfs.BFSMovimiento;
+import Valdris.logic.combat.CombatManager;
+import Valdris.model.effects.Effect;
 import Valdris.model.enums.CellType;
 import Valdris.model.enums.GameResult;
 import Valdris.model.enums.Phase;
@@ -10,6 +12,7 @@ import Valdris.model.items.Item;
 import Valdris.model.map.Cell;
 import Valdris.model.map.Container;
 import Valdris.model.map.Room;
+import Valdris.model.units.Enemy;
 import Valdris.model.units.Player;
 import Valdris.model.units.Unit;
 import Valdris.ui.MainApp;
@@ -28,8 +31,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 /**
@@ -38,7 +45,7 @@ import javafx.stage.Stage;
 public class GameView implements GameModelListener {
 
     /** Tamano visual de una celda del mapa. */
-    private static final int CELL_SIZE = 40;
+    private static final int CELL_SIZE = 52;
 
     /** Ventana principal de la aplicacion. */
     private final Stage stage;
@@ -55,8 +62,14 @@ public class GameView implements GameModelListener {
     /** Grid central de la sala actual. */
     private final GridPane gridSala;
 
+    /** Titulo visible de la sala sobre el mapa. */
+    private final Label tituloSala;
+
     /** Panel lateral con datos del jugador y partida. */
     private final VBox panelLateral;
+
+    /** Panel lateral con equipo e inventario. */
+    private final VBox panelInventario;
 
     /** Log inferior. */
     private final CombatLogView logCombate;
@@ -80,12 +93,15 @@ public class GameView implements GameModelListener {
         this.controller = controller;
         this.root = new BorderPane();
         this.gridSala = new GridPane();
-        this.panelLateral = new VBox(10);
+        this.tituloSala = new Label();
+        this.panelLateral = new VBox(9);
+        this.panelInventario = new VBox(9);
         this.logCombate = new CombatLogView();
         this.scene = new Scene(root, MainApp.WINDOW_WIDTH, MainApp.WINDOW_HEIGHT);
         this.pantallaFinalMostrada = false;
 
         construirLayout();
+        configurarAtajosTeclado();
         modelo.addListener(this);
         onEstadoCambiado(modelo);
     }
@@ -123,6 +139,7 @@ public class GameView implements GameModelListener {
      */
     public void renderizarSala(Room room) {
         gridSala.getChildren().clear();
+        tituloSala.setText(room == null ? "Valdris" : room.getId() + " - " + room.getNombre());
         if (room == null) {
             return;
         }
@@ -144,16 +161,28 @@ public class GameView implements GameModelListener {
         gridSala.setAlignment(Pos.CENTER);
         gridSala.setHgap(1);
         gridSala.setVgap(1);
+        tituloSala.setFont(Font.font("Serif", 31));
+        tituloSala.setStyle("-fx-text-fill: #f5f0e6;");
         StackPane mapaWrapper = new StackPane(gridSala);
         mapaWrapper.setPadding(new Insets(18));
         mapaWrapper.setStyle("-fx-background-color: #202020;");
+        VBox mapaPanel = new VBox(10);
+        mapaPanel.setAlignment(Pos.CENTER);
+        mapaPanel.getChildren().addAll(tituloSala, mapaWrapper);
 
-        panelLateral.setPadding(new Insets(16));
+        panelLateral.setPadding(new Insets(14));
         panelLateral.setPrefWidth(300);
-        panelLateral.setStyle("-fx-background-color: #242424; -fx-border-color: #3b3429; -fx-border-width: 0 0 0 1;");
+        panelLateral.setMinWidth(280);
+        panelLateral.setStyle("-fx-background-color: #242424; -fx-border-color: #3b3429; -fx-border-width: 0 1 0 0;");
 
-        root.setCenter(mapaWrapper);
-        root.setRight(panelLateral);
+        panelInventario.setPadding(new Insets(14));
+        panelInventario.setPrefWidth(360);
+        panelInventario.setMinWidth(330);
+        panelInventario.setStyle("-fx-background-color: #242424; -fx-border-color: #3b3429; -fx-border-width: 0 0 0 1;");
+
+        root.setCenter(mapaPanel);
+        root.setLeft(panelLateral);
+        root.setRight(panelInventario);
         root.setBottom(logCombate.getNode());
     }
 
@@ -171,10 +200,16 @@ public class GameView implements GameModelListener {
         try {
             Cell cell = room.getCell(fila, col);
             Rectangle fondo = new Rectangle(CELL_SIZE, CELL_SIZE);
-            fondo.setFill(colorCelda(cell));
+            fondo.setFill(colorCelda(room, cell));
             if (isCeldaAlcanzableEnMovimiento(room, cell)) {
                 fondo.setStroke(Color.web("#3fbf5f"));
                 fondo.setStrokeWidth(3);
+            } else if (isEnemigoAtacable(room, cell)) {
+                fondo.setStroke(Color.web("#d94b4b"));
+                fondo.setStrokeWidth(3);
+            } else if (isEnemigoVisibleEnAtaque(cell)) {
+                fondo.setStroke(Color.web("#8f7651"));
+                fondo.setStrokeWidth(2);
             } else {
                 fondo.setStroke(Color.web("#111111"));
                 fondo.setStrokeWidth(1);
@@ -197,6 +232,16 @@ public class GameView implements GameModelListener {
      * @param cell celda del modelo
      */
     private void agregarContenidoCelda(StackPane stack, Cell cell) {
+        Unit unit = cell.getUnit();
+        if (unit instanceof Enemy) {
+            stack.getChildren().add(crearMarcaEnemigo((Enemy) unit));
+            return;
+        }
+        if (unit == modelo.getPlayer()) {
+            stack.getChildren().add(crearMarcaJugador(modelo.getPlayer()));
+            return;
+        }
+
         String texto = contenidoCelda(cell);
         if (texto == null || texto.isEmpty()) {
             return;
@@ -205,6 +250,102 @@ public class GameView implements GameModelListener {
         label.setFont(Font.font("Monospaced", 15));
         label.setStyle("-fx-text-fill: #ffffff; -fx-font-weight: bold;");
         stack.getChildren().add(label);
+    }
+
+    /**
+     * Crea la marca visual de un enemigo con su HP actual visible.
+     *
+     * @param enemy enemigo mostrado
+     * @return nodo con simbolo y vida
+     */
+    private VBox crearMarcaEnemigo(Enemy enemy) {
+        VBox box = new VBox(0);
+        box.setAlignment(Pos.CENTER);
+
+        StackPane sprite = crearSpriteEnemigo(enemy);
+
+        Label vida = new Label(enemy.getHp() + "/" + enemy.getHpMax());
+        vida.setFont(Font.font("Monospaced", 8));
+        vida.setStyle("-fx-text-fill: #ffd2d2; -fx-font-weight: bold;");
+
+        box.getChildren().addAll(sprite, vida);
+        return box;
+    }
+
+    /**
+     * Crea la marca visual del jugador con color segun el personaje elegido.
+     *
+     * @param player jugador mostrado
+     * @return nodo visual del jugador
+     */
+    private StackPane crearMarcaJugador(Player player) {
+        StackPane sprite = new StackPane();
+        sprite.setPrefSize(36, 36);
+        sprite.setMaxSize(36, 36);
+
+        Circle aura = new Circle(17);
+        aura.setFill(Color.web(colorJugador(player)));
+        aura.setStroke(Color.web("#f5f0e6"));
+        aura.setStrokeWidth(2);
+
+        Circle rostro = new Circle(9);
+        rostro.setTranslateY(-3);
+        rostro.setFill(Color.web("#f2d1a3"));
+        rostro.setStroke(Color.web("#2b2118"));
+        rostro.setStrokeWidth(1);
+
+        Polygon cuerpo = new Polygon(
+            18.0, 16.0,
+            8.0, 33.0,
+            28.0, 33.0
+        );
+        cuerpo.setFill(Color.web(colorJugadorOscuro(player)));
+        cuerpo.setStroke(Color.web("#111111"));
+        cuerpo.setStrokeWidth(1);
+
+        Label inicial = new Label(letraJugador(player));
+        inicial.setFont(Font.font("Monospaced", 10));
+        inicial.setStyle("-fx-text-fill: #111111; -fx-font-weight: bold;");
+        inicial.setTranslateY(-3);
+
+        sprite.getChildren().addAll(aura, cuerpo, rostro, inicial);
+        return sprite;
+    }
+
+    /**
+     * Crea la silueta visual de un enemigo.
+     *
+     * @param enemy enemigo representado
+     * @return nodo visual del enemigo
+     */
+    private StackPane crearSpriteEnemigo(Enemy enemy) {
+        StackPane sprite = new StackPane();
+        sprite.setPrefSize(34, 30);
+        sprite.setMaxSize(34, 30);
+
+        Polygon sombra = new Polygon(
+            17.0, 2.0,
+            30.0, 14.0,
+            25.0, 29.0,
+            9.0, 29.0,
+            4.0, 14.0
+        );
+        sombra.setFill(Color.web(colorEnemigo(enemy)));
+        sombra.setStroke(Color.web("#140c0c"));
+        sombra.setStrokeWidth(1.5);
+
+        Circle ojoIzq = new Circle(2.2);
+        ojoIzq.setFill(Color.web("#ffd166"));
+        ojoIzq.setTranslateX(-5);
+        ojoIzq.setTranslateY(-2);
+
+        Circle ojoDer = new Circle(2.2);
+        ojoDer.setFill(Color.web("#ffd166"));
+        ojoDer.setTranslateX(5);
+        ojoDer.setTranslateY(-2);
+
+        sprite.getChildren().addAll(sombra, ojoIzq, ojoDer);
+        return sprite;
     }
 
     /**
@@ -252,6 +393,7 @@ public class GameView implements GameModelListener {
      */
     private void actualizarPanelLateral() {
         panelLateral.getChildren().clear();
+        panelInventario.getChildren().clear();
 
         Player player = modelo.getPlayer();
         Room room = modelo.getDungeon().getRoomActual();
@@ -264,21 +406,113 @@ public class GameView implements GameModelListener {
         panelLateral.getChildren().add(crearDato("Defensa", String.valueOf(player.getDefensaTotal())));
         panelLateral.getChildren().add(crearDato("Movimiento", String.valueOf(player.getMovEfectivo())));
         panelLateral.getChildren().add(crearDato("Rango", String.valueOf(player.getRangoEfectivo())));
+        panelLateral.getChildren().add(crearDato("Efectos", textoEfectos(player)));
 
         panelLateral.getChildren().add(crearSeparador());
         panelLateral.getChildren().add(crearDato("Sala", room == null ? "-" : room.getId()));
-        panelLateral.getChildren().add(crearDato("Nombre", room == null ? "-" : room.getNombre()));
         panelLateral.getChildren().add(crearDato("Fase", modelo.getTurnManager().getFaseActual().name()));
-        panelLateral.getChildren().add(crearDato("Turno", String.valueOf(modelo.getTurnManager().getTurnoGlobal())));
+        panelLateral.getChildren().add(crearDato("Turno global", textoTurnoGlobal()));
+        panelLateral.getChildren().add(crearDato("Turnos sala", textoTurnosSala()));
+        panelLateral.getChildren().add(crearDato("Salida", textoSalidaMasCercana()));
 
         panelLateral.getChildren().add(crearSeparador());
         agregarBotonesDeTurno(room);
         panelLateral.getChildren().add(crearSeparador());
-        Button inventario = crearBoton("Inventario");
-        inventario.setOnAction(event -> controller.onBotonInventario(stage));
+        agregarResumenInventario(player);
         Button menu = crearBoton("Menú principal");
         menu.setOnAction(event -> controller.onBotonMenuPrincipal(stage));
-        panelLateral.getChildren().addAll(inventario, menu);
+        panelLateral.getChildren().add(menu);
+    }
+
+    /**
+     * Agrega un resumen siempre visible del equipo e inventario del jugador.
+     *
+     * @param player jugador consultado
+     */
+    private void agregarResumenInventario(Player player) {
+        panelInventario.getChildren().add(crearTitulo("Inventario"));
+        panelInventario.getChildren().add(crearTituloSeccion("Equipo"));
+        panelInventario.getChildren().add(crearDato("Arma", nombreItem(player.getArmaEquipada())));
+        panelInventario.getChildren().add(crearDato("Escudo", nombreItem(player.getEscudoEquipado())));
+        panelInventario.getChildren().add(crearDato("Armadura", nombreItem(player.getArmaduraEquipada())));
+        panelInventario.getChildren().add(crearDato("Accesorio", nombreItem(player.getAccesorioEquipado())));
+
+        panelInventario.getChildren().add(crearSeparador());
+        panelInventario.getChildren().add(crearTituloSeccion("Objetos"));
+        agregarResumenListaItems("Objetos", player.getInventario(), 8);
+        agregarResumenListaItems("Narrativos", player.getItemsNarrativos(), 6);
+
+        panelInventario.getChildren().add(crearSeparador());
+        Button inventario = crearBoton("Abrir inventario completo (I)");
+        inventario.setOnAction(event -> controller.onBotonInventario(stage));
+        panelInventario.getChildren().add(inventario);
+    }
+
+    /**
+     * Agrega un resumen corto de una lista de items.
+     *
+     * @param titulo titulo visible de la lista
+     * @param items items consultados
+     * @param maxVisibles numero maximo de nombres mostrados
+     */
+    private void agregarResumenListaItems(String titulo, ListaSimplementeEnlazada<Item> items, int maxVisibles) {
+        int total = items == null ? 0 : items.getSize();
+        panelInventario.getChildren().add(crearDato(titulo, String.valueOf(total)));
+        if (total == 0) {
+            return;
+        }
+
+        int gruposMostrados = 0;
+        int gruposTotales = contarGruposItems(items);
+        for (int i = 0; i < total && gruposMostrados < maxVisibles; i++) {
+            Item item = items.get(i);
+            if (item != null && esPrimeraAparicion(items, i)) {
+                panelInventario.getChildren().add(crearLineaInventario(
+                    "- " + item.getNombre() + " x" + contarItems(items, item.getId())));
+                gruposMostrados++;
+            }
+        }
+        if (gruposTotales > gruposMostrados) {
+            panelInventario.getChildren().add(crearLineaInventario("- +" + (gruposTotales - gruposMostrados)
+                + " más..."));
+        }
+    }
+
+    /**
+     * Configura atajos de teclado para las acciones principales de turno.
+     */
+    private void configurarAtajosTeclado() {
+        scene.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            KeyCode code = event.getCode();
+            if (code == KeyCode.M) {
+                controller.onSaltarMovimiento();
+                event.consume();
+            } else if (code == KeyCode.R) {
+                controller.onRecoger();
+                event.consume();
+            } else if (code == KeyCode.A) {
+                controller.onUsarAcceso();
+                event.consume();
+            } else if (code == KeyCode.L) {
+                controller.onActivarPalanca();
+                event.consume();
+            } else if (code == KeyCode.S) {
+                controller.onSaltarRecogida();
+                event.consume();
+            } else if (code == KeyCode.U) {
+                controller.onSaltarUsoItem();
+                event.consume();
+            } else if (code == KeyCode.C) {
+                controller.onCederTurno();
+                event.consume();
+            } else if (code == KeyCode.F) {
+                controller.onIniciarCombateFinal();
+                event.consume();
+            } else if (code == KeyCode.I) {
+                controller.onBotonInventario(stage);
+                event.consume();
+            }
+        });
     }
 
     /**
@@ -330,48 +564,66 @@ public class GameView implements GameModelListener {
         Phase fase = modelo.getTurnManager().getFaseActual();
         boolean partidaActiva = modelo.getTurnManager().getGameResult() == GameResult.IN_PROGRESS;
 
-        Button saltarMovimiento = crearBoton("Saltar movimiento");
+        Button saltarMovimiento = crearBoton("Saltar mov. (M)");
         saltarMovimiento.setDisable(!partidaActiva || fase != Phase.MOVEMENT);
         saltarMovimiento.setOnAction(event -> controller.onSaltarMovimiento());
 
-        Button recoger = crearBoton("Recoger");
+        Button recoger = crearBoton("Recoger (R)");
         recoger.setDisable(!partidaActiva || fase != Phase.PICKUP);
         recoger.setOnAction(event -> controller.onRecoger());
 
-        Button usarAcceso = crearBoton("Usar acceso");
+        Button usarAcceso = crearBoton("Acceso (A)");
         usarAcceso.setDisable(!partidaActiva || fase != Phase.PICKUP);
         usarAcceso.setOnAction(event -> controller.onUsarAcceso());
 
-        Button activarPalanca = crearBoton("Activar palanca");
+        Button activarPalanca = crearBoton("Palanca (L)");
         activarPalanca.setDisable(!partidaActiva || fase != Phase.PICKUP);
         activarPalanca.setOnAction(event -> controller.onActivarPalanca());
 
-        Button saltarRecogida = crearBoton("Saltar recogida");
+        Button saltarRecogida = crearBoton("Saltar rec. (S)");
         saltarRecogida.setDisable(!partidaActiva || fase != Phase.PICKUP);
         saltarRecogida.setOnAction(event -> controller.onSaltarRecogida());
 
-        Button saltarUsoItem = crearBoton("Saltar uso item");
+        Button saltarUsoItem = crearBoton("Saltar item (U)");
         saltarUsoItem.setDisable(!partidaActiva || fase != Phase.USE_ITEM);
         saltarUsoItem.setOnAction(event -> controller.onSaltarUsoItem());
 
-        Button cederTurno = crearBoton("Ceder turno");
+        Button cederTurno = crearBoton(fase == Phase.ATTACK ? "Saltar atk. (C)" : "Ceder (C)");
         cederTurno.setDisable(!partidaActiva);
         cederTurno.setOnAction(event -> controller.onCederTurno());
 
-        Button combateFinal = crearBoton("Iniciar combate final");
+        Button combateFinal = crearBoton("Final (F)");
         combateFinal.setDisable(!puedeIntentarCombateFinal(room));
         combateFinal.setOnAction(event -> controller.onIniciarCombateFinal());
 
-        panelLateral.getChildren().addAll(
-            saltarMovimiento,
-            recoger,
-            usarAcceso,
-            activarPalanca,
-            saltarRecogida,
-            saltarUsoItem,
-            cederTurno,
-            combateFinal
-        );
+        if (partidaActiva && fase == Phase.ATTACK) {
+            panelLateral.getChildren().add(crearAyuda("Selecciona un enemigo resaltado en rojo para atacar."));
+        }
+
+        GridPane acciones = new GridPane();
+        acciones.setHgap(8);
+        acciones.setVgap(8);
+        agregarBotonAccion(acciones, saltarMovimiento, 0);
+        agregarBotonAccion(acciones, recoger, 1);
+        agregarBotonAccion(acciones, usarAcceso, 2);
+        agregarBotonAccion(acciones, activarPalanca, 3);
+        agregarBotonAccion(acciones, saltarRecogida, 4);
+        agregarBotonAccion(acciones, saltarUsoItem, 5);
+        agregarBotonAccion(acciones, cederTurno, 6);
+        agregarBotonAccion(acciones, combateFinal, 7);
+        panelLateral.getChildren().add(acciones);
+    }
+
+    /**
+     * Inserta un boton de accion en una rejilla compacta de dos columnas.
+     *
+     * @param acciones rejilla de botones
+     * @param boton boton que se inserta
+     * @param indice posicion lineal dentro de la rejilla
+     */
+    private void agregarBotonAccion(GridPane acciones, Button boton, int indice) {
+        boton.setPrefWidth(132);
+        acciones.add(boton, indice % 2, indice / 2);
     }
 
     /**
@@ -383,6 +635,19 @@ public class GameView implements GameModelListener {
     private Label crearTitulo(String texto) {
         Label label = new Label(texto);
         label.setFont(Font.font("Serif", 26));
+        label.setStyle("-fx-text-fill: #f5f0e6;");
+        return label;
+    }
+
+    /**
+     * Crea una etiqueta de titulo secundaria para secciones del panel lateral.
+     *
+     * @param texto texto visible
+     * @return etiqueta configurada
+     */
+    private Label crearTituloSeccion(String texto) {
+        Label label = new Label(texto);
+        label.setFont(Font.font("Serif", 19));
         label.setStyle("-fx-text-fill: #f5f0e6;");
         return label;
     }
@@ -419,6 +684,103 @@ public class GameView implements GameModelListener {
     }
 
     /**
+     * Crea una ayuda contextual para la fase actual.
+     *
+     * @param texto texto visible
+     * @return etiqueta configurada
+     */
+    private Label crearAyuda(String texto) {
+        Label label = new Label(texto);
+        label.setWrapText(true);
+        label.setStyle("-fx-text-fill: #d7c8aa;");
+        return label;
+    }
+
+    /**
+     * Crea una linea compacta para mostrar nombres de items en el panel lateral.
+     *
+     * @param texto texto visible
+     * @return etiqueta configurada
+     */
+    private Label crearLineaInventario(String texto) {
+        Label label = new Label(texto);
+        label.setWrapText(true);
+        label.setStyle("-fx-text-fill: #c9b99c;");
+        return label;
+    }
+
+    /**
+     * Cuenta cuantos grupos de item distintos existen por ID.
+     *
+     * @param items lista consultada
+     * @return numero de grupos visuales
+     */
+    private int contarGruposItems(ListaSimplementeEnlazada<Item> items) {
+        int grupos = 0;
+        if (items == null) {
+            return grupos;
+        }
+        for (int i = 0; i < items.getSize(); i++) {
+            if (items.get(i) != null && esPrimeraAparicion(items, i)) {
+                grupos++;
+            }
+        }
+        return grupos;
+    }
+
+    /**
+     * Indica si un item es la primera aparicion de su ID dentro de la lista.
+     *
+     * @param items lista consultada
+     * @param indice indice del item actual
+     * @return true si no existe otro item con el mismo ID antes
+     */
+    private boolean esPrimeraAparicion(ListaSimplementeEnlazada<Item> items, int indice) {
+        Item item = items.get(indice);
+        if (item == null) {
+            return false;
+        }
+        for (int i = 0; i < indice; i++) {
+            Item anterior = items.get(i);
+            if (anterior != null && item.getId().equals(anterior.getId())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Cuenta cuantas unidades de un item existen en una lista.
+     *
+     * @param items lista consultada
+     * @param id id del item
+     * @return cantidad encontrada
+     */
+    private int contarItems(ListaSimplementeEnlazada<Item> items, String id) {
+        int cantidad = 0;
+        if (items == null || id == null) {
+            return cantidad;
+        }
+        for (int i = 0; i < items.getSize(); i++) {
+            Item item = items.get(i);
+            if (item != null && id.equals(item.getId())) {
+                cantidad++;
+            }
+        }
+        return cantidad;
+    }
+
+    /**
+     * Devuelve el nombre visible de un item o guion si el slot esta vacio.
+     *
+     * @param item item consultado
+     * @return nombre visible
+     */
+    private String nombreItem(Item item) {
+        return item == null ? "-" : item.getNombre();
+    }
+
+    /**
      * Crea un boton del panel lateral.
      *
      * @param texto texto visible
@@ -442,7 +804,7 @@ public class GameView implements GameModelListener {
      * @param cell celda consultada
      * @return color JavaFX
      */
-    private Color colorCelda(Cell cell) {
+    private Color colorCelda(Room room, Cell cell) {
         CellType tipo = cell.getTipo();
         if (tipo == CellType.WALL) {
             return Color.web("#3a3a3a");
@@ -460,15 +822,148 @@ public class GameView implements GameModelListener {
             return Color.web("#5f5b74");
         }
         if (tipo == CellType.LEVER) {
+            if (isPuzzleCellActive(room, cell)) {
+                return Color.web("#3f8f4f");
+            }
             return Color.web("#6f613b");
         }
         if (tipo == CellType.RUNE) {
+            if (isPuzzleCellActive(room, cell)) {
+                return Color.web("#3f8f4f");
+            }
             return Color.web("#324f64");
         }
         if (tipo == CellType.TRAP) {
             return Color.web("#b8b1a3");
         }
         return Color.web("#b8b1a3");
+    }
+
+    /**
+     * Devuelve un texto compacto con los efectos activos del jugador.
+     *
+     * @param player jugador consultado
+     * @return efectos activos o guion si no hay ninguno
+     */
+    private String textoEfectos(Player player) {
+        if (player == null || player.getEfectosActivos().getSize() == 0) {
+            return "-";
+        }
+        String texto = "";
+        for (int i = 0; i < player.getEfectosActivos().getSize(); i++) {
+            Effect efecto = player.getEfectosActivos().get(i);
+            if (efecto == null) {
+                continue;
+            }
+            if (!texto.isEmpty()) {
+                texto += ", ";
+            }
+            texto += efecto.getTipo().name() + " (" + efecto.getTurnos() + "t)";
+        }
+        return texto.isEmpty() ? "-" : texto;
+    }
+
+    /**
+     * Devuelve el texto del contador global de turnos.
+     *
+     * @return contador global visible
+     */
+    private String textoTurnoGlobal() {
+        return modelo.getTurnManager().getTurnoGlobal() + "/"
+            + modelo.getTurnManager().getTurnoGlobalMaximo();
+    }
+
+    /**
+     * Devuelve el texto del contador de turnos de sala.
+     *
+     * @return contador de sala visible
+     */
+    private String textoTurnosSala() {
+        int maximos = modelo.getTurnManager().getTurnosSalaMaximos();
+        if (maximos < 0) {
+            return "Sin límite";
+        }
+        return modelo.getTurnManager().getTurnosSalaConsumidos() + "/" + maximos;
+    }
+
+    /**
+     * Devuelve el texto visible de distancia a la salida abierta mas cercana.
+     *
+     * @return mensaje de salida para el panel de estado
+     */
+    private String textoSalidaMasCercana() {
+        if (modelo.getTurnManager().hayEnemigosVivosSalaActual()) {
+            return "Derrota a todos los enemigos.";
+        }
+        int distancia = modelo.getTurnManager().getDistanciaSalidaAbiertaMasCercana();
+        if (distancia < 0) {
+            return "No hay salidas abiertas.";
+        }
+        if (distancia == 1) {
+            return "1 casilla";
+        }
+        return distancia + " casillas";
+    }
+
+    /**
+     * Indica si una palanca o runa debe mostrarse como activada.
+     *
+     * @param room sala actual
+     * @param cell celda de puzzle consultada
+     * @return true si la celda esta activada o el puzzle ya esta resuelto
+     */
+    private boolean isPuzzleCellActive(Room room, Cell cell) {
+        if (room == null || cell == null) {
+            return false;
+        }
+        int indice = getIndicePuzzle(room, cell);
+        if (indice < 0) {
+            return false;
+        }
+        if (room.isPuzzleResolved()) {
+            return true;
+        }
+        int[] secuencia = room.getSecuenciaActivada();
+        for (int i = 0; i < secuencia.length; i++) {
+            if (secuencia[i] == indice) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Busca el indice de una celda dentro de las piezas de puzzle registradas.
+     *
+     * @param room sala consultada
+     * @param cell celda buscada por referencia
+     * @return indice de puzzle, o -1 si no esta registrada
+     */
+    private int getIndicePuzzle(Room room, Cell cell) {
+        int indice = getIndicePorReferencia(room.getLeverCells(), cell);
+        if (indice >= 0) {
+            return indice;
+        }
+        return getIndicePorReferencia(room.getRuneCells(), cell);
+    }
+
+    /**
+     * Busca una celda por identidad real dentro de una lista propia.
+     *
+     * @param celdas lista consultada
+     * @param cell celda buscada
+     * @return posicion por referencia, o -1 si no existe
+     */
+    private int getIndicePorReferencia(ListaSimplementeEnlazada<Cell> celdas, Cell cell) {
+        if (celdas == null || cell == null) {
+            return -1;
+        }
+        for (int i = 0; i < celdas.getSize(); i++) {
+            if (celdas.get(i) == cell) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     /**
@@ -488,6 +983,64 @@ public class GameView implements GameModelListener {
     }
 
     /**
+     * Devuelve el color principal del sprite del jugador.
+     *
+     * @param player jugador consultado
+     * @return color CSS hexadecimal
+     */
+    private String colorJugador(Player player) {
+        if (player.getTipo().name().equals("SYRA")) {
+            return "#72b37e";
+        }
+        if (player.getTipo().name().equals("DORATH")) {
+            return "#a58bd5";
+        }
+        return "#7ba4d8";
+    }
+
+    /**
+     * Devuelve el color secundario del cuerpo del sprite del jugador.
+     *
+     * @param player jugador consultado
+     * @return color CSS hexadecimal
+     */
+    private String colorJugadorOscuro(Player player) {
+        if (player.getTipo().name().equals("SYRA")) {
+            return "#2f6b42";
+        }
+        if (player.getTipo().name().equals("DORATH")) {
+            return "#5b478b";
+        }
+        return "#355d8a";
+    }
+
+    /**
+     * Devuelve el color de silueta segun el tipo de enemigo.
+     *
+     * @param enemy enemigo consultado
+     * @return color CSS hexadecimal
+     */
+    private String colorEnemigo(Enemy enemy) {
+        String tipo = enemy.getTipo().name();
+        if ("ARCHER".equals(tipo) || "SNIPER".equals(tipo)) {
+            return "#6a4b2d";
+        }
+        if ("CONTROLLER".equals(tipo) || "SUMMONER".equals(tipo) || "ECO_DE_MAGIA".equals(tipo)) {
+            return "#563b78";
+        }
+        if ("GUARDIAN".equals(tipo) || "CONSTRUCTO".equals(tipo) || "DESTRUCTOR".equals(tipo)) {
+            return "#4b5560";
+        }
+        if ("SOMBRA_ABSORBIDA".equals(tipo) || "PARASITO".equals(tipo)) {
+            return "#2f1d35";
+        }
+        if ("BERSERKER".equals(tipo)) {
+            return "#7c2f2f";
+        }
+        return "#5c2424";
+    }
+
+    /**
      * Indica si una celda debe resaltarse como alcanzable por movimiento.
      *
      * @param room sala actual
@@ -501,7 +1054,53 @@ public class GameView implements GameModelListener {
         Player player = modelo.getPlayer();
         ListaSimplementeEnlazada<Cell> alcanzables = BFSMovimiento.getCellsInRange(
             room, player.getFilaActual(), player.getColActual(), player.getMovEfectivo());
-        return alcanzables.contains(cell);
+        return contieneCeldaPorReferencia(alcanzables, cell);
+    }
+
+    /**
+     * Indica si una celda contiene un enemigo atacable en la fase actual.
+     *
+     * @param room sala actual
+     * @param cell celda consultada
+     * @return true si contiene un enemigo dentro de rango y vision
+     */
+    private boolean isEnemigoAtacable(Room room, Cell cell) {
+        if (modelo.getTurnManager().getFaseActual() != Phase.ATTACK || room == null || cell == null) {
+            return false;
+        }
+        Unit unit = cell.getUnit();
+        return unit instanceof Enemy && CombatManager.estaEnRango(modelo.getPlayer(), unit, room);
+    }
+
+    /**
+     * Indica si la celda contiene un enemigo durante la fase de ataque.
+     *
+     * @param cell celda consultada
+     * @return true si hay enemigo visible para orientar al jugador
+     */
+    private boolean isEnemigoVisibleEnAtaque(Cell cell) {
+        return modelo.getTurnManager().getFaseActual() == Phase.ATTACK
+            && cell != null
+            && cell.getUnit() instanceof Enemy;
+    }
+
+    /**
+     * Comprueba identidad real de celda dentro de una lista de resultados BFS.
+     *
+     * @param celdas lista consultada
+     * @param buscada celda buscada
+     * @return true si la instancia exacta esta presente
+     */
+    private boolean contieneCeldaPorReferencia(ListaSimplementeEnlazada<Cell> celdas, Cell buscada) {
+        if (celdas == null || buscada == null) {
+            return false;
+        }
+        for (int i = 0; i < celdas.getSize(); i++) {
+            if (celdas.get(i) == buscada) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

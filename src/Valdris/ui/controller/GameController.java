@@ -53,11 +53,19 @@ public class GameController {
      */
     public void onCeldaClick(int fila, int col) {
         if (modelo.getTurnManager().getFaseActual() == Phase.MOVEMENT) {
+            if (contieneEnemigo(fila, col)) {
+                modelo.notificarMensaje("Para atacar primero debes llegar a la fase ATTACK.");
+                return;
+            }
             ejecutarMovimiento(fila, col);
         } else if (modelo.getTurnManager().getFaseActual() == Phase.ATTACK) {
             ejecutarAtaqueCelda(fila, col);
         } else {
-            modelo.notificarMensaje("La celda solo se usa para mover o atacar en la fase correspondiente.");
+            if (contieneEnemigo(fila, col)) {
+                modelo.notificarMensaje("Resuelve la fase actual antes de atacar.");
+            } else {
+                modelo.notificarMensaje("La celda solo se usa para mover o atacar en la fase correspondiente.");
+            }
         }
     }
 
@@ -262,6 +270,26 @@ public class GameController {
             modelo.notificarMensaje(null);
         } catch (InvalidMoveException | InvalidAttackException | GameStateException e) {
             modelo.notificarMensaje(e.getMessage());
+        }
+    }
+
+    /**
+     * Indica si una coordenada contiene un enemigo.
+     *
+     * @param fila fila consultada
+     * @param col columna consultada
+     * @return true si la celda contiene enemigo
+     */
+    private boolean contieneEnemigo(int fila, int col) {
+        try {
+            Room room = modelo.getDungeon().getRoomActual();
+            if (room == null || !room.isEnRango(fila, col)) {
+                return false;
+            }
+            Cell cell = room.getCell(fila, col);
+            return cell.getUnit() instanceof Enemy;
+        } catch (InvalidMoveException e) {
+            return false;
         }
     }
 }

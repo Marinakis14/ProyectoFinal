@@ -53,6 +53,9 @@ public class Room implements Comparable<Room> {
     /** Turnos restantes si la sala tiene temporizador, o -1 si no lo tiene. */
     private int turnosRestantes;
 
+    /** Turnos maximos configurados para la sala, o -1 si no tiene limite. */
+    private int turnosMaximos;
+
     /** Indica si el jugador ya ha entrado en esta sala alguna vez. */
     private boolean explorada;
 
@@ -85,6 +88,9 @@ public class Room implements Comparable<Room> {
 
     /** Daño aplicado al jugador si falla el puzzle de esta sala. */
     private int puzzleFailureDamage;
+
+    /** Número de fallos acumulados del puzzle de esta sala. */
+    private int puzzleFailureCount;
 
     /** IDs de triggers secretos presentes en la sala. */
     private final ListaSimplementeEnlazada<String> secretTriggerIds;
@@ -130,6 +136,7 @@ public class Room implements Comparable<Room> {
         this.allyNpc = null;
         this.hasRoomTimer = false;
         this.turnosRestantes = -1;
+        this.turnosMaximos = -1;
         this.explorada = false;
         this.filaJugador = 0;
         this.colJugador = 0;
@@ -141,6 +148,7 @@ public class Room implements Comparable<Room> {
         this.puzzleResolved = false;
         this.puzzleSuccessTarget = null;
         this.puzzleFailureDamage = 3;
+        this.puzzleFailureCount = 0;
         this.secretTriggerIds = new ListaSimplementeEnlazada<>();
         this.secretTargetIds = new ListaSimplementeEnlazada<>();
         this.dialogoKael = null;
@@ -326,6 +334,7 @@ public class Room implements Comparable<Room> {
         this.secuenciaActivada = new int[this.correctSequence.length];
         this.secuenciaActivadaSize = 0;
         this.puzzleResolved = false;
+        this.puzzleFailureCount = 0;
     }
 
     /**
@@ -379,6 +388,13 @@ public class Room implements Comparable<Room> {
             }
         }
         return true;
+    }
+
+    /**
+     * Incrementa el contador de fallos del puzzle.
+     */
+    public void incrementarPuzzleFailureCount() {
+        puzzleFailureCount++;
     }
 
     /**
@@ -697,6 +713,9 @@ public class Room implements Comparable<Room> {
      */
     public void setPuzzleResolved(boolean puzzleResolved) {
         this.puzzleResolved = puzzleResolved;
+        if (puzzleResolved) {
+            this.puzzleFailureCount = 0;
+        }
     }
 
     /**
@@ -740,6 +759,28 @@ public class Room implements Comparable<Room> {
     }
 
     /**
+     * Devuelve el número de fallos acumulados del puzzle.
+     *
+     * @return fallos acumulados
+     */
+    public int getPuzzleFailureCount() {
+        return puzzleFailureCount;
+    }
+
+    /**
+     * Configura el número de fallos acumulados del puzzle.
+     *
+     * @param puzzleFailureCount fallos acumulados, mínimo 0
+     */
+    public void setPuzzleFailureCount(int puzzleFailureCount) {
+        if (puzzleFailureCount < 0) {
+            this.puzzleFailureCount = 0;
+        } else {
+            this.puzzleFailureCount = puzzleFailureCount;
+        }
+    }
+
+    /**
      * Indica si la sala tiene temporizador.
      *
      * @return true si hay límite de turnos
@@ -757,6 +798,35 @@ public class Room implements Comparable<Room> {
         this.hasRoomTimer = hasRoomTimer;
         if (!hasRoomTimer) {
             this.turnosRestantes = -1;
+            this.turnosMaximos = -1;
+        } else if (this.turnosMaximos < 0 && this.turnosRestantes >= 0) {
+            this.turnosMaximos = this.turnosRestantes;
+        } else if (this.turnosMaximos >= 0 && this.turnosRestantes < 0) {
+            this.turnosRestantes = this.turnosMaximos;
+        }
+    }
+
+    /**
+     * Configura el limite de turnos de la sala y reinicia el contador.
+     *
+     * @param turnosMaximos turnos permitidos, o negativo para quitar el limite
+     */
+    public void configurarTimerSala(int turnosMaximos) {
+        if (turnosMaximos < 0) {
+            setHasRoomTimer(false);
+            return;
+        }
+        this.hasRoomTimer = true;
+        this.turnosMaximos = turnosMaximos;
+        this.turnosRestantes = turnosMaximos;
+    }
+
+    /**
+     * Reinicia el temporizador de sala a su maximo configurado.
+     */
+    public void reiniciarTimerSala() {
+        if (hasRoomTimer && turnosMaximos >= 0) {
+            turnosRestantes = turnosMaximos;
         }
     }
 
@@ -770,6 +840,32 @@ public class Room implements Comparable<Room> {
     }
 
     /**
+     * Devuelve el maximo de turnos configurado para la sala.
+     *
+     * @return turnos maximos, o -1 si no hay temporizador
+     */
+    public int getTurnosMaximos() {
+        return turnosMaximos;
+    }
+
+    /**
+     * Configura el maximo de turnos de sala sin modificar los turnos restantes.
+     *
+     * @param turnosMaximos maximo de turnos, o negativo para quitar el limite
+     */
+    public void setTurnosMaximos(int turnosMaximos) {
+        if (turnosMaximos < 0) {
+            setHasRoomTimer(false);
+            return;
+        }
+        this.turnosMaximos = turnosMaximos;
+        this.hasRoomTimer = true;
+        if (this.turnosRestantes < 0 || this.turnosRestantes > turnosMaximos) {
+            this.turnosRestantes = turnosMaximos;
+        }
+    }
+
+    /**
      * Configura los turnos restantes de la sala.
      *
      * @param turnosRestantes nuevo contador de turnos
@@ -777,6 +873,11 @@ public class Room implements Comparable<Room> {
     public void setTurnosRestantes(int turnosRestantes) {
         this.turnosRestantes = turnosRestantes;
         this.hasRoomTimer = turnosRestantes >= 0;
+        if (!this.hasRoomTimer) {
+            this.turnosMaximos = -1;
+        } else if (this.turnosMaximos < turnosRestantes) {
+            this.turnosMaximos = turnosRestantes;
+        }
     }
 
     /**

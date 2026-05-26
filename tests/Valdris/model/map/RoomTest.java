@@ -41,6 +41,7 @@ class RoomTest {
         assertEquals(0, room.getEnemigos().getSize());
         assertFalse(room.hasRoomTimer());
         assertEquals(-1, room.getTurnosRestantes());
+        assertEquals(-1, room.getTurnosMaximos());
         assertFalse(room.isExplorada());
         assertEquals(0, room.getFilaJugador());
         assertEquals(0, room.getColJugador());
@@ -162,6 +163,7 @@ class RoomTest {
 
         // Assert
         assertEquals(1, room.getTurnosRestantes());
+        assertEquals(2, room.getTurnosMaximos());
     }
 
     @Test
@@ -184,6 +186,22 @@ class RoomTest {
         // Assert
         assertFalse(room.hasRoomTimer());
         assertEquals(-1, room.getTurnosRestantes());
+        assertEquals(-1, room.getTurnosMaximos());
+    }
+
+    @Test
+    void configurarTimerSala_guardaMaximoYReiniciaRestantes() throws GameStateException {
+        // Arrange
+        room.configurarTimerSala(4);
+        room.decrementarTimer();
+
+        // Act
+        room.reiniciarTimerSala();
+
+        // Assert
+        assertTrue(room.hasRoomTimer());
+        assertEquals(4, room.getTurnosMaximos());
+        assertEquals(4, room.getTurnosRestantes());
     }
 
     // -- Celda libre cercana -------------------------------------------------

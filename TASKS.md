@@ -28,8 +28,8 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | Capas 2, 3 y 4 | Completadas y testeadas |
 | Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga, TurnManager, ItemGenerator, PuzzleManager y DungeonGenerator completados |
 | Capa 6 inicial | GameState, LoadedGame, GameSummary y LectorJSON completados |
-| Capa 7 JavaFX | Pantallas principales, partida, inventario, autoguardado, diálogos y pantalla final completados |
-| Tests JUnit actuales | 401 tests pasando |
+| Capa 7 JavaFX | Pantallas principales, partida, inventario, autoguardado, diálogos, pantalla final, correcciones jugables, redistribución de pantalla, sprites de unidades, feedback visual de puzzles y distancia a salida completados |
+| Tests JUnit actuales | 415 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
 ---
@@ -133,6 +133,10 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 22 | Ajustar estadísticas de enemigos nuevos según tabla acordada | ✅ Completado |
 | 23 | Implementar penetración natural de defensa para `ECO_DE_MAGIA` | ✅ Completado |
 | 24 | Implementar `MiniBossEnemy` con estadísticas propias y tipo narrativo | ✅ Completado |
+| 25 | Ajustar el ataque base de Kael, Syra y Dorath con +5 de daño inicial | ✅ Completado |
+| 26 | Reducir el movimiento base de Syra de 5 a 4 para compensar el anillo de velocidad inicial | ✅ Completado |
+| 27 | Añadir 3 puntos de defensa base a todos los personajes jugables | ✅ Completado |
+| 28 | Aplicar un segundo aumento de +5 al ataque base de Kael, Syra y Dorath | ✅ Completado |
 
 ---
 
@@ -175,6 +179,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 33 | Añadir limpieza de resaltado y validación de celdas de llegada en `Room` | ✅ Completado |
 | 34 | Crear `HiddenPassage` como pasadizo oculto comparable | ✅ Completado |
 | 35 | Añadir pasadizos ocultos activables en `Dungeon` | ✅ Completado |
+| 36 | Hacer las celdas `LEVER` no transitables para que jugador y enemigos no oculten palancas | ✅ Completado |
 
 ---
 
@@ -278,6 +283,12 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 83 | Integrar habilidades especiales de mini-bosses en `IAEnemigo` | ✅ Completado |
 | 84 | Registrar habilidades especiales de mini-bosses en el log estructurado | ✅ Completado |
 | 85 | Convertir el Golem a unidad 1x1 y eliminar `isOcupa2x2()` | ✅ Completado |
+| 86 | Aumentar en +5 el daño base de todas las armas oficiales W1-W12 | ✅ Completado |
+| 87 | Aumentar en +3 la defensa de armaduras y escudos oficiales A1-A8 | ✅ Completado |
+| 88 | Conectar drops de enemigos normales generados en `DungeonGenerator` usando `ItemGenerator.crearDropEnemigo(...)` | ✅ Completado |
+| 89 | Aplicar un segundo aumento de +5 al daño base de todas las armas oficiales W1-W12 | ✅ Completado |
+| 90 | Convertir los drops de enemigos normales en garantizados al 100%, incluyendo `CONSTRUCTO`, `SOMBRA_ABSORBIDA` y `ECO_DE_MAGIA` | ✅ Completado |
+| 91 | Bloquear el uso de puertas y escaleras mientras queden enemigos vivos en la sala actual | ✅ Completado |
 
 ---
 
@@ -324,6 +335,26 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 15 | Implementar autoguardado en checkpoints y carga básica desde JavaFX | ✅ Completado |
 | 16 | Implementar diálogos y pantalla final | ✅ Completado |
 | 17 | Implementar exportación manual de `resumen_valdris.json` desde la pantalla final | ✅ Completado |
+| 18 | Corregir validación de movimiento para comparar celdas por referencia real | ✅ Completado |
+| 19 | Mejorar feedback de ataque en JavaFX con resaltado de enemigos y mensajes de fase | ✅ Completado |
+| 20 | Mostrar HP actual/máximo de enemigos directamente en las celdas del mapa | ✅ Completado |
+| 21 | Mostrar resumen de equipo e inventario del jugador en el panel lateral de partida | ✅ Completado |
+| 22 | Hacer el log de acciones más visible con título, más líneas y altura fija | ✅ Completado |
+| 23 | Maximizar y permitir redimensionar la ventana principal de JavaFX | ✅ Completado |
+| 24 | Redistribuir `GameView` en panel izquierdo de estado/acciones, mapa central y panel derecho de inventario | ✅ Completado |
+| 25 | Sustituir letras de jugador y enemigos por mini-sprites visuales en el mapa | ✅ Completado |
+| 26 | Mostrar efectos activos del jugador en el panel de estado para entender acciones de enemigos como `CONTROLLER` | ✅ Completado |
+| 27 | Mostrar palancas y runas activadas en verde durante la secuencia y tras resolver el puzzle | ✅ Completado |
+| 28 | Registrar mensajes claros de combinación correcta o incorrecta al cerrar una secuencia de puzzle | ✅ Completado |
+| 29 | Ajustar el margen inferior del log para que los últimos mensajes queden ligeramente más arriba | ✅ Completado |
+| 30 | Recortar las líneas visibles del log y reservar una franja inferior vacía equivalente a dos líneas | ✅ Completado |
+| 31 | Mostrar pistas progresivas de puzzle tras cada fallo con daño y revelar la combinación completa al completar las pistas | ✅ Completado |
+| 32 | Persistir el contador de fallos acumulados de puzzle en guardado/carga | ✅ Completado |
+| 33 | Actualizar los stats visibles de selección de personaje tras el ajuste de balance | ✅ Completado |
+| 34 | Agrupar visualmente items repetidos por ID en el panel lateral y en el modal de inventario | ✅ Completado |
+| 35 | Añadir atajos de teclado visibles en los botones de acción de la pantalla de partida | ✅ Completado |
+| 36 | Revertir el +3 de defensa de armaduras y escudos oficiales A1-A8 manteniendo defensa base 3 en personajes | ✅ Completado |
+| 37 | Mostrar en la pantalla de partida la distancia a la salida abierta más cercana o el bloqueo por enemigos/salidas cerradas | ✅ Completado |
 
 ---
 
@@ -396,6 +427,18 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 26 | Suite tras JavaFX subbloque 5: inventario modal | ✅ Correcta |
 | 27 | Suite tras JavaFX subbloque 6: autoguardado en checkpoints y carga básica | ✅ Correcta |
 | 28 | Suite tras JavaFX subbloque 7: diálogos y pantalla final | ✅ Correcta |
+| 29 | Suite tras corrección JavaFX de movimiento y feedback de ataque | ✅ Correcta |
+| 30 | Suite tras mejoras de visibilidad de enemigos, inventario y log | ✅ Correcta |
+| 31 | Suite tras ventana maximizada y redistribución de `GameView` | ✅ Correcta |
+| 32 | Suite tras mini-sprites visuales de jugador y enemigos | ✅ Correcta |
+| 33 | Suite tras feedback visual de puzzles, efectos activos y ajuste de log | ✅ Correcta |
+| 34 | Suite tras pistas progresivas de puzzle y recorte inferior del log | ✅ Correcta |
+| 35 | Suite tras palancas no transitables, +5 de daño a personajes/armas y Syra con movimiento 4 | ✅ Correcta |
+| 36 | Suite tras defensa base de jugadores, armaduras/escudos reforzados y drops normales conectados | ✅ Correcta |
+| 37 | Suite tras segundo ajuste de daño, drops garantizados y accesos bloqueados por enemigos vivos | ✅ Correcta |
+| 38 | Suite tras agrupación visual de inventario y atajos de teclado de acciones JavaFX | ✅ Correcta |
+| 39 | Suite tras revertir defensa extra de A1-A8 y mantener defensa base de personajes | ✅ Correcta |
+| 40 | Suite tras tests de conectividad estructural y distancia a salida abierta más cercana | ✅ Correcta |
 
 Última verificación completa:
 
@@ -406,7 +449,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 Resultado:
 
 ```text
-401 tests, 0 failures, 0 errors, 0 skipped
+415 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---
@@ -485,6 +528,23 @@ Resultado:
 | 68 | JavaFX usa un único slot `partida_valdris.json` y autoguarda solo al entrar en checkpoints acordados | ✅ Aceptada |
 | 69 | Los diálogos narrativos de sala se muestran automáticamente en modal y se consumen una sola vez desde `GameModel` | ✅ Aceptada |
 | 70 | La pantalla final permite exportar manualmente `resumen_valdris.json`; no se exporta automáticamente | ✅ Aceptada |
+| 71 | La validación de rango de movimiento debe comparar instancias de `Cell` por referencia, no mediante `compareTo` | ✅ Aceptada |
+| 72 | En fase `ATTACK`, JavaFX resalta en rojo enemigos atacables y muestra ayuda contextual antes de seleccionar objetivo | ✅ Aceptada |
+| 73 | La pantalla principal debe mostrar información jugable esencial sin depender de modales: HP enemigo, equipo, inventario resumido y log visible | ✅ Aceptada |
+| 74 | La ventana JavaFX debe abrir maximizada y `GameView` debe repartir información en paneles laterales para aprovechar todo el ancho disponible | ✅ Aceptada |
+| 75 | Jugador y enemigos deben representarse en el mapa con mini-sprites visuales, no solo letras | ✅ Aceptada |
+| 76 | Los efectos activos del jugador y el estado de palancas/runas deben ser visibles en la pantalla principal para evitar que acciones de IA o puzzles parezcan no responder | ✅ Aceptada |
+| 77 | Los puzzles deben mostrar pistas progresivas tras cada fallo con daño y revelar la combinación completa cuando ya se hayan mostrado todas las piezas | ✅ Aceptada |
+| 78 | Las palancas `LEVER` no son transitables porque se activan desde una celda adyacente; las runas `RUNE` siguen siendo transitables porque se activan al pisarlas | ✅ Aceptada |
+| 79 | El balance provisional aumenta +5 el ataque base de personajes y armas oficiales, y deja a Syra con movimiento base 4 | ✅ Aceptada |
+| 80 | Los jugadores tienen defensa base 3 y los objetos defensivos A1-A8 reciben +3 defensa; `AC8` conserva su bonus de defensa actual | ✅ Aceptada |
+| 81 | Los enemigos normales reciben drop probabilístico al generarse; los mini-bosses conservan sus drops narrativos fijos | ✅ Aceptada |
+| 82 | Los enemigos normales pasan a tener drop garantizado al 100%; `PARASITO` queda fuera porque es la entidad final y no se genera como enemigo normal de sala | ✅ Aceptada |
+| 83 | Las puertas y escaleras usadas desde `PICKUP` exigen limpiar primero todos los enemigos vivos de la sala actual, además de llave, puzzle, orientación y llegada válida | ✅ Aceptada |
+| 84 | La agrupación de inventario es visual por `item.getId()`; la lista interna conserva unidades individuales para no cambiar persistencia ni reglas de uso | ✅ Aceptada |
+| 85 | La defensa base de personajes se mantiene en 3, pero A1-A8 vuelven a sus defensas originales para no sobrerreducir el daño recibido | ✅ Aceptada |
+| 86 | La distancia visible a salida se mide hasta la celda desde la que puede usarse la puerta/escalera abierta; si el jugador ya está al lado, marca 0 casillas | ✅ Aceptada |
+| 87 | La partida tiene 500 turnos globales; las salas normales tienen 20/25, mini-bosses 35, S5-D 50, y puzzles/pasillos no tienen límite de sala | ✅ Aceptada |
 
 ---
 

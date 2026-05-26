@@ -2236,6 +2236,54 @@ item y cierre el modal tras una acción correcta.
 
 ---
 
+### Sesion 49 — 27 mayo 2026 — Codex
+
+**Objetivo:** Mejorar la lectura de secretos, reiniciar correctamente los turnos al cambiar de sala y registrar causas concretas de derrota.
+
+**Archivos trabajados:**
+- `src/Valdris/logic/turn/TurnManager.java`
+- `src/Valdris/ui/view/GameView.java`
+- `tests/Valdris/logic/turn/TurnManagerTest.java`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- Las celdas de suelo con trigger secreto se muestran de forma diferenciada en el mapa con color propio y marcador `?`.
+- Al pisar un trigger secreto, `TurnManager` activa el pasadizo y revela la puerta oculta asociada mediante el `triggerId`.
+- Las puertas secretas ya reveladas se renderizan con color verde y marcador `D`, distinguiendose de paredes y puertas normales.
+- `changeRoom(...)` limpia acciones usadas del jugador y reinicia la fase a `MOVEMENT` al entrar en una nueva sala.
+- `usarAccesoAdyacente()` deja de sobrescribir la fase a `USE_ITEM` cuando el acceso cambia realmente de sala.
+- Las derrotas por ataque enemigo se cierran inmediatamente con el actor o habilidad responsable.
+- Las derrotas por `BURN` y por fallo de puzzle registran esa causa concreta en `defeatReason`.
+- Al abrir un cofre, el log muestra un texto narrativo con el nombre e id del item encontrado antes de enviarlo al inventario.
+- `TurnManagerTest` cubre revelado de puerta secreta, reinicio de fase/acciones al cambiar de sala, causas de derrota por ataque enemigo y `BURN`, y mensaje de botin de cofre.
+
+**Problemas encontrados:**
+- Los triggers secretos ya existian en logica, pero se veian como suelo normal y la puerta oculta no cambiaba visualmente al activarse.
+- La muerte por ataque enemigo podia detectarse tarde, despues del procesamiento de efectos del jugador, y por eso terminaba mostrando "efectos de estado".
+- El acceso entre salas llamaba a `changeRoom(...)`, pero despues la accion de acceso volvia a dejar la fase en `USE_ITEM`.
+
+**Solucion aplicada:**
+- Reutilizar `triggerId` y `Room.getSecretTarget(...)` para que la UI identifique secretos sin duplicar metadatos.
+- Revelar el acceso oculto con `Room.openAccessByTrigger(...)` en el mismo momento en que se activa el pasadizo.
+- Centralizar el reseteo de fase y acciones dentro de `changeRoom(...)`.
+- Comprobar derrota justo despues del resultado de combate enemigo y construir el motivo desde `AIActionResult` o `EffectProcessingResult`.
+
+**Verificacion:**
+- `mvn -q "-Dtest=TurnManagerTest" test`: correcto.
+- `mvn -q test`: correcto, 493 tests, 0 fallos, 0 errores, 0 omitidos.
+- `rg "import java\\.util" src tests -n`: sin resultados.
+- `git diff --check`: correcto, solo avisos esperados LF/CRLF.
+
+**Decisiones tecnicas:**
+- Los secretos usan una pista visual sutil antes de activarse y una puerta claramente visible despues.
+- Entrar en cualquier sala nueva reinicia el ciclo de turno en movimiento.
+- La pantalla final debe recibir la causa concreta de muerte siempre que la logica pueda conocerla.
+
+**Commit sugerido:** `git commit -m "fix(gameplay): reveal secrets and reset room turns"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas
@@ -2373,7 +2421,7 @@ item y cierre el modal tras una acción correcta.
 Resultado:
 
 ```text
-491 tests, 0 failures, 0 errors, 0 skipped
+493 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---

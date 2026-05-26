@@ -223,7 +223,7 @@ public class GameView implements GameModelListener {
                 fondo.setStrokeWidth(1);
             }
             stack.getChildren().add(fondo);
-            agregarContenidoCelda(stack, cell);
+            agregarContenidoCelda(stack, room, cell);
             stack.setOnMouseClicked(event -> controller.onCeldaClick(fila, col));
         } catch (InvalidMoveException e) {
             Rectangle fondo = new Rectangle(CELL_SIZE, CELL_SIZE);
@@ -237,9 +237,10 @@ public class GameView implements GameModelListener {
      * Agrega texto sobre una celda si contiene unidad, item o contenedor.
      *
      * @param stack celda visual
+     * @param room sala consultada
      * @param cell celda del modelo
      */
-    private void agregarContenidoCelda(StackPane stack, Cell cell) {
+    private void agregarContenidoCelda(StackPane stack, Room room, Cell cell) {
         Unit unit = cell.getUnit();
         if (unit instanceof Enemy) {
             stack.getChildren().add(crearMarcaEnemigo((Enemy) unit));
@@ -250,7 +251,7 @@ public class GameView implements GameModelListener {
             return;
         }
 
-        String texto = contenidoCelda(cell);
+        String texto = contenidoCelda(room, cell);
         if (texto == null || texto.isEmpty()) {
             return;
         }
@@ -359,10 +360,11 @@ public class GameView implements GameModelListener {
     /**
      * Devuelve el texto de contenido para una celda.
      *
+     * @param room sala consultada
      * @param cell celda consultada
      * @return texto corto, o vacio si no hay contenido visible
      */
-    private String contenidoCelda(Cell cell) {
+    private String contenidoCelda(Room room, Cell cell) {
         Unit unit = cell.getUnit();
         if (unit != null) {
             if (unit == modelo.getPlayer()) {
@@ -381,6 +383,12 @@ public class GameView implements GameModelListener {
             return "*";
         }
 
+        if (esTriggerSecretoDeSuelo(room, cell)) {
+            return "?";
+        }
+        if (esAccesoSecretoRevelado(room, cell)) {
+            return "D";
+        }
         if (cell.getTipo() == CellType.LEVER) {
             return "L";
         }
@@ -870,6 +878,9 @@ public class GameView implements GameModelListener {
         if (tipo == CellType.WALL) {
             return Color.web("#3a3a3a");
         }
+        if (esAccesoSecretoRevelado(room, cell)) {
+            return Color.web("#2f8f7a");
+        }
         if (tipo == CellType.DOOR) {
             return Color.web("#7b5736");
         }
@@ -897,7 +908,44 @@ public class GameView implements GameModelListener {
         if (tipo == CellType.TRAP) {
             return Color.web("#b8b1a3");
         }
+        if (esTriggerSecretoDeSuelo(room, cell)) {
+            return Color.web("#c9bf9f");
+        }
         return Color.web("#b8b1a3");
+    }
+
+    /**
+     * Indica si la celda actual es una pista de pasadizo secreto pisable.
+     *
+     * @param room sala consultada
+     * @param cell celda consultada
+     * @return true si el suelo activa un secreto
+     */
+    private boolean esTriggerSecretoDeSuelo(Room room, Cell cell) {
+        return esTriggerSecreto(room, cell) && cell.getTipo() == CellType.FLOOR;
+    }
+
+    /**
+     * Indica si la celda es una puerta secreta ya revelada.
+     *
+     * @param room sala consultada
+     * @param cell celda consultada
+     * @return true si es un acceso secreto visible
+     */
+    private boolean esAccesoSecretoRevelado(Room room, Cell cell) {
+        return esTriggerSecreto(room, cell) && cell.getTipo() == CellType.DOOR && cell.isDescubierta();
+    }
+
+    /**
+     * Comprueba si el trigger de la celda corresponde a un secreto de la sala.
+     *
+     * @param room sala consultada
+     * @param cell celda consultada
+     * @return true si el trigger apunta a un secreto
+     */
+    private boolean esTriggerSecreto(Room room, Cell cell) {
+        return room != null && cell != null && cell.hasTrigger()
+            && room.getSecretTarget(cell.getTriggerId()) != null;
     }
 
     /**

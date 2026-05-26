@@ -222,9 +222,12 @@ public class TurnManager {
 
         Container container = buscarContenedorAdyacente();
         if (container != null) {
+            boolean estabaAbierto = container.isAbierto();
+            String contenido = textoContenidoContainer(container);
             container.abrir(player);
             addLog(LogEventType.PICKUP, nombreJugador(),
-                nombreJugador() + " abre " + container.getNombre() + ".", "containerId=" + container.getId());
+                mensajeAperturaContainer(container, contenido, estabaAbierto),
+                "containerId=" + container.getId() + ";items=" + contenido);
         } else {
             addLog(LogEventType.PICKUP, nombreJugador(),
                 nombreJugador() + " no encuentra contenedores adyacentes.", null);
@@ -278,12 +281,15 @@ public class TurnManager {
             throw new GameStateException("La puerta está bloqueada.");
         }
 
+        Room salaOrigen = getRoomActualObligatoria();
         resolverAcceso(acceso);
         addLog(LogEventType.ACCESS, nombreJugador(),
             nombreJugador() + " usa un acceso hacia " + acceso.getSalaDestino().getId() + ".",
             "destino=" + acceso.getSalaDestino().getId());
-        player.setHaRecogido(true);
-        faseActual = Phase.USE_ITEM;
+        if (dungeon.getRoomActual() == salaOrigen) {
+            player.setHaRecogido(true);
+            faseActual = Phase.USE_ITEM;
+        }
     }
 
     /**
@@ -310,6 +316,52 @@ public class TurnManager {
         registrarResultadoPuzzle(room, estabaResuelto, hpAntes);
         player.setHaRecogido(true);
         faseActual = Phase.USE_ITEM;
+    }
+
+    /**
+     * Construye el mensaje narrativo de apertura de un contenedor.
+     *
+     * @param container contenedor abierto
+     * @param contenido texto con los items que tenia antes de abrirse
+     * @param estabaAbierto true si ya se habia abierto antes
+     * @return mensaje para el log visible
+     */
+    private String mensajeAperturaContainer(Container container, String contenido, boolean estabaAbierto) {
+        String nombreContainer = container == null ? "el cofre" : container.getNombre();
+        if (estabaAbierto) {
+            return nombreJugador() + " revisa " + nombreContainer
+                + ", pero dentro solo queda el polvo removido de antes.";
+        }
+        if (contenido == null || contenido.isEmpty()) {
+            return nombreJugador() + " abre " + nombreContainer
+                + "; la tapa cruje, pero el interior esta vacio.";
+        }
+        return nombreJugador() + " abre " + nombreContainer
+            + "; entre madera vieja y polvo antiguo encuentra " + contenido + ".";
+    }
+
+    /**
+     * Devuelve una lista legible con los items pendientes de un contenedor.
+     *
+     * @param container contenedor consultado
+     * @return nombres de items separados por coma
+     */
+    private String textoContenidoContainer(Container container) {
+        if (container == null || container.getItems().isEmpty()) {
+            return "";
+        }
+        String texto = "";
+        for (int i = 0; i < container.getItems().getSize(); i++) {
+            Item item = container.getItems().get(i);
+            if (item == null) {
+                continue;
+            }
+            if (!texto.isEmpty()) {
+                texto += ", ";
+            }
+            texto += item.getNombre() + " [" + item.getId() + "]";
+        }
+        return texto;
     }
 
     /**
@@ -718,7 +770,7 @@ public class TurnManager {
 
         EffectProcessingResult efectosJugador = player.procesarEfectos();
         registrarResultadoEfectos(nombreJugador(), efectosJugador, player.getHp(), player.getHpMax());
-        comprobarDerrotaJugador("efectos de estado");
+        comprobarDerrotaJugador(motivoDerrotaPorEfectos(efectosJugador));
         player.resetAcciones();
         addLog(LogEventType.ENEMY_TURN, "ENEMIGOS",
             "Turno enemigo resuelto en " + room.getId() + ".", "enemigosIniciales=" + enemigosIniciales);
@@ -781,6 +833,8 @@ public class TurnManager {
         limpiarJugadorDeSalaActual();
         dungeon.setRoomActual(destino);
         moverJugadorEnSala(destino, filaEntrada, colEntrada);
+        player.resetAcciones();
+        faseActual = Phase.MOVEMENT;
         destino.reiniciarTimerSala();
         onRoomEnter();
     }
@@ -828,8 +882,10 @@ public class TurnManager {
             String target = room.getSecretTarget(actual.getTriggerId());
             boolean activado = dungeon.activateHiddenPassage(target);
             if (activado) {
+                room.openAccessByTrigger(actual.getTriggerId());
                 addLog(LogEventType.ACCESS, nombreJugador(),
-                    "Pasadizo oculto activado: " + target + ".", "target=" + target);
+                    "Una corriente de aire revela un pasadizo oculto: " + target + ".",
+                    "target=" + target + ";trigger=" + actual.getTriggerId());
             }
             return activado;
         } catch (InvalidMoveException e) {
@@ -1866,7 +1922,44 @@ public class TurnManager {
                     + " recibe " + danio + " daño.",
                 "danio=" + danio);
             registrarPistaPuzzle(room);
+            comprobarDerrotaJugador("fallo de puzzle en " + room.getId());
         }
+    }
+
+    /**
+     * Crea un motivo de derrota legible para ataques enemigos normales.
+     *
+     * @param result resultado de IA que ha dañado al jugador
+     * @return texto de causa para la pantalla final
+     */
+    private String motivoDerrotaPorIA(AIActionResult result) {
+        if (result == null) {
+            return "ataque enemigo";
+        }
+        String actor = result.getNombreActor();
+        if (result.getHabilidadEspecial() != null && !result.getHabilidadEspecial().isEmpty()) {
+            return result.getHabilidadEspecial() + " de " + actor;
+        }
+        return "ataque de " + actor;
+    }
+
+    /**
+     * Crea un motivo de derrota concreto cuando el daño viene de efectos.
+     *
+     * @param result resultado de procesar efectos del jugador
+     * @return texto de causa para la pantalla final
+     */
+    private String motivoDerrotaPorEfectos(EffectProcessingResult result) {
+        if (result == null || result.getDanioAplicado() <= 0) {
+            return "efectos de estado";
+        }
+        EffectType[] expirados = result.getEfectosExpirados();
+        for (int i = 0; i < expirados.length; i++) {
+            if (expirados[i] == EffectType.BURN) {
+                return "BURN";
+            }
+        }
+        return "efectos de estado";
     }
 
     /**
@@ -1960,6 +2053,7 @@ public class TurnManager {
         }
         if (result.getCombatResult() != null) {
             registrarCombateEnemigo(result);
+            comprobarDerrotaJugador(motivoDerrotaPorIA(result));
         }
         if (result.getEfectoAplicado() != null) {
             addLog(LogEventType.STATE, actor,

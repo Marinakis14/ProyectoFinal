@@ -249,6 +249,8 @@ class TurnManagerTest {
         assertEquals(1, player.getInventario().getSize());
         assertSame(arma, player.getInventario().get(0));
         assertEquals(Phase.USE_ITEM, turnManager.getFaseActual());
+        assertTrue(existeLog(LogEventType.PICKUP, "Punal del Errante"));
+        assertTrue(existeLog(LogEventType.PICKUP, "madera vieja"));
     }
 
     @Test
@@ -378,7 +380,9 @@ class TurnManagerTest {
         assertEquals(1, player.getColActual());
         assertSame(player, destino.getCell(1, 1).getUnit());
         assertNull(room.getCell(2, 2).getUnit());
-        assertEquals(Phase.USE_ITEM, turnManager.getFaseActual());
+        assertEquals(Phase.MOVEMENT, turnManager.getFaseActual());
+        assertFalse(player.isHaMovido());
+        assertFalse(player.isHaRecogido());
     }
 
     @Test
@@ -655,7 +659,7 @@ class TurnManagerTest {
         assertSame(destino, dungeon.getRoomActual());
         assertEquals(1, player.getFilaActual());
         assertEquals(1, player.getColActual());
-        assertEquals(Phase.USE_ITEM, turnManager.getFaseActual());
+        assertEquals(Phase.MOVEMENT, turnManager.getFaseActual());
     }
 
     @Test
@@ -713,7 +717,7 @@ class TurnManagerTest {
         // Assert
         assertEquals(CellType.DOOR, room.getCell(2, 3).getTipo());
         assertSame(destino, dungeon.getRoomActual());
-        assertEquals(Phase.USE_ITEM, turnManager.getFaseActual());
+        assertEquals(Phase.MOVEMENT, turnManager.getFaseActual());
     }
 
     @Test
@@ -744,6 +748,7 @@ class TurnManagerTest {
         dungeon.addRoom(destino);
         destino.setFilaJugador(3);
         destino.setColJugador(2);
+        turnManager.saltarMovimiento();
 
         // Act
         turnManager.changeRoom(destino);
@@ -755,6 +760,11 @@ class TurnManagerTest {
         assertEquals(2, player.getColActual());
         assertSame(player, destino.getCell(3, 2).getUnit());
         assertNull(room.getCell(2, 2).getUnit());
+        assertEquals(Phase.MOVEMENT, turnManager.getFaseActual());
+        assertFalse(player.isHaMovido());
+        assertFalse(player.isHaRecogido());
+        assertFalse(player.isHaUsadoItem());
+        assertFalse(player.isHaAtacado());
     }
 
     // -- Entrada de sala, triggers y log ------------------------------------
@@ -811,6 +821,9 @@ class TurnManagerTest {
         Room secreta = new Room("R-SEC", "Sala secreta", 3, 3);
         dungeon.connectHidden(room, secreta, "pasadizo oculto", "secret_trigger");
         room.getCell(2, 3).setTriggerId("trigger_1");
+        room.setCellType(2, 4, CellType.DOOR_HIDDEN);
+        room.getCell(2, 4).setTriggerId("trigger_1");
+        room.getCell(2, 4).setDestinoAcceso(secreta, 1, 1);
         room.addSecretTrigger("trigger_1", "secret_trigger");
 
         // Act
@@ -818,6 +831,8 @@ class TurnManagerTest {
 
         // Assert
         assertTrue(dungeon.isHiddenPassageActive("secret_trigger"));
+        assertEquals(CellType.DOOR, room.getCell(2, 4).getTipo());
+        assertTrue(room.getCell(2, 4).isDescubierta());
         assertEquals(Phase.PICKUP, turnManager.getFaseActual());
     }
 
@@ -1033,6 +1048,39 @@ class TurnManagerTest {
         // Assert
         assertTrue(existeLog(LogEventType.STATE, "recibe 3 daño por efectos"));
         assertTrue(existeLog(LogEventType.STATE, "BURN expira"));
+    }
+
+    @Test
+    void ejecutarTurnoEnemigos_siEnemigoMataRegistraAtaqueComoCausa() throws GameStateException {
+        // Arrange
+        Enemy warrior = new Enemy(EnemyType.WARRIOR, 2, 3, "R1");
+        room.addEnemigo(warrior);
+        player.setHp(1);
+        turnManager.cederTurno();
+
+        // Act
+        turnManager.ejecutarTurnoEnemigos();
+
+        // Assert
+        assertEquals(GameResult.DEFEAT, turnManager.getGameResult());
+        assertTrue(turnManager.getDefeatReason().contains("ataque de WARRIOR"));
+        assertFalse(turnManager.getDefeatReason().contains("efectos de estado"));
+    }
+
+    @Test
+    void ejecutarTurnoEnemigos_siBurnMataRegistraBurnComoCausa() throws GameStateException {
+        // Arrange
+        player.setHp(1);
+        player.addEfecto(new Effect(EffectType.BURN, 1));
+        turnManager.cederTurno();
+
+        // Act
+        turnManager.ejecutarTurnoEnemigos();
+
+        // Assert
+        assertEquals(GameResult.DEFEAT, turnManager.getGameResult());
+        assertTrue(turnManager.getDefeatReason().contains("BURN"));
+        assertFalse(turnManager.getDefeatReason().contains("efectos de estado"));
     }
 
     @Test

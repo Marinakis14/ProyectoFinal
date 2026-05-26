@@ -28,8 +28,8 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | Capas 2, 3 y 4 | Completadas y testeadas |
 | Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga, TurnManager, ItemGenerator, PuzzleManager y DungeonGenerator completados |
 | Capa 6 inicial | GameState, LoadedGame, GameSummary, LectorJSON, GameConfig y DungeonConfigLoader completados |
-| Capa 7 JavaFX | Pantallas principales, partida, inventario, autoguardado, diálogos, pantalla final, correcciones jugables, redistribución de pantalla, sprites de unidades, feedback visual de puzzles, distancia/ruta global a salida y contadores de turno completados |
-| Tests JUnit actuales | 491 tests pasando |
+| Capa 7 JavaFX | Pantallas principales, partida, inventario, autoguardado, diálogos, pantalla final, correcciones jugables, redistribución de pantalla, sprites de unidades, feedback visual de puzzles y secretos, distancia/ruta global a salida y contadores de turno completados |
+| Tests JUnit actuales | 493 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
 ---
@@ -293,6 +293,10 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 93 | Exponer desde `TurnManager` el camino de celdas de la sala actual para revelar la ruta al objetivo | ✅ Completado |
 | 94 | Resolver empates de ruta global de forma determinista por coste, distancia e id de sala destino | ✅ Completado |
 | 95 | Permitir revelar la ruta visual aunque los enemigos sigan bloqueando el uso real del acceso | ✅ Completado |
+| 96 | Revelar la puerta oculta asociada cuando el jugador pisa un trigger secreto | ✅ Completado |
+| 97 | Reiniciar fase y acciones del jugador a `MOVEMENT` al entrar en una nueva sala | ✅ Completado |
+| 98 | Registrar la causa concreta de derrota por ataque enemigo, `BURN` o fallo de puzzle | ✅ Completado |
+| 99 | Mostrar en el log el contenido concreto obtenido al abrir un cofre | ✅ Completado |
 | 96 | Considerar puertas bloqueadas conocidas como ruta de progreso para que la guía no falle antes de resolver puzzles | ✅ Completado |
 | 97 | Calcular el camino visual ignorando unidades para que los enemigos no oculten la guía de ruta | ✅ Completado |
 
@@ -373,6 +377,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 38 | Mostrar nombre de sala, turno global y turnos de sala en la pantalla principal | ✅ Completado |
 | 39 | Añadir acción y atajo `V` para revelar u ocultar la ruta global hacia el Núcleo con resaltado propio | ✅ Completado |
 | 40 | Reubicar la acción de ruta junto al dato de salida y compactar el log para que no tape mensajes en partida | ✅ Completado |
+| 41 | Diferenciar visualmente los suelos con trigger secreto y las puertas secretas reveladas | ✅ Completado |
 
 ---
 
@@ -485,6 +490,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 46 | Validación JSON de configuración inicial: parseo correcto, 34 salas, 35 conexiones, 61 enemigos y layouts con dimensiones coherentes | ✅ Correcta |
 | 47 | Suite tras cargar la configuración inicial desde JSON en `GameModel` y reconstrucción de `LectorJSON` | ✅ Correcta |
 | 48 | Suite tras configuración JSON híbrida con paredes interiores, candidatos de enemigo, pools de items y puzzles permutados | ✅ Correcta |
+| 49 | Suite tras pistas visuales de secretos, reinicio de fase al cambiar de sala y causas concretas de derrota | ✅ Correcta |
 
 Última verificación completa:
 
@@ -495,7 +501,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 Resultado:
 
 ```text
-491 tests, 0 failures, 0 errors, 0 skipped
+493 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---
@@ -599,6 +605,9 @@ Resultado:
 | 93 | La configuración inicial oficial de entrega se define en JSON con estructura fija y aleatoriedad controlada: layouts, conexiones, accesos, cofres, diálogos, posición inicial y objetivo quedan declarados; enemigos normales, drops, items de suelo y secuencias de puzzle se eligen desde pools/candidatos del propio JSON | ✅ Aceptada |
 | 94 | La partida nueva y la reconstrucción de guardados cargan el mundo base desde JSON; `DungeonGenerator` queda como utilidad histórica/testeable | ✅ Aceptada |
 | 95 | Los mini-bosses y el combate final mantienen posiciones fijas en JSON porque son hitos narrativos; la variación se limita a enemigos normales y recompensas no narrativas | ✅ Aceptada |
+| 96 | Los triggers secretos deben tener una pista visual sutil y las puertas secretas reveladas deben distinguirse claramente de paredes y puertas normales | ✅ Aceptada |
+| 97 | Cambiar de sala reinicia siempre el ciclo de turno en `MOVEMENT` y limpia las acciones usadas del jugador | ✅ Aceptada |
+| 98 | La derrota debe guardar la causa concreta disponible en el momento de la muerte, no un motivo genérico posterior | ✅ Aceptada |
 
 ---
 

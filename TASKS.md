@@ -27,9 +27,9 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 |------|--------|
 | Capas 2, 3 y 4 | Completadas y testeadas |
 | Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga, TurnManager, ItemGenerator, PuzzleManager y DungeonGenerator completados |
-| Capa 6 inicial | GameState, LoadedGame, GameSummary y LectorJSON completados |
+| Capa 6 inicial | GameState, LoadedGame, GameSummary, LectorJSON, GameConfig y DungeonConfigLoader completados |
 | Capa 7 JavaFX | Pantallas principales, partida, inventario, autoguardado, diálogos, pantalla final, correcciones jugables, redistribución de pantalla, sprites de unidades, feedback visual de puzzles, distancia/ruta global a salida y contadores de turno completados |
-| Tests JUnit actuales | 485 tests pasando |
+| Tests JUnit actuales | 491 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
 ---
@@ -317,7 +317,15 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 13 | Implementar exportación de resumen final con `exportarResumen(...)` | ✅ Completado |
 | 14 | Añadir setters controlados en `TurnManager` para restaurar fase, turno y último diálogo | ✅ Completado |
 | 15 | Añadir restauración de apertura en `Container` para carga sin entregar loot duplicado | ✅ Completado |
-| 16 | Crear `config/configuracion_inicial_valdris.json` como configuración inicial determinista del mundo completo | ✅ Completado |
+| 16 | Crear `config/configuracion_inicial_valdris.json` como configuración inicial del mundo completo | ✅ Completado |
+| 17 | Implementar `GameConfig` como DTO plano para la configuración inicial JSON | ✅ Completado |
+| 18 | Implementar `DungeonConfigLoader` para construir el dungeon desde JSON sin depender de `DungeonGenerator` | ✅ Completado |
+| 19 | Añadir `idSalaInicial` e `idSalaObjetivo` a `Dungeon` | ✅ Completado |
+| 20 | Conectar `GameModel` y `LectorJSON` para usar configuración inicial JSON al crear o reconstruir partidas | ✅ Completado |
+| 21 | Mantener `TurnManager` compatible con objetivo configurable y fallback a `S5-D` | ✅ Completado |
+| 22 | Ampliar la configuración JSON con aleatoriedad controlada para enemigos normales, drops, puzzles e items de suelo | ✅ Completado |
+| 23 | Declarar paredes interiores en los layouts JSON de salas principales manteniendo accesos y objetivos alcanzables | ✅ Completado |
+| 24 | Añadir candidatos de aparición por sala para que los enemigos normales se coloquen en casillas válidas del JSON | ✅ Completado |
 
 ---
 
@@ -401,26 +409,27 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 27 | `GameStateTest` | ✅ Completado |
 | 28 | `LectorJSONTest` | ✅ Completado |
 | 29 | `GameLogEntryTest` | ✅ Completado |
-| 30 | `MiniBossAITest` | ✅ Completado |
-| 31 | `MalacharAllyTest` | ✅ Completado |
-| 32 | `ParasitoEnemyTest` | ✅ Completado |
-| 33 | `TurnManagerFinalBossTest` | ✅ Completado |
-| 34 | `LectorJSONFinalBossTest` | ✅ Completado |
-| 35 | `MisEstructurasDeDatos.Arbolesbinarios.ArbolBinarioDeBusquedaEnterosTest` | ✅ Completado |
-| 36 | `MisEstructurasDeDatos.Arbolesbinarios.ArbolBinarioDeBusquedaEquilibradoTest` | ✅ Completado |
-| 37 | `MisEstructurasDeDatos.Arbolesbinarios.ArbolBinarioDeBusquedaTest` | ✅ Completado |
-| 38 | `MisEstructurasDeDatos.Arbolesbinarios.NodoTest` | ✅ Completado |
-| 39 | `MisEstructurasDeDatos.Arbolesbinarios.MainTest` | ✅ Completado |
-| 40 | `MisEstructurasDeDatos.Grafos.AristaTest` | ✅ Completado |
-| 41 | `MisEstructurasDeDatos.Grafos.DatosGrafoJsonTest` | ✅ Completado |
-| 42 | `MisEstructurasDeDatos.Grafos.GrafoTest` | ✅ Completado |
-| 43 | `MisEstructurasDeDatos.Grafos.LectorGrafoJsonTest` | ✅ Completado |
-| 44 | `MisEstructurasDeDatos.Grafos.NodoTest` | ✅ Completado |
-| 45 | `MisEstructurasDeDatos.Grafos.TripletaJsonTest` | ✅ Completado |
-| 46 | `MisEstructurasDeDatos.ListasPilasYColas.ListaSimplementeEnlazadaTest` | ✅ Completado |
-| 47 | `MisEstructurasDeDatos.ListasPilasYColas.ListaCircularTest` | ✅ Completado |
-| 48 | `MisEstructurasDeDatos.ListasPilasYColas.ColaTest` | ✅ Completado |
-| 49 | `MisEstructurasDeDatos.ListasPilasYColas.PilaTest` | ✅ Completado |
+| 30 | `DungeonConfigLoaderTest` | ✅ Completado |
+| 31 | `MiniBossAITest` | ✅ Completado |
+| 32 | `MalacharAllyTest` | ✅ Completado |
+| 33 | `ParasitoEnemyTest` | ✅ Completado |
+| 34 | `TurnManagerFinalBossTest` | ✅ Completado |
+| 35 | `LectorJSONFinalBossTest` | ✅ Completado |
+| 36 | `MisEstructurasDeDatos.Arbolesbinarios.ArbolBinarioDeBusquedaEnterosTest` | ✅ Completado |
+| 37 | `MisEstructurasDeDatos.Arbolesbinarios.ArbolBinarioDeBusquedaEquilibradoTest` | ✅ Completado |
+| 38 | `MisEstructurasDeDatos.Arbolesbinarios.ArbolBinarioDeBusquedaTest` | ✅ Completado |
+| 39 | `MisEstructurasDeDatos.Arbolesbinarios.NodoTest` | ✅ Completado |
+| 40 | `MisEstructurasDeDatos.Arbolesbinarios.MainTest` | ✅ Completado |
+| 41 | `MisEstructurasDeDatos.Grafos.AristaTest` | ✅ Completado |
+| 42 | `MisEstructurasDeDatos.Grafos.DatosGrafoJsonTest` | ✅ Completado |
+| 43 | `MisEstructurasDeDatos.Grafos.GrafoTest` | ✅ Completado |
+| 44 | `MisEstructurasDeDatos.Grafos.LectorGrafoJsonTest` | ✅ Completado |
+| 45 | `MisEstructurasDeDatos.Grafos.NodoTest` | ✅ Completado |
+| 46 | `MisEstructurasDeDatos.Grafos.TripletaJsonTest` | ✅ Completado |
+| 47 | `MisEstructurasDeDatos.ListasPilasYColas.ListaSimplementeEnlazadaTest` | ✅ Completado |
+| 48 | `MisEstructurasDeDatos.ListasPilasYColas.ListaCircularTest` | ✅ Completado |
+| 49 | `MisEstructurasDeDatos.ListasPilasYColas.ColaTest` | ✅ Completado |
+| 50 | `MisEstructurasDeDatos.ListasPilasYColas.PilaTest` | ✅ Completado |
 
 ---
 
@@ -474,6 +483,8 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 44 | Suite tras reubicar, corregir y completar tests de `MisEstructurasDeDatos` | ✅ Correcta |
 | 45 | Suite tras ruta global hacia `S5-D`, acción JavaFX de revelar camino con enemigos vivos, puertas bloqueadas de progreso, unidades en ruta y ajuste visual de panel/log | ✅ Correcta |
 | 46 | Validación JSON de configuración inicial: parseo correcto, 34 salas, 35 conexiones, 61 enemigos y layouts con dimensiones coherentes | ✅ Correcta |
+| 47 | Suite tras cargar la configuración inicial desde JSON en `GameModel` y reconstrucción de `LectorJSON` | ✅ Correcta |
+| 48 | Suite tras configuración JSON híbrida con paredes interiores, candidatos de enemigo, pools de items y puzzles permutados | ✅ Correcta |
 
 Última verificación completa:
 
@@ -484,7 +495,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 Resultado:
 
 ```text
-485 tests, 0 failures, 0 errors, 0 skipped
+491 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---
@@ -585,7 +596,9 @@ Resultado:
 | 90 | Revelar ruta es una ayuda visual y puede mostrarse aunque queden enemigos vivos; usar la puerta o escalera sigue bloqueado hasta limpiar la sala | ✅ Aceptada |
 | 91 | La ruta revelada considera puertas bloqueadas conocidas como continuidad de progreso, sin desbloquear ni permitir cruzar esas puertas hasta resolver sus condiciones | ✅ Aceptada |
 | 92 | El camino visual de la ruta ignora unidades ocupantes porque es una guía de progreso posterior al combate, no una ruta de movimiento ejecutable en el turno actual | ✅ Aceptada |
-| 93 | La configuración inicial oficial de entrega se define en JSON determinista con layouts completos, conexiones, accesos, cofres, items, enemigos, puzzles, diálogos, posición inicial y objetivo | ✅ Aceptada |
+| 93 | La configuración inicial oficial de entrega se define en JSON con estructura fija y aleatoriedad controlada: layouts, conexiones, accesos, cofres, diálogos, posición inicial y objetivo quedan declarados; enemigos normales, drops, items de suelo y secuencias de puzzle se eligen desde pools/candidatos del propio JSON | ✅ Aceptada |
+| 94 | La partida nueva y la reconstrucción de guardados cargan el mundo base desde JSON; `DungeonGenerator` queda como utilidad histórica/testeable | ✅ Aceptada |
+| 95 | Los mini-bosses y el combate final mantienen posiciones fijas en JSON porque son hitos narrativos; la variación se limita a enemigos normales y recompensas no narrativas | ✅ Aceptada |
 
 ---
 

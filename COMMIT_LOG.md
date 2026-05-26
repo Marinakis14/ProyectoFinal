@@ -2144,6 +2144,98 @@ item y cierre el modal tras una acción correcta.
 
 ---
 
+### Sesion 47 — 26 mayo 2026 — Codex
+
+**Objetivo:** Conectar la configuracion inicial JSON con la creacion de partida nueva y con la reconstruccion de partidas guardadas.
+
+**Archivos trabajados:**
+- `src/Valdris/persistence/GameConfig.java`
+- `src/Valdris/persistence/DungeonConfigLoader.java`
+- `src/Valdris/model/map/Dungeon.java`
+- `src/Valdris/ui/model/GameModel.java`
+- `src/Valdris/persistence/LectorJSON.java`
+- `src/Valdris/logic/turn/TurnManager.java`
+- `tests/Valdris/persistence/DungeonConfigLoaderTest.java`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- Creado `GameConfig` como DTO plano de Gson para salas, layouts, celdas especiales, conexiones, enemigos, puzzles, dialogos, posicion inicial y objetivo.
+- Creado `DungeonConfigLoader` en capa de persistencia para leer `config/configuracion_inicial_valdris.json` en UTF-8 y construir un `Dungeon` vivo.
+- El cargador crea salas, aplica `layout`, configura conexiones normales, unidireccionales y ocultas, asigna destinos de accesos, cofres, items de suelo, triggers, puzzles, dialogos y enemigos.
+- `Dungeon` guarda ahora `idSalaInicial` e `idSalaObjetivo`.
+- `GameModel` crea partidas nuevas desde `DungeonConfigLoader` en lugar de llamar directamente a `DungeonGenerator`.
+- `LectorJSON.reconstruirDesdeGameState(...)` reconstruye el mundo base desde la configuracion JSON antes de aplicar el estado guardado.
+- `TurnManager` usa el objetivo configurado en `Dungeon` para la ruta global, manteniendo fallback a `S5-D`.
+- Añadido `DungeonConfigLoaderTest` con 5 pruebas para salas, objetivo, no retorno, accesos especiales, puzzles, cofres, items, enemigos, mini-bosses, dialogos y temporizadores.
+
+**Problemas encontrados:**
+- La configuracion inicial pertenece a persistencia porque usa Gson y E/S; meterla dentro de `DungeonGenerator` habria roto el orden de capas.
+- `partida_valdris.json` ya aparecia modificado en el working tree antes de este subbloque; se dejo fuera de los cambios realizados.
+
+**Solucion aplicada:**
+- Separar el loader JSON en `Valdris.persistence` y mantener `DungeonGenerator` como utilidad historica/testeable.
+- Construir primero todas las salas, despues el grafo, y por ultimo aplicar metadatos de celda y enemigos para resolver correctamente referencias entre salas.
+
+**Verificacion:**
+- `mvn -q "-Dtest=DungeonConfigLoaderTest" test`: correcto.
+- `mvn -q test`: correcto, 490 tests, 0 fallos, 0 errores, 0 omitidos.
+- `rg "import java\\.util" src tests -n`: sin resultados.
+- `git diff --check`: correcto, solo avisos esperados LF/CRLF.
+
+**Decisiones tecnicas:**
+- La ruta oficial de partida nueva y reconstruccion desde guardado usa `config/configuracion_inicial_valdris.json`.
+- El objetivo global de ruta se lee desde `Dungeon.getIdSalaObjetivo()` con fallback conservador a `S5-D`.
+
+**Commit sugerido:** `git commit -m "feat(config): load initial dungeon from json"`
+
+---
+
+### Sesion 48 — 27 mayo 2026 — Codex
+
+**Objetivo:** Ajustar la configuracion inicial JSON para conservar estructura fija del mapa y recuperar variacion jugable controlada.
+
+**Archivos trabajados:**
+- `config/configuracion_inicial_valdris.json`
+- `src/Valdris/persistence/GameConfig.java`
+- `src/Valdris/persistence/DungeonConfigLoader.java`
+- `tests/Valdris/persistence/DungeonConfigLoaderTest.java`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- La configuracion JSON deja de ser una foto completamente fija para enemigos normales, drops, items de suelo y puzzles.
+- Añadida seccion `randomization` para declarar que posiciones de enemigos normales, drops normales, secuencias de puzzle e items de suelo se resuelven al cargar.
+- Añadida seccion `spawnCandidates` con casillas validas por sala para recolocar enemigos normales sin salir del mapa ni bloquear accesos.
+- Declaradas paredes interiores en layouts de salas principales, manteniendo puertas, escaleras, cofres, triggers, palancas y runas alcanzables.
+- Los mini-bosses y el combate final conservan posiciones fijas por ser hitos narrativos y de progreso.
+- `GameConfig` admite pools de item de suelo, valores permutables de puzzle, reglas de aleatoriedad y candidatos de aparicion.
+- `DungeonConfigLoader` elige item de suelo desde `itemPool`, permuta `sequenceValues`, coloca enemigos normales en candidatos libres y asigna drops normales con `ItemGenerator.crearDropEnemigo(...)`.
+- `DungeonConfigLoaderTest` valida secuencias como permutacion, drops normales por pool de tipo, posiciones de enemigo sin duplicados y alcanzabilidad estructural tras las paredes interiores.
+
+**Problemas encontrados:**
+- La primera version del JSON conectado era demasiado determinista y reducia variacion jugable que ya existia en `DungeonGenerator`.
+- Un primer transformador de PowerShell reescribio el JSON con codificacion de consola incorrecta; se rehizo desde la version confirmada usando lectura/escritura UTF-8 y se verifico que no quedaran cadenas corruptas.
+
+**Solucion aplicada:**
+- Mantener en JSON lo que exige el enunciado como configuracion inicial auditable: grafo, salas, matriz de celdas, accesos, cofres, paredes interiores, posicion inicial y objetivo.
+- Dejar la aleatoriedad dentro de limites declarados por el propio JSON: candidatos de sala, pools de items y valores de puzzle.
+
+**Verificacion:**
+- `mvn -q "-Dtest=DungeonConfigLoaderTest" test`: correcto.
+- `mvn -q test`: correcto, 491 tests, 0 fallos, 0 errores, 0 omitidos.
+- `rg "import java\\.util" src tests -n`: sin resultados.
+- `git diff --check`: correcto, solo avisos esperados LF/CRLF.
+
+**Decisiones tecnicas:**
+- La configuracion inicial oficial es hibrida: estructura fija y variacion controlada por JSON.
+- Los enemigos normales mantienen cantidad y tipo por sala, pero no coordenada exacta.
+- Los drops narrativos de mini-bosses siguen fijos; los drops de enemigos normales se generan por tipo.
+
+**Commit sugerido:** `git commit -m "feat(config): randomize json dungeon setup"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas
@@ -2199,6 +2291,8 @@ item y cierre el modal tras una acción correcta.
 - [x] InvalidMoveException
 - [x] InvalidAttackException
 - [x] GameStateException
+- [x] GameConfig
+- [x] DungeonConfigLoader
 - [x] GameState
 - [x] LoadedGame
 - [x] GameSummary
@@ -2247,6 +2341,7 @@ item y cierre el modal tras una acción correcta.
 - [x] GameStateTest
 - [x] LectorJSONTest
 - [x] GameLogEntryTest
+- [x] DungeonConfigLoaderTest
 - [x] MalacharAllyTest
 - [x] ParasitoEnemyTest
 - [x] TurnManagerFinalBossTest
@@ -2278,7 +2373,7 @@ item y cierre el modal tras una acción correcta.
 Resultado:
 
 ```text
-485 tests, 0 failures, 0 errors, 0 skipped
+491 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---

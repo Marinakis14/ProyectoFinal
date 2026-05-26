@@ -3,13 +3,13 @@ package Valdris.ui.model;
 import MisEstructurasDeDatos.ListasPilasYColas.ListaSimplementeEnlazada;
 import Valdris.exceptions.GameStateException;
 import Valdris.exceptions.InvalidMoveException;
-import Valdris.logic.generation.DungeonGenerator;
 import Valdris.logic.turn.TurnManager;
 import Valdris.model.enums.CharacterType;
 import Valdris.model.enums.GameResult;
 import Valdris.model.map.Dungeon;
 import Valdris.model.map.Room;
 import Valdris.model.units.Player;
+import Valdris.persistence.DungeonConfigLoader;
 import Valdris.persistence.LectorJSON;
 import Valdris.persistence.LoadedGame;
 
@@ -27,6 +27,9 @@ public class GameModel {
 
     /** Ruta fija del resumen exportado al terminar una partida. */
     public static final String SUMMARY_PATH = "resumen_valdris.json";
+
+    /** Ruta de la configuracion inicial determinista del mundo. */
+    public static final String CONFIG_PATH = DungeonConfigLoader.DEFAULT_CONFIG_PATH;
 
     /** Dungeon activo de la partida. */
     private final Dungeon dungeon;
@@ -57,7 +60,7 @@ public class GameModel {
             throw new GameStateException("Debe elegirse un personaje para iniciar la partida.");
         }
 
-        this.dungeon = DungeonGenerator.generarMundo();
+        this.dungeon = DungeonConfigLoader.cargarConfiguracionInicial(CONFIG_PATH);
         this.player = new Player(tipo);
         this.turnManager = new TurnManager(dungeon, player);
         this.listeners = new ListaSimplementeEnlazada<>();

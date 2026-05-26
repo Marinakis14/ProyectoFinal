@@ -389,15 +389,15 @@ public class TurnManager {
      *
      * <p>La ruta elegida minimiza el coste total: pasos dentro de la sala actual
      * hasta una celda de uso del acceso mas numero de salas restantes hasta
-     * {@code S5-D}. Si hay empate, se prioriza menor distancia de sala, menor
-     * distancia de celdas y finalmente el id de la sala destino.</p>
+     * la sala objetivo configurada. Si hay empate, se prioriza menor distancia
+     * de sala, menor distancia de celdas y finalmente el id de la sala destino.</p>
      *
      * @return distancia en casillas hasta el acceso elegido, o -1 si no hay ruta
      */
     public int getDistanciaSalidaGlobal() {
         try {
             Room room = getRoomActualObligatoria();
-            if (SALA_FINAL_ID.equals(room.getId())) {
+            if (getIdSalaObjetivo().equals(room.getId())) {
                 return 0;
             }
             RutaObjetivo ruta = buscarMejorRutaObjetivoGlobal(room);
@@ -429,7 +429,7 @@ public class TurnManager {
     public String getIdSiguienteSalaObjetivoGlobal() {
         try {
             Room room = getRoomActualObligatoria();
-            if (SALA_FINAL_ID.equals(room.getId())) {
+            if (getIdSalaObjetivo().equals(room.getId())) {
                 return room.getId();
             }
             RutaObjetivo ruta = buscarMejorRutaObjetivoGlobal(room);
@@ -453,7 +453,7 @@ public class TurnManager {
         ListaSimplementeEnlazada<Cell> vacio = new ListaSimplementeEnlazada<>();
         try {
             Room room = getRoomActualObligatoria();
-            if (SALA_FINAL_ID.equals(room.getId())) {
+            if (getIdSalaObjetivo().equals(room.getId())) {
                 return vacio;
             }
             RutaObjetivo ruta = buscarMejorRutaObjetivoGlobal(room);
@@ -2236,17 +2236,29 @@ public class TurnManager {
      * Calcula la distancia de salas desde una sala hasta la sala final.
      *
      * @param origen sala de origen
-     * @return numero de conexiones hasta S5-D, o -1 si no hay ruta
+     * @return numero de conexiones hasta la sala objetivo, o -1 si no hay ruta
      */
     private int getDistanciaSalasHastaObjetivo(Room origen) {
         if (origen == null || dungeon == null) {
             return -1;
         }
-        Room finalRoom = dungeon.getRoomById(SALA_FINAL_ID);
+        Room finalRoom = dungeon.getRoomById(getIdSalaObjetivo());
         if (finalRoom == null) {
             return -1;
         }
         return getDistanciaSalasPorRutaObjetivo(origen, finalRoom);
+    }
+
+    /**
+     * Devuelve la sala objetivo configurada, con fallback al nucleo final.
+     *
+     * @return id de sala objetivo
+     */
+    private String getIdSalaObjetivo() {
+        if (dungeon != null && dungeon.getIdSalaObjetivo() != null && !dungeon.getIdSalaObjetivo().isEmpty()) {
+            return dungeon.getIdSalaObjetivo();
+        }
+        return SALA_FINAL_ID;
     }
 
     /**

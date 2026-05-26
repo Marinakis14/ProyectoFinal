@@ -37,6 +37,12 @@ public class Dungeon implements Comparable<Dungeon> {
     /** Pasadizos secretos registrados pero no necesariamente activos. */
     private final ListaSimplementeEnlazada<HiddenPassage> hiddenPassages;
 
+    /** ID de la sala inicial declarada por la configuracion. */
+    private String idSalaInicial;
+
+    /** ID de la sala objetivo declarada por la configuracion. */
+    private String idSalaObjetivo;
+
     // -- Constructor ----------------------------------------------------------
 
     /**
@@ -47,6 +53,8 @@ public class Dungeon implements Comparable<Dungeon> {
         this.roomActual = null;
         this.nodoActual = null;
         this.hiddenPassages = new ListaSimplementeEnlazada<>();
+        this.idSalaInicial = null;
+        this.idSalaObjetivo = null;
     }
 
     // -- Metodos de logica ----------------------------------------------------
@@ -381,6 +389,42 @@ public class Dungeon implements Comparable<Dungeon> {
      */
     public ListaSimplementeEnlazada<HiddenPassage> getHiddenPassages() {
         return hiddenPassages;
+    }
+
+    /**
+     * Devuelve el ID de la sala inicial declarada por configuracion.
+     *
+     * @return id de sala inicial, o null si no se configuro
+     */
+    public String getIdSalaInicial() {
+        return idSalaInicial;
+    }
+
+    /**
+     * Configura el ID de sala inicial.
+     *
+     * @param idSalaInicial id de sala inicial
+     */
+    public void setIdSalaInicial(String idSalaInicial) {
+        this.idSalaInicial = idSalaInicial;
+    }
+
+    /**
+     * Devuelve el ID de la sala objetivo declarada por configuracion.
+     *
+     * @return id de sala objetivo, o null si no se configuro
+     */
+    public String getIdSalaObjetivo() {
+        return idSalaObjetivo;
+    }
+
+    /**
+     * Configura el ID de sala objetivo.
+     *
+     * @param idSalaObjetivo id de sala objetivo
+     */
+    public void setIdSalaObjetivo(String idSalaObjetivo) {
+        this.idSalaObjetivo = idSalaObjetivo;
     }
 
     // -- Comparacion ----------------------------------------------------------

@@ -4,7 +4,6 @@ import MisEstructurasDeDatos.Grafos.NodoGrafo;
 import MisEstructurasDeDatos.ListasPilasYColas.ListaSimplementeEnlazada;
 import Valdris.exceptions.GameStateException;
 import Valdris.exceptions.InvalidMoveException;
-import Valdris.logic.generation.DungeonGenerator;
 import Valdris.logic.generation.ItemGenerator;
 import Valdris.logic.turn.TurnManager;
 import Valdris.model.effects.Effect;
@@ -44,8 +43,8 @@ import java.nio.charset.StandardCharsets;
  * Lee y escribe ficheros JSON de partida y de resumen final.
  *
  * <p>La persistencia usa DTOs planos para evitar ciclos entre dungeon, salas,
- * celdas y accesos. Al cargar, primero se reconstruye el mundo base con
- * {@link DungeonGenerator} y después se aplica el estado dinámico guardado.</p>
+ * celdas y accesos. Al cargar, primero se reconstruye el mundo base desde la
+ * configuracion inicial JSON y despues se aplica el estado dinamico guardado.</p>
  */
 public final class LectorJSON {
 
@@ -162,7 +161,7 @@ public final class LectorJSON {
             throw new GameStateException("GameState incompleto.");
         }
 
-        Dungeon dungeon = DungeonGenerator.generarMundo();
+        Dungeon dungeon = DungeonConfigLoader.cargarConfiguracionInicial();
         Player player = new Player(parseCharacterType(state.tipoPersonaje));
         TurnManager tm = new TurnManager(dungeon, player);
 

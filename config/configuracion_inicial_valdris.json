@@ -1,0 +1,915 @@
+{
+  "version": 1,
+  "initialRoomId": "S1-A",
+  "objectiveRoomId": "S5-D",
+  "initialPlayerPosition": {
+    "roomId": "S1-A",
+    "row": 3,
+    "col": 1
+  },
+  "legend": {
+    "#": "WALL",
+    ".": "FLOOR",
+    "D": "DOOR",
+    "K": "DOOR_LOCKED",
+    "H": "DOOR_HIDDEN",
+    "U": "STAIRS_UP",
+    "S": "STAIRS_DOWN",
+    "L": "LEVER",
+    "R": "RUNE"
+  },
+  "rooms": [
+    {
+      "id": "S1-A",
+      "name": "Aldea Abandonada",
+      "rows": 7,
+      "cols": 8,
+      "entry": {"row": 3, "col": 1},
+      "timer": 20,
+      "layout": [
+        "########",
+        "#......#",
+        "#......#",
+        "#......D",
+        "#......#",
+        "#......#",
+        "########"
+      ],
+      "cells": [
+        {"row": 3, "col": 7, "targetRoomId": "S1-B", "targetRow": 2, "targetCol": 1}
+      ]
+    },
+    {
+      "id": "S1-B",
+      "name": "El Camino Roto",
+      "rows": 5,
+      "cols": 6,
+      "entry": {"row": 2, "col": 1},
+      "timer": 20,
+      "layout": [
+        "######",
+        "#....#",
+        "D....D",
+        "#....#",
+        "###H##"
+      ],
+      "cells": [
+        {"row": 2, "col": 0, "targetRoomId": "S1-A", "targetRow": 3, "targetCol": 6},
+        {"row": 2, "col": 5, "targetRoomId": "S1-C", "targetRow": 4, "targetCol": 1},
+        {"row": 4, "col": 3, "targetRoomId": "S1-SEC", "targetRow": 1, "targetCol": 2, "triggerId": "S1_SECRET"},
+        {"row": 3, "col": 3, "triggerId": "S1_SECRET"}
+      ],
+      "secretTriggers": [
+        {"triggerId": "S1_SECRET", "targetId": "S1_SECRET"}
+      ]
+    },
+    {
+      "id": "S1-C",
+      "name": "El Puente Gris",
+      "rows": 9,
+      "cols": 10,
+      "entry": {"row": 4, "col": 1},
+      "timer": -1,
+      "layout": [
+        "##########",
+        "#........#",
+        "#........#",
+        "#.L..L.L.#",
+        "D........K",
+        "#........#",
+        "#........#",
+        "#........#",
+        "##########"
+      ],
+      "cells": [
+        {"row": 4, "col": 0, "targetRoomId": "S1-B", "targetRow": 2, "targetCol": 4},
+        {"row": 4, "col": 9, "targetRoomId": "S1-D", "targetRow": 4, "targetCol": 1, "triggerId": "PUZZLE_S1_C"},
+        {"row": 3, "col": 2, "triggerId": "PUZZLE_S1_C_0"},
+        {"row": 3, "col": 5, "triggerId": "PUZZLE_S1_C_1"},
+        {"row": 3, "col": 7, "triggerId": "PUZZLE_S1_C_2"}
+      ],
+      "puzzle": {
+        "type": "LEVER",
+        "failureDamage": 5,
+        "successTarget": "PUZZLE_S1_C",
+        "correctSequence": [0, 1, 2]
+      }
+    },
+    {
+      "id": "S1-D",
+      "name": "Ayuntamiento Corrupto",
+      "rows": 9,
+      "cols": 9,
+      "entry": {"row": 4, "col": 1},
+      "timer": 35,
+      "layout": [
+        "#########",
+        "#.......#",
+        "#.......#",
+        "#.......#",
+        "D.......D",
+        "#.......#",
+        "#.......#",
+        "#.......#",
+        "#########"
+      ],
+      "cells": [
+        {"row": 4, "col": 0, "targetRoomId": "S1-C", "targetRow": 4, "targetCol": 8},
+        {"row": 4, "col": 8, "targetRoomId": "PASILLO_1_2", "targetRow": 1, "targetCol": 1}
+      ]
+    },
+    {
+      "id": "S1-SEC",
+      "name": "El Molino",
+      "rows": 5,
+      "cols": 5,
+      "entry": {"row": 2, "col": 1},
+      "timer": 20,
+      "layout": [
+        "##D##",
+        "#...#",
+        "#...#",
+        "#...#",
+        "#####"
+      ],
+      "cells": [
+        {"row": 0, "col": 2, "targetRoomId": "S1-B", "targetRow": 3, "targetCol": 3},
+        {"row": 2, "col": 2, "container": {"id": "CH-S1-SEC", "name": "Cofre del Molino", "items": ["P5"]}}
+      ]
+    },
+    {
+      "id": "PASILLO_1_2",
+      "name": "Linde del Bosque",
+      "rows": 3,
+      "cols": 8,
+      "entry": {"row": 1, "col": 1},
+      "timer": -1,
+      "layout": [
+        "########",
+        "D......D",
+        "########"
+      ],
+      "cells": [
+        {"row": 1, "col": 0, "targetRoomId": "S1-D", "targetRow": 4, "targetCol": 7},
+        {"row": 1, "col": 7, "targetRoomId": "S2-A", "targetRow": 3, "targetCol": 1},
+        {"row": 1, "col": 4, "itemId": "A3"}
+      ]
+    },
+    {
+      "id": "S2-A",
+      "name": "Entrada del Bosque",
+      "rows": 6,
+      "cols": 6,
+      "entry": {"row": 3, "col": 1},
+      "timer": 20,
+      "layout": [
+        "######",
+        "#....#",
+        "#....#",
+        "D....D",
+        "#....#",
+        "######"
+      ],
+      "dialogues": [
+        {"character": "SYRA", "text": "El bosque de Lireth a\u00fan recuerda mi nombre."}
+      ],
+      "cells": [
+        {"row": 3, "col": 0, "targetRoomId": "PASILLO_1_2", "targetRow": 1, "targetCol": 6},
+        {"row": 3, "col": 5, "targetRoomId": "S2-B", "targetRow": 3, "targetCol": 1}
+      ]
+    },
+    {
+      "id": "S2-B",
+      "name": "Claro Corrompido",
+      "rows": 7,
+      "cols": 8,
+      "entry": {"row": 3, "col": 1},
+      "timer": 20,
+      "layout": [
+        "######D#",
+        "#......#",
+        "#......#",
+        "D......#",
+        "#......#",
+        "#......#",
+        "####H#D#"
+      ],
+      "cells": [
+        {"row": 3, "col": 0, "targetRoomId": "S2-A", "targetRow": 3, "targetCol": 4},
+        {"row": 0, "col": 6, "targetRoomId": "S2-C", "targetRow": 7, "targetCol": 1},
+        {"row": 6, "col": 6, "targetRoomId": "S2-D", "targetRow": 1, "targetCol": 1},
+        {"row": 6, "col": 4, "targetRoomId": "S2-SEC", "targetRow": 1, "targetCol": 2, "triggerId": "S2_SECRET"},
+        {"row": 5, "col": 4, "triggerId": "S2_SECRET"}
+      ],
+      "secretTriggers": [
+        {"triggerId": "S2_SECRET", "targetId": "S2_SECRET"}
+      ]
+    },
+    {
+      "id": "S2-C",
+      "name": "Laberinto de Ra\u00edces",
+      "rows": 9,
+      "cols": 10,
+      "entry": {"row": 4, "col": 1},
+      "timer": -1,
+      "layout": [
+        "##########",
+        "#........#",
+        "#........#",
+        "#.L..L.L.#",
+        "#........K",
+        "#........#",
+        "#........#",
+        "#........#",
+        "#D########"
+      ],
+      "cells": [
+        {"row": 8, "col": 1, "targetRoomId": "S2-B", "targetRow": 1, "targetCol": 6},
+        {"row": 4, "col": 9, "targetRoomId": "S2-E", "targetRow": 1, "targetCol": 1, "triggerId": "PUZZLE_S2_C"},
+        {"row": 3, "col": 2, "triggerId": "PUZZLE_S2_C_0"},
+        {"row": 3, "col": 5, "triggerId": "PUZZLE_S2_C_1"},
+        {"row": 3, "col": 7, "triggerId": "PUZZLE_S2_C_2"}
+      ],
+      "puzzle": {
+        "type": "LEVER",
+        "failureDamage": 6,
+        "successTarget": "PUZZLE_S2_C",
+        "correctSequence": [0, 1, 2]
+      }
+    },
+    {
+      "id": "S2-D",
+      "name": "Sendero Oscuro",
+      "rows": 5,
+      "cols": 6,
+      "entry": {"row": 2, "col": 1},
+      "timer": 20,
+      "layout": [
+        "#D####",
+        "#....#",
+        "#....D",
+        "#....#",
+        "######"
+      ],
+      "cells": [
+        {"row": 0, "col": 1, "targetRoomId": "S2-B", "targetRow": 5, "targetCol": 6},
+        {"row": 2, "col": 5, "targetRoomId": "S2-E", "targetRow": 5, "targetCol": 1}
+      ]
+    },
+    {
+      "id": "S2-E",
+      "name": "Coraz\u00f3n del Bosque",
+      "rows": 10,
+      "cols": 10,
+      "entry": {"row": 5, "col": 1},
+      "timer": 35,
+      "layout": [
+        "##########",
+        "D........#",
+        "#........#",
+        "#........#",
+        "#........#",
+        "D........D",
+        "#........#",
+        "#........#",
+        "#........#",
+        "##########"
+      ],
+      "cells": [
+        {"row": 1, "col": 0, "targetRoomId": "S2-C", "targetRow": 4, "targetCol": 8},
+        {"row": 5, "col": 0, "targetRoomId": "S2-D", "targetRow": 2, "targetCol": 4},
+        {"row": 5, "col": 9, "targetRoomId": "PASILLO_2_3", "targetRow": 1, "targetCol": 1}
+      ]
+    },
+    {
+      "id": "S2-SEC",
+      "name": "Ra\u00edces Profundas",
+      "rows": 5,
+      "cols": 5,
+      "entry": {"row": 2, "col": 1},
+      "timer": 20,
+      "layout": [
+        "##D##",
+        "#...#",
+        "#...#",
+        "#...#",
+        "#####"
+      ],
+      "cells": [
+        {"row": 0, "col": 2, "targetRoomId": "S2-B", "targetRow": 5, "targetCol": 4},
+        {"row": 2, "col": 2, "container": {"id": "CH-S2-SEC", "name": "Cofre de Ra\u00edces", "items": ["A4"]}}
+      ]
+    },
+    {
+      "id": "PASILLO_2_3",
+      "name": "Boca de la Mina",
+      "rows": 3,
+      "cols": 8,
+      "entry": {"row": 1, "col": 1},
+      "timer": -1,
+      "layout": [
+        "########",
+        "D......D",
+        "########"
+      ],
+      "cells": [
+        {"row": 1, "col": 0, "targetRoomId": "S2-E", "targetRow": 5, "targetCol": 8},
+        {"row": 1, "col": 7, "targetRoomId": "S3-A", "targetRow": 3, "targetCol": 1},
+        {"row": 1, "col": 4, "itemId": "A5"}
+      ]
+    },
+    {
+      "id": "S3-A",
+      "name": "Entrada de la Mina",
+      "rows": 7,
+      "cols": 7,
+      "entry": {"row": 3, "col": 1},
+      "timer": 20,
+      "layout": [
+        "#######",
+        "#.....#",
+        "#.....#",
+        "D.....D",
+        "#.....#",
+        "#.....#",
+        "#######"
+      ],
+      "cells": [
+        {"row": 3, "col": 0, "targetRoomId": "PASILLO_2_3", "targetRow": 1, "targetCol": 6},
+        {"row": 3, "col": 6, "targetRoomId": "S3-B", "targetRow": 4, "targetCol": 1}
+      ]
+    },
+    {
+      "id": "S3-B",
+      "name": "Sala de Vagonetas",
+      "rows": 9,
+      "cols": 10,
+      "entry": {"row": 4, "col": 1},
+      "timer": -1,
+      "layout": [
+        "##########",
+        "#........#",
+        "#........#",
+        "#.L..L.L.#",
+        "D....S...#",
+        "#........#",
+        "#........#",
+        "#........#",
+        "##########"
+      ],
+      "cells": [
+        {"row": 4, "col": 0, "targetRoomId": "S3-A", "targetRow": 3, "targetCol": 5},
+        {"row": 4, "col": 5, "targetRoomId": "S3-C", "targetRow": 5, "targetCol": 4, "accessFacing": {"rowDelta": 1, "colDelta": 0}},
+        {"row": 3, "col": 2, "triggerId": "PUZZLE_S3_B_0"},
+        {"row": 3, "col": 5, "triggerId": "PUZZLE_S3_B_1"},
+        {"row": 3, "col": 7, "triggerId": "PUZZLE_S3_B_2"}
+      ],
+      "puzzle": {
+        "type": "LEVER",
+        "failureDamage": 7,
+        "successTarget": "PUZZLE_S3_B",
+        "correctSequence": [0, 1, 2]
+      }
+    },
+    {
+      "id": "S3-C",
+      "name": "T\u00fanel Central",
+      "rows": 8,
+      "cols": 8,
+      "entry": {"row": 4, "col": 1},
+      "timer": 20,
+      "layout": [
+        "########",
+        "#......#",
+        "#......#",
+        "#......#",
+        "H...U..D",
+        "#......#",
+        "#......#",
+        "########"
+      ],
+      "cells": [
+        {"row": 4, "col": 4, "targetRoomId": "S3-B", "targetRow": 5, "targetCol": 5, "accessFacing": {"rowDelta": 1, "colDelta": 0}},
+        {"row": 4, "col": 7, "targetRoomId": "S3-D", "targetRow": 3, "targetCol": 1},
+        {"row": 4, "col": 0, "targetRoomId": "S3-SEC", "targetRow": 2, "targetCol": 4, "triggerId": "S3_SECRET"},
+        {"row": 4, "col": 1, "triggerId": "S3_SECRET"}
+      ],
+      "secretTriggers": [
+        {"triggerId": "S3_SECRET", "targetId": "S3_SECRET"}
+      ]
+    },
+    {
+      "id": "S3-D",
+      "name": "C\u00e1mara de Cristal",
+      "rows": 7,
+      "cols": 9,
+      "entry": {"row": 3, "col": 1},
+      "timer": 25,
+      "layout": [
+        "#########",
+        "#.......#",
+        "#.......#",
+        "D...S...#",
+        "#.......#",
+        "#.......#",
+        "#########"
+      ],
+      "cells": [
+        {"row": 3, "col": 0, "targetRoomId": "S3-C", "targetRow": 4, "targetCol": 6},
+        {"row": 3, "col": 4, "targetRoomId": "S3-E", "targetRow": 5, "targetCol": 4, "accessFacing": {"rowDelta": 1, "colDelta": 0}}
+      ]
+    },
+    {
+      "id": "S3-E",
+      "name": "Profundidades",
+      "rows": 9,
+      "cols": 9,
+      "entry": {"row": 4, "col": 1},
+      "timer": 25,
+      "layout": [
+        "#########",
+        "#.......#",
+        "#.......#",
+        "#.......#",
+        "#...U...D",
+        "#.......#",
+        "#.......#",
+        "#.......#",
+        "#########"
+      ],
+      "cells": [
+        {"row": 4, "col": 4, "targetRoomId": "S3-D", "targetRow": 4, "targetCol": 4, "accessFacing": {"rowDelta": 1, "colDelta": 0}},
+        {"row": 4, "col": 8, "targetRoomId": "S3-F", "targetRow": 5, "targetCol": 1}
+      ]
+    },
+    {
+      "id": "S3-F",
+      "name": "C\u00e1mara del Golem",
+      "rows": 10,
+      "cols": 11,
+      "entry": {"row": 5, "col": 1},
+      "timer": 35,
+      "layout": [
+        "###########",
+        "#.........#",
+        "#.........#",
+        "#.........#",
+        "#.........#",
+        "D.........D",
+        "#.........#",
+        "#.........#",
+        "#.........#",
+        "###########"
+      ],
+      "cells": [
+        {"row": 5, "col": 0, "targetRoomId": "S3-E", "targetRow": 4, "targetCol": 7},
+        {"row": 5, "col": 10, "targetRoomId": "PASILLO_3_4", "targetRow": 1, "targetCol": 1}
+      ]
+    },
+    {
+      "id": "S3-SEC",
+      "name": "C\u00e1mara Enana",
+      "rows": 5,
+      "cols": 6,
+      "entry": {"row": 2, "col": 1},
+      "timer": 20,
+      "layout": [
+        "######",
+        "#....#",
+        "#....D",
+        "#....#",
+        "######"
+      ],
+      "cells": [
+        {"row": 2, "col": 5, "targetRoomId": "S3-C", "targetRow": 4, "targetCol": 1},
+        {"row": 2, "col": 3, "container": {"id": "CH-S3-SEC", "name": "Cofre Enano", "items": ["W9"]}}
+      ]
+    },
+    {
+      "id": "PASILLO_3_4",
+      "name": "Base de la Torre",
+      "rows": 3,
+      "cols": 8,
+      "entry": {"row": 1, "col": 1},
+      "timer": -1,
+      "layout": [
+        "########",
+        "D......D",
+        "########"
+      ],
+      "cells": [
+        {"row": 1, "col": 0, "targetRoomId": "S3-F", "targetRow": 5, "targetCol": 9},
+        {"row": 1, "col": 7, "targetRoomId": "S4-A", "targetRow": 3, "targetCol": 1},
+        {"row": 1, "col": 4, "itemId": "A7"}
+      ]
+    },
+    {
+      "id": "S4-A",
+      "name": "Planta Baja",
+      "rows": 7,
+      "cols": 8,
+      "entry": {"row": 3, "col": 1},
+      "timer": 20,
+      "layout": [
+        "########",
+        "#......#",
+        "#......#",
+        "D......D",
+        "#......#",
+        "#......#",
+        "########"
+      ],
+      "dialogues": [
+        {"character": "KAEL", "text": "Esta torre huele a juramentos rotos."}
+      ],
+      "cells": [
+        {"row": 3, "col": 0, "targetRoomId": "PASILLO_3_4", "targetRow": 1, "targetCol": 6},
+        {"row": 3, "col": 7, "targetRoomId": "S4-B", "targetRow": 4, "targetCol": 1}
+      ]
+    },
+    {
+      "id": "S4-B",
+      "name": "Biblioteca",
+      "rows": 8,
+      "cols": 8,
+      "entry": {"row": 4, "col": 1},
+      "timer": 20,
+      "layout": [
+        "######D#",
+        "#......#",
+        "#......#",
+        "#......#",
+        "D......#",
+        "#......#",
+        "#......#",
+        "####H#D#"
+      ],
+      "cells": [
+        {"row": 4, "col": 0, "targetRoomId": "S4-A", "targetRow": 3, "targetCol": 6},
+        {"row": 7, "col": 6, "targetRoomId": "S4-D", "targetRow": 1, "targetCol": 1},
+        {"row": 0, "col": 6, "targetRoomId": "S4-C", "targetRow": 7, "targetCol": 1},
+        {"row": 7, "col": 4, "targetRoomId": "S4-SEC", "targetRow": 1, "targetCol": 2, "triggerId": "S4_SECRET"},
+        {"row": 6, "col": 4, "triggerId": "S4_SECRET"}
+      ],
+      "secretTriggers": [
+        {"triggerId": "S4_SECRET", "targetId": "S4_SECRET"}
+      ]
+    },
+    {
+      "id": "S4-C",
+      "name": "Sala de Runas",
+      "rows": 9,
+      "cols": 10,
+      "entry": {"row": 4, "col": 1},
+      "timer": -1,
+      "layout": [
+        "##########",
+        "#........#",
+        "#........#",
+        "#........#",
+        "#.R..R.R.K",
+        "#........#",
+        "#........#",
+        "#........#",
+        "#D########"
+      ],
+      "cells": [
+        {"row": 8, "col": 1, "targetRoomId": "S4-B", "targetRow": 1, "targetCol": 6},
+        {"row": 4, "col": 9, "targetRoomId": "S4-E", "targetRow": 1, "targetCol": 1, "triggerId": "PUZZLE_S4_C"},
+        {"row": 4, "col": 2, "triggerId": "PUZZLE_S4_C_0"},
+        {"row": 4, "col": 5, "triggerId": "PUZZLE_S4_C_1"},
+        {"row": 4, "col": 7, "triggerId": "PUZZLE_S4_C_2"}
+      ],
+      "puzzle": {
+        "type": "RUNE",
+        "failureDamage": 8,
+        "successTarget": "PUZZLE_S4_C",
+        "correctSequence": [0, 1, 2]
+      }
+    },
+    {
+      "id": "S4-D",
+      "name": "C\u00e1mara Alta",
+      "rows": 6,
+      "cols": 6,
+      "entry": {"row": 3, "col": 1},
+      "timer": 20,
+      "layout": [
+        "#D####",
+        "#....#",
+        "#....#",
+        "#....D",
+        "#....#",
+        "######"
+      ],
+      "cells": [
+        {"row": 0, "col": 1, "targetRoomId": "S4-B", "targetRow": 6, "targetCol": 6},
+        {"row": 3, "col": 5, "targetRoomId": "S4-E", "targetRow": 5, "targetCol": 1}
+      ]
+    },
+    {
+      "id": "S4-E",
+      "name": "C\u00faspide de la Torre",
+      "rows": 10,
+      "cols": 10,
+      "entry": {"row": 5, "col": 1},
+      "timer": 35,
+      "layout": [
+        "##########",
+        "D........#",
+        "#........#",
+        "#........#",
+        "#........#",
+        "D........D",
+        "#........#",
+        "#........#",
+        "#........#",
+        "##########"
+      ],
+      "cells": [
+        {"row": 1, "col": 0, "targetRoomId": "S4-C", "targetRow": 4, "targetCol": 8},
+        {"row": 5, "col": 0, "targetRoomId": "S4-D", "targetRow": 3, "targetCol": 4},
+        {"row": 5, "col": 9, "targetRoomId": "PASILLO_4_5", "targetRow": 1, "targetCol": 1}
+      ]
+    },
+    {
+      "id": "S4-SEC",
+      "name": "La Celda de Dorath",
+      "rows": 5,
+      "cols": 5,
+      "entry": {"row": 2, "col": 1},
+      "timer": 20,
+      "layout": [
+        "##D##",
+        "#...#",
+        "#...#",
+        "#...#",
+        "#####"
+      ],
+      "dialogues": [
+        {"character": "DORATH", "text": "Estos textos no deber\u00edan haber sobrevivido."}
+      ],
+      "cells": [
+        {"row": 0, "col": 2, "targetRoomId": "S4-B", "targetRow": 6, "targetCol": 4},
+        {"row": 2, "col": 2, "container": {"id": "CH-S4-SEC", "name": "Cofre de Dorath", "items": ["N1"]}}
+      ]
+    },
+    {
+      "id": "PASILLO_4_5",
+      "name": "Descenso al N\u00facleo",
+      "rows": 3,
+      "cols": 8,
+      "entry": {"row": 1, "col": 1},
+      "timer": -1,
+      "layout": [
+        "########",
+        "D......D",
+        "########"
+      ],
+      "cells": [
+        {"row": 1, "col": 0, "targetRoomId": "S4-E", "targetRow": 5, "targetCol": 8},
+        {"row": 1, "col": 7, "targetRoomId": "S5-A", "targetRow": 3, "targetCol": 1},
+        {"row": 1, "col": 4, "itemId": "P4"}
+      ]
+    },
+    {
+      "id": "S5-A",
+      "name": "Antec\u00e1mara",
+      "rows": 7,
+      "cols": 7,
+      "entry": {"row": 3, "col": 1},
+      "timer": 20,
+      "layout": [
+        "#######",
+        "#.....#",
+        "#.....#",
+        "D.....D",
+        "#.....#",
+        "#.....#",
+        "#######"
+      ],
+      "cells": [
+        {"row": 3, "col": 0, "targetRoomId": "PASILLO_4_5", "targetRow": 1, "targetCol": 6},
+        {"row": 3, "col": 6, "targetRoomId": "S5-B", "targetRow": 2, "targetCol": 1}
+      ]
+    },
+    {
+      "id": "S5-B",
+      "name": "Corredor de Sombras",
+      "rows": 5,
+      "cols": 8,
+      "entry": {"row": 2, "col": 1},
+      "timer": 20,
+      "layout": [
+        "########",
+        "#......#",
+        "D......D",
+        "#......#",
+        "####K###"
+      ],
+      "cells": [
+        {"row": 2, "col": 0, "targetRoomId": "S5-A", "targetRow": 3, "targetCol": 5},
+        {"row": 2, "col": 7, "targetRoomId": "S5-C", "targetRow": 4, "targetCol": 1},
+        {"row": 4, "col": 4, "targetRoomId": "S5-SEC", "targetRow": 1, "targetCol": 2, "requiredItemId": "AC3"}
+      ]
+    },
+    {
+      "id": "S5-C",
+      "name": "La Puerta del Filtro",
+      "rows": 9,
+      "cols": 9,
+      "entry": {"row": 4, "col": 1},
+      "timer": 35,
+      "layout": [
+        "#########",
+        "#.......#",
+        "#.......#",
+        "#.......#",
+        "D.......D",
+        "#.......#",
+        "#.......#",
+        "#.......#",
+        "#########"
+      ],
+      "cells": [
+        {"row": 4, "col": 0, "targetRoomId": "S5-B", "targetRow": 2, "targetCol": 6},
+        {"row": 4, "col": 8, "targetRoomId": "PASILLO_FINAL", "targetRow": 1, "targetCol": 1}
+      ]
+    },
+    {
+      "id": "S5-SEC",
+      "name": "C\u00e1mara de Memorias",
+      "rows": 5,
+      "cols": 5,
+      "entry": {"row": 2, "col": 1},
+      "timer": 20,
+      "layout": [
+        "##D##",
+        "#...#",
+        "#...#",
+        "#...#",
+        "#####"
+      ],
+      "dialogues": [
+        {"character": "DORATH", "text": "Las memorias del sello confirman la verdad."}
+      ],
+      "cells": [
+        {"row": 0, "col": 2, "targetRoomId": "S5-B", "targetRow": 3, "targetCol": 4}
+      ]
+    },
+    {
+      "id": "PASILLO_FINAL",
+      "name": "Pasillo Final",
+      "rows": 3,
+      "cols": 8,
+      "entry": {"row": 1, "col": 1},
+      "timer": -1,
+      "layout": [
+        "########",
+        "D......D",
+        "########"
+      ],
+      "dialogues": [
+        {"character": "KAEL", "text": "Si cruzo esta puerta, no habr\u00e1 vuelta atr\u00e1s."},
+        {"character": "SYRA", "text": "El N\u00facleo est\u00e1 delante. Despu\u00e9s de esto solo queda avanzar."},
+        {"character": "DORATH", "text": "El \u00faltimo umbral exige aceptar el precio."}
+      ],
+      "cells": [
+        {"row": 1, "col": 0, "targetRoomId": "S5-C", "targetRow": 4, "targetCol": 7},
+        {"row": 1, "col": 7, "targetRoomId": "S5-D", "targetRow": 5, "targetCol": 1}
+      ]
+    },
+    {
+      "id": "S5-D",
+      "name": "El N\u00facleo",
+      "rows": 10,
+      "cols": 11,
+      "entry": {"row": 5, "col": 1},
+      "timer": 50,
+      "layout": [
+        "###########",
+        "#.........#",
+        "#.........#",
+        "#.........#",
+        "#.........#",
+        "K.........#",
+        "#.........#",
+        "#.........#",
+        "#.........#",
+        "###########"
+      ],
+      "cells": [
+        {"row": 5, "col": 0}
+      ]
+    }
+  ],
+  "connections": [
+    {"from": "S1-A", "to": "S1-B", "description": "camino", "mode": "BIDIRECTIONAL"},
+    {"from": "S1-B", "to": "S1-C", "description": "camino", "mode": "BIDIRECTIONAL"},
+    {"from": "S1-C", "to": "S1-D", "description": "puente", "mode": "HIDDEN", "id": "PUZZLE_S1_C", "bidirectionalOnActivation": true},
+    {"from": "S1-D", "to": "PASILLO_1_2", "description": "pasillo a Zona 2", "mode": "BIDIRECTIONAL"},
+    {"from": "S1-B", "to": "S1-SEC", "description": "pasadizo oculto", "mode": "HIDDEN", "id": "S1_SECRET", "bidirectionalOnActivation": true},
+    {"from": "PASILLO_1_2", "to": "S2-A", "description": "entrada al bosque", "mode": "BIDIRECTIONAL"},
+    {"from": "S2-A", "to": "S2-B", "description": "sendero", "mode": "BIDIRECTIONAL"},
+    {"from": "S2-B", "to": "S2-C", "description": "rama superior", "mode": "BIDIRECTIONAL"},
+    {"from": "S2-C", "to": "S2-E", "description": "raices abiertas", "mode": "HIDDEN", "id": "PUZZLE_S2_C", "bidirectionalOnActivation": true},
+    {"from": "S2-B", "to": "S2-D", "description": "rama inferior", "mode": "BIDIRECTIONAL"},
+    {"from": "S2-D", "to": "S2-E", "description": "rama inferior", "mode": "BIDIRECTIONAL"},
+    {"from": "S2-B", "to": "S2-SEC", "description": "pasadizo oculto", "mode": "HIDDEN", "id": "S2_SECRET", "bidirectionalOnActivation": true},
+    {"from": "S2-E", "to": "PASILLO_2_3", "description": "pasillo a Zona 3", "mode": "BIDIRECTIONAL"},
+    {"from": "PASILLO_2_3", "to": "S3-A", "description": "entrada a la mina", "mode": "BIDIRECTIONAL"},
+    {"from": "S3-A", "to": "S3-B", "description": "galeria -1", "mode": "BIDIRECTIONAL"},
+    {"from": "S3-B", "to": "S3-C", "description": "escalera -1 a -2", "mode": "BIDIRECTIONAL"},
+    {"from": "S3-C", "to": "S3-D", "description": "tunel -2", "mode": "BIDIRECTIONAL"},
+    {"from": "S3-D", "to": "S3-E", "description": "escalera -2 a -3", "mode": "BIDIRECTIONAL"},
+    {"from": "S3-E", "to": "S3-F", "description": "profundidad", "mode": "BIDIRECTIONAL"},
+    {"from": "S3-F", "to": "PASILLO_3_4", "description": "pasillo a Zona 4", "mode": "BIDIRECTIONAL"},
+    {"from": "S3-C", "to": "S3-SEC", "description": "pasadizo oculto", "mode": "HIDDEN", "id": "S3_SECRET", "bidirectionalOnActivation": true},
+    {"from": "PASILLO_3_4", "to": "S4-A", "description": "entrada a la torre", "mode": "BIDIRECTIONAL"},
+    {"from": "S4-A", "to": "S4-B", "description": "biblioteca", "mode": "BIDIRECTIONAL"},
+    {"from": "S4-B", "to": "S4-D", "description": "rama inferior", "mode": "BIDIRECTIONAL"},
+    {"from": "S4-D", "to": "S4-E", "description": "rama inferior", "mode": "BIDIRECTIONAL"},
+    {"from": "S4-B", "to": "S4-C", "description": "rama superior", "mode": "BIDIRECTIONAL"},
+    {"from": "S4-C", "to": "S4-E", "description": "raices abiertas", "mode": "HIDDEN", "id": "PUZZLE_S4_C", "bidirectionalOnActivation": true},
+    {"from": "S4-B", "to": "S4-SEC", "description": "pasadizo oculto", "mode": "HIDDEN", "id": "S4_SECRET", "bidirectionalOnActivation": true},
+    {"from": "S4-E", "to": "PASILLO_4_5", "description": "pasillo a Zona 5", "mode": "BIDIRECTIONAL"},
+    {"from": "PASILLO_4_5", "to": "S5-A", "description": "entrada al nucleo", "mode": "BIDIRECTIONAL"},
+    {"from": "S5-A", "to": "S5-B", "description": "corredor", "mode": "BIDIRECTIONAL"},
+    {"from": "S5-B", "to": "S5-C", "description": "puerta del filtro", "mode": "BIDIRECTIONAL"},
+    {"from": "S5-B", "to": "S5-SEC", "description": "sello", "mode": "BIDIRECTIONAL"},
+    {"from": "S5-C", "to": "PASILLO_FINAL", "description": "pasillo final", "mode": "BIDIRECTIONAL"},
+    {"from": "PASILLO_FINAL", "to": "S5-D", "description": "punto de no retorno", "mode": "ONE_WAY"}
+  ],
+  "enemies": [
+    {"roomId": "S1-A", "type": "WARRIOR", "row": 1, "col": 5, "dropItemId": "P1"},
+    {"roomId": "S1-A", "type": "WARRIOR", "row": 5, "col": 5, "dropItemId": "P1"},
+    {"roomId": "S1-A", "type": "ARCHER", "row": 2, "col": 5, "dropItemId": "P1"},
+    {"roomId": "S1-B", "type": "WARRIOR", "row": 1, "col": 4, "dropItemId": "P1"},
+    {"roomId": "S1-B", "type": "ARCHER", "row": 3, "col": 4, "dropItemId": "P1"},
+    {"roomId": "S1-C", "type": "CONTROLLER", "row": 6, "col": 7, "dropItemId": "P2"},
+    {"roomId": "S1-D", "miniBossType": "ALCALDE_CORRUPTO", "row": 4, "col": 4, "dropItemId": "AC1"},
+    {"roomId": "S1-D", "type": "WARRIOR", "row": 2, "col": 6, "dropItemId": "P1"},
+    {"roomId": "S1-D", "type": "WARRIOR", "row": 6, "col": 6, "dropItemId": "P1"},
+    {"roomId": "S2-A", "type": "ARCHER", "row": 1, "col": 4, "dropItemId": "P1"},
+    {"roomId": "S2-A", "type": "WARRIOR", "row": 4, "col": 4, "dropItemId": "P1"},
+    {"roomId": "S2-B", "type": "ARCHER", "row": 1, "col": 5, "dropItemId": "P1"},
+    {"roomId": "S2-B", "type": "ARCHER", "row": 3, "col": 6, "dropItemId": "P1"},
+    {"roomId": "S2-B", "type": "DESTRUCTOR", "row": 5, "col": 6, "dropItemId": "P2"},
+    {"roomId": "S2-C", "type": "CONTROLLER", "row": 6, "col": 7, "dropItemId": "P2"},
+    {"roomId": "S2-D", "type": "WARRIOR", "row": 1, "col": 4, "dropItemId": "P1"},
+    {"roomId": "S2-D", "type": "WARRIOR", "row": 3, "col": 4, "dropItemId": "P1"},
+    {"roomId": "S2-D", "type": "BERSERKER", "row": 2, "col": 3, "dropItemId": "P1"},
+    {"roomId": "S2-E", "miniBossType": "ESPIRITU_MADRE", "row": 5, "col": 5, "dropItemId": "AC2"},
+    {"roomId": "S2-E", "type": "ARCHER", "row": 2, "col": 7, "dropItemId": "P1"},
+    {"roomId": "S2-E", "type": "ARCHER", "row": 7, "col": 7, "dropItemId": "P1"},
+    {"roomId": "S2-SEC", "type": "GUARDIAN", "row": 3, "col": 3, "dropItemId": "P2"},
+    {"roomId": "S3-A", "type": "WARRIOR", "row": 1, "col": 5, "dropItemId": "P1"},
+    {"roomId": "S3-A", "type": "WARRIOR", "row": 5, "col": 5, "dropItemId": "P1"},
+    {"roomId": "S3-A", "type": "BERSERKER", "row": 2, "col": 4, "dropItemId": "P1"},
+    {"roomId": "S3-B", "type": "SUMMONER", "row": 7, "col": 8, "dropItemId": "P3"},
+    {"roomId": "S3-C", "type": "GUARDIAN", "row": 1, "col": 6, "dropItemId": "P2"},
+    {"roomId": "S3-C", "type": "GUARDIAN", "row": 6, "col": 6, "dropItemId": "P2"},
+    {"roomId": "S3-C", "type": "ARCHER", "row": 2, "col": 5, "dropItemId": "P1"},
+    {"roomId": "S3-D", "type": "DESTRUCTOR", "row": 1, "col": 7, "dropItemId": "P2"},
+    {"roomId": "S3-D", "type": "DESTRUCTOR", "row": 5, "col": 7, "dropItemId": "P2"},
+    {"roomId": "S3-D", "type": "BERSERKER", "row": 2, "col": 5, "dropItemId": "P1"},
+    {"roomId": "S3-E", "type": "WARRIOR", "row": 1, "col": 7, "dropItemId": "P1"},
+    {"roomId": "S3-E", "type": "WARRIOR", "row": 7, "col": 7, "dropItemId": "P1"},
+    {"roomId": "S3-E", "type": "WARRIOR", "row": 2, "col": 6, "dropItemId": "P1"},
+    {"roomId": "S3-E", "type": "SNIPER", "row": 6, "col": 6, "dropItemId": "P1"},
+    {"roomId": "S3-F", "miniBossType": "GOLEM", "row": 5, "col": 5, "dropItemId": "AC3"},
+    {"roomId": "S3-F", "type": "GUARDIAN", "row": 2, "col": 8, "dropItemId": "P2"},
+    {"roomId": "S3-F", "type": "GUARDIAN", "row": 8, "col": 8, "dropItemId": "P2"},
+    {"roomId": "S4-A", "type": "CONSTRUCTO", "row": 1, "col": 6, "dropItemId": "P5"},
+    {"roomId": "S4-A", "type": "CONSTRUCTO", "row": 5, "col": 6, "dropItemId": "P5"},
+    {"roomId": "S4-A", "type": "CONTROLLER", "row": 2, "col": 5, "dropItemId": "P2"},
+    {"roomId": "S4-B", "type": "SNIPER", "row": 1, "col": 5, "dropItemId": "P1"},
+    {"roomId": "S4-B", "type": "SNIPER", "row": 6, "col": 6, "dropItemId": "P1"},
+    {"roomId": "S4-B", "type": "GUARDIAN", "row": 4, "col": 6, "dropItemId": "P2"},
+    {"roomId": "S4-C", "type": "DESTRUCTOR", "row": 6, "col": 7, "dropItemId": "P2"},
+    {"roomId": "S4-C", "type": "CONTROLLER", "row": 2, "col": 7, "dropItemId": "P2"},
+    {"roomId": "S4-D", "type": "BERSERKER", "row": 1, "col": 4, "dropItemId": "P1"},
+    {"roomId": "S4-D", "type": "BERSERKER", "row": 4, "col": 4, "dropItemId": "P1"},
+    {"roomId": "S4-D", "type": "BERSERKER", "row": 2, "col": 3, "dropItemId": "P1"},
+    {"roomId": "S4-E", "miniBossType": "GUARDIAN_SIN_NOMBRE", "row": 5, "col": 5, "dropItemId": "AC4"},
+    {"roomId": "S4-E", "type": "CONSTRUCTO", "row": 2, "col": 7, "dropItemId": "P5"},
+    {"roomId": "S4-E", "type": "CONSTRUCTO", "row": 7, "col": 7, "dropItemId": "P5"},
+    {"roomId": "S5-A", "type": "SOMBRA_ABSORBIDA", "row": 1, "col": 5, "dropItemId": "P4"},
+    {"roomId": "S5-A", "type": "SOMBRA_ABSORBIDA", "row": 5, "col": 5, "dropItemId": "P4"},
+    {"roomId": "S5-A", "type": "ECO_DE_MAGIA", "row": 3, "col": 5, "dropItemId": "P4"},
+    {"roomId": "S5-B", "type": "SOMBRA_ABSORBIDA", "row": 1, "col": 6, "dropItemId": "P4"},
+    {"roomId": "S5-B", "type": "SOMBRA_ABSORBIDA", "row": 3, "col": 6, "dropItemId": "P4"},
+    {"roomId": "S5-B", "type": "SOMBRA_ABSORBIDA", "row": 1, "col": 4, "dropItemId": "P4"},
+    {"roomId": "S5-B", "type": "ECO_DE_MAGIA", "row": 3, "col": 4, "dropItemId": "P4"},
+    {"roomId": "S5-C", "miniBossType": "EL_FILTRO", "row": 4, "col": 4, "dropItemId": null}
+  ],
+  "finalCombat": {
+    "roomId": "S5-D",
+    "malachar": {"row": 7, "col": 3},
+    "parasito": {"row": 5, "col": 8},
+    "parasitoPulseRadius": 2,
+    "parasitoBasePulseDamage": 12,
+    "parasitoIntensifiedPulseDamage": 15,
+    "parasitoDevourLightDamage": 20
+  }
+}

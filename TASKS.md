@@ -317,6 +317,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 13 | Implementar exportación de resumen final con `exportarResumen(...)` | ✅ Completado |
 | 14 | Añadir setters controlados en `TurnManager` para restaurar fase, turno y último diálogo | ✅ Completado |
 | 15 | Añadir restauración de apertura en `Container` para carga sin entregar loot duplicado | ✅ Completado |
+| 16 | Crear `config/configuracion_inicial_valdris.json` como configuración inicial determinista del mundo completo | ✅ Completado |
 
 ---
 
@@ -472,6 +473,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 43 | Suite tras saneamiento documental de `TASKS.md` y `COMMIT_LOG.md` | ✅ Correcta |
 | 44 | Suite tras reubicar, corregir y completar tests de `MisEstructurasDeDatos` | ✅ Correcta |
 | 45 | Suite tras ruta global hacia `S5-D`, acción JavaFX de revelar camino con enemigos vivos, puertas bloqueadas de progreso, unidades en ruta y ajuste visual de panel/log | ✅ Correcta |
+| 46 | Validación JSON de configuración inicial: parseo correcto, 34 salas, 35 conexiones, 61 enemigos y layouts con dimensiones coherentes | ✅ Correcta |
 
 Última verificación completa:
 
@@ -583,6 +585,7 @@ Resultado:
 | 90 | Revelar ruta es una ayuda visual y puede mostrarse aunque queden enemigos vivos; usar la puerta o escalera sigue bloqueado hasta limpiar la sala | ✅ Aceptada |
 | 91 | La ruta revelada considera puertas bloqueadas conocidas como continuidad de progreso, sin desbloquear ni permitir cruzar esas puertas hasta resolver sus condiciones | ✅ Aceptada |
 | 92 | El camino visual de la ruta ignora unidades ocupantes porque es una guía de progreso posterior al combate, no una ruta de movimiento ejecutable en el turno actual | ✅ Aceptada |
+| 93 | La configuración inicial oficial de entrega se define en JSON determinista con layouts completos, conexiones, accesos, cofres, items, enemigos, puzzles, diálogos, posición inicial y objetivo | ✅ Aceptada |
 
 ---
 

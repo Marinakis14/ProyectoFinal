@@ -2102,6 +2102,48 @@ item y cierre el modal tras una acción correcta.
 
 ---
 
+### Sesion 46 — 26 mayo 2026 — Codex
+
+**Objetivo:** Definir la configuración inicial determinista del mundo completo en JSON para cubrir el requisito de carga de configuración inicial desde JSON.
+
+**Archivos trabajados:**
+- `config/configuracion_inicial_valdris.json`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- Creado `config/configuracion_inicial_valdris.json` como fuente declarativa del mundo inicial.
+- Incluidos `initialRoomId`, `objectiveRoomId` y posición inicial del jugador.
+- Definidas las 34 salas del mapa con `layout` completo por matriz, incluyendo paredes, suelo, puertas, puertas bloqueadas, puertas ocultas, escaleras, palancas y runas.
+- Añadidos metadatos de celdas para destinos de accesos, requisitos de item narrativo, triggers, orientación de escaleras, cofres e items de suelo.
+- Registradas 35 conexiones de grafo, incluyendo conexiones bidireccionales, conexiones ocultas activables por puzzles/secretos y el punto de no retorno `PASILLO_FINAL -> S5-D`.
+- Definidos puzzles con daño, objetivo y secuencia determinista.
+- Registrados diálogos narrativos por personaje.
+- Definidos 61 enemigos iniciales con posiciones y drops deterministas, incluyendo mini-bosses y drops narrativos AC1-AC4.
+- Añadida sección `finalCombat` con posiciones de Malachar y el Parásito y parámetros principales del combate final.
+
+**Problemas encontrados:**
+- El mundo anterior vivía implícitamente en `DungeonGenerator`, por lo que había que trasladar toda la información fija a un formato auditable sin cambiar todavía la lógica Java.
+- Algunas validaciones PowerShell dentro del sandbox fallaron al ejecutar parseo JSON; se repitió la validación con permiso escalado por tratarse de una comprobación local de lectura.
+
+**Solución aplicada:**
+- Mantener el JSON como primer subbloque independiente, sin conectar todavía `GameModel` ni `LectorJSON`.
+- Usar `layout` para describir todas las celdas de cada habitación y reservar `cells` para metadatos que no caben en un símbolo simple.
+
+**Verificación:**
+- Validación local de JSON: parseo correcto.
+- Comprobación estructural: 34 salas, 35 conexiones, 61 enemigos.
+- Comprobación de layouts: todas las filas y columnas coinciden con las dimensiones declaradas.
+- No se ejecutó `mvn test` porque todavía no se ha modificado código Java.
+
+**Decisiones técnicas:**
+- La configuración inicial oficial de entrega será determinista y estará en `config/configuracion_inicial_valdris.json`.
+- `DungeonGenerator` se mantiene por ahora sin cambios hasta implementar el cargador de configuración.
+
+**Commit sugerido:** `git commit -m "feat(config): add initial dungeon json"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas

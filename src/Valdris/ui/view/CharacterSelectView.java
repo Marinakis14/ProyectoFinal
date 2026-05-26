@@ -1,16 +1,15 @@
 package Valdris.ui.view;
 
-import Valdris.exceptions.GameStateException;
 import Valdris.model.enums.CharacterType;
 import Valdris.ui.MainApp;
-import Valdris.ui.controller.GameController;
-import Valdris.ui.model.GameModel;
+import java.io.File;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -56,14 +55,17 @@ public class CharacterSelectView {
     public VBox crearBotonPersonaje(CharacterType tipo) {
         VBox card = new VBox(12);
         card.setAlignment(Pos.TOP_CENTER);
-        card.setPadding(new Insets(24));
-        card.setPrefWidth(300);
-        card.setMinHeight(360);
+        card.setPadding(new Insets(18, 20, 20, 20));
+        card.setPrefWidth(310);
+        card.setMinHeight(540);
         card.setStyle(
-            "-fx-background-color: #242424;"
+            "-fx-background-color: linear-gradient(to bottom, #2d251b 0%, #1e1e1e 100%);"
                 + "-fx-border-color: " + colorPersonaje(tipo) + ";"
                 + "-fx-border-width: 2;"
+                + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.38), 10, 0.2, 0, 2);"
         );
+
+        ImageView retrato = crearRetrato(tipo);
 
         Label nombre = new Label(nombrePersonaje(tipo));
         nombre.setFont(Font.font("Serif", 28));
@@ -94,28 +96,18 @@ public class CharacterSelectView {
         );
         elegir.setOnAction(event -> iniciarJuego(tipo));
 
-        card.getChildren().addAll(nombre, rol, stats, descripcion, elegir);
+        card.getChildren().addAll(retrato, nombre, rol, stats, descripcion, elegir);
         return card;
     }
 
     /**
-     * Crea una partida real y abre la pantalla principal.
+     * Abre la pantalla narrativa previa a la partida real.
      *
      * @param tipo personaje elegido
      */
     public void iniciarJuego(CharacterType tipo) {
-        try {
-            GameModel modelo = new GameModel(tipo);
-            GameController controller = new GameController(modelo);
-            GameView gameView = new GameView(stage, modelo, controller);
-            stage.setScene(gameView.getScene());
-        } catch (GameStateException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error al crear partida");
-            alert.setHeaderText("No se pudo iniciar la partida");
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
-        }
+        DescentIntroView descentIntroView = new DescentIntroView(stage, tipo);
+        stage.setScene(descentIntroView.getScene());
     }
 
     /**
@@ -133,18 +125,18 @@ public class CharacterSelectView {
      */
     private BorderPane crearContenido() {
         BorderPane root = new BorderPane();
-        root.setPadding(new Insets(36));
-        root.setStyle("-fx-background-color: #171717;");
+        root.setPadding(new Insets(28, 36, 28, 36));
+        ValdrisTheme.aplicarFondo(root);
 
         VBox cabecera = new VBox(8);
         cabecera.setAlignment(Pos.CENTER);
         Label titulo = new Label("Elige tu personaje");
         titulo.setFont(Font.font("Serif", 36));
         titulo.setStyle("-fx-text-fill: #f5f0e6;");
-        Label subtitulo = new Label("Cada camino atraviesa Valdris de una forma distinta.");
+        Label subtitulo = new Label("Tres voluntades distintas. Un unico descenso hacia el Nucleo Profundo.");
         subtitulo.setFont(Font.font("SansSerif", 15));
         subtitulo.setStyle("-fx-text-fill: #c9b99c;");
-        cabecera.getChildren().addAll(titulo, subtitulo);
+        cabecera.getChildren().addAll(titulo, subtitulo, ValdrisTheme.crearOrnamentoHorizontal());
 
         HBox personajes = new HBox(28);
         personajes.setAlignment(Pos.CENTER);
@@ -158,17 +150,46 @@ public class CharacterSelectView {
         volver.setPrefWidth(160);
         volver.setPrefHeight(38);
         volver.setOnAction(event -> volverAlMenu());
-        volver.setStyle(
-            "-fx-background-color: #3a3328;"
-                + "-fx-text-fill: #f5f0e6;"
-                + "-fx-border-color: #8f7651;"
-        );
+        ValdrisTheme.aplicarBoton(volver);
 
         VBox centro = new VBox(28);
         centro.setAlignment(Pos.CENTER);
         centro.getChildren().addAll(cabecera, personajes, volver);
-        root.setCenter(centro);
+        root.setCenter(ValdrisTheme.crearMarcoConEsquinas(centro));
         return root;
+    }
+
+    /**
+     * Crea el retrato visual del personaje desde la carpeta de imagenes.
+     *
+     * @param tipo personaje representado
+     * @return vista de imagen configurada
+     */
+    private ImageView crearRetrato(CharacterType tipo) {
+        File archivo = new File(rutaImagenPersonaje(tipo));
+        Image imagen = new Image(archivo.toURI().toString(), 245, 210, true, true);
+        ImageView imageView = new ImageView(imagen);
+        imageView.setFitWidth(245);
+        imageView.setFitHeight(210);
+        imageView.setPreserveRatio(true);
+        imageView.setSmooth(true);
+        return imageView;
+    }
+
+    /**
+     * Devuelve la ruta local del retrato asociado al personaje.
+     *
+     * @param tipo personaje consultado
+     * @return ruta relativa de la imagen
+     */
+    private String rutaImagenPersonaje(CharacterType tipo) {
+        if (tipo == CharacterType.SYRA) {
+            return "imagenes/Syra sin fondo.png";
+        }
+        if (tipo == CharacterType.DORATH) {
+            return "imagenes/Dorath sin fondo.png";
+        }
+        return "imagenes/Kael sin fondo.png";
     }
 
     /**

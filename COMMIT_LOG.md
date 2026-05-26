@@ -2284,6 +2284,97 @@ item y cierre el modal tras una acción correcta.
 
 ---
 
+### Sesion 50 — 27 mayo 2026 — Codex
+
+**Objetivo:** Mejorar la presentacion inicial del juego con una introduccion narrativa, una transicion de descenso y retratos para la seleccion de personaje.
+
+**Archivos trabajados:**
+- `src/Valdris/ui/view/MainMenuView.java`
+- `src/Valdris/ui/view/StoryIntroView.java`
+- `src/Valdris/ui/view/CharacterSelectView.java`
+- `src/Valdris/ui/view/DescentIntroView.java`
+- `imagenes/Kael sin fondo.png`
+- `imagenes/Syra sin fondo.png`
+- `imagenes/Dorath sin fondo.png`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- `MainMenuView` deja de abrir directamente la seleccion de personaje al iniciar partida nueva y muestra primero `StoryIntroView`.
+- Creada `StoryIntroView` como pantalla narrativa sobre Valdris, Malachar, el sello debilitado y el descenso al Nucleo Profundo.
+- `CharacterSelectView` incorpora retratos de Kael, Syra y Dorath desde la carpeta `imagenes/` y mejora las tarjetas visuales manteniendo rol, stats y descripcion.
+- La seleccion de personaje abre ahora `DescentIntroView` en lugar de crear la partida inmediatamente.
+- Creada `DescentIntroView` con texto personalizado por personaje, aviso integrado de movimientos/acciones/teclas visibles y boton final para entrar en Valdris.
+- La creacion de `GameModel`, `GameController` y `GameView` queda retrasada hasta confirmar la entrada desde la pantalla de descenso.
+
+**Problemas encontrados:**
+- El fichero indicado inicialmente como `GUIA_DISENO_PROJECTO_V3.md` no existia en la raiz; se confirmo que la referencia correcta era `docs/GUIA_PROYECTO_JUEGO_V3.md`.
+- Los retratos estaban en `imagenes/` como archivos no versionados, por lo que deben incluirse en el commit de este bloque para que la seleccion funcione en otros entornos.
+- Los primeros intentos de Maven dentro del sandbox no llegaron a arrancar por un problema de ejecucion del entorno.
+
+**Solucion aplicada:**
+- Usar `docs/GUIA_PROYECTO_JUEGO_V3.md` para adaptar el tono narrativo de las pantallas.
+- Cargar las imagenes con rutas relativas mediante `File.toURI()` para soportar espacios en los nombres de archivo.
+- Ejecutar la suite completa fuera del sandbox tras el fallo de arranque local.
+
+**Verificacion:**
+- `mvn -q test`: correcto, 493 tests, 0 fallos, 0 errores, 0 omitidos.
+- La salida mantiene el aviso esperado del test que intenta leer `archivo_que_no_existe.json` y warnings del JDK/Maven.
+
+**Decisiones tecnicas:**
+- El flujo de partida nueva queda como `menu -> historia -> seleccion -> descenso -> partida`.
+- Las pantallas narrativas pertenecen solo a JavaFX y no modifican reglas ni estado de juego.
+- Las imagenes de personaje se tratan como assets de interfaz y deben versionarse junto al cambio visual.
+
+**Commit sugerido:** `git commit -m "feat(ui): add narrative start screens and portraits"`
+
+---
+
+### Sesion 51 — 27 mayo 2026 — Codex
+
+**Objetivo:** Reducir la sensacion plana de la interfaz con una decoracion sutil y coherente con la ambientacion de Valdris.
+
+**Archivos trabajados:**
+- `src/Valdris/ui/view/ValdrisTheme.java`
+- `src/Valdris/ui/view/MainMenuView.java`
+- `src/Valdris/ui/view/StoryIntroView.java`
+- `src/Valdris/ui/view/CharacterSelectView.java`
+- `src/Valdris/ui/view/DescentIntroView.java`
+- `src/Valdris/ui/view/GameView.java`
+- `src/Valdris/ui/view/InventoryView.java`
+- `src/Valdris/ui/view/FinalView.java`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- Creado `ValdrisTheme` como helper visual compartido para fondo profundo, paneles, botones, separadores, ornamentos horizontales y marcos con esquinas.
+- El menu principal usa ahora un panel destacado enmarcado y una ornamentacion central bajo el subtitulo.
+- Las pantallas de historia y descenso incorporan panel destacado, esquinas ornamentales y separadores decorativos sin aumentar el texto.
+- La seleccion de personaje conserva retratos y tarjetas, pero refuerza sombras, fondos y marcos para integrarlas mejor en el tono de fantasia oscura.
+- `GameView` cambia el fondo plano por un fondo profundo, enmarca los paneles laterales, destaca el mapa y sustituye separadores de texto por lineas decorativas.
+- `InventoryView` y `FinalView` reciben el mismo tema visual para que modales y cierre no rompan la estetica general.
+
+**Problemas encontrados:**
+- Maven no arranco dentro del sandbox por el mismo problema de ejecucion del entorno visto en el bloque anterior.
+- La mejora debia mantenerse puramente visual para no mezclar reglas de juego con presentacion.
+
+**Solucion aplicada:**
+- Centralizar estilos en `ValdrisTheme` y aplicarlos desde cada vista sin cambiar controladores ni modelo.
+- Ejecutar la verificacion completa fuera del sandbox tras el fallo de arranque local.
+
+**Verificacion:**
+- `mvn -q test`: correcto, 493 tests, 0 fallos, 0 errores, 0 omitidos.
+- La salida mantiene el aviso esperado del test que intenta leer `archivo_que_no_existe.json` y warnings del JDK/Maven.
+
+**Decisiones tecnicas:**
+- La decoracion comun se implementa con JavaFX/CSS y regiones ligeras, sin introducir nuevos assets obligatorios.
+- `ValdrisTheme` queda como punto unico para estilos compartidos de pantallas JavaFX.
+- La pantalla principal mejora marco y jerarquia visual sin alterar el mapa ni sus colores funcionales.
+
+**Commit sugerido:** `git commit -m "style(ui): add subtle fantasy theme"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas
@@ -2348,10 +2439,13 @@ item y cierre el modal tras una acción correcta.
 
 **Bloque 6 — JavaFX**
 - [x] MainApp
+- [x] ValdrisTheme
 - [x] MainMenuView
+- [x] StoryIntroView
 - [x] GameModelListener
 - [x] GameModel
 - [x] CharacterSelectView
+- [x] DescentIntroView
 - [x] GameView
 - [x] GameController
 - [x] InventoryView

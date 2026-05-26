@@ -64,11 +64,13 @@ public class FinalView {
     private BorderPane crearContenido() {
         BorderPane root = new BorderPane();
         root.setPadding(new Insets(42));
-        root.setStyle("-fx-background-color: #171717;");
+        ValdrisTheme.aplicarFondo(root);
 
         VBox contenido = new VBox(18);
         contenido.setAlignment(Pos.CENTER);
         contenido.setMaxWidth(720);
+        contenido.setPadding(new Insets(32));
+        ValdrisTheme.aplicarPanelDestacado(contenido);
 
         Label titulo = new Label(tituloResultado());
         titulo.setFont(Font.font("Serif", 44));
@@ -88,13 +90,13 @@ public class FinalView {
         menu.setOnAction(event -> controller.onBotonMenuPrincipal(stage));
         acciones.getChildren().addAll(exportar, menu);
 
-        contenido.getChildren().addAll(titulo, personaje, sala, turno, desenlace);
+        contenido.getChildren().addAll(titulo, ValdrisTheme.crearOrnamentoHorizontal(), personaje, sala, turno, desenlace);
         if (frase.getText() != null && !frase.getText().isEmpty()) {
             contenido.getChildren().add(frase);
         }
         contenido.getChildren().add(acciones);
 
-        root.setCenter(contenido);
+        root.setCenter(ValdrisTheme.crearMarcoConEsquinas(contenido));
         return root;
     }
 
@@ -192,12 +194,7 @@ public class FinalView {
         button.setPrefWidth(190);
         button.setPrefHeight(42);
         button.setFont(Font.font("SansSerif", 15));
-        button.setStyle(
-            "-fx-background-color: #3a3328;"
-                + "-fx-text-fill: #f5f0e6;"
-                + "-fx-border-color: #8f7651;"
-                + "-fx-border-width: 1;"
-        );
+        ValdrisTheme.aplicarBoton(button);
         return button;
     }
 

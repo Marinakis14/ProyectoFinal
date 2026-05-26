@@ -29,6 +29,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -160,7 +161,7 @@ public class GameView implements GameModelListener {
      * Construye el layout base de la pantalla principal.
      */
     private void construirLayout() {
-        root.setStyle("-fx-background-color: #171717;");
+        ValdrisTheme.aplicarFondo(root);
         root.setPadding(new Insets(12));
 
         gridSala.setAlignment(Pos.CENTER);
@@ -170,20 +171,21 @@ public class GameView implements GameModelListener {
         tituloSala.setStyle("-fx-text-fill: #f5f0e6;");
         StackPane mapaWrapper = new StackPane(gridSala);
         mapaWrapper.setPadding(new Insets(18));
-        mapaWrapper.setStyle("-fx-background-color: #202020;");
+        ValdrisTheme.aplicarPanelDestacado(mapaWrapper);
         VBox mapaPanel = new VBox(10);
         mapaPanel.setAlignment(Pos.CENTER);
-        mapaPanel.getChildren().addAll(tituloSala, mapaWrapper);
+        mapaPanel.getChildren().addAll(tituloSala, ValdrisTheme.crearOrnamentoHorizontal(),
+            ValdrisTheme.crearMarcoConEsquinas(mapaWrapper));
 
         panelLateral.setPadding(new Insets(14));
         panelLateral.setPrefWidth(300);
         panelLateral.setMinWidth(280);
-        panelLateral.setStyle("-fx-background-color: #242424; -fx-border-color: #3b3429; -fx-border-width: 0 1 0 0;");
+        ValdrisTheme.aplicarPanel(panelLateral);
 
         panelInventario.setPadding(new Insets(14));
         panelInventario.setPrefWidth(360);
         panelInventario.setMinWidth(330);
-        panelInventario.setStyle("-fx-background-color: #242424; -fx-border-color: #3b3429; -fx-border-width: 0 0 0 1;");
+        ValdrisTheme.aplicarPanel(panelInventario);
 
         root.setCenter(mapaPanel);
         root.setLeft(panelLateral);
@@ -673,7 +675,7 @@ public class GameView implements GameModelListener {
     private Label crearTitulo(String texto) {
         Label label = new Label(texto);
         label.setFont(Font.font("Serif", 26));
-        label.setStyle("-fx-text-fill: #f5f0e6;");
+        label.setStyle("-fx-text-fill: #f5f0e6; -fx-border-color: transparent transparent #8f7651 transparent; -fx-border-width: 0 0 1 0;");
         return label;
     }
 
@@ -686,7 +688,7 @@ public class GameView implements GameModelListener {
     private Label crearTituloSeccion(String texto) {
         Label label = new Label(texto);
         label.setFont(Font.font("Serif", 19));
-        label.setStyle("-fx-text-fill: #f5f0e6;");
+        label.setStyle("-fx-text-fill: #f5f0e6; -fx-background-color: rgba(143, 118, 81, 0.16); -fx-padding: 4 6 4 6;");
         return label;
     }
 
@@ -745,10 +747,8 @@ public class GameView implements GameModelListener {
      *
      * @return separador
      */
-    private Label crearSeparador() {
-        Label label = new Label("--------------------");
-        label.setStyle("-fx-text-fill: #5e5140;");
-        return label;
+    private Region crearSeparador() {
+        return ValdrisTheme.crearSeparador();
     }
 
     /**
@@ -859,11 +859,7 @@ public class GameView implements GameModelListener {
         Button button = new Button(texto);
         button.setMaxWidth(Double.MAX_VALUE);
         button.setPrefHeight(36);
-        button.setStyle(
-            "-fx-background-color: #3a3328;"
-                + "-fx-text-fill: #f5f0e6;"
-                + "-fx-border-color: #8f7651;"
-        );
+        ValdrisTheme.aplicarBoton(button);
         return button;
     }
 

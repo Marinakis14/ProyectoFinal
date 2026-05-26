@@ -13,6 +13,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -48,11 +49,11 @@ public class MainMenuView {
     }
 
     /**
-     * Cambia a la pantalla de seleccion de personaje.
+     * Cambia a la pantalla narrativa previa a la seleccion de personaje.
      */
     public void iniciarNuevaPartida() {
-        CharacterSelectView characterSelectView = new CharacterSelectView(stage);
-        stage.setScene(characterSelectView.getScene());
+        StoryIntroView storyIntroView = new StoryIntroView(stage);
+        stage.setScene(storyIntroView.getScene());
     }
 
     /**
@@ -103,10 +104,13 @@ public class MainMenuView {
     private BorderPane crearContenido() {
         BorderPane root = new BorderPane();
         root.setPadding(new Insets(48));
-        root.setStyle("-fx-background-color: #171717;");
+        ValdrisTheme.aplicarFondo(root);
 
         VBox centro = new VBox(22);
         centro.setAlignment(Pos.CENTER);
+        centro.setMaxWidth(560);
+        centro.setPadding(new Insets(34));
+        ValdrisTheme.aplicarPanelDestacado(centro);
 
         Label titulo = new Label("Valdris: El Núcleo Profundo");
         titulo.setFont(Font.font("Serif", 42));
@@ -115,6 +119,8 @@ public class MainMenuView {
         Label subtitulo = new Label("Grupo H12GEXTRA");
         subtitulo.setFont(Font.font("SansSerif", 16));
         subtitulo.setStyle("-fx-text-fill: #c9b99c;");
+
+        HBox ornamento = ValdrisTheme.crearOrnamentoHorizontal();
 
         Button nuevaPartida = crearBotonMenu("Nueva partida");
         nuevaPartida.setOnAction(event -> iniciarNuevaPartida());
@@ -125,8 +131,8 @@ public class MainMenuView {
         Button salir = crearBotonMenu("Salir");
         salir.setOnAction(event -> salir());
 
-        centro.getChildren().addAll(titulo, subtitulo, nuevaPartida, cargarPartida, salir);
-        root.setCenter(centro);
+        centro.getChildren().addAll(titulo, subtitulo, ornamento, nuevaPartida, cargarPartida, salir);
+        root.setCenter(ValdrisTheme.crearMarcoConEsquinas(centro));
         return root;
     }
 
@@ -141,12 +147,7 @@ public class MainMenuView {
         button.setPrefWidth(260);
         button.setPrefHeight(44);
         button.setFont(Font.font("SansSerif", 16));
-        button.setStyle(
-            "-fx-background-color: #3a3328;"
-                + "-fx-text-fill: #f5f0e6;"
-                + "-fx-border-color: #8f7651;"
-                + "-fx-border-width: 1;"
-        );
+        ValdrisTheme.aplicarBoton(button);
         return button;
     }
 }

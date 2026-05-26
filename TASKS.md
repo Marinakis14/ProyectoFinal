@@ -28,7 +28,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | Capas 2, 3 y 4 | Completadas y testeadas |
 | Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga, TurnManager, ItemGenerator, PuzzleManager y DungeonGenerator completados |
 | Capa 6 inicial | GameState, LoadedGame, GameSummary, LectorJSON, GameConfig y DungeonConfigLoader completados |
-| Capa 7 JavaFX | Pantallas principales, partida, inventario, autoguardado, diálogos, pantalla final, correcciones jugables, redistribución de pantalla, sprites de unidades, feedback visual de puzzles y secretos, distancia/ruta global a salida y contadores de turno completados |
+| Capa 7 JavaFX | Pantallas principales, introducciones narrativas, selección con retratos, partida, inventario, autoguardado, diálogos, pantalla final, correcciones jugables, redistribución de pantalla, sprites de unidades, feedback visual de puzzles y secretos, distancia/ruta global a salida y contadores de turno completados |
 | Tests JUnit actuales | 493 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
@@ -378,6 +378,12 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 39 | Añadir acción y atajo `V` para revelar u ocultar la ruta global hacia el Núcleo con resaltado propio | ✅ Completado |
 | 40 | Reubicar la acción de ruta junto al dato de salida y compactar el log para que no tape mensajes en partida | ✅ Completado |
 | 41 | Diferenciar visualmente los suelos con trigger secreto y las puertas secretas reveladas | ✅ Completado |
+| 42 | Añadir pantalla narrativa `StoryIntroView` antes de la selección de personaje | ✅ Completado |
+| 43 | Añadir pantalla `DescentIntroView` tras elegir personaje, con texto de descenso y aviso de controles/teclas | ✅ Completado |
+| 44 | Incorporar retratos de Kael, Syra y Dorath en `CharacterSelectView` y mejorar la composición visual de las tarjetas | ✅ Completado |
+| 45 | Crear `ValdrisTheme` como helper visual compartido para fondos, paneles, botones, separadores y marcos ornamentales | ✅ Completado |
+| 46 | Aplicar decoración sutil de fantasía a menú, historia, selección, descenso, inventario, pantalla final y pantalla principal | ✅ Completado |
+| 47 | Mejorar `GameView` con fondo profundo, paneles enmarcados, mapa destacado y separadores decorativos | ✅ Completado |
 
 ---
 
@@ -491,6 +497,8 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 47 | Suite tras cargar la configuración inicial desde JSON en `GameModel` y reconstrucción de `LectorJSON` | ✅ Correcta |
 | 48 | Suite tras configuración JSON híbrida con paredes interiores, candidatos de enemigo, pools de items y puzzles permutados | ✅ Correcta |
 | 49 | Suite tras pistas visuales de secretos, reinicio de fase al cambiar de sala y causas concretas de derrota | ✅ Correcta |
+| 50 | Suite tras pantallas narrativas iniciales y retratos de personajes en JavaFX | ✅ Correcta |
+| 51 | Suite tras tema visual compartido y decoración sutil en pantallas principales | ✅ Correcta |
 
 Última verificación completa:
 
@@ -608,6 +616,8 @@ Resultado:
 | 96 | Los triggers secretos deben tener una pista visual sutil y las puertas secretas reveladas deben distinguirse claramente de paredes y puertas normales | ✅ Aceptada |
 | 97 | Cambiar de sala reinicia siempre el ciclo de turno en `MOVEMENT` y limpia las acciones usadas del jugador | ✅ Aceptada |
 | 98 | La derrota debe guardar la causa concreta disponible en el momento de la muerte, no un motivo genérico posterior | ✅ Aceptada |
+| 99 | La partida nueva sigue el flujo `menú -> historia -> selección -> descenso -> partida`, creando `GameModel` solo al confirmar la entrada en Valdris | ✅ Aceptada |
+| 100 | La decoración visual se centraliza en `ValdrisTheme` para mantener coherencia y evitar duplicar estilos JavaFX entre pantallas | ✅ Aceptada |
 
 ---
 

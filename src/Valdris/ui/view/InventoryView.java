@@ -15,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
@@ -83,7 +84,7 @@ public class InventoryView {
      */
     private void construirLayout() {
         root.setPadding(new Insets(18));
-        root.setStyle("-fx-background-color: #171717;");
+        ValdrisTheme.aplicarFondo(root);
 
         Label titulo = new Label("Inventario");
         titulo.setFont(Font.font("Serif", 28));
@@ -92,7 +93,7 @@ public class InventoryView {
         Label subtitulo = new Label(textoModo());
         subtitulo.setStyle("-fx-text-fill: #c9b99c;");
 
-        VBox cabecera = new VBox(4, titulo, subtitulo);
+        VBox cabecera = new VBox(4, titulo, subtitulo, ValdrisTheme.crearOrnamentoHorizontal());
         cabecera.setPadding(new Insets(0, 0, 14, 0));
         root.setTop(cabecera);
 
@@ -118,7 +119,7 @@ public class InventoryView {
         VBox equipo = new VBox(10);
         equipo.setPadding(new Insets(14));
         equipo.setPrefWidth(285);
-        equipo.setStyle("-fx-background-color: #242424; -fx-border-color: #3b3429;");
+        ValdrisTheme.aplicarPanel(equipo);
 
         Label titulo = crearTituloSeccion("Equipo");
         equipo.getChildren().add(titulo);
@@ -144,7 +145,7 @@ public class InventoryView {
         VBox contenido = new VBox(12);
         contenido.setPadding(new Insets(14));
         contenido.setPrefWidth(465);
-        contenido.setStyle("-fx-background-color: #242424; -fx-border-color: #3b3429;");
+        ValdrisTheme.aplicarPanel(contenido);
 
         contenido.getChildren().add(crearTituloSeccion("Objetos"));
         agregarListaItems(contenido, modelo.getPlayer().getInventario(), true);
@@ -154,7 +155,7 @@ public class InventoryView {
 
         ScrollPane scroll = new ScrollPane(contenido);
         scroll.setFitToWidth(true);
-        scroll.setStyle("-fx-background: #242424; -fx-background-color: #242424;");
+        scroll.setStyle("-fx-background: #202020; -fx-background-color: #202020;");
         return scroll;
     }
 
@@ -193,7 +194,7 @@ public class InventoryView {
         HBox fila = new HBox(10);
         fila.setAlignment(Pos.CENTER_LEFT);
         fila.setPadding(new Insets(8));
-        fila.setStyle("-fx-background-color: #1d1d1d; -fx-border-color: #3b3429;");
+        fila.setStyle("-fx-background-color: #1d1d1d; -fx-border-color: #5e5140; -fx-border-width: 1;");
 
         VBox textos = new VBox(3);
         textos.setPrefWidth(300);
@@ -324,10 +325,8 @@ public class InventoryView {
      *
      * @return separador
      */
-    private Label crearSeparador() {
-        Label label = new Label("--------------------");
-        label.setStyle("-fx-text-fill: #5e5140;");
-        return label;
+    private Region crearSeparador() {
+        return ValdrisTheme.crearSeparador();
     }
 
     /**
@@ -339,11 +338,7 @@ public class InventoryView {
     private Button crearBoton(String texto) {
         Button button = new Button(texto);
         button.setPrefHeight(32);
-        button.setStyle(
-            "-fx-background-color: #3a3328;"
-                + "-fx-text-fill: #f5f0e6;"
-                + "-fx-border-color: #8f7651;"
-        );
+        ValdrisTheme.aplicarBoton(button);
         return button;
     }
 

@@ -1651,12 +1651,20 @@ public class TurnManager {
      */
     private String crearDialogoMalachar(CharacterType tipo) {
         if (tipo == CharacterType.SYRA) {
-            return "Malachar revela a Syra que el Parásito está devorando la raíz mágica de Valdris.";
+            return "Malachar baja la voz al reconocer a Syra. Le cuenta que Lireth no enfermó por abandono ni por "
+                + "una maldición del bosque: el Parásito lleva siglos bebiendo de sus raíces mágicas desde abajo. "
+                + "Cada espíritu corrompido, cada árbol doblado hacia la tierra, era una señal de que Valdris se "
+                + "estaba quedando sin aliento.";
         }
         if (tipo == CharacterType.DORATH) {
-            return "Malachar confirma a Dorath que la Orden ocultó que el sello siempre fue temporal.";
+            return "Malachar mira a Dorath sin intentar defenderse. Confirma lo que la Orden enterró en archivos "
+                + "cerrados: el sello siempre fue temporal, los guardianes lo sabían y el silencio se convirtió en "
+                + "dogma. No pide absolución; solo le entrega la verdad completa antes de que el Núcleo termine de "
+                + "abrirse.";
         }
-        return "Malachar explica a Kael que el sello no fue una prisión, sino una contención desesperada.";
+        return "Malachar observa el guantelete de Kael y entiende la marca del sello. Le explica que aquello nunca "
+            + "fue una simple prisión, sino una contención desesperada contra algo más antiguo que su culpa. El "
+            + "sello rechazó a Kael porque ya estaba roto, no porque él no fuera digno de cargarlo.";
     }
 
     /**
@@ -1664,12 +1672,21 @@ public class TurnManager {
      */
     private String crearEndingText(CharacterType tipo) {
         if (tipo == CharacterType.SYRA) {
-            return "Syra cae pronunciando los nombres antiguos de Lireth mientras la vida vuelve al bosque.";
+            return "Syra no cierra los ojos cuando la luz del Núcleo la envuelve. Pronuncia despacio los nombres "
+                + "antiguos de Lireth, uno por uno, como si cada palabra pudiera guiar a los espíritus perdidos de "
+                + "vuelta a casa. Tres días después, en la superficie, un árbol del bosque crece hacia el cielo por "
+                + "primera vez en años. Nadie ve el milagro, pero Valdris lo recuerda.";
         }
         if (tipo == CharacterType.DORATH) {
-            return "Dorath entrega la verdad al futuro: los textos sobreviven y la Orden ya no puede enterrarla.";
+            return "Dorath muere con la certeza que había perseguido desde su excomunión. Los textos que rescató "
+                + "de la Torre de Embrath sobreviven, y con ellos la prueba de que la Orden mintió por miedo. Cuando "
+                + "los reinos pregunten qué ocurrió bajo el continente, habrá palabras escritas por un excomulgado "
+                + "que ya nadie podrá borrar.";
         }
-        return "Kael cumple la deuda del sello y su sacrificio permite que Valdris vuelva a respirar.";
+        return "En el último instante, el guantelete de Kael se abre y la mano quemada deja de doler. No cae como "
+            + "aprendiz rechazado ni como heredero fallido, sino como el guardián que llegó cuando todos los demás "
+            + "ya no podían. En Embrath, su nombre será añadido al final de la lista: el que cerró la deuda del "
+            + "sello y permitió que Valdris volviera a respirar.";
     }
 
     /**

@@ -2462,6 +2462,31 @@ item y cierre el modal tras una acción correcta.
 
 ---
 
+### Sesión 55 — Diálogos narrativos temáticos y textos ampliados
+
+**Objetivo:**
+Sustituir las ventanas genéricas de diálogo por una presentación coherente con la estética de Valdris y ampliar los textos narrativos de personaje, Malachar y desenlace final.
+
+**Cambios realizados:**
+- Añadido `ValdrisTheme.mostrarDialogoNarrativo(...)` como modal JavaFX propio con fondo profundo, panel destacado, ornamento, separador y botón temático.
+- Sustituido el `Alert` de diálogos pendientes de `GameView` por el nuevo modal narrativo.
+- Ajustada `FinalView` para mostrar el desenlace con más espacio, subtítulo narrativo, separador central y avisos temáticos al exportar resumen.
+- Ampliados los diálogos por personaje de la configuración inicial JSON y del `DungeonGenerator` de respaldo.
+- Ampliado el diálogo de Malachar antes del combate final y los tres textos de desenlace por personaje.
+
+**Verificación:**
+- `mvn test` ejecutado correctamente.
+- Resultado: 493 tests, 0 failures, 0 errors, 0 skipped.
+- `rg "import java\.util" src tests -n` sin resultados.
+- `git diff --check` sin errores; solo avisos esperados de CRLF.
+
+**Decisión:**
+- Los diálogos narrativos importantes no usan `Alert` genérico; se muestran con un modal común de `ValdrisTheme` para conservar una estética consistente.
+
+**Commit sugerido:** `git commit -m "style(ui): improve narrative dialogs"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas

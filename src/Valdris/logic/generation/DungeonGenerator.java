@@ -384,13 +384,32 @@ public final class DungeonGenerator {
      * Configura diálogos relevantes de zona.
      */
     private static void configurarDialogos(Rooms r) {
-        r.s2a.addCharacterDialogue(CharacterType.SYRA, "El bosque de Lireth aún recuerda mi nombre.");
-        r.s4a.addCharacterDialogue(CharacterType.KAEL, "Esta torre huele a juramentos rotos.");
-        r.s4sec.addCharacterDialogue(CharacterType.DORATH, "Estos textos no deberían haber sobrevivido.");
-        r.s5sec.addCharacterDialogue(CharacterType.DORATH, "Las memorias del sello confirman la verdad.");
-        r.pfinal.addCharacterDialogue(CharacterType.KAEL, "Si cruzo esta puerta, no habrá vuelta atrás.");
-        r.pfinal.addCharacterDialogue(CharacterType.SYRA, "El Núcleo está delante. Después de esto solo queda avanzar.");
-        r.pfinal.addCharacterDialogue(CharacterType.DORATH, "El último umbral exige aceptar el precio.");
+        r.s2a.addCharacterDialogue(CharacterType.SYRA,
+            "Syra se detiene al primer soplo de aire verde. Lireth aún recuerda su nombre, pero lo pronuncia "
+                + "con hojas enfermas y raíces que crecen hacia abajo. No ha vuelto para despedirse del bosque: "
+                + "ha vuelto para arrancar de él la causa de su dolor.");
+        r.s4a.addCharacterDialogue(CharacterType.KAEL,
+            "Kael reconoce la piedra de la Torre de Embrath antes incluso de ver sus muros. Aquí aprendió a "
+                + "obedecer juramentos que nadie supo explicarle del todo, y el eco de cada sala parece señalar "
+                + "el guantelete que todavía cubre su mano quemada.");
+        r.s4sec.addCharacterDialogue(CharacterType.DORATH,
+            "Dorath lee los primeros símbolos y siente que la celda se estrecha a su alrededor. Estos textos no "
+                + "deberían haber sobrevivido, pero ahí están: la prueba de que su excomunión no nació de una "
+                + "herejía, sino de una verdad que la Orden no pudo soportar.");
+        r.s5sec.addCharacterDialogue(CharacterType.DORATH,
+            "Las memorias del sello encajan por fin. Dorath no encuentra consuelo, pero sí una forma de paz: "
+                + "la certeza amarga de que cada sospecha tenía nombre, fecha y tinta seca en los archivos que "
+                + "intentaron borrar.");
+        r.pfinal.addCharacterDialogue(CharacterType.KAEL,
+            "Kael siente que el aire del último umbral pesa más que cualquier armadura. Si cruza esta puerta no "
+                + "habrá vuelta atrás, pero por primera vez la deuda del sello no parece una condena: parece una "
+                + "respuesta esperando su mano.");
+        r.pfinal.addCharacterDialogue(CharacterType.SYRA,
+            "Syra escucha el Núcleo detrás de la piedra, profundo y vivo como una raíz que late. Después de esto "
+                + "solo queda avanzar; si Lireth aún puede sanar, la respuesta está al otro lado del silencio.");
+        r.pfinal.addCharacterDialogue(CharacterType.DORATH,
+            "Dorath apoya la mano sobre el último umbral y entiende el precio antes de pagarlo. La verdad no "
+                + "abre caminos limpios, pero sí impide volver a vivir de rodillas ante una mentira.");
     }
 
     /**

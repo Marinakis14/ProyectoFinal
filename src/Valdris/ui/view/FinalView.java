@@ -7,7 +7,6 @@ import Valdris.ui.model.GameModel;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
@@ -68,7 +67,7 @@ public class FinalView {
 
         VBox contenido = new VBox(18);
         contenido.setAlignment(Pos.CENTER);
-        contenido.setMaxWidth(720);
+        contenido.setMaxWidth(860);
         contenido.setPadding(new Insets(32));
         ValdrisTheme.aplicarPanelDestacado(contenido);
 
@@ -76,6 +75,7 @@ public class FinalView {
         titulo.setFont(Font.font("Serif", 44));
         titulo.setStyle("-fx-text-fill: #f5f0e6;");
 
+        Label subtitulo = crearTextoSecundario(subtituloResultado());
         Label personaje = crearTextoSecundario("Personaje: " + modelo.getPlayer().getTipo().name());
         Label sala = crearTextoSecundario("Sala final: " + modelo.getIdSalaActual() + " - " + modelo.getNombreSalaActual());
         Label turno = crearTextoSecundario("Turno alcanzado: " + modelo.getTurnoGlobal());
@@ -90,7 +90,8 @@ public class FinalView {
         menu.setOnAction(event -> controller.onBotonMenuPrincipal(stage));
         acciones.getChildren().addAll(exportar, menu);
 
-        contenido.getChildren().addAll(titulo, ValdrisTheme.crearOrnamentoHorizontal(), personaje, sala, turno, desenlace);
+        contenido.getChildren().addAll(titulo, ValdrisTheme.crearOrnamentoHorizontal(), subtitulo,
+            personaje, sala, turno, ValdrisTheme.crearSeparador(), desenlace);
         if (frase.getText() != null && !frase.getText().isEmpty()) {
             contenido.getChildren().add(frase);
         }
@@ -110,6 +111,18 @@ public class FinalView {
             return "Victoria";
         }
         return "Derrota";
+    }
+
+    /**
+     * Devuelve el subtitulo narrativo de la pantalla final.
+     *
+     * @return subtitulo visible
+     */
+    private String subtituloResultado() {
+        if (modelo.getResultadoPartida() == GameResult.VICTORY) {
+            return "El Núcleo Profundo guarda silencio. Arriba, Valdris empieza a respirar otra vez.";
+        }
+        return "La expedición termina bajo la piedra, pero el eco de lo ocurrido queda escrito en el resumen.";
     }
 
     /**
@@ -160,10 +173,10 @@ public class FinalView {
     private Label crearTextoPrincipal(String texto) {
         Label label = new Label(texto);
         label.setWrapText(true);
-        label.setMaxWidth(680);
-        label.setFont(Font.font("Serif", 24));
+        label.setMaxWidth(780);
+        label.setFont(Font.font("Serif", 22));
         label.setAlignment(Pos.CENTER);
-        label.setStyle("-fx-text-fill: #f5f0e6;");
+        label.setStyle("-fx-text-fill: #f5f0e6; -fx-line-spacing: 5;");
         return label;
     }
 
@@ -176,7 +189,7 @@ public class FinalView {
     private Label crearTextoSecundario(String texto) {
         Label label = new Label(texto);
         label.setWrapText(true);
-        label.setMaxWidth(680);
+        label.setMaxWidth(780);
         label.setFont(Font.font("SansSerif", 16));
         label.setAlignment(Pos.CENTER);
         label.setStyle("-fx-text-fill: #c9b99c;");
@@ -205,11 +218,7 @@ public class FinalView {
      * @param mensaje contenido del aviso
      */
     private void mostrarInfo(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(titulo);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        ValdrisTheme.mostrarDialogoNarrativo(stage, titulo, "Archivo de viaje", mensaje);
     }
 
     /**
@@ -219,10 +228,7 @@ public class FinalView {
      * @param mensaje detalle del error
      */
     private void mostrarError(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(titulo);
-        alert.setHeaderText(titulo);
-        alert.setContentText(mensaje == null ? "Error desconocido." : mensaje);
-        alert.showAndWait();
+        ValdrisTheme.mostrarDialogoNarrativo(stage, titulo, "El sello no responde",
+            mensaje == null ? "Error desconocido." : mensaje);
     }
 }

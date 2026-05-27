@@ -309,7 +309,7 @@
       "dialogues": [
         {
           "character": "SYRA",
-          "text": "El bosque de Lireth aún recuerda mi nombre."
+          "text": "Syra se detiene al primer soplo de aire verde. Lireth aún recuerda su nombre, pero lo pronuncia con hojas enfermas y raíces que crecen hacia abajo. No ha vuelto para despedirse del bosque: ha vuelto para arrancar de él la causa de su dolor."
         }
       ],
       "cells": [
@@ -1011,7 +1011,7 @@
       "dialogues": [
         {
           "character": "KAEL",
-          "text": "Esta torre huele a juramentos rotos."
+          "text": "Kael reconoce la piedra de la Torre de Embrath antes incluso de ver sus muros. Aquí aprendió a obedecer juramentos que nadie supo explicarle del todo, y el eco de cada sala parece señalar el guantelete que todavía cubre su mano quemada."
         }
       ],
       "cells": [
@@ -1264,7 +1264,7 @@
       "dialogues": [
         {
           "character": "DORATH",
-          "text": "Estos textos no deberían haber sobrevivido."
+          "text": "Dorath lee los primeros símbolos y siente que la celda se estrecha a su alrededor. Estos textos no deberían haber sobrevivido, pero ahí están: la prueba de que su excomunión no nació de una herejía, sino de una verdad que la Orden no pudo soportar."
         }
       ],
       "cells": [
@@ -1466,7 +1466,7 @@
       "dialogues": [
         {
           "character": "DORATH",
-          "text": "Las memorias del sello confirman la verdad."
+          "text": "Las memorias del sello encajan por fin. Dorath no encuentra consuelo, pero sí una forma de paz: la certeza amarga de que cada sospecha tenía nombre, fecha y tinta seca en los archivos que intentaron borrar."
         }
       ],
       "cells": [
@@ -1497,15 +1497,15 @@
       "dialogues": [
         {
           "character": "KAEL",
-          "text": "Si cruzo esta puerta, no habrá vuelta atrás."
+          "text": "Kael siente que el aire del último umbral pesa más que cualquier armadura. Si cruza esta puerta no habrá vuelta atrás, pero por primera vez la deuda del sello no parece una condena: parece una respuesta esperando su mano."
         },
         {
           "character": "SYRA",
-          "text": "El Núcleo está delante. Después de esto solo queda avanzar."
+          "text": "Syra escucha el Núcleo detrás de la piedra, profundo y vivo como una raíz que late. Después de esto solo queda avanzar; si Lireth aún puede sanar, la respuesta está al otro lado del silencio."
         },
         {
           "character": "DORATH",
-          "text": "El último umbral exige aceptar el precio."
+          "text": "Dorath apoya la mano sobre el último umbral y entiende el precio antes de pagarlo. La verdad no abre caminos limpios, pero sí impide volver a vivir de rodillas ante una mentira."
         }
       ],
       "cells": [

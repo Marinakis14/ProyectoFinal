@@ -28,7 +28,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | Capas 2, 3 y 4 | Completadas y testeadas |
 | Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga, TurnManager, ItemGenerator, PuzzleManager y DungeonGenerator completados |
 | Capa 6 inicial | GameState, LoadedGame, GameSummary, LectorJSON, GameConfig y DungeonConfigLoader completados |
-| Capa 7 JavaFX | Pantallas principales, introducciones narrativas, selección con retratos, partida, inventario, autoguardado, diálogos, pantalla final, correcciones jugables, redistribución de pantalla, sprites de unidades, feedback visual de puzzles y secretos, zonas tintadas, transiciones de pasillo, distancia/ruta global a salida y contadores de turno completados |
+| Capa 7 JavaFX | Pantallas principales, introducciones narrativas, selección con retratos, partida, inventario, autoguardado, diálogos narrativos temáticos, pantalla final ampliada, correcciones jugables, redistribución de pantalla, sprites de unidades, feedback visual de puzzles y secretos, zonas tintadas, transiciones de pasillo, distancia/ruta global a salida y contadores de turno completados |
 | Tests JUnit actuales | 493 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
@@ -389,6 +389,10 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 50 | Reforzar la intensidad de los tintes de zona para que el cambio sea claramente perceptible sin perder legibilidad | ✅ Completado |
 | 51 | Sustituir letras planas de cofres, items, secretos, palancas, runas y escaleras por marcas 2D diferenciadas en el tablero | ✅ Completado |
 | 52 | Diferenciar enemigos por familia visual con siluetas, color y etiqueta corta de tipo | ✅ Completado |
+| 53 | Sustituir los `Alert` de diálogos de sala por un modal narrativo propio reutilizable desde `ValdrisTheme` | ✅ Completado |
+| 54 | Ampliar los textos de diálogos por personaje en la configuración JSON inicial y en `DungeonGenerator` | ✅ Completado |
+| 55 | Ampliar el diálogo final de Malachar y los desenlaces por personaje siguiendo la guía narrativa v3 | ✅ Completado |
+| 56 | Ajustar `FinalView` para presentar el desenlace con más espacio, subtítulo narrativo y avisos temáticos | ✅ Completado |
 
 ---
 
@@ -507,6 +511,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 52 | Suite tras tintes por zona y degradados en pasillos de transición | ✅ Correcta |
 | 53 | Suite tras reforzar la intensidad visual de los colores de zona | ✅ Correcta |
 | 54 | Suite tras mejorar la representación visual de enemigos, items, cofres, palancas, runas, escaleras y secretos | ✅ Correcta |
+| 55 | Suite tras diálogos narrativos temáticos, textos ampliados de zona, Malachar y desenlace final | ✅ Correcta |
 
 Última verificación completa:
 
@@ -627,6 +632,7 @@ Resultado:
 | 99 | La partida nueva sigue el flujo `menú -> historia -> selección -> descenso -> partida`, creando `GameModel` solo al confirmar la entrada en Valdris | ✅ Aceptada |
 | 100 | La decoración visual se centraliza en `ValdrisTheme` para mantener coherencia y evitar duplicar estilos JavaFX entre pantallas | ✅ Aceptada |
 | 101 | El color ambiental del mapa se decide por `S1`-`S5`; los pasillos mezclan suavemente el color de la zona origen y destino sin cambiar reglas de celdas | ✅ Aceptada |
+| 102 | Los diálogos narrativos importantes no deben usar `Alert` genérico; se muestran con un modal temático común y los errores no narrativos quedan separados | ✅ Aceptada |
 
 ---
 

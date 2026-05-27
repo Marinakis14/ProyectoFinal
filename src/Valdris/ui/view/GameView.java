@@ -24,7 +24,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
@@ -847,11 +846,8 @@ public class GameView implements GameModelListener {
         }
         logCombate.addMensaje("Diálogo: " + dialogo);
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Diálogo");
-        alert.setHeaderText(nombreSalaActual());
-        alert.setContentText(dialogo);
-        alert.showAndWait();
+        ValdrisTheme.mostrarDialogoNarrativo(stage, "Eco de " + nombreSalaActual(),
+            "La sala parece recordar algo que solo tu personaje puede escuchar.", dialogo);
     }
 
     /**

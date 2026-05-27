@@ -3,11 +3,17 @@ package Valdris.ui.view;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 /**
  * Utilidades visuales compartidas para mantener una estetica coherente en JavaFX.
@@ -164,6 +170,73 @@ public final class ValdrisTheme {
 
         marco.getChildren().addAll(superiorIzquierda, superiorDerecha, inferiorDerecha, inferiorIzquierda);
         return marco;
+    }
+
+    /**
+     * Muestra un dialogo modal con la estetica narrativa del juego.
+     *
+     * @param owner ventana principal que bloquea el dialogo
+     * @param titulo titulo visible
+     * @param subtitulo subtitulo o contexto de escena
+     * @param mensaje texto narrativo principal
+     */
+    public static void mostrarDialogoNarrativo(Stage owner, String titulo, String subtitulo, String mensaje) {
+        Stage dialogo = new Stage();
+        dialogo.setTitle(titulo == null || titulo.isEmpty() ? "Valdris" : titulo);
+        if (owner != null) {
+            dialogo.initOwner(owner);
+        }
+        dialogo.initModality(Modality.APPLICATION_MODAL);
+        dialogo.setResizable(false);
+
+        VBox root = new VBox();
+        root.setAlignment(Pos.CENTER);
+        root.setPadding(new Insets(24));
+        aplicarFondo(root);
+
+        VBox panel = new VBox(14);
+        panel.setAlignment(Pos.CENTER);
+        panel.setMaxWidth(660);
+        panel.setPadding(new Insets(28));
+        aplicarPanelDestacado(panel);
+
+        Label tituloLabel = new Label(titulo == null || titulo.isEmpty() ? "Valdris" : titulo);
+        tituloLabel.setWrapText(true);
+        tituloLabel.setMaxWidth(600);
+        tituloLabel.setAlignment(Pos.CENTER);
+        tituloLabel.setFont(Font.font("Serif", 34));
+        tituloLabel.setStyle("-fx-text-fill: #f5f0e6;");
+
+        Label subtituloLabel = new Label(subtitulo == null ? "" : subtitulo);
+        subtituloLabel.setWrapText(true);
+        subtituloLabel.setMaxWidth(600);
+        subtituloLabel.setAlignment(Pos.CENTER);
+        subtituloLabel.setFont(Font.font("SansSerif", 15));
+        subtituloLabel.setStyle("-fx-text-fill: #c9b99c;");
+
+        Label mensajeLabel = new Label(mensaje == null ? "" : mensaje);
+        mensajeLabel.setWrapText(true);
+        mensajeLabel.setMaxWidth(600);
+        mensajeLabel.setAlignment(Pos.CENTER);
+        mensajeLabel.setFont(Font.font("Serif", 21));
+        mensajeLabel.setStyle("-fx-text-fill: #f5f0e6; -fx-line-spacing: 5;");
+
+        Button continuar = new Button("Continuar");
+        continuar.setPrefWidth(180);
+        continuar.setPrefHeight(40);
+        aplicarBoton(continuar);
+        continuar.setOnAction(event -> dialogo.close());
+
+        panel.getChildren().addAll(tituloLabel, crearOrnamentoHorizontal());
+        if (subtitulo != null && !subtitulo.isEmpty()) {
+            panel.getChildren().add(subtituloLabel);
+        }
+        panel.getChildren().addAll(mensajeLabel, crearSeparador(), continuar);
+
+        root.getChildren().add(crearMarcoConEsquinas(panel));
+        Scene scene = new Scene(root, 760, 540);
+        dialogo.setScene(scene);
+        dialogo.showAndWait();
     }
 
     /**

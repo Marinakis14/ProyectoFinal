@@ -1752,7 +1752,7 @@
     {
       "from": "PASILLO_4_5",
       "to": "S5-A",
-      "description": "entrada al nucleo",
+      "description": "entrada al núcleo",
       "mode": "BIDIRECTIONAL"
     },
     {

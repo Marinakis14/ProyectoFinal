@@ -119,7 +119,7 @@ public final class DungeonConfigLoader {
     private static void validarRoom(GameConfig.RoomConfigDTO dto) throws GameStateException {
         if (dto == null || dto.id == null || dto.name == null || dto.rows <= 0 || dto.cols <= 0
             || dto.layout == null || dto.layout.length != dto.rows) {
-            throw new GameStateException("Sala invalida en configuracion inicial.");
+            throw new GameStateException("Sala inválida en configuración inicial.");
         }
         for (int fila = 0; fila < dto.layout.length; fila++) {
             if (dto.layout[fila] == null || dto.layout[fila].length() != dto.cols) {
@@ -209,7 +209,7 @@ public final class DungeonConfigLoader {
             Room from = dto == null ? null : dungeon.getRoomById(dto.from);
             Room to = dto == null ? null : dungeon.getRoomById(dto.to);
             if (from == null || to == null || dto.mode == null) {
-                throw new GameStateException("Conexion invalida en configuracion inicial.");
+                throw new GameStateException("Conexión inválida en configuración inicial.");
             }
             if ("BIDIRECTIONAL".equals(dto.mode)) {
                 dungeon.conectar(from, to, dto.description);
@@ -253,7 +253,7 @@ public final class DungeonConfigLoader {
         for (int i = 0; i < cells.length; i++) {
             GameConfig.CellConfigDTO dto = cells[i];
             if (dto == null || !room.isEnRango(dto.row, dto.col)) {
-                throw new GameStateException("Celda especial invalida en sala " + room.getId() + ".");
+                throw new GameStateException("Celda especial inválida en sala " + room.getId() + ".");
             }
             try {
                 Cell cell = room.getCell(dto.row, dto.col);

@@ -277,7 +277,7 @@ public class GameController {
         try {
             Room room = modelo.getDungeon().getRoomActual();
             if (room == null || !room.isEnRango(fila, col)) {
-                modelo.notificarMensaje("Debe seleccionarse una celda valida.");
+                modelo.notificarMensaje("Debe seleccionarse una celda válida.");
                 return;
             }
             Cell cell = room.getCell(fila, col);

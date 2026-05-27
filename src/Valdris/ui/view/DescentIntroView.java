@@ -101,7 +101,7 @@ public class DescentIntroView {
         HBox ornamento = ValdrisTheme.crearOrnamentoHorizontal();
 
         Label preparacion = crearParrafo(
-            "Bajo la piedra antigua de Valdris, los pasillos del Nucleo Profundo esperan sin luz. "
+            "Bajo la piedra antigua de Valdris, los pasillos del Núcleo Profundo esperan sin luz. "
                 + "Afila tus armas, guarda tus pociones y no confundas el silencio con seguridad."
         );
         Label aviso = crearAviso(
@@ -228,7 +228,7 @@ public class DescentIntroView {
      */
     private String frasePersonaje() {
         if (tipo == CharacterType.SYRA) {
-            return "La Voz Sin Eco baja primero, siguiendo rastros que ningun mapa se atreve a dibujar.";
+            return "La Voz Sin Eco baja primero, siguiendo rastros que ningún mapa se atreve a dibujar.";
         }
         if (tipo == CharacterType.DORATH) {
             return "El Excomulgado cruza el umbral con la certeza amarga de quien ya no teme a la verdad.";

@@ -2539,6 +2539,30 @@ Suavizar las primeras salas sin cambiar la estructura de armas, cofres ni progre
 
 ---
 
+### Sesión 58 — Corrección ortográfica de pantallas y mensajes visibles
+
+**Objetivo:**
+Corregir textos de interfaz donde faltaban tildes, eñes o grafías españolas en pantallas narrativas y mensajes visibles.
+
+**Cambios realizados:**
+- Corregidos textos de `StoryIntroView`: Núcleo, años, corazón, mágicas, última y el botón de elección de personaje.
+- Corregidos textos de `DescentIntroView` y `CharacterSelectView` relacionados con el Núcleo Profundo, descenso único y frase de Syra.
+- Corregido el modal de recompensa de `ValdrisTheme`: botín, responderá y etiqueta visible de daño.
+- Corregido el mensaje de ruta en `GameView` y el aviso de celda válida en `GameController`.
+- Ajustados mensajes de error de configuración inicial en `DungeonConfigLoader` y la descripción JSON de entrada al núcleo.
+
+**Verificación:**
+- `mvn test` ejecutado correctamente.
+- Resultado: 496 tests, 0 failures, 0 errors, 0 skipped.
+- `rg "import java\.util" src tests -n` sin resultados.
+
+**Decisión:**
+- Se corrigen solo textos visibles o mensajes de error; se conservan nombres internos como `danio`, `getDanoBase` o claves de log para no romper API ni persistencia.
+
+**Commit sugerido:** `git commit -m "fix(ui): correct spanish text accents"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas

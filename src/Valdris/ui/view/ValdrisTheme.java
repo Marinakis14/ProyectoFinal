@@ -282,8 +282,8 @@ public final class ValdrisTheme {
         titulo.setFont(Font.font("Serif", 32));
         titulo.setStyle("-fx-text-fill: #f5f0e6;");
 
-        Label mensaje = new Label("Bajo la tapa no hay botin disperso, sino armas colocadas como si hubieran "
-            + "esperado este momento. Solo una respondera a tu mano.");
+        Label mensaje = new Label("Bajo la tapa no hay botín disperso, sino armas colocadas como si hubieran "
+            + "esperado este momento. Solo una responderá a tu mano.");
         mensaje.setWrapText(true);
         mensaje.setMaxWidth(680);
         mensaje.setAlignment(Pos.CENTER);
@@ -375,7 +375,7 @@ public final class ValdrisTheme {
         if (item instanceof Weapon) {
             Weapon weapon = (Weapon) item;
             String texto = weapon.getNombre() + "\n" + weapon.getId()
-                + " | Dano " + weapon.getDanoBase();
+                + " | Daño " + weapon.getDanoBase();
             if (player != null) {
                 texto += " -> " + weapon.getDanoEfectivo(player.getTipo());
             }

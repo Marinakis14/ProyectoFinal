@@ -28,7 +28,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | Capas 2, 3 y 4 | Completadas y testeadas |
 | Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga, TurnManager, ItemGenerator, PuzzleManager y DungeonGenerator completados |
 | Capa 6 inicial | GameState, LoadedGame, GameSummary, LectorJSON, GameConfig y DungeonConfigLoader completados |
-| Capa 7 JavaFX | Pantallas principales, introducciones narrativas, selección con retratos, partida, inventario, autoguardado, diálogos narrativos temáticos, cofres con elección de arma, pantalla final ampliada, correcciones jugables, redistribución de pantalla, sprites de unidades, feedback visual de puzzles y secretos, zonas tintadas, transiciones de pasillo, distancia/ruta global a salida y contadores de turno completados |
+| Capa 7 JavaFX | Pantallas principales, introducciones narrativas, selección con retratos, partida, inventario, autoguardado, diálogos narrativos temáticos, cofres con elección de arma, pantalla final ampliada, correcciones jugables y ortográficas, redistribución de pantalla, sprites de unidades, feedback visual de puzzles y secretos, zonas tintadas, transiciones de pasillo, distancia/ruta global a salida y contadores de turno completados |
 | Tests JUnit actuales | 496 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
@@ -402,6 +402,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 56 | Ajustar `FinalView` para presentar el desenlace con más espacio, subtítulo narrativo y avisos temáticos | ✅ Completado |
 | 57 | Colocar el arma inicial del personaje delante de la casilla de entrada al crear partida nueva | ✅ Completado |
 | 58 | Añadir modal temático de elección de arma para cofres secretos con 2 o 3 opciones | ✅ Completado |
+| 59 | Corregir tildes, eñes y textos visibles de pantallas narrativas, selección, ruta al Núcleo y recompensas | ✅ Completado |
 
 ---
 
@@ -523,6 +524,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 55 | Suite tras diálogos narrativos temáticos, textos ampliados de zona, Malachar y desenlace final | ✅ Correcta |
 | 56 | Suite tras arma inicial por personaje, cofres secretos con elección de arma y balance final V5 | ✅ Correcta |
 | 57 | Suite tras ajuste de balance inicial: personajes y armas +5, `WARRIOR` 12/5 y `GUARDIAN` 12/15 | ✅ Correcta |
+| 58 | Suite tras corrección ortográfica de textos visibles en JavaFX y mensajes de configuración | ✅ Correcta |
 
 Última verificación completa:
 

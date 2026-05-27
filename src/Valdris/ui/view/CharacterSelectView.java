@@ -133,7 +133,7 @@ public class CharacterSelectView {
         Label titulo = new Label("Elige tu personaje");
         titulo.setFont(Font.font("Serif", 36));
         titulo.setStyle("-fx-text-fill: #f5f0e6;");
-        Label subtitulo = new Label("Tres voluntades distintas. Un unico descenso hacia el Nucleo Profundo.");
+        Label subtitulo = new Label("Tres voluntades distintas. Un único descenso hacia el Núcleo Profundo.");
         subtitulo.setFont(Font.font("SansSerif", 15));
         subtitulo.setStyle("-fx-text-fill: #c9b99c;");
         cabecera.getChildren().addAll(titulo, subtitulo, ValdrisTheme.crearOrnamentoHorizontal());

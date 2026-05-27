@@ -938,7 +938,7 @@ public class GameView implements GameModelListener {
     private void alternarCaminoRevelado() {
         boolean nuevoEstado = !caminoRevelado;
         if (nuevoEstado && modelo.getTurnManager().getCaminoReveladoSalaActual().isEmpty()) {
-            logCombate.addMensaje("No hay ruta disponible hacia el Nucleo.");
+            logCombate.addMensaje("No hay ruta disponible hacia el Núcleo.");
             return;
         }
         caminoRevelado = nuevoEstado;

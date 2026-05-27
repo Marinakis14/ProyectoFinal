@@ -74,28 +74,28 @@ public class StoryIntroView {
         contenido.setPadding(new Insets(30));
         ValdrisTheme.aplicarPanelDestacado(contenido);
 
-        Label marca = crearEtiqueta("Valdris: El Nucleo Profundo", "Serif", 46, "#f6ead3");
+        Label marca = crearEtiqueta("Valdris: El Núcleo Profundo", "Serif", 46, "#f6ead3");
         Label subtitulo = crearEtiqueta("El sello se apaga. Algo bajo la tierra vuelve a respirar.", "SansSerif", 18, "#c9b99c");
 
         HBox ornamento = ValdrisTheme.crearOrnamentoHorizontal();
 
         Label parrafoUno = crearParrafo(
-            "Hace trescientos anios, los cinco reinos encerraron a Malachar bajo el corazon del continente. "
+            "Hace trescientos años, los cinco reinos encerraron a Malachar bajo el corazón del continente. "
                 + "Lo llamaron monstruo, levantaron una fortaleza sobre su tumba y dejaron cinco guardianes "
                 + "manteniendo vivo el sello con su propia sangre."
         );
         Label parrafoDos = crearParrafo(
             "Ahora los guardianes han muerto. Los campos se han vuelto grises, los bosques crecen hacia abajo "
-                + "y las criaturas magicas atacan como si algo les estuviera arrancando el alma desde las profundidades."
+                + "y las criaturas mágicas atacan como si algo les estuviera arrancando el alma desde las profundidades."
         );
         Label parrafoTres = crearParrafo(
-            "Los reinos discuten mientras Valdris se hunde. Solo queda descender al Nucleo Profundo, atravesar sus "
-                + "salas selladas y descubrir si Malachar fue la amenaza... o la ultima advertencia."
+            "Los reinos discuten mientras Valdris se hunde. Solo queda descender al Núcleo Profundo, atravesar sus "
+                + "salas selladas y descubrir si Malachar fue la amenaza... o la última advertencia."
         );
 
         HBox acciones = new HBox(16);
         acciones.setAlignment(Pos.CENTER_LEFT);
-        Button continuar = crearBotonPrimario("Elegir quien descendera");
+        Button continuar = crearBotonPrimario("Elegir quién descenderá");
         continuar.setOnAction(event -> continuarASeleccion());
         Button volver = crearBotonSecundario("Volver");
         volver.setOnAction(event -> volverAlMenu());

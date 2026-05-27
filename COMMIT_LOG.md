@@ -2657,6 +2657,31 @@ Diferenciar de forma clara las tres fases visuales del Parásito y ampliar el de
 
 ---
 
+### Sesión 63 — Resumen final visible
+
+**Objetivo:**
+Permitir que el jugador vea el resumen de la partida al terminar antes de decidir si quiere exportarlo a JSON.
+
+**Cambios realizados:**
+- Cambiado el botón de la pantalla final de `Exportar resumen` a `Ver resumen`.
+- Creada `FinalSummaryView` como ventana modal con resultado, personaje, sala final, turno, HP, desenlace, inventario, salas exploradas y log estructurado.
+- Movida la acción `Exportar resumen` a la ventana de resumen, junto a un botón `Salir` que cierra solo el modal.
+- Añadido `GameModel.crearResumenFinal()` para construir el `GameSummary` en memoria sin escribir fichero.
+- Conservada la exportación JSON existente mediante `GameController.onExportarResumenFinal()`.
+
+**Verificación:**
+- `mvn test` ejecutado correctamente.
+- Resultado: 498 tests, 0 failures, 0 errors, 0 skipped.
+- `rg "import java\.util" src tests -n` sin resultados.
+- `git diff --check` sin errores; solo avisos esperados de CRLF.
+
+**Decisión:**
+- El resumen final se muestra desde la capa JavaFX usando el mismo `GameSummary` que se exporta, para evitar divergencias entre lo que ve el jugador y lo que queda guardado.
+
+**Commit sugerido:** `git commit -m "feat(ui): show final summary before export"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas

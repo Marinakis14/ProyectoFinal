@@ -84,11 +84,11 @@ public class FinalView {
 
         HBox acciones = new HBox(12);
         acciones.setAlignment(Pos.CENTER);
-        Button exportar = crearBoton("Exportar resumen");
-        exportar.setOnAction(event -> exportarResumen());
+        Button resumen = crearBoton("Ver resumen");
+        resumen.setOnAction(event -> verResumen());
         Button menu = crearBoton("Menú principal");
         menu.setOnAction(event -> controller.onBotonMenuPrincipal(stage));
-        acciones.getChildren().addAll(exportar, menu);
+        acciones.getChildren().addAll(resumen, menu);
 
         contenido.getChildren().addAll(titulo, ValdrisTheme.crearOrnamentoHorizontal(), subtitulo,
             personaje, sala, turno, ValdrisTheme.crearSeparador(), desenlace);
@@ -154,14 +154,11 @@ public class FinalView {
     }
 
     /**
-     * Exporta el resumen final y comunica el resultado al jugador.
+     * Muestra el resumen final en una ventana modal.
      */
-    private void exportarResumen() {
-        if (controller.onExportarResumenFinal()) {
-            mostrarInfo("Resumen exportado", "Resumen guardado en " + GameModel.SUMMARY_PATH + ".");
-        } else {
-            mostrarError("No se pudo exportar el resumen", modelo.getUltimoMensaje());
-        }
+    private void verResumen() {
+        FinalSummaryView summaryView = new FinalSummaryView(stage, modelo, controller);
+        summaryView.show();
     }
 
     /**
@@ -211,24 +208,4 @@ public class FinalView {
         return button;
     }
 
-    /**
-     * Muestra un aviso informativo.
-     *
-     * @param titulo titulo del aviso
-     * @param mensaje contenido del aviso
-     */
-    private void mostrarInfo(String titulo, String mensaje) {
-        ValdrisTheme.mostrarDialogoNarrativo(stage, titulo, "Archivo de viaje", mensaje);
-    }
-
-    /**
-     * Muestra un aviso de error.
-     *
-     * @param titulo titulo del error
-     * @param mensaje detalle del error
-     */
-    private void mostrarError(String titulo, String mensaje) {
-        ValdrisTheme.mostrarDialogoNarrativo(stage, titulo, "El sello no responde",
-            mensaje == null ? "Error desconocido." : mensaje);
-    }
 }

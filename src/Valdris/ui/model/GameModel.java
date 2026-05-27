@@ -13,6 +13,7 @@ import Valdris.model.map.Dungeon;
 import Valdris.model.map.Room;
 import Valdris.model.units.Player;
 import Valdris.persistence.DungeonConfigLoader;
+import Valdris.persistence.GameSummary;
 import Valdris.persistence.LectorJSON;
 import Valdris.persistence.LoadedGame;
 
@@ -271,6 +272,19 @@ public class GameModel {
             throw new GameStateException("El resumen final solo puede exportarse al terminar la partida.");
         }
         LectorJSON.exportarResumen(dungeon, player, turnManager, SUMMARY_PATH);
+    }
+
+    /**
+     * Construye el resumen final en memoria para que la interfaz pueda mostrarlo.
+     *
+     * @return resumen final de la partida
+     * @throws GameStateException si la partida no termino o faltan datos
+     */
+    public GameSummary crearResumenFinal() throws GameStateException {
+        if (!isPartidaTerminada()) {
+            throw new GameStateException("El resumen final solo puede verse al terminar la partida.");
+        }
+        return LectorJSON.extraerGameSummary(dungeon, player, turnManager);
     }
 
     /**

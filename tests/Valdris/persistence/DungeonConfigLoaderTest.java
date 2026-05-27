@@ -91,7 +91,16 @@ class DungeonConfigLoaderTest {
         Cell cofre = s1sec.getCell(2, 2);
         assertNotNull(cofre.getContainer());
         assertEquals("CH-S1-SEC", cofre.getContainer().getId());
-        assertEquals("P5", cofre.getContainer().getItems().get(0).getId());
+        assertEquals(2, cofre.getContainer().getItems().getSize());
+        assertEquals("W4", cofre.getContainer().getItems().get(0).getId());
+        assertEquals("W5", cofre.getContainer().getItems().get(1).getId());
+
+        Room s4sec = dungeon.getRoomById("S4-SEC");
+        Cell cofreLegendario = s4sec.getCell(2, 2);
+        assertEquals(3, cofreLegendario.getContainer().getItems().getSize());
+        assertEquals("W10", cofreLegendario.getContainer().getItems().get(0).getId());
+        assertEquals("W11", cofreLegendario.getContainer().getItems().get(1).getId());
+        assertEquals("W12", cofreLegendario.getContainer().getItems().get(2).getId());
 
         Room p45 = dungeon.getRoomById(DungeonGenerator.PASILLO_4_5);
         assertItemEnPool(p45.getCell(1, 4).getItem().getId(), new String[] {"P3", "P4", "P5"});

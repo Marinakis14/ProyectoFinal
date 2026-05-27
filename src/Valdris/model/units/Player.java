@@ -497,12 +497,12 @@ public class Player extends Unit implements Comparable<Player> {
      */
     private static int getAtaqueBase(CharacterType tipo) {
         if (tipo == CharacterType.SYRA) {
-            return 22;
+            return 17;
         }
         if (tipo == CharacterType.DORATH) {
-            return 24;
+            return 19;
         }
-        return 28;
+        return 23;
     }
 
     /**
@@ -523,7 +523,7 @@ public class Player extends Unit implements Comparable<Player> {
      */
     private static int getMovBase(CharacterType tipo) {
         if (tipo == CharacterType.SYRA) {
-            return 4;
+            return 5;
         }
         if (tipo == CharacterType.DORATH) {
             return 2;

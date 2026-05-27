@@ -17,21 +17,21 @@ public enum CharacterType {
 
     /**
      * Kael, guerrero resistente de corto alcance.
-     * HP 110, ataque base 18, movimiento 3 y rango 1. Empieza con la Espada
+     * HP 110, ataque base 23, movimiento 3 y rango 1. Empieza con la Espada
      * Oxidada y destaca como tanque cuerpo a cuerpo.
      */
     KAEL,
 
     /**
      * Syra, exploradora ágil de alcance medio.
-     * HP 75, ataque base 12, movimiento 5 y rango 3. Empieza con el Arco de
+     * HP 75, ataque base 17, movimiento 5 y rango 3. Empieza con el Arco de
      * Madera y compensa su menor vida con movilidad alta.
      */
     SYRA,
 
     /**
      * Dorath, mago de largo alcance.
-     * HP 80, ataque base 14, movimiento 2 y rango 4. Empieza con el Bastón
+     * HP 80, ataque base 19, movimiento 2 y rango 4. Empieza con el Bastón
      * Astillado y se apoya en alcance y penetración mágica.
      */
     DORATH

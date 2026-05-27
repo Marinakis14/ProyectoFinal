@@ -46,7 +46,7 @@ class CombatManagerTest {
         int danio = CombatManager.calcularDanio(jugador, enemigo, 1.0);
 
         // Assert
-        assertEquals(20, danio);
+        assertEquals(18, danio);
     }
 
     @Test
@@ -60,7 +60,7 @@ class CombatManagerTest {
         int danio = CombatManager.calcularDanio(jugador, guardian, 1.0);
 
         // Assert
-        assertEquals(15, danio);
+        assertEquals(10, danio);
     }
 
     @Test
@@ -74,7 +74,7 @@ class CombatManagerTest {
         int danio = CombatManager.calcularDanio(jugador, enemigo, 1.0);
 
         // Assert
-        assertEquals(24, danio);
+        assertEquals(22, danio);
     }
 
     @Test
@@ -86,7 +86,7 @@ class CombatManagerTest {
         int danio = CombatManager.calcularDanio(jugador, guardian, 0.5);
 
         // Assert
-        assertEquals(4, danio);
+        assertEquals(0, danio);
     }
 
     @Test

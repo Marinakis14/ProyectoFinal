@@ -254,6 +254,36 @@ class TurnManagerTest {
     }
 
     @Test
+    void ejecutarRecogida_cofreConOpcionesExigeEleccionYEntregaSoloElegida()
+        throws GameStateException, InvalidMoveException {
+
+        // Arrange
+        Chest chest = new Chest("CH-SEC", "Cofre de armas");
+        Weapon espada = new Weapon("W4", "Espada Larga", 18, 0, 1);
+        Weapon punal = new Weapon("W5", "Punal del Errante", 14, 0, 1);
+        chest.addItem(espada);
+        chest.addItem(punal);
+        room.getCell(2, 3).setContainer(chest);
+        turnManager.saltarMovimiento();
+
+        // Act + Assert
+        assertTrue(turnManager.requiereEleccionContenedorAdyacente());
+        assertEquals(2, turnManager.getOpcionesContenedorAdyacente().length);
+        assertThrows(GameStateException.class, () -> turnManager.ejecutarRecogida());
+        assertFalse(chest.isAbierto());
+        assertEquals(Phase.PICKUP, turnManager.getFaseActual());
+
+        turnManager.ejecutarRecogida("W5");
+
+        assertTrue(chest.isAbierto());
+        assertTrue(chest.isVacio());
+        assertEquals(1, player.getInventario().getSize());
+        assertSame(punal, player.getInventario().get(0));
+        assertEquals(Phase.USE_ITEM, turnManager.getFaseActual());
+        assertTrue(existeLog(LogEventType.PICKUP, "elige Punal del Errante"));
+    }
+
+    @Test
     void ejecutarRecogida_sinContenedorAdyacenteSoloAvanzaFase() throws GameStateException {
         // Arrange
         turnManager.saltarMovimiento();

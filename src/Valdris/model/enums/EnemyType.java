@@ -19,7 +19,7 @@ public enum EnemyType {
 
     /**
      * Guerrero base.
-     * HP 35, ataque 15, defensa 8, movimiento 2 y rango 1. Persigue al jugador
+     * HP 35, ataque 12, defensa 5, movimiento 2 y rango 1. Persigue al jugador
      * usando BFS y ataca en cuerpo a cuerpo.
      */
     WARRIOR,
@@ -33,7 +33,7 @@ public enum EnemyType {
 
     /**
      * Guardián.
-     * HP 50, ataque 15, defensa 10, movimiento 1 y rango 1. Defiende una zona
+     * HP 50, ataque 12, defensa 15, movimiento 1 y rango 1. Defiende una zona
      * fija alrededor de su posición de aparición.
      */
     GUARDIAN,

@@ -111,10 +111,10 @@ class DungeonGeneratorTest {
 
     @Test
     void generarMundo_colocaCofresSecretosEItemZonaCinco() throws InvalidMoveException {
-        assertCofreCentral("S1-SEC", "P5");
-        assertCofreCentral("S2-SEC", "A4");
-        assertCofreCentral("S3-SEC", "W9");
-        assertCofreCentral("S4-SEC", "N1");
+        assertCofreCentral("S1-SEC", new String[] {"W4", "W5"});
+        assertCofreCentral("S2-SEC", new String[] {"W6", "W7"});
+        assertCofreCentral("S3-SEC", new String[] {"W8", "W9"});
+        assertCofreCentral("S4-SEC", new String[] {"W10", "W11", "W12"});
 
         Room p45 = dungeon.getRoomById(DungeonGenerator.PASILLO_4_5);
         Item item = p45.getCell(p45.getFilas() / 2, p45.getCols() / 2).getItem();
@@ -311,12 +311,14 @@ class DungeonGeneratorTest {
         assertTrue(vistos[2]);
     }
 
-    private void assertCofreCentral(String idSala, String itemId) throws InvalidMoveException {
+    private void assertCofreCentral(String idSala, String[] itemIds) throws InvalidMoveException {
         Room room = dungeon.getRoomById(idSala);
         Cell cell = room.getCell(room.getFilas() / 2, room.getCols() / 2);
         assertNotNull(cell.getContainer());
-        assertEquals(1, cell.getContainer().getItems().getSize());
-        assertEquals(itemId, cell.getContainer().getItems().get(0).getId());
+        assertEquals(itemIds.length, cell.getContainer().getItems().getSize());
+        for (int i = 0; i < itemIds.length; i++) {
+            assertEquals(itemIds[i], cell.getContainer().getItems().get(i).getId());
+        }
     }
 
     private void assertCantidadTipo(String idSala, EnemyType tipo, int cantidad) {

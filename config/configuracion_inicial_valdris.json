@@ -240,7 +240,8 @@
             "id": "CH-S1-SEC",
             "name": "Cofre del Molino",
             "items": [
-              "P5"
+              "W4",
+              "W5"
             ]
           }
         }
@@ -572,7 +573,8 @@
             "id": "CH-S2-SEC",
             "name": "Cofre de Raíces",
             "items": [
-              "A4"
+              "W6",
+              "W7"
             ]
           }
         }
@@ -941,6 +943,7 @@
             "id": "CH-S3-SEC",
             "name": "Cofre Enano",
             "items": [
+              "W8",
               "W9"
             ]
           }
@@ -1282,7 +1285,9 @@
             "id": "CH-S4-SEC",
             "name": "Cofre de Dorath",
             "items": [
-              "N1"
+              "W10",
+              "W11",
+              "W12"
             ]
           }
         }

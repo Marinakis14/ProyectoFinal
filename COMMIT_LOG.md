@@ -2487,6 +2487,58 @@ Sustituir las ventanas genéricas de diálogo por una presentación coherente co
 
 ---
 
+### Sesión 56 — Armas iniciales, cofres de elección y balance V5
+
+**Objetivo:**
+Introducir armas reales en la progresión jugable: arma inicial por personaje, cofres secretos con elección de recompensa y ajuste de daños a los valores finales de la guía V5.
+
+**Cambios realizados:**
+- Añadida apertura selectiva en `Container` y `TurnManager` para cofres con varias recompensas, sin consumir la fase si falta elección.
+- Declaradas en JSON y en `DungeonGenerator` las opciones de armas de `S1-SEC`, `S2-SEC`, `S3-SEC` y `S4-SEC`.
+- Añadido modal temático `ValdrisTheme.mostrarEleccionRecompensa(...)` y conexión desde `GameController`/`GameView` para elegir entre 2 o 3 armas.
+- Colocada el arma inicial W1/W2/W3 delante del jugador al crear partida nueva según Kael, Syra o Dorath.
+- Restaurado el balance final V5: Kael 18, Syra 12, Dorath 14, Syra movimiento 5 y armas W1-W12 sin el aumento provisional de daño.
+- Actualizados tests de contenedores, turnos, generadores, configuración JSON, combate, pociones y jugador.
+
+**Verificación:**
+- `mvn test` ejecutado correctamente.
+- Resultado: 496 tests, 0 failures, 0 errors, 0 skipped.
+- `rg "import java\.util" src tests -n` sin resultados.
+- `git diff --check` sin errores; solo avisos esperados de CRLF.
+
+**Decisiones:**
+- Las armas iniciales se colocan dinámicamente al iniciar partida porque dependen del personaje elegido.
+- Los cofres secretos contienen varias opciones declaradas, pero solo entregan una recompensa seleccionada por el jugador.
+- El balance provisional de daño queda sustituido por los valores finales de `GUIA_DISENO_V5_FINAL.md`.
+
+**Commit sugerido:** `git commit -m "feat(items): add weapon choices and v5 balance"`
+
+---
+
+### Sesión 57 — Ajuste de dificultad inicial
+
+**Objetivo:**
+Suavizar las primeras salas sin cambiar la estructura de armas, cofres ni progresión ya implementada.
+
+**Cambios realizados:**
+- Aumentado en +5 el daño base de Kael, Syra y Dorath.
+- Aumentado en +5 el daño base de todas las armas oficiales W1-W12.
+- Reducido `WARRIOR` normal a ataque 12 y defensa 5.
+- Ajustado `GUARDIAN` normal a ataque 12 y defensa 15.
+- Actualizados textos visibles de selección de personaje y documentación de enums para reflejar las nuevas estadísticas.
+- Actualizados tests de jugador, enemigo, unidad base, combate, pociones e `ItemGenerator`.
+
+**Verificación:**
+- `mvn test` ejecutado correctamente.
+- Resultado: 496 tests, 0 failures, 0 errors, 0 skipped.
+
+**Decisión:**
+- Se aplica un ajuste jugable sobre V5 para que el arranque sea menos punitivo: más daño general del jugador y enemigos iniciales menos letales.
+
+**Commit sugerido:** `git commit -m "balance: soften early combat difficulty"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas
@@ -2627,7 +2679,7 @@ Sustituir las ventanas genéricas de diálogo por una presentación coherente co
 Resultado:
 
 ```text
-493 tests, 0 failures, 0 errors, 0 skipped
+496 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---

@@ -126,6 +126,38 @@ class ContainerTest {
         assertEquals(1, container.getItems().getSize());
     }
 
+    @Test
+    void abrirSeleccionando_entregaSoloItemElegidoYDescartaResto() {
+        // Arrange
+        container.addItem(espada);
+        container.addItem(arco);
+
+        // Act
+        Weapon elegido = (Weapon) container.abrirSeleccionando(jugador, "W2");
+
+        // Assert
+        assertSame(arco, elegido);
+        assertTrue(container.isAbierto());
+        assertTrue(container.isVacio());
+        assertEquals(1, jugador.getInventario().getSize());
+        assertSame(arco, jugador.getInventario().get(0));
+    }
+
+    @Test
+    void abrirSeleccionando_idInvalidoNoAbreNiEntregaContenido() {
+        // Arrange
+        container.addItem(espada);
+        container.addItem(arco);
+
+        // Act
+        assertNull(container.abrirSeleccionando(jugador, "W99"));
+
+        // Assert
+        assertFalse(container.isAbierto());
+        assertEquals(2, container.getItems().getSize());
+        assertEquals(0, jugador.getInventario().getSize());
+    }
+
     // -- Comparacion ---------------------------------------------------------
 
     @Test

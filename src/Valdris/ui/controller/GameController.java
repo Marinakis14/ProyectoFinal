@@ -14,6 +14,7 @@ import Valdris.ui.model.GameModel;
 import Valdris.ui.view.FinalView;
 import Valdris.ui.view.InventoryView;
 import Valdris.ui.view.MainMenuView;
+import Valdris.ui.view.ValdrisTheme;
 import javafx.stage.Stage;
 
 /**
@@ -85,8 +86,27 @@ public class GameController {
      * Ejecuta la accion de recogida/interaccion con contenedor.
      */
     public void onRecoger() {
+        onRecoger(null);
+    }
+
+    /**
+     * Ejecuta la accion de recogida/interaccion con contenedor usando ventana propietaria.
+     *
+     * @param owner ventana principal para dialogos modales
+     */
+    public void onRecoger(Stage owner) {
         try {
-            modelo.getTurnManager().ejecutarRecogida();
+            if (modelo.getTurnManager().requiereEleccionContenedorAdyacente()) {
+                Item[] opciones = modelo.getTurnManager().getOpcionesContenedorAdyacente();
+                String elegido = ValdrisTheme.mostrarEleccionRecompensa(owner, modelo.getPlayer(), opciones);
+                if (elegido == null) {
+                    modelo.notificarMensaje("El cofre sigue cerrado. Elige una de sus armas cuando estes listo.");
+                    return;
+                }
+                modelo.getTurnManager().ejecutarRecogida(elegido);
+            } else {
+                modelo.getTurnManager().ejecutarRecogida();
+            }
             modelo.notificarMensaje(null);
         } catch (GameStateException e) {
             modelo.notificarMensaje(e.getMessage());

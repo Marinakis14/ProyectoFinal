@@ -1,5 +1,9 @@
 package Valdris.ui.view;
 
+import Valdris.model.enums.EffectType;
+import Valdris.model.items.Item;
+import Valdris.model.items.Weapon;
+import Valdris.model.units.Player;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -240,6 +244,88 @@ public final class ValdrisTheme {
     }
 
     /**
+     * Muestra un dialogo modal para elegir una recompensa de un cofre especial.
+     *
+     * @param owner ventana principal que bloquea el dialogo
+     * @param player jugador actual para calcular afinidades
+     * @param opciones items disponibles
+     * @return id del item elegido, o null si se cancela
+     */
+    public static String mostrarEleccionRecompensa(Stage owner, Player player, Item[] opciones) {
+        if (opciones == null || opciones.length == 0) {
+            return null;
+        }
+        String[] seleccion = new String[1];
+        Stage dialogo = new Stage();
+        dialogo.setTitle("Recompensa del cofre");
+        if (owner != null) {
+            dialogo.initOwner(owner);
+        }
+        dialogo.initModality(Modality.APPLICATION_MODAL);
+        dialogo.setResizable(false);
+
+        VBox root = new VBox();
+        root.setAlignment(Pos.CENTER);
+        root.setPadding(new Insets(24));
+        aplicarFondo(root);
+
+        VBox panel = new VBox(14);
+        panel.setAlignment(Pos.CENTER);
+        panel.setMaxWidth(760);
+        panel.setPadding(new Insets(28));
+        aplicarPanelDestacado(panel);
+
+        Label titulo = new Label("El cofre despierta");
+        titulo.setWrapText(true);
+        titulo.setMaxWidth(680);
+        titulo.setAlignment(Pos.CENTER);
+        titulo.setFont(Font.font("Serif", 32));
+        titulo.setStyle("-fx-text-fill: #f5f0e6;");
+
+        Label mensaje = new Label("Bajo la tapa no hay botin disperso, sino armas colocadas como si hubieran "
+            + "esperado este momento. Solo una respondera a tu mano.");
+        mensaje.setWrapText(true);
+        mensaje.setMaxWidth(680);
+        mensaje.setAlignment(Pos.CENTER);
+        mensaje.setFont(Font.font("Serif", 19));
+        mensaje.setStyle("-fx-text-fill: #f5f0e6; -fx-line-spacing: 4;");
+
+        HBox opcionesBox = new HBox(12);
+        opcionesBox.setAlignment(Pos.CENTER);
+        for (int i = 0; i < opciones.length; i++) {
+            Item item = opciones[i];
+            if (item == null) {
+                continue;
+            }
+            Button boton = new Button(descripcionRecompensa(item, player));
+            boton.setWrapText(true);
+            boton.setMinWidth(190);
+            boton.setPrefWidth(opciones.length > 2 ? 200 : 260);
+            boton.setPrefHeight(132);
+            aplicarBoton(boton);
+            boton.setOnAction(event -> {
+                seleccion[0] = item.getId();
+                dialogo.close();
+            });
+            opcionesBox.getChildren().add(boton);
+        }
+
+        Button cancelar = new Button("Esperar");
+        cancelar.setPrefWidth(150);
+        cancelar.setPrefHeight(38);
+        aplicarBoton(cancelar);
+        cancelar.setOnAction(event -> dialogo.close());
+
+        panel.getChildren().addAll(titulo, crearOrnamentoHorizontal(), mensaje, opcionesBox, crearSeparador(), cancelar);
+        root.getChildren().add(crearMarcoConEsquinas(panel));
+
+        Scene scene = new Scene(root, 860, 560);
+        dialogo.setScene(scene);
+        dialogo.showAndWait();
+        return seleccion[0];
+    }
+
+    /**
      * Aplica a un color base el matiz ambiental de la zona o pasillo indicado.
      *
      * @param roomId identificador de sala
@@ -280,6 +366,63 @@ public final class ValdrisTheme {
         region.setMaxHeight(2);
         region.setStyle("-fx-background-color: linear-gradient(to right, transparent, #8f7651);");
         return region;
+    }
+
+    /**
+     * Crea el texto del boton de una recompensa.
+     */
+    private static String descripcionRecompensa(Item item, Player player) {
+        if (item instanceof Weapon) {
+            Weapon weapon = (Weapon) item;
+            String texto = weapon.getNombre() + "\n" + weapon.getId()
+                + " | Dano " + weapon.getDanoBase();
+            if (player != null) {
+                texto += " -> " + weapon.getDanoEfectivo(player.getTipo());
+            }
+            texto += "\nRango " + weapon.getRango() + " | Pen. " + weapon.getPenetracion();
+            String efectos = descripcionEfectos(weapon);
+            if (!efectos.isEmpty()) {
+                texto += "\n" + efectos;
+            }
+            return texto;
+        }
+        return item.getNombre() + "\n" + item.getId();
+    }
+
+    /**
+     * Describe los efectos especiales de un arma.
+     */
+    private static String descripcionEfectos(Weapon weapon) {
+        String texto = "";
+        if (weapon.getEfectoEspecial() != null) {
+            texto = nombreEfecto(weapon.getEfectoEspecial()) + " "
+                + porcentaje(weapon.getProbEfecto());
+        }
+        if (weapon.getEfectoEspecialSecundario() != null) {
+            if (!texto.isEmpty()) {
+                texto += " + ";
+            }
+            texto += nombreEfecto(weapon.getEfectoEspecialSecundario()) + " "
+                + porcentaje(weapon.getProbEfectoSecundario());
+        }
+        return texto;
+    }
+
+    /**
+     * Devuelve un nombre visible de efecto.
+     */
+    private static String nombreEfecto(EffectType efecto) {
+        if (efecto == null) {
+            return "";
+        }
+        return efecto.name();
+    }
+
+    /**
+     * Convierte una probabilidad a porcentaje entero.
+     */
+    private static String porcentaje(double valor) {
+        return (int) Math.round(valor * 100.0) + "%";
     }
 
     /**

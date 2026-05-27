@@ -69,9 +69,9 @@ class ItemGeneratorTest {
         Weapon w3 = (Weapon) ItemGenerator.crearItem("W3");
 
         // Assert
-        assertEquals(30, w1.getDanoEfectivo(CharacterType.KAEL));
-        assertEquals(24, w2.getDanoEfectivo(CharacterType.SYRA));
-        assertEquals(26, w3.getDanoEfectivo(CharacterType.DORATH));
+        assertEquals(25, w1.getDanoEfectivo(CharacterType.KAEL));
+        assertEquals(19, w2.getDanoEfectivo(CharacterType.SYRA));
+        assertEquals(21, w3.getDanoEfectivo(CharacterType.DORATH));
         assertEquals(1, w1.getRango());
         assertEquals(3, w2.getRango());
         assertEquals(4, w3.getRango());
@@ -90,8 +90,8 @@ class ItemGeneratorTest {
         assertEquals(0.25, w7.getProbEfecto());
 
         assertEquals(5, w8.getPenetracion());
-        assertEquals(33, w8.getDanoEfectivo(CharacterType.KAEL));
-        assertEquals(27, w8.getDanoEfectivo(CharacterType.SYRA));
+        assertEquals(28, w8.getDanoEfectivo(CharacterType.KAEL));
+        assertEquals(22, w8.getDanoEfectivo(CharacterType.SYRA));
 
         assertEquals(4, w9.getPenetracion());
         assertEquals(EffectType.PARALYSIS, w9.getEfectoEspecial());
@@ -107,15 +107,18 @@ class ItemGeneratorTest {
 
         // Assert
         assertEquals(5, w10.getPenetracion());
+        assertEquals(33, w10.getDanoEfectivo(CharacterType.KAEL));
         assertEquals(EffectType.BLIND, w10.getEfectoEspecial());
         assertEquals(0.20, w10.getProbEfecto());
 
+        assertEquals(31, w11.getDanoEfectivo(CharacterType.SYRA));
         assertEquals(EffectType.SLOW, w11.getEfectoEspecial());
         assertEquals(EffectType.BLIND, w11.getEfectoEspecialSecundario());
         assertEquals(1.0, w11.getProbEfecto());
         assertEquals(1.0, w11.getProbEfectoSecundario());
 
         assertEquals(5, w12.getPenetracion());
+        assertEquals(32, w12.getDanoEfectivo(CharacterType.DORATH));
         assertEquals(EffectType.PARALYSIS, w12.getEfectoEspecial());
         assertEquals(0.30, w12.getProbEfecto());
     }

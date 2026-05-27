@@ -28,8 +28,8 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | Capas 2, 3 y 4 | Completadas y testeadas |
 | Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga, TurnManager, ItemGenerator, PuzzleManager y DungeonGenerator completados |
 | Capa 6 inicial | GameState, LoadedGame, GameSummary, LectorJSON, GameConfig y DungeonConfigLoader completados |
-| Capa 7 JavaFX | Pantallas principales, introducciones narrativas, selección con retratos, partida, inventario, autoguardado, diálogos narrativos temáticos, pantalla final ampliada, correcciones jugables, redistribución de pantalla, sprites de unidades, feedback visual de puzzles y secretos, zonas tintadas, transiciones de pasillo, distancia/ruta global a salida y contadores de turno completados |
-| Tests JUnit actuales | 493 tests pasando |
+| Capa 7 JavaFX | Pantallas principales, introducciones narrativas, selección con retratos, partida, inventario, autoguardado, diálogos narrativos temáticos, cofres con elección de arma, pantalla final ampliada, correcciones jugables, redistribución de pantalla, sprites de unidades, feedback visual de puzzles y secretos, zonas tintadas, transiciones de pasillo, distancia/ruta global a salida y contadores de turno completados |
+| Tests JUnit actuales | 496 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
 ---
@@ -299,6 +299,12 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 99 | Mostrar en el log el contenido concreto obtenido al abrir un cofre | ✅ Completado |
 | 96 | Considerar puertas bloqueadas conocidas como ruta de progreso para que la guía no falle antes de resolver puzzles | ✅ Completado |
 | 97 | Calcular el camino visual ignorando unidades para que los enemigos no oculten la guía de ruta | ✅ Completado |
+| 100 | Permitir apertura selectiva de cofres con varias recompensas desde `TurnManager` | ✅ Completado |
+| 101 | Restaurar el daño base de personajes y armas a los valores finales de la guía V5 | ✅ Completado |
+| 102 | Mantener a Syra con movimiento base 5 según la guía V5 final | ✅ Completado |
+| 103 | Aumentar +5 el daño base de personajes y armas para suavizar las primeras salas | ✅ Completado |
+| 104 | Reducir el daño y defensa del `WARRIOR` normal para mejorar el arranque | ✅ Completado |
+| 105 | Reducir daño y subir defensa del `GUARDIAN` normal para mantenerlo resistente pero menos letal | ✅ Completado |
 
 ---
 
@@ -330,6 +336,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 22 | Ampliar la configuración JSON con aleatoriedad controlada para enemigos normales, drops, puzzles e items de suelo | ✅ Completado |
 | 23 | Declarar paredes interiores en los layouts JSON de salas principales manteniendo accesos y objetivos alcanzables | ✅ Completado |
 | 24 | Añadir candidatos de aparición por sala para que los enemigos normales se coloquen en casillas válidas del JSON | ✅ Completado |
+| 25 | Declarar en JSON las opciones de armas de los cofres secretos S1-SEC, S2-SEC, S3-SEC y S4-SEC | ✅ Completado |
 
 ---
 
@@ -393,6 +400,8 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 54 | Ampliar los textos de diálogos por personaje en la configuración JSON inicial y en `DungeonGenerator` | ✅ Completado |
 | 55 | Ampliar el diálogo final de Malachar y los desenlaces por personaje siguiendo la guía narrativa v3 | ✅ Completado |
 | 56 | Ajustar `FinalView` para presentar el desenlace con más espacio, subtítulo narrativo y avisos temáticos | ✅ Completado |
+| 57 | Colocar el arma inicial del personaje delante de la casilla de entrada al crear partida nueva | ✅ Completado |
+| 58 | Añadir modal temático de elección de arma para cofres secretos con 2 o 3 opciones | ✅ Completado |
 
 ---
 
@@ -512,6 +521,8 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 53 | Suite tras reforzar la intensidad visual de los colores de zona | ✅ Correcta |
 | 54 | Suite tras mejorar la representación visual de enemigos, items, cofres, palancas, runas, escaleras y secretos | ✅ Correcta |
 | 55 | Suite tras diálogos narrativos temáticos, textos ampliados de zona, Malachar y desenlace final | ✅ Correcta |
+| 56 | Suite tras arma inicial por personaje, cofres secretos con elección de arma y balance final V5 | ✅ Correcta |
+| 57 | Suite tras ajuste de balance inicial: personajes y armas +5, `WARRIOR` 12/5 y `GUARDIAN` 12/15 | ✅ Correcta |
 
 Última verificación completa:
 
@@ -522,7 +533,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 Resultado:
 
 ```text
-493 tests, 0 failures, 0 errors, 0 skipped
+496 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---
@@ -609,7 +620,7 @@ Resultado:
 | 76 | Los efectos activos del jugador y el estado de palancas/runas deben ser visibles en la pantalla principal para evitar que acciones de IA o puzzles parezcan no responder | ✅ Aceptada |
 | 77 | Los puzzles deben mostrar pistas progresivas tras cada fallo con daño y revelar la combinación completa cuando ya se hayan mostrado todas las piezas | ✅ Aceptada |
 | 78 | Las palancas `LEVER` no son transitables porque se activan desde una celda adyacente; las runas `RUNE` siguen siendo transitables porque se activan al pisarlas | ✅ Aceptada |
-| 79 | El balance provisional aumenta +5 el ataque base de personajes y armas oficiales, y deja a Syra con movimiento base 4 | ✅ Aceptada |
+| 79 | El balance provisional aumentaba +5 el ataque base de personajes y armas oficiales, y dejaba a Syra con movimiento base 4; queda sustituido por el balance final V5 | ✅ Superada |
 | 80 | Los jugadores tienen defensa base 3 y los objetos defensivos A1-A8 reciben +3 defensa; `AC8` conserva su bonus de defensa actual | ✅ Aceptada |
 | 81 | Los enemigos normales reciben drop probabilístico al generarse; los mini-bosses conservan sus drops narrativos fijos | ✅ Aceptada |
 | 82 | Los enemigos normales pasan a tener drop garantizado al 100%; `PARASITO` queda fuera porque es la entidad final y no se genera como enemigo normal de sala | ✅ Aceptada |
@@ -633,6 +644,12 @@ Resultado:
 | 100 | La decoración visual se centraliza en `ValdrisTheme` para mantener coherencia y evitar duplicar estilos JavaFX entre pantallas | ✅ Aceptada |
 | 101 | El color ambiental del mapa se decide por `S1`-`S5`; los pasillos mezclan suavemente el color de la zona origen y destino sin cambiar reglas de celdas | ✅ Aceptada |
 | 102 | Los diálogos narrativos importantes no deben usar `Alert` genérico; se muestran con un modal temático común y los errores no narrativos quedan separados | ✅ Aceptada |
+| 103 | Las armas iniciales W1/W2/W3 se colocan dinámicamente delante del jugador al crear partida nueva porque dependen del personaje elegido | ✅ Aceptada |
+| 104 | Los cofres secretos de zonas 1-4 contienen opciones de arma en JSON, pero solo entregan una recompensa elegida por el jugador | ✅ Aceptada |
+| 105 | El balance vuelve a los valores finales de `GUIA_DISENO_V5_FINAL.md`: Kael 18, Syra 12, Dorath 14, Syra movimiento 5 y armas W1-W12 sin el aumento provisional | ✅ Aceptada |
+| 106 | Para suavizar las primeras salas, se aplica un ajuste jugable sobre V5: personajes y armas suman +5 daño base | ✅ Aceptada |
+| 107 | `WARRIOR` queda como enemigo inicial menos punitivo con ataque 12 y defensa 5 | ✅ Aceptada |
+| 108 | `GUARDIAN` conserva rol defensivo con defensa 15, pero baja su ataque a 12 para reducir picos de daño | ✅ Aceptada |
 
 ---
 

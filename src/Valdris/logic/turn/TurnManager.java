@@ -215,6 +215,52 @@ public class TurnManager {
      * @throws GameStateException si no se está en fase de recogida
      */
     public void ejecutarRecogida() throws GameStateException {
+        resolverRecogida(null);
+    }
+
+    /**
+     * Ejecuta la fase de recogida escogiendo un item concreto de un contenedor con alternativas.
+     *
+     * @param itemIdElegido identificador del item elegido
+     * @throws GameStateException si no se esta en fase de recogida o la eleccion no es valida
+     */
+    public void ejecutarRecogida(String itemIdElegido) throws GameStateException {
+        resolverRecogida(itemIdElegido);
+    }
+
+    /**
+     * Indica si el contenedor adyacente requiere elegir una recompensa.
+     *
+     * @return true si hay un contenedor cerrado con mas de una opcion
+     */
+    public boolean requiereEleccionContenedorAdyacente() {
+        return requiereEleccion(buscarContenedorAdyacente());
+    }
+
+    /**
+     * Devuelve las opciones del contenedor adyacente que requiere eleccion.
+     *
+     * @return array de items disponibles, o vacio si no hay eleccion pendiente
+     */
+    public Item[] getOpcionesContenedorAdyacente() {
+        Container container = buscarContenedorAdyacente();
+        if (!requiereEleccion(container)) {
+            return new Item[0];
+        }
+        Item[] opciones = new Item[container.getItems().getSize()];
+        for (int i = 0; i < container.getItems().getSize(); i++) {
+            opciones[i] = container.getItems().get(i);
+        }
+        return opciones;
+    }
+
+    /**
+     * Resuelve la fase de recogida, con o sin eleccion de recompensa.
+     *
+     * @param itemIdElegido item elegido para cofres de alternativa
+     * @throws GameStateException si la fase o la eleccion no son validas
+     */
+    private void resolverRecogida(String itemIdElegido) throws GameStateException {
         validarFase(Phase.PICKUP);
         if (player.isHaRecogido()) {
             throw new GameStateException("El jugador ya resolvió la recogida este turno.");
@@ -224,9 +270,20 @@ public class TurnManager {
         if (container != null) {
             boolean estabaAbierto = container.isAbierto();
             String contenido = textoContenidoContainer(container);
-            container.abrir(player);
+            Item seleccionado = null;
+            if (requiereEleccion(container)) {
+                if (itemIdElegido == null || itemIdElegido.isEmpty()) {
+                    throw new GameStateException("El cofre contiene varias armas. Elige una recompensa antes de abrirlo.");
+                }
+                seleccionado = container.abrirSeleccionando(player, itemIdElegido);
+                if (seleccionado == null) {
+                    throw new GameStateException("La recompensa elegida no esta en este cofre.");
+                }
+            } else {
+                container.abrir(player);
+            }
             addLog(LogEventType.PICKUP, nombreJugador(),
-                mensajeAperturaContainer(container, contenido, estabaAbierto),
+                mensajeAperturaContainer(container, contenido, estabaAbierto, seleccionado),
                 "containerId=" + container.getId() + ";items=" + contenido);
         } else {
             addLog(LogEventType.PICKUP, nombreJugador(),
@@ -326,11 +383,17 @@ public class TurnManager {
      * @param estabaAbierto true si ya se habia abierto antes
      * @return mensaje para el log visible
      */
-    private String mensajeAperturaContainer(Container container, String contenido, boolean estabaAbierto) {
+    private String mensajeAperturaContainer(Container container, String contenido, boolean estabaAbierto,
+                                           Item seleccionado) {
         String nombreContainer = container == null ? "el cofre" : container.getNombre();
         if (estabaAbierto) {
             return nombreJugador() + " revisa " + nombreContainer
                 + ", pero dentro solo queda el polvo removido de antes.";
+        }
+        if (seleccionado != null) {
+            return nombreJugador() + " abre " + nombreContainer
+                + "; las armas reposan bajo una luz antigua y elige " + seleccionado.getNombre()
+                + " [" + seleccionado.getId() + "].";
         }
         if (contenido == null || contenido.isEmpty()) {
             return nombreJugador() + " abre " + nombreContainer
@@ -362,6 +425,16 @@ public class TurnManager {
             texto += item.getNombre() + " [" + item.getId() + "]";
         }
         return texto;
+    }
+
+    /**
+     * Indica si un contenedor cerrado contiene varias recompensas alternativas.
+     *
+     * @param container contenedor consultado
+     * @return true si se debe elegir una recompensa
+     */
+    private boolean requiereEleccion(Container container) {
+        return container != null && !container.isAbierto() && container.getItems().getSize() > 1;
     }
 
     /**

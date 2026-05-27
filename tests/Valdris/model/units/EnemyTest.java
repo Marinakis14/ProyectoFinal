@@ -42,9 +42,9 @@ class EnemyTest {
 
     @Test
     void constructor_inicializaStatsDeTodosLosTipos() {
-        assertStats(EnemyType.WARRIOR, 35, 15, 8, 2, 1);
+        assertStats(EnemyType.WARRIOR, 35, 12, 5, 2, 1);
         assertStats(EnemyType.BERSERKER, 25, 13, 3, 4, 1);
-        assertStats(EnemyType.GUARDIAN, 50, 15, 10, 1, 1);
+        assertStats(EnemyType.GUARDIAN, 50, 12, 15, 1, 1);
         assertStats(EnemyType.ARCHER, 28, 10, 4, 3, 4);
         assertStats(EnemyType.SNIPER, 28, 18, 3, 2, 5);
         assertStats(EnemyType.DESTRUCTOR, 40, 6, 5, 0, 5);

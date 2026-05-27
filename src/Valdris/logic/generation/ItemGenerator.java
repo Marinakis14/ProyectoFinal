@@ -263,7 +263,7 @@ public final class ItemGenerator {
      * @return Espada Oxidada
      */
     private static Weapon crearW1() {
-        Weapon weapon = new Weapon("W1", "Espada Oxidada", 26, 0, 1);
+        Weapon weapon = new Weapon("W1", "Espada Oxidada", 21, 0, 1);
         weapon.setAfinidad(CharacterType.KAEL, 4);
         return weapon;
     }
@@ -274,7 +274,7 @@ public final class ItemGenerator {
      * @return Arco de Madera
      */
     private static Weapon crearW2() {
-        Weapon weapon = new Weapon("W2", "Arco de Madera", 20, 0, 3);
+        Weapon weapon = new Weapon("W2", "Arco de Madera", 15, 0, 3);
         weapon.setAfinidad(CharacterType.SYRA, 4);
         return weapon;
     }
@@ -285,7 +285,7 @@ public final class ItemGenerator {
      * @return Bastón Astillado
      */
     private static Weapon crearW3() {
-        Weapon weapon = new Weapon("W3", "Bastón Astillado", 22, 0, 4);
+        Weapon weapon = new Weapon("W3", "Bastón Astillado", 17, 0, 4);
         weapon.setAfinidad(CharacterType.DORATH, 4);
         return weapon;
     }
@@ -296,7 +296,7 @@ public final class ItemGenerator {
      * @return Espada Larga
      */
     private static Weapon crearW4() {
-        Weapon weapon = new Weapon("W4", "Espada Larga", 28, 0, 1);
+        Weapon weapon = new Weapon("W4", "Espada Larga", 23, 0, 1);
         weapon.setAfinidad(CharacterType.KAEL, 6);
         return weapon;
     }
@@ -307,7 +307,7 @@ public final class ItemGenerator {
      * @return Puñal del Errante
      */
     private static Weapon crearW5() {
-        Weapon weapon = new Weapon("W5", "Puñal del Errante", 24, 0, 1);
+        Weapon weapon = new Weapon("W5", "Puñal del Errante", 19, 0, 1);
         weapon.setAfinidad(CharacterType.SYRA, 5);
         return weapon;
     }
@@ -318,7 +318,7 @@ public final class ItemGenerator {
      * @return Arco Élfico
      */
     private static Weapon crearW6() {
-        Weapon weapon = new Weapon("W6", "Arco Élfico", 26, 0, 4);
+        Weapon weapon = new Weapon("W6", "Arco Élfico", 21, 0, 4);
         weapon.setAfinidad(CharacterType.SYRA, 6);
         weapon.setEfectoEspecial(EffectType.SLOW, 1.0);
         return weapon;
@@ -330,7 +330,7 @@ public final class ItemGenerator {
      * @return Tomo de Llamas
      */
     private static Weapon crearW7() {
-        Weapon weapon = new Weapon("W7", "Tomo de Llamas", 25, 2, 4);
+        Weapon weapon = new Weapon("W7", "Tomo de Llamas", 20, 2, 4);
         weapon.setAfinidad(CharacterType.DORATH, 4);
         weapon.setEfectoEspecial(EffectType.BURN, 0.25);
         return weapon;
@@ -342,7 +342,7 @@ public final class ItemGenerator {
      * @return Martillo de Mina
      */
     private static Weapon crearW8() {
-        Weapon weapon = new Weapon("W8", "Martillo de Mina", 29, 5, 1);
+        Weapon weapon = new Weapon("W8", "Martillo de Mina", 24, 5, 1);
         weapon.setAfinidad(CharacterType.KAEL, 4);
         weapon.setAfinidad(CharacterType.SYRA, -2);
         weapon.setAfinidad(CharacterType.DORATH, -2);
@@ -355,7 +355,7 @@ public final class ItemGenerator {
      * @return Bastón Arcano
      */
     private static Weapon crearW9() {
-        Weapon weapon = new Weapon("W9", "Bastón Arcano", 26, 4, 4);
+        Weapon weapon = new Weapon("W9", "Bastón Arcano", 21, 4, 4);
         weapon.setAfinidad(CharacterType.DORATH, 8);
         weapon.setEfectoEspecial(EffectType.PARALYSIS, 0.30);
         return weapon;
@@ -367,7 +367,7 @@ public final class ItemGenerator {
      * @return Espada del Vacío
      */
     private static Weapon crearW10() {
-        Weapon weapon = new Weapon("W10", "Espada del Vacío", 32, 5, 1);
+        Weapon weapon = new Weapon("W10", "Espada del Vacío", 27, 5, 1);
         weapon.setAfinidad(CharacterType.KAEL, 6);
         weapon.setEfectoEspecial(EffectType.BLIND, 0.20);
         return weapon;
@@ -379,7 +379,7 @@ public final class ItemGenerator {
      * @return Arco del Eclipse
      */
     private static Weapon crearW11() {
-        Weapon weapon = new Weapon("W11", "Arco del Eclipse", 30, 0, 4);
+        Weapon weapon = new Weapon("W11", "Arco del Eclipse", 25, 0, 4);
         weapon.setAfinidad(CharacterType.SYRA, 6);
         weapon.setEfectoEspecial(EffectType.SLOW, 1.0);
         weapon.setEfectoEspecialSecundario(EffectType.BLIND, 1.0);
@@ -392,7 +392,7 @@ public final class ItemGenerator {
      * @return Grimorio Abismal
      */
     private static Weapon crearW12() {
-        Weapon weapon = new Weapon("W12", "Grimorio Abismal", 29, 5, 4);
+        Weapon weapon = new Weapon("W12", "Grimorio Abismal", 24, 5, 4);
         weapon.setAfinidad(CharacterType.DORATH, 8);
         weapon.setEfectoEspecial(EffectType.PARALYSIS, 0.30);
         return weapon;

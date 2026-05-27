@@ -183,12 +183,12 @@ class UnitTest {
     @Test
     void getters_devuelvenEstadisticasBase() {
         assertEquals(35, unidad.getHpMax());
-        assertEquals(15, unidad.getAtaqueBase());
-        assertEquals(8, unidad.getDefensaBase());
+        assertEquals(12, unidad.getAtaqueBase());
+        assertEquals(5, unidad.getDefensaBase());
         assertEquals(2, unidad.getMovBase());
         assertEquals(1, unidad.getRango());
-        assertEquals(15, unidad.getAtaqueTotal());
-        assertEquals(8, unidad.getDefensaTotal());
+        assertEquals(12, unidad.getAtaqueTotal());
+        assertEquals(5, unidad.getDefensaTotal());
         assertEquals(1, unidad.getRangoEfectivo());
     }
 }

@@ -480,10 +480,10 @@ public final class DungeonGenerator {
      * Coloca cofres e items de pasillo.
      */
     private static void configurarItems(Rooms r, SecuenciaAleatoria random) {
-        cofre(r.s1sec, "CH-S1-SEC", "Cofre del Molino", "P5");
-        cofre(r.s2sec, "CH-S2-SEC", "Cofre de Raíces", "A4");
-        cofre(r.s3sec, "CH-S3-SEC", "Cofre Enano", "W9");
-        cofre(r.s4sec, "CH-S4-SEC", "Cofre de Dorath", "N1");
+        cofre(r.s1sec, "CH-S1-SEC", "Cofre del Molino", "W4", "W5");
+        cofre(r.s2sec, "CH-S2-SEC", "Cofre de Raíces", "W6", "W7");
+        cofre(r.s3sec, "CH-S3-SEC", "Cofre Enano", "W8", "W9");
+        cofre(r.s4sec, "CH-S4-SEC", "Cofre de Dorath", "W10", "W11", "W12");
 
         itemSuelo(r.p12, ItemGenerator.itemAleatorioZona(2, random.next()));
         itemSuelo(r.p23, ItemGenerator.itemAleatorioZona(3, random.next()));
@@ -781,10 +781,12 @@ public final class DungeonGenerator {
     /**
      * Coloca un cofre fijo.
      */
-    private static void cofre(Room room, String id, String nombre, String itemId) {
+    private static void cofre(Room room, String id, String nombre, String... itemIds) {
         try {
             Chest chest = new Chest(id, nombre);
-            chest.addItem(ItemGenerator.crearItem(itemId));
+            for (int i = 0; i < itemIds.length; i++) {
+                chest.addItem(ItemGenerator.crearItem(itemIds[i]));
+            }
             room.getCell(room.getFilas() / 2, room.getCols() / 2).setContainer(chest);
         } catch (InvalidMoveException e) {
             // Las coordenadas de cofres son fijas y se verifican por tests.

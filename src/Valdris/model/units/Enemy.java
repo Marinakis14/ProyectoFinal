@@ -313,7 +313,7 @@ public class Enemy extends Unit implements Comparable<Enemy> {
             return 13;
         }
         if (tipo == EnemyType.GUARDIAN) {
-            return 15;
+            return 12;
         }
         if (tipo == EnemyType.ARCHER) {
             return 10;
@@ -339,7 +339,7 @@ public class Enemy extends Unit implements Comparable<Enemy> {
         if (tipo == EnemyType.ECO_DE_MAGIA) {
             return 22;
         }
-        return 15;
+        return 12;
     }
 
     /**
@@ -353,7 +353,7 @@ public class Enemy extends Unit implements Comparable<Enemy> {
             return 3;
         }
         if (tipo == EnemyType.GUARDIAN) {
-            return 10;
+            return 15;
         }
         if (tipo == EnemyType.ARCHER || tipo == EnemyType.CONTROLLER) {
             return 4;
@@ -373,7 +373,7 @@ public class Enemy extends Unit implements Comparable<Enemy> {
         if (tipo == EnemyType.ECO_DE_MAGIA) {
             return 5;
         }
-        return 8;
+        return 5;
     }
 
     /**

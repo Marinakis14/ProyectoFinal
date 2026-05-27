@@ -806,7 +806,7 @@ public class GameView implements GameModelListener {
                 controller.onSaltarMovimiento();
                 event.consume();
             } else if (code == KeyCode.R) {
-                controller.onRecoger();
+                controller.onRecoger(stage);
                 event.consume();
             } else if (code == KeyCode.A) {
                 controller.onUsarAcceso();
@@ -888,7 +888,7 @@ public class GameView implements GameModelListener {
 
         Button recoger = crearBoton("Recoger (R)");
         recoger.setDisable(!partidaActiva || fase != Phase.PICKUP);
-        recoger.setOnAction(event -> controller.onRecoger());
+        recoger.setOnAction(event -> controller.onRecoger(stage));
 
         Button usarAcceso = crearBoton("Acceso (A)");
         usarAcceso.setDisable(!partidaActiva || fase != Phase.PICKUP);

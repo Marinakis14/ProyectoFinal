@@ -36,7 +36,7 @@ class PlayerTest {
     void constructor_kaelInicializaStatsCorrectas() {
         assertEquals(CharacterType.KAEL, kael.getTipo());
         assertEquals(110, kael.getHpMax());
-        assertEquals(28, kael.getAtaqueBase());
+        assertEquals(23, kael.getAtaqueBase());
         assertEquals(3, kael.getDefensaBase());
         assertEquals(3, kael.getMovBase());
         assertEquals(1, kael.getRango());
@@ -51,9 +51,9 @@ class PlayerTest {
 
         // Assert
         assertEquals(75, syra.getHpMax());
-        assertEquals(22, syra.getAtaqueBase());
+        assertEquals(17, syra.getAtaqueBase());
         assertEquals(3, syra.getDefensaBase());
-        assertEquals(4, syra.getMovBase());
+        assertEquals(5, syra.getMovBase());
         assertEquals(3, syra.getRango());
     }
 
@@ -64,7 +64,7 @@ class PlayerTest {
 
         // Assert
         assertEquals(80, dorath.getHpMax());
-        assertEquals(24, dorath.getAtaqueBase());
+        assertEquals(19, dorath.getAtaqueBase());
         assertEquals(3, dorath.getDefensaBase());
         assertEquals(2, dorath.getMovBase());
         assertEquals(4, dorath.getRango());
@@ -142,7 +142,7 @@ class PlayerTest {
 
         // Assert
         assertEquals(12, kael.getDefensaTotal());
-        assertEquals(29, kael.getAtaqueTotal());
+        assertEquals(24, kael.getAtaqueTotal());
         assertEquals(4, kael.getMovEfectivo());
     }
 
@@ -186,12 +186,12 @@ class PlayerTest {
         kael.addBonusAtaqueTemporal(5);
 
         // Act + Assert
-        assertEquals(33, kael.getAtaqueTotal());
+        assertEquals(28, kael.getAtaqueTotal());
         assertEquals(5, kael.getBonusAtaqueTemporal());
 
         kael.consumirBonusAtaqueTemporal();
 
-        assertEquals(28, kael.getAtaqueTotal());
+        assertEquals(23, kael.getAtaqueTotal());
         assertEquals(0, kael.getBonusAtaqueTemporal());
     }
 
@@ -203,7 +203,7 @@ class PlayerTest {
 
         // Assert
         assertEquals(0, kael.getBonusAtaqueTemporal());
-        assertEquals(28, kael.getAtaqueTotal());
+        assertEquals(23, kael.getAtaqueTotal());
     }
 
     // -- Acciones de turno ---------------------------------------------------

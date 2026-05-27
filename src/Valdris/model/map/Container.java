@@ -89,6 +89,37 @@ public abstract class Container implements Comparable<Container> {
     }
 
     /**
+     * Abre el contenedor entregando solo el item elegido y descartando el resto.
+     *
+     * <p>Se usa para cofres de recompensa alternativa. Si el contenedor ya esta
+     * abierto, el jugador es null o el id no existe, no se modifica el estado.</p>
+     *
+     * @param player jugador que recibe el item
+     * @param itemId identificador del item elegido
+     * @return item entregado, o null si no se pudo abrir con esa eleccion
+     */
+    public Item abrirSeleccionando(Player player, String itemId) {
+        if (player == null || abierto || itemId == null) {
+            return null;
+        }
+        Item seleccionado = null;
+        for (int i = 0; i < items.getSize(); i++) {
+            Item item = items.get(i);
+            if (item != null && itemId.equals(item.getId())) {
+                seleccionado = item;
+                break;
+            }
+        }
+        if (seleccionado == null) {
+            return null;
+        }
+        player.addItem(seleccionado);
+        items.clear();
+        abierto = true;
+        return seleccionado;
+    }
+
+    /**
      * Restaura el estado de apertura desde persistencia.
      *
      * <p>No entrega contenido al jugador ni modifica la lista de items. Solo

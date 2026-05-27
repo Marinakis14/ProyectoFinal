@@ -3,9 +3,12 @@ package Valdris.ui.model;
 import MisEstructurasDeDatos.ListasPilasYColas.ListaSimplementeEnlazada;
 import Valdris.exceptions.GameStateException;
 import Valdris.exceptions.InvalidMoveException;
+import Valdris.logic.generation.ItemGenerator;
 import Valdris.logic.turn.TurnManager;
 import Valdris.model.enums.CharacterType;
 import Valdris.model.enums.GameResult;
+import Valdris.model.items.Item;
+import Valdris.model.map.Cell;
 import Valdris.model.map.Dungeon;
 import Valdris.model.map.Room;
 import Valdris.model.units.Player;
@@ -68,6 +71,7 @@ public class GameModel {
         this.ultimoCheckpointGuardado = null;
 
         colocarJugadorEnSalaInicial();
+        colocarArmaInicialEnFrente();
         this.ultimoMensaje = crearMensajeInicio();
         intentarAutoguardadoCheckpoint();
     }
@@ -329,6 +333,51 @@ public class GameModel {
         } catch (InvalidMoveException e) {
             throw new GameStateException("No se pudo colocar al jugador en la sala inicial: " + e.getMessage());
         }
+    }
+
+    /**
+     * Coloca el arma inicial del personaje justo delante de la posicion de entrada.
+     *
+     * @throws GameStateException si la celda de inicio configurada no acepta el arma
+     */
+    private void colocarArmaInicialEnFrente() throws GameStateException {
+        Room inicial = dungeon.getRoomActual();
+        if (inicial == null) {
+            throw new GameStateException("No hay sala inicial donde colocar el arma.");
+        }
+        int fila = player.getFilaActual();
+        int col = player.getColActual() + 1;
+        if (!inicial.isEnRango(fila, col)) {
+            throw new GameStateException("La celda del arma inicial queda fuera de la sala.");
+        }
+        try {
+            Cell cell = inicial.getCell(fila, col);
+            if (!cell.isWalkable() || cell.getContainer() != null || cell.getUnit() != null) {
+                throw new GameStateException("La celda del arma inicial no esta libre.");
+            }
+            Item arma = ItemGenerator.crearItem(getIdArmaInicial());
+            if (arma == null) {
+                throw new GameStateException("No se pudo crear el arma inicial del personaje.");
+            }
+            cell.setItem(arma);
+        } catch (InvalidMoveException e) {
+            throw new GameStateException("No se pudo colocar el arma inicial: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Devuelve el ID de arma inicial asociado al personaje.
+     *
+     * @return id de arma inicial
+     */
+    private String getIdArmaInicial() {
+        if (player.getTipo() == CharacterType.SYRA) {
+            return "W2";
+        }
+        if (player.getTipo() == CharacterType.DORATH) {
+            return "W3";
+        }
+        return "W1";
     }
 
     /**

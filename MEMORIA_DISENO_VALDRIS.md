@@ -199,8 +199,8 @@ documentan el desarrollo.
 
 **Memoria PDF:** esta memoria se exportará a PDF al cierre del proyecto.
 
-**UML obligatorio:** parcialmente cubierto en la carpeta `diagramas/`; faltan
-diagramas específicos que se completarán antes de la exportación final.
+**UML obligatorio:** cubierto en la carpeta `diagramas/` con diagramas de casos
+de uso, clases, secuencia, estados y actividad.
 
 **JSON de ejemplo:** cubierto con `config/configuracion_inicial_valdris.json`,
 `partida_valdris.json` y `resumen_valdris.json`.
@@ -2181,8 +2181,8 @@ La IA se ha utilizado en tareas como:
 - Revisar que los cambios fueran coherentes con el diseño general.
 
 También se ha usado para comparar el estado del proyecto con los requisitos de
-entrega y detectar elementos pendientes, como UML, memoria, bocetos, JSON o
-vídeo.
+entrega y detectar en cada fase los elementos que quedaban por cerrar, como UML,
+memoria, bocetos, JSON o vídeo.
 
 ### 14.3 Control Humano
 
@@ -2565,21 +2565,20 @@ En el estado actual, el proyecto tiene implementado el núcleo jugable completo:
 - Pantallas narrativas.
 - Resumen final visible y exportable.
 
-Los puntos pendientes principales se concentran en documentación final,
-diagramas UML restantes, revisión final de memoria y empaquetado de entrega.
+Los puntos pendientes principales se concentran en la exportación final de la
+memoria a PDF, el empaquetado de entrega y el vídeo explicativo externo.
 
 ### 16.8 Cierre del Proyecto
 
 El cierre del proyecto debe seguir estos pasos:
 
-1. Terminar los diagramas UML pendientes.
-2. Actualizar esta memoria con los nombres definitivos de los diagramas.
-3. Revisar ortografía, formato y coherencia final de esta memoria.
-4. Ejecutar la suite de tests completa.
-5. Registrar el resultado final en `TASKS.md` y `COMMIT_LOG.md`.
-6. Exportar la memoria a PDF.
-7. Preparar el ZIP o repositorio final.
-8. Adjuntar vídeo explicativo externo.
+1. Revisar visualmente que los diagramas UML se insertan bien en la memoria.
+2. Revisar ortografía, formato y coherencia final de esta memoria.
+3. Ejecutar la suite de tests completa.
+4. Registrar el resultado final en `TASKS.md` y `COMMIT_LOG.md`.
+5. Exportar la memoria a PDF.
+6. Preparar el ZIP o repositorio final.
+7. Adjuntar vídeo explicativo externo.
 
 Este cierre asegura que el código, la documentación y los entregables del
 enunciado quedan alineados.
@@ -2770,12 +2769,12 @@ El proyecto cubre los elementos más relevantes del enunciado:
 - Memoria y documento de diseño.
 - Diario de uso de IA.
 - Bocetos y recursos visuales.
-- Diagramas UML en proceso de cierre final.
+- Diagramas UML obligatorios completados y referenciados.
 - Vídeo explicativo preparado como entregable externo.
 
-Los puntos pendientes antes de entregar son de cierre documental: completar los
-UML restantes, actualizar esta memoria con sus nombres definitivos, exportarla a
-PDF y registrar la validación final.
+Los puntos pendientes antes de entregar son de cierre externo: exportar esta
+memoria a PDF, preparar el paquete final, subir el vídeo explicativo y registrar
+la validación final.
 
 ### 18.3 Valor Técnico
 
@@ -2983,7 +2982,7 @@ instrucciones de entrega.
 
 Antes de entregar, se recomienda comprobar:
 
-- Que todos los UML obligatorios están incluidos.
+- Que todos los UML obligatorios se ven correctamente en el PDF final.
 - Que esta memoria está actualizada con los diagramas definitivos.
 - Que la memoria se ha exportado correctamente a PDF.
 - Que no hay errores ortográficos evidentes.
@@ -2994,4 +2993,4 @@ Antes de entregar, se recomienda comprobar:
 - Que el ZIP o repositorio contiene todos los ficheros necesarios.
 
 Esta lista sirve como control final para evitar entregar el proyecto con un
-requisito documental pendiente.
+requisito externo pendiente.

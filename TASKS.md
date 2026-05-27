@@ -28,7 +28,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | Capas 2, 3 y 4 | Completadas y testeadas |
 | Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga, TurnManager, ItemGenerator, PuzzleManager y DungeonGenerator completados |
 | Capa 6 inicial | GameState, LoadedGame, GameSummary, LectorJSON, GameConfig y DungeonConfigLoader completados |
-| Capa 7 JavaFX | Pantallas principales, introducciones narrativas, selección con retratos, partida, inventario, autoguardado, diálogos, pantalla final, correcciones jugables, redistribución de pantalla, sprites de unidades, feedback visual de puzzles y secretos, distancia/ruta global a salida y contadores de turno completados |
+| Capa 7 JavaFX | Pantallas principales, introducciones narrativas, selección con retratos, partida, inventario, autoguardado, diálogos, pantalla final, correcciones jugables, redistribución de pantalla, sprites de unidades, feedback visual de puzzles y secretos, zonas tintadas, transiciones de pasillo, distancia/ruta global a salida y contadores de turno completados |
 | Tests JUnit actuales | 493 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
@@ -384,6 +384,11 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 45 | Crear `ValdrisTheme` como helper visual compartido para fondos, paneles, botones, separadores y marcos ornamentales | ✅ Completado |
 | 46 | Aplicar decoración sutil de fantasía a menú, historia, selección, descenso, inventario, pantalla final y pantalla principal | ✅ Completado |
 | 47 | Mejorar `GameView` con fondo profundo, paneles enmarcados, mapa destacado y separadores decorativos | ✅ Completado |
+| 48 | Añadir matices visuales por zona en `ValdrisTheme` usando los prefijos `S1` a `S5` y núcleo azul profundo | ✅ Completado |
+| 49 | Aplicar degradados de transición en los pasillos entre zonas dentro del renderizado de celdas de `GameView` | ✅ Completado |
+| 50 | Reforzar la intensidad de los tintes de zona para que el cambio sea claramente perceptible sin perder legibilidad | ✅ Completado |
+| 51 | Sustituir letras planas de cofres, items, secretos, palancas, runas y escaleras por marcas 2D diferenciadas en el tablero | ✅ Completado |
+| 52 | Diferenciar enemigos por familia visual con siluetas, color y etiqueta corta de tipo | ✅ Completado |
 
 ---
 
@@ -499,6 +504,9 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 49 | Suite tras pistas visuales de secretos, reinicio de fase al cambiar de sala y causas concretas de derrota | ✅ Correcta |
 | 50 | Suite tras pantallas narrativas iniciales y retratos de personajes en JavaFX | ✅ Correcta |
 | 51 | Suite tras tema visual compartido y decoración sutil en pantallas principales | ✅ Correcta |
+| 52 | Suite tras tintes por zona y degradados en pasillos de transición | ✅ Correcta |
+| 53 | Suite tras reforzar la intensidad visual de los colores de zona | ✅ Correcta |
+| 54 | Suite tras mejorar la representación visual de enemigos, items, cofres, palancas, runas, escaleras y secretos | ✅ Correcta |
 
 Última verificación completa:
 
@@ -618,6 +626,7 @@ Resultado:
 | 98 | La derrota debe guardar la causa concreta disponible en el momento de la muerte, no un motivo genérico posterior | ✅ Aceptada |
 | 99 | La partida nueva sigue el flujo `menú -> historia -> selección -> descenso -> partida`, creando `GameModel` solo al confirmar la entrada en Valdris | ✅ Aceptada |
 | 100 | La decoración visual se centraliza en `ValdrisTheme` para mantener coherencia y evitar duplicar estilos JavaFX entre pantallas | ✅ Aceptada |
+| 101 | El color ambiental del mapa se decide por `S1`-`S5`; los pasillos mezclan suavemente el color de la zona origen y destino sin cambiar reglas de celdas | ✅ Aceptada |
 
 ---
 

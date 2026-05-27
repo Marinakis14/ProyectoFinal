@@ -7,6 +7,7 @@ import Valdris.logic.combat.CombatManager;
 import Valdris.model.effects.Effect;
 import Valdris.model.enums.CellType;
 import Valdris.model.enums.GameResult;
+import Valdris.model.enums.ItemType;
 import Valdris.model.enums.Phase;
 import Valdris.model.items.Item;
 import Valdris.model.map.Cell;
@@ -21,6 +22,7 @@ import Valdris.ui.model.GameModel;
 import Valdris.ui.model.GameModelListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -146,6 +148,7 @@ public class GameView implements GameModelListener {
     public void renderizarSala(Room room) {
         gridSala.getChildren().clear();
         tituloSala.setText(room == null ? "Valdris" : room.getId() + " - " + room.getNombre());
+        actualizarTituloSala(room);
         if (room == null) {
             return;
         }
@@ -207,7 +210,7 @@ public class GameView implements GameModelListener {
         try {
             Cell cell = room.getCell(fila, col);
             Rectangle fondo = new Rectangle(CELL_SIZE, CELL_SIZE);
-            fondo.setFill(colorCelda(room, cell));
+            fondo.setFill(colorCelda(room, cell, fila, col));
             if (isCeldaEnCaminoRevelado(cell)) {
                 fondo.setStroke(Color.web("#45c7d8"));
                 fondo.setStrokeWidth(4);
@@ -253,14 +256,282 @@ public class GameView implements GameModelListener {
             return;
         }
 
-        String texto = contenidoCelda(room, cell);
-        if (texto == null || texto.isEmpty()) {
+        Node contenido = crearMarcaContenido(room, cell);
+        if (contenido == null) {
             return;
         }
-        Label label = new Label(texto);
-        label.setFont(Font.font("Monospaced", 15));
-        label.setStyle("-fx-text-fill: #ffffff; -fx-font-weight: bold;");
-        stack.getChildren().add(label);
+        stack.getChildren().add(contenido);
+    }
+
+    /**
+     * Crea la marca visual para items, cofres y elementos interactivos de celda.
+     *
+     * @param room sala consultada
+     * @param cell celda consultada
+     * @return nodo visual, o null si no hay nada que dibujar sobre la celda
+     */
+    private Node crearMarcaContenido(Room room, Cell cell) {
+        Container container = cell.getContainer();
+        if (container != null) {
+            return crearMarcaCofre(container);
+        }
+
+        Item item = cell.getItem();
+        if (item != null) {
+            return crearMarcaItem(item);
+        }
+
+        if (esTriggerSecretoDeSuelo(room, cell)) {
+            return crearMarcaSecreto();
+        }
+        if (esAccesoSecretoRevelado(room, cell)) {
+            return crearMarcaPuertaSecreta();
+        }
+        if (cell.getTipo() == CellType.LEVER) {
+            return crearMarcaPalanca(isPuzzleCellActive(room, cell));
+        }
+        if (cell.getTipo() == CellType.RUNE) {
+            return crearMarcaRuna(isPuzzleCellActive(room, cell));
+        }
+        if (cell.getTipo() == CellType.STAIRS_UP) {
+            return crearMarcaEscalera(true);
+        }
+        if (cell.getTipo() == CellType.STAIRS_DOWN) {
+            return crearMarcaEscalera(false);
+        }
+        return null;
+    }
+
+    /**
+     * Crea la marca visual de un cofre.
+     *
+     * @param container contenedor mostrado
+     * @return nodo visual del cofre
+     */
+    private StackPane crearMarcaCofre(Container container) {
+        StackPane sprite = new StackPane();
+        sprite.setPrefSize(40, 34);
+        sprite.setMaxSize(40, 34);
+
+        boolean abierto = container.isAbierto();
+        Rectangle cuerpo = new Rectangle(31, 18);
+        cuerpo.setArcWidth(4);
+        cuerpo.setArcHeight(4);
+        cuerpo.setTranslateY(6);
+        cuerpo.setFill(Color.web(abierto ? "#6b5946" : "#8a5a2d"));
+        cuerpo.setStroke(Color.web("#22170d"));
+        cuerpo.setStrokeWidth(1.3);
+
+        Rectangle tapa = new Rectangle(33, 12);
+        tapa.setArcWidth(10);
+        tapa.setArcHeight(10);
+        tapa.setTranslateY(abierto ? -8 : -3);
+        tapa.setRotate(abierto ? -12 : 0);
+        tapa.setFill(Color.web(abierto ? "#5a4734" : "#b77b32"));
+        tapa.setStroke(Color.web("#22170d"));
+        tapa.setStrokeWidth(1.2);
+
+        Rectangle cierre = new Rectangle(7, 9);
+        cierre.setArcWidth(2);
+        cierre.setArcHeight(2);
+        cierre.setTranslateY(5);
+        cierre.setFill(Color.web(abierto ? "#3f352b" : "#e0bd65"));
+        cierre.setStroke(Color.web("#2a2118"));
+        cierre.setStrokeWidth(0.8);
+
+        sprite.getChildren().addAll(cuerpo, tapa, cierre);
+        return sprite;
+    }
+
+    /**
+     * Crea la marca visual de un item de suelo.
+     *
+     * @param item item mostrado
+     * @return nodo visual del item
+     */
+    private StackPane crearMarcaItem(Item item) {
+        StackPane sprite = new StackPane();
+        sprite.setPrefSize(34, 34);
+        sprite.setMaxSize(34, 34);
+
+        Circle brillo = new Circle(15);
+        brillo.setFill(Color.web(colorBrilloItem(item.getTipo()), 0.28));
+        brillo.setStroke(Color.web(colorBrilloItem(item.getTipo())));
+        brillo.setStrokeWidth(1);
+
+        Node figura = crearFiguraItem(item.getTipo());
+        Label inicial = new Label(etiquetaItem(item.getTipo()));
+        inicial.setFont(Font.font("Monospaced", 8));
+        inicial.setStyle("-fx-text-fill: #fff7d8; -fx-font-weight: bold;");
+        inicial.setTranslateY(10);
+
+        sprite.getChildren().addAll(brillo, figura, inicial);
+        return sprite;
+    }
+
+    /**
+     * Crea la figura principal de un item segun su categoria.
+     *
+     * @param tipo tipo funcional del item
+     * @return nodo con la figura del item
+     */
+    private Node crearFiguraItem(ItemType tipo) {
+        if (tipo == ItemType.WEAPON) {
+            Polygon hoja = new Polygon(17.0, 2.0, 21.0, 18.0, 17.0, 28.0, 13.0, 18.0);
+            hoja.setFill(Color.web("#d7dbe2"));
+            hoja.setStroke(Color.web("#2b3138"));
+            hoja.setStrokeWidth(1);
+            return hoja;
+        }
+        if (tipo == ItemType.ARMOR || tipo == ItemType.SHIELD) {
+            Polygon escudo = new Polygon(17.0, 3.0, 28.0, 8.0, 25.0, 24.0, 17.0, 31.0, 9.0, 24.0, 6.0, 8.0);
+            escudo.setFill(Color.web(tipo == ItemType.SHIELD ? "#6f8ea8" : "#8c8f93"));
+            escudo.setStroke(Color.web("#20252a"));
+            escudo.setStrokeWidth(1.1);
+            return escudo;
+        }
+        if (tipo == ItemType.POTION) {
+            VBox frasco = new VBox(0);
+            frasco.setAlignment(Pos.CENTER);
+            Rectangle cuello = new Rectangle(8, 7);
+            cuello.setFill(Color.web("#d8c9aa"));
+            cuello.setStroke(Color.web("#2b2118"));
+            cuello.setStrokeWidth(0.8);
+            Circle base = new Circle(10);
+            base.setFill(Color.web("#b44870"));
+            base.setStroke(Color.web("#2b2118"));
+            base.setStrokeWidth(1);
+            frasco.getChildren().addAll(cuello, base);
+            return frasco;
+        }
+        if (tipo == ItemType.ACCESSORY) {
+            Circle aro = new Circle(10);
+            aro.setFill(Color.TRANSPARENT);
+            aro.setStroke(Color.web("#d8b55a"));
+            aro.setStrokeWidth(4);
+            return aro;
+        }
+        Polygon sello = new Polygon(17.0, 3.0, 28.0, 17.0, 17.0, 31.0, 6.0, 17.0);
+        sello.setFill(Color.web("#6bc0d0"));
+        sello.setStroke(Color.web("#173f4f"));
+        sello.setStrokeWidth(1.1);
+        return sello;
+    }
+
+    /**
+     * Crea la marca visual de un trigger secreto.
+     *
+     * @return nodo visual del secreto
+     */
+    private StackPane crearMarcaSecreto() {
+        StackPane sprite = new StackPane();
+        Circle base = new Circle(13);
+        base.setFill(Color.web("#d5ca9d", 0.30));
+        base.setStroke(Color.web("#d5ca9d"));
+        base.setStrokeWidth(1.2);
+        Label marca = new Label("?");
+        marca.setFont(Font.font("Serif", 18));
+        marca.setStyle("-fx-text-fill: #fff1bd; -fx-font-weight: bold;");
+        sprite.getChildren().addAll(base, marca);
+        return sprite;
+    }
+
+    /**
+     * Crea la marca visual de una puerta secreta revelada.
+     *
+     * @return nodo visual de puerta secreta
+     */
+    private StackPane crearMarcaPuertaSecreta() {
+        StackPane sprite = new StackPane();
+        Rectangle puerta = new Rectangle(26, 32);
+        puerta.setArcWidth(12);
+        puerta.setArcHeight(12);
+        puerta.setFill(Color.web("#2f8f7a", 0.78));
+        puerta.setStroke(Color.web("#9ef0d9"));
+        puerta.setStrokeWidth(1.8);
+        Circle nucleo = new Circle(4);
+        nucleo.setFill(Color.web("#d8fff4"));
+        sprite.getChildren().addAll(puerta, nucleo);
+        return sprite;
+    }
+
+    /**
+     * Crea la marca visual de una palanca.
+     *
+     * @param activa true si la palanca ya cuenta como activada
+     * @return nodo visual de palanca
+     */
+    private StackPane crearMarcaPalanca(boolean activa) {
+        StackPane sprite = new StackPane();
+        Rectangle base = new Rectangle(25, 8);
+        base.setArcWidth(3);
+        base.setArcHeight(3);
+        base.setTranslateY(10);
+        base.setFill(Color.web("#4a3824"));
+        base.setStroke(Color.web("#d0a45b"));
+        base.setStrokeWidth(1);
+
+        Rectangle brazo = new Rectangle(5, 26);
+        brazo.setArcWidth(3);
+        brazo.setArcHeight(3);
+        brazo.setTranslateY(-3);
+        brazo.setRotate(activa ? 28 : -28);
+        brazo.setFill(Color.web(activa ? "#67c26e" : "#b88a42"));
+        brazo.setStroke(Color.web("#1e160d"));
+        brazo.setStrokeWidth(0.8);
+
+        Circle pomo = new Circle(5);
+        pomo.setTranslateY(-15);
+        pomo.setTranslateX(activa ? 6 : -6);
+        pomo.setFill(Color.web(activa ? "#9df0a0" : "#e0bd65"));
+        pomo.setStroke(Color.web("#1e160d"));
+        pomo.setStrokeWidth(0.8);
+
+        sprite.getChildren().addAll(base, brazo, pomo);
+        return sprite;
+    }
+
+    /**
+     * Crea la marca visual de una runa.
+     *
+     * @param activa true si la runa ya cuenta como activada
+     * @return nodo visual de runa
+     */
+    private StackPane crearMarcaRuna(boolean activa) {
+        StackPane sprite = new StackPane();
+        Polygon losa = new Polygon(17.0, 2.0, 30.0, 17.0, 17.0, 32.0, 4.0, 17.0);
+        losa.setFill(Color.web(activa ? "#3f8f4f" : "#324f64"));
+        losa.setStroke(Color.web(activa ? "#b8ffc2" : "#9bc0dd"));
+        losa.setStrokeWidth(1.2);
+        Label marca = new Label("R");
+        marca.setFont(Font.font("Serif", 15));
+        marca.setStyle("-fx-text-fill: #f5f0e6; -fx-font-weight: bold;");
+        sprite.getChildren().addAll(losa, marca);
+        return sprite;
+    }
+
+    /**
+     * Crea la marca visual de una escalera.
+     *
+     * @param subida true si sube, false si baja
+     * @return nodo visual de escalera
+     */
+    private StackPane crearMarcaEscalera(boolean subida) {
+        StackPane sprite = new StackPane();
+        for (int i = 0; i < 4; i++) {
+            Rectangle escalon = new Rectangle(10 + i * 5, 4);
+            escalon.setTranslateY(subida ? 9 - i * 5 : -9 + i * 5);
+            escalon.setFill(Color.web("#c5bfd8"));
+            escalon.setStroke(Color.web("#2c2838"));
+            escalon.setStrokeWidth(0.5);
+            sprite.getChildren().add(escalon);
+        }
+        Label marca = new Label(subida ? "^" : "v");
+        marca.setFont(Font.font("Monospaced", 11));
+        marca.setStyle("-fx-text-fill: #ffffff; -fx-font-weight: bold;");
+        marca.setTranslateY(subida ? -13 : 13);
+        sprite.getChildren().add(marca);
+        return sprite;
     }
 
     /**
@@ -334,6 +605,95 @@ public class GameView implements GameModelListener {
         sprite.setPrefSize(34, 30);
         sprite.setMaxSize(34, 30);
 
+        String tipo = enemy.getTipo().name();
+        Node silueta = crearSiluetaEnemigo(tipo, colorEnemigo(enemy));
+        Label icono = new Label(etiquetaEnemigo(tipo));
+        icono.setFont(Font.font("Monospaced", 8));
+        icono.setStyle("-fx-text-fill: #fff5ce; -fx-font-weight: bold;");
+        icono.setTranslateY(6);
+
+        Circle ojoIzq = new Circle(1.8);
+        ojoIzq.setFill(Color.web("#ffd166"));
+        ojoIzq.setTranslateX(-4.5);
+        ojoIzq.setTranslateY(-3);
+
+        Circle ojoDer = new Circle(1.8);
+        ojoDer.setFill(Color.web("#ffd166"));
+        ojoDer.setTranslateX(4.5);
+        ojoDer.setTranslateY(-3);
+
+        sprite.getChildren().addAll(silueta, ojoIzq, ojoDer, icono);
+        return sprite;
+    }
+
+    /**
+     * Crea la silueta principal de un enemigo segun su familia.
+     *
+     * @param tipo nombre del tipo de enemigo
+     * @param color color principal
+     * @return nodo visual de silueta
+     */
+    private Node crearSiluetaEnemigo(String tipo, String color) {
+        if ("ARCHER".equals(tipo) || "SNIPER".equals(tipo)) {
+            StackPane silueta = new StackPane();
+            Polygon cuerpo = new Polygon(17.0, 2.0, 25.0, 15.0, 20.0, 29.0, 14.0, 29.0, 9.0, 15.0);
+            cuerpo.setFill(Color.web(color));
+            cuerpo.setStroke(Color.web("#140c0c"));
+            cuerpo.setStrokeWidth(1.2);
+            Rectangle arco = new Rectangle(3, 27);
+            arco.setArcWidth(4);
+            arco.setArcHeight(4);
+            arco.setTranslateX(12);
+            arco.setFill(Color.web("#c29b5a"));
+            arco.setStroke(Color.web("#1d130b"));
+            arco.setStrokeWidth(0.6);
+            silueta.getChildren().addAll(cuerpo, arco);
+            return silueta;
+        }
+        if ("GUARDIAN".equals(tipo) || "CONSTRUCTO".equals(tipo) || "DESTRUCTOR".equals(tipo)) {
+            StackPane silueta = new StackPane();
+            Rectangle torso = new Rectangle(23, 25);
+            torso.setArcWidth(5);
+            torso.setArcHeight(5);
+            torso.setFill(Color.web(color));
+            torso.setStroke(Color.web("#111111"));
+            torso.setStrokeWidth(1.4);
+            Rectangle placa = new Rectangle(15, 7);
+            placa.setTranslateY(8);
+            placa.setFill(Color.web("#8c949a"));
+            placa.setStroke(Color.web("#20252a"));
+            placa.setStrokeWidth(0.7);
+            silueta.getChildren().addAll(torso, placa);
+            return silueta;
+        }
+        if ("CONTROLLER".equals(tipo) || "SUMMONER".equals(tipo) || "ECO_DE_MAGIA".equals(tipo)) {
+            StackPane silueta = new StackPane();
+            Polygon tunica = new Polygon(17.0, 1.0, 29.0, 29.0, 5.0, 29.0);
+            tunica.setFill(Color.web(color));
+            tunica.setStroke(Color.web("#140c0c"));
+            tunica.setStrokeWidth(1.2);
+            Circle foco = new Circle(6);
+            foco.setTranslateY(9);
+            foco.setFill(Color.web("#72d6ff", 0.38));
+            foco.setStroke(Color.web("#bfeeff"));
+            foco.setStrokeWidth(1);
+            silueta.getChildren().addAll(tunica, foco);
+            return silueta;
+        }
+        if ("BERSERKER".equals(tipo)) {
+            StackPane silueta = new StackPane();
+            Polygon cuerpo = new Polygon(17.0, 2.0, 30.0, 17.0, 24.0, 30.0, 10.0, 30.0, 4.0, 17.0);
+            cuerpo.setFill(Color.web(color));
+            cuerpo.setStroke(Color.web("#140c0c"));
+            cuerpo.setStrokeWidth(1.3);
+            Polygon cuernos = new Polygon(8.0, 4.0, 1.0, 1.0, 5.0, 10.0, 26.0, 4.0, 33.0, 1.0, 29.0, 10.0);
+            cuernos.setFill(Color.web("#d7c8aa"));
+            cuernos.setStroke(Color.web("#140c0c"));
+            cuernos.setStrokeWidth(0.7);
+            silueta.getChildren().addAll(cuernos, cuerpo);
+            return silueta;
+        }
+
         Polygon sombra = new Polygon(
             17.0, 2.0,
             30.0, 14.0,
@@ -341,69 +701,10 @@ public class GameView implements GameModelListener {
             9.0, 29.0,
             4.0, 14.0
         );
-        sombra.setFill(Color.web(colorEnemigo(enemy)));
+        sombra.setFill(Color.web(color));
         sombra.setStroke(Color.web("#140c0c"));
         sombra.setStrokeWidth(1.5);
-
-        Circle ojoIzq = new Circle(2.2);
-        ojoIzq.setFill(Color.web("#ffd166"));
-        ojoIzq.setTranslateX(-5);
-        ojoIzq.setTranslateY(-2);
-
-        Circle ojoDer = new Circle(2.2);
-        ojoDer.setFill(Color.web("#ffd166"));
-        ojoDer.setTranslateX(5);
-        ojoDer.setTranslateY(-2);
-
-        sprite.getChildren().addAll(sombra, ojoIzq, ojoDer);
-        return sprite;
-    }
-
-    /**
-     * Devuelve el texto de contenido para una celda.
-     *
-     * @param room sala consultada
-     * @param cell celda consultada
-     * @return texto corto, o vacio si no hay contenido visible
-     */
-    private String contenidoCelda(Room room, Cell cell) {
-        Unit unit = cell.getUnit();
-        if (unit != null) {
-            if (unit == modelo.getPlayer()) {
-                return letraJugador(modelo.getPlayer());
-            }
-            return "E";
-        }
-
-        Container container = cell.getContainer();
-        if (container != null) {
-            return "C";
-        }
-
-        Item item = cell.getItem();
-        if (item != null) {
-            return "*";
-        }
-
-        if (esTriggerSecretoDeSuelo(room, cell)) {
-            return "?";
-        }
-        if (esAccesoSecretoRevelado(room, cell)) {
-            return "D";
-        }
-        if (cell.getTipo() == CellType.LEVER) {
-            return "L";
-        }
-        if (cell.getTipo() == CellType.RUNE) {
-            return "R";
-        }
-        if (cell.getTipo() == CellType.STAIRS_UP) {
-            return "^";
-        }
-        if (cell.getTipo() == CellType.STAIRS_DOWN) {
-            return "v";
-        }
-        return "";
+        return sombra;
     }
 
     /**
@@ -866,48 +1167,82 @@ public class GameView implements GameModelListener {
     /**
      * Devuelve el color de fondo de una celda.
      *
+     * @param room sala consultada
      * @param cell celda consultada
+     * @param fila fila de la celda
+     * @param col columna de la celda
      * @return color JavaFX
      */
-    private Color colorCelda(Room room, Cell cell) {
+    private Color colorCelda(Room room, Cell cell, int fila, int col) {
         CellType tipo = cell.getTipo();
         if (tipo == CellType.WALL) {
-            return Color.web("#3a3a3a");
+            return colorConZona(room, fila, col, Color.web("#3a3a3a"), 0.32);
         }
         if (esAccesoSecretoRevelado(room, cell)) {
-            return Color.web("#2f8f7a");
+            return colorConZona(room, fila, col, Color.web("#2f8f7a"), 0.18);
         }
         if (tipo == CellType.DOOR) {
-            return Color.web("#7b5736");
+            return colorConZona(room, fila, col, Color.web("#7b5736"), 0.24);
         }
         if (tipo == CellType.DOOR_LOCKED) {
-            return Color.web("#4f2d20");
+            return colorConZona(room, fila, col, Color.web("#4f2d20"), 0.22);
         }
         if (tipo == CellType.DOOR_HIDDEN && !cell.isDescubierta()) {
-            return Color.web("#3a3a3a");
+            return colorConZona(room, fila, col, Color.web("#3a3a3a"), 0.32);
         }
         if (tipo == CellType.STAIRS_UP || tipo == CellType.STAIRS_DOWN) {
-            return Color.web("#5f5b74");
+            return colorConZona(room, fila, col, Color.web("#5f5b74"), 0.40);
         }
         if (tipo == CellType.LEVER) {
             if (isPuzzleCellActive(room, cell)) {
-                return Color.web("#3f8f4f");
+                return colorConZona(room, fila, col, Color.web("#3f8f4f"), 0.18);
             }
-            return Color.web("#6f613b");
+            return colorConZona(room, fila, col, Color.web("#6f613b"), 0.30);
         }
         if (tipo == CellType.RUNE) {
             if (isPuzzleCellActive(room, cell)) {
-                return Color.web("#3f8f4f");
+                return colorConZona(room, fila, col, Color.web("#3f8f4f"), 0.18);
             }
-            return Color.web("#324f64");
+            return colorConZona(room, fila, col, Color.web("#324f64"), 0.30);
         }
         if (tipo == CellType.TRAP) {
-            return Color.web("#b8b1a3");
+            return colorConZona(room, fila, col, Color.web("#b8b1a3"), 0.48);
         }
         if (esTriggerSecretoDeSuelo(room, cell)) {
-            return Color.web("#c9bf9f");
+            return colorConZona(room, fila, col, Color.web("#c9bf9f"), 0.26);
         }
-        return Color.web("#b8b1a3");
+        return colorConZona(room, fila, col, Color.web("#b8b1a3"), 0.54);
+    }
+
+    /**
+     * Aplica el matiz ambiental de la sala sobre un color funcional.
+     *
+     * @param room sala consultada
+     * @param fila fila de la celda
+     * @param col columna de la celda
+     * @param base color funcional inicial
+     * @param intensidad peso del matiz de zona
+     * @return color final de la celda
+     */
+    private Color colorConZona(Room room, int fila, int col, Color base, double intensidad) {
+        if (room == null) {
+            return base;
+        }
+        return ValdrisTheme.aplicarMatizZona(room.getId(), fila, col, room.getFilas(), room.getCols(),
+            base, intensidad);
+    }
+
+    /**
+     * Ajusta el titulo de la sala con un acento coherente con la zona actual.
+     *
+     * @param room sala actual
+     */
+    private void actualizarTituloSala(Room room) {
+        String acento = ValdrisTheme.getColorAcentoZona(room == null ? null : room.getId());
+        tituloSala.setStyle("-fx-text-fill: #f5f0e6;"
+            + "-fx-border-color: transparent transparent " + acento + " transparent;"
+            + "-fx-border-width: 0 0 2 0;"
+            + "-fx-padding: 0 12 4 12;");
     }
 
     /**
@@ -1150,6 +1485,96 @@ public class GameView implements GameModelListener {
             return "#7c2f2f";
         }
         return "#5c2424";
+    }
+
+    /**
+     * Devuelve una etiqueta corta para distinguir tipos de enemigo en el mapa.
+     *
+     * @param tipo nombre del tipo de enemigo
+     * @return texto compacto
+     */
+    private String etiquetaEnemigo(String tipo) {
+        if ("ARCHER".equals(tipo)) {
+            return "AR";
+        }
+        if ("SNIPER".equals(tipo)) {
+            return "SN";
+        }
+        if ("GUARDIAN".equals(tipo)) {
+            return "G";
+        }
+        if ("CONSTRUCTO".equals(tipo)) {
+            return "CO";
+        }
+        if ("DESTRUCTOR".equals(tipo)) {
+            return "D";
+        }
+        if ("CONTROLLER".equals(tipo)) {
+            return "CT";
+        }
+        if ("SUMMONER".equals(tipo)) {
+            return "IN";
+        }
+        if ("ECO_DE_MAGIA".equals(tipo)) {
+            return "EC";
+        }
+        if ("SOMBRA_ABSORBIDA".equals(tipo)) {
+            return "SO";
+        }
+        if ("PARASITO".equals(tipo)) {
+            return "P";
+        }
+        if ("BERSERKER".equals(tipo)) {
+            return "B";
+        }
+        return "E";
+    }
+
+    /**
+     * Devuelve el color de brillo asociado a una categoria de item.
+     *
+     * @param tipo tipo funcional del item
+     * @return color hexadecimal CSS
+     */
+    private String colorBrilloItem(ItemType tipo) {
+        if (tipo == ItemType.WEAPON) {
+            return "#d8dce5";
+        }
+        if (tipo == ItemType.ARMOR || tipo == ItemType.SHIELD) {
+            return "#9fb6c8";
+        }
+        if (tipo == ItemType.POTION) {
+            return "#d95f8a";
+        }
+        if (tipo == ItemType.ACCESSORY) {
+            return "#d8b55a";
+        }
+        return "#6bc0d0";
+    }
+
+    /**
+     * Devuelve una etiqueta corta para un item de suelo.
+     *
+     * @param tipo tipo funcional del item
+     * @return texto compacto
+     */
+    private String etiquetaItem(ItemType tipo) {
+        if (tipo == ItemType.WEAPON) {
+            return "W";
+        }
+        if (tipo == ItemType.ARMOR) {
+            return "A";
+        }
+        if (tipo == ItemType.SHIELD) {
+            return "S";
+        }
+        if (tipo == ItemType.POTION) {
+            return "P";
+        }
+        if (tipo == ItemType.ACCESSORY) {
+            return "AC";
+        }
+        return "N";
     }
 
     /**

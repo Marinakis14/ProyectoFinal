@@ -1,29 +1,53 @@
 {
-  "idRoomActual": "S1-A",
-  "tipoPersonaje": "DORATH",
+  "idRoomActual": "PASILLO_2_3",
+  "tipoPersonaje": "SYRA",
   "faseActual": "MOVEMENT",
-  "turnoGlobal": 0,
+  "turnoGlobal": 81,
   "gameResult": "IN_PROGRESS",
   "finalCombatStarted": false,
-  "hpJugador": 80,
-  "filaJugador": 3,
+  "hpJugador": 63,
+  "filaJugador": 1,
   "colJugador": 1,
   "haMovido": false,
   "haRecogido": false,
   "haUsadoItem": false,
   "haAtacado": false,
   "bonusAtaqueTemporal": 0,
-  "itemsInventario": [],
-  "itemsNarrativos": [],
+  "itemsInventario": [
+    "AC5",
+    "A1",
+    "AC5",
+    "P5",
+    "P1",
+    "A1",
+    "P2",
+    "AC5",
+    "P1",
+    "P1",
+    "P1",
+    "AC6",
+    "A4",
+    "P2",
+    "A1",
+    "P1",
+    "P1",
+    "AC5"
+  ],
+  "itemsNarrativos": [
+    "AC2"
+  ],
+  "armaduraEquipada": "A4",
+  "escudoEquipado": "A1",
+  "accesorioEquipado": "AC5",
   "efectosJugador": [],
   "salas": [
     {
       "idSala": "S1-A",
       "explorada": true,
       "filaJugador": 3,
-      "colJugador": 1,
+      "colJugador": 6,
       "hasRoomTimer": true,
-      "turnosRestantes": 20,
+      "turnosRestantes": 8,
       "turnosMaximos": 20,
       "dialogoKaelMostrado": false,
       "dialogoSyraMostrado": false,
@@ -44,9 +68,9 @@
     },
     {
       "idSala": "S1-B",
-      "explorada": false,
+      "explorada": true,
       "filaJugador": 2,
-      "colJugador": 1,
+      "colJugador": 4,
       "hasRoomTimer": true,
       "turnosRestantes": 20,
       "turnosMaximos": 20,
@@ -74,23 +98,23 @@
         {
           "fila": 4,
           "col": 3,
-          "tipo": "DOOR_HIDDEN",
-          "descubierta": false
+          "tipo": "DOOR",
+          "descubierta": true
         }
       ]
     },
     {
       "idSala": "S1-C",
-      "explorada": false,
+      "explorada": true,
       "filaJugador": 4,
-      "colJugador": 1,
+      "colJugador": 8,
       "hasRoomTimer": false,
       "turnosRestantes": -1,
       "turnosMaximos": -1,
       "dialogoKaelMostrado": false,
       "dialogoSyraMostrado": false,
       "dialogoDorathMostrado": false,
-      "puzzleResolved": false,
+      "puzzleResolved": true,
       "puzzleSuccessTarget": "PUZZLE_S1_C",
       "puzzleFailureDamage": 5,
       "puzzleFailureCount": 0,
@@ -99,7 +123,11 @@
         2,
         1
       ],
-      "activeSequence": [],
+      "activeSequence": [
+        0,
+        2,
+        1
+      ],
       "celdas": [
         {
           "fila": 4,
@@ -110,18 +138,18 @@
         {
           "fila": 4,
           "col": 9,
-          "tipo": "DOOR_LOCKED",
+          "tipo": "DOOR",
           "descubierta": true
         }
       ]
     },
     {
       "idSala": "S1-D",
-      "explorada": false,
+      "explorada": true,
       "filaJugador": 4,
-      "colJugador": 1,
+      "colJugador": 7,
       "hasRoomTimer": true,
-      "turnosRestantes": 35,
+      "turnosRestantes": 24,
       "turnosMaximos": 35,
       "dialogoKaelMostrado": false,
       "dialogoSyraMostrado": false,
@@ -148,11 +176,11 @@
     },
     {
       "idSala": "S1-SEC",
-      "explorada": false,
-      "filaJugador": 2,
-      "colJugador": 1,
+      "explorada": true,
+      "filaJugador": 1,
+      "colJugador": 2,
       "hasRoomTimer": true,
-      "turnosRestantes": 20,
+      "turnosRestantes": 18,
       "turnosMaximos": 20,
       "dialogoKaelMostrado": false,
       "dialogoSyraMostrado": false,
@@ -177,19 +205,17 @@
           "container": {
             "id": "CH-S1-SEC",
             "nombre": "Cofre del Molino",
-            "abierto": false,
-            "itemsRestantes": [
-              "P5"
-            ]
+            "abierto": true,
+            "itemsRestantes": []
           }
         }
       ]
     },
     {
       "idSala": "PASILLO_1_2",
-      "explorada": false,
+      "explorada": true,
       "filaJugador": 1,
-      "colJugador": 1,
+      "colJugador": 6,
       "hasRoomTimer": false,
       "turnosRestantes": -1,
       "turnosMaximos": -1,
@@ -210,13 +236,6 @@
         },
         {
           "fila": 1,
-          "col": 4,
-          "tipo": "FLOOR",
-          "descubierta": true,
-          "itemId": "P2"
-        },
-        {
-          "fila": 1,
           "col": 7,
           "tipo": "DOOR",
           "descubierta": true
@@ -225,14 +244,14 @@
     },
     {
       "idSala": "S2-A",
-      "explorada": false,
+      "explorada": true,
       "filaJugador": 3,
-      "colJugador": 1,
+      "colJugador": 4,
       "hasRoomTimer": true,
-      "turnosRestantes": 20,
+      "turnosRestantes": 13,
       "turnosMaximos": 20,
       "dialogoKaelMostrado": false,
-      "dialogoSyraMostrado": false,
+      "dialogoSyraMostrado": true,
       "dialogoDorathMostrado": false,
       "puzzleResolved": false,
       "puzzleFailureDamage": 3,
@@ -256,9 +275,9 @@
     },
     {
       "idSala": "S2-B",
-      "explorada": false,
-      "filaJugador": 3,
-      "colJugador": 1,
+      "explorada": true,
+      "filaJugador": 5,
+      "colJugador": 6,
       "hasRoomTimer": true,
       "turnosRestantes": 20,
       "turnosMaximos": 20,
@@ -286,8 +305,8 @@
         {
           "fila": 6,
           "col": 4,
-          "tipo": "DOOR_HIDDEN",
-          "descubierta": false
+          "tipo": "DOOR",
+          "descubierta": true
         },
         {
           "fila": 6,
@@ -313,9 +332,9 @@
       "puzzleFailureDamage": 6,
       "puzzleFailureCount": 0,
       "correctSequence": [
-        1,
+        2,
         0,
-        2
+        1
       ],
       "activeSequence": [],
       "celdas": [
@@ -335,11 +354,11 @@
     },
     {
       "idSala": "S2-D",
-      "explorada": false,
+      "explorada": true,
       "filaJugador": 2,
-      "colJugador": 1,
+      "colJugador": 4,
       "hasRoomTimer": true,
-      "turnosRestantes": 20,
+      "turnosRestantes": 13,
       "turnosMaximos": 20,
       "dialogoKaelMostrado": false,
       "dialogoSyraMostrado": false,
@@ -366,11 +385,11 @@
     },
     {
       "idSala": "S2-E",
-      "explorada": false,
+      "explorada": true,
       "filaJugador": 5,
-      "colJugador": 1,
+      "colJugador": 8,
       "hasRoomTimer": true,
-      "turnosRestantes": 35,
+      "turnosRestantes": 22,
       "turnosMaximos": 35,
       "dialogoKaelMostrado": false,
       "dialogoSyraMostrado": false,
@@ -403,11 +422,11 @@
     },
     {
       "idSala": "S2-SEC",
-      "explorada": false,
-      "filaJugador": 2,
-      "colJugador": 1,
+      "explorada": true,
+      "filaJugador": 1,
+      "colJugador": 2,
       "hasRoomTimer": true,
-      "turnosRestantes": 20,
+      "turnosRestantes": 16,
       "turnosMaximos": 20,
       "dialogoKaelMostrado": false,
       "dialogoSyraMostrado": false,
@@ -432,17 +451,15 @@
           "container": {
             "id": "CH-S2-SEC",
             "nombre": "Cofre de Raíces",
-            "abierto": false,
-            "itemsRestantes": [
-              "A4"
-            ]
+            "abierto": true,
+            "itemsRestantes": []
           }
         }
       ]
     },
     {
       "idSala": "PASILLO_2_3",
-      "explorada": false,
+      "explorada": true,
       "filaJugador": 1,
       "colJugador": 1,
       "hasRoomTimer": false,
@@ -468,7 +485,7 @@
           "col": 4,
           "tipo": "FLOOR",
           "descubierta": true,
-          "itemId": "AC8"
+          "itemId": "A5"
         },
         {
           "fila": 1,
@@ -525,8 +542,8 @@
       "puzzleFailureDamage": 7,
       "puzzleFailureCount": 0,
       "correctSequence": [
-        2,
         1,
+        2,
         0
       ],
       "activeSequence": [],
@@ -842,9 +859,9 @@
       "puzzleFailureDamage": 8,
       "puzzleFailureCount": 0,
       "correctSequence": [
-        0,
         1,
-        2
+        2,
+        0
       ],
       "activeSequence": [],
       "celdas": [
@@ -997,7 +1014,7 @@
           "col": 4,
           "tipo": "FLOOR",
           "descubierta": true,
-          "itemId": "P4"
+          "itemId": "P3"
         },
         {
           "fila": 1,
@@ -1190,391 +1207,11 @@
   ],
   "enemigos": [
     {
-      "idSala": "S1-A",
-      "tipoEnemigo": "WARRIOR",
-      "fila": 1,
-      "col": 5,
-      "hp": 35,
-      "vivo": true,
-      "dropItemId": "P1",
-      "turnosSinActuar": 0,
-      "esMiniJefe": false,
-      "parasitoPhase": 0,
-      "parasitoAoeCooldown": 0,
-      "parasitoDevorarLuzUsado": false,
-      "parasitoPhaseTransitionPending": false,
-      "parasitoDevorarLuzPendiente": false,
-      "parasitoSkipNextActionByTransition": false,
-      "efectos": []
-    },
-    {
-      "idSala": "S1-A",
-      "tipoEnemigo": "WARRIOR",
-      "fila": 1,
-      "col": 2,
-      "hp": 35,
-      "vivo": true,
-      "dropItemId": "A1",
-      "turnosSinActuar": 0,
-      "esMiniJefe": false,
-      "parasitoPhase": 0,
-      "parasitoAoeCooldown": 0,
-      "parasitoDevorarLuzUsado": false,
-      "parasitoPhaseTransitionPending": false,
-      "parasitoDevorarLuzPendiente": false,
-      "parasitoSkipNextActionByTransition": false,
-      "efectos": []
-    },
-    {
-      "idSala": "S1-A",
-      "tipoEnemigo": "ARCHER",
-      "fila": 5,
-      "col": 2,
-      "hp": 28,
-      "vivo": true,
-      "dropItemId": "AC5",
-      "turnosSinActuar": 0,
-      "esMiniJefe": false,
-      "parasitoPhase": 0,
-      "parasitoAoeCooldown": 0,
-      "parasitoDevorarLuzUsado": false,
-      "parasitoPhaseTransitionPending": false,
-      "parasitoDevorarLuzPendiente": false,
-      "parasitoSkipNextActionByTransition": false,
-      "efectos": []
-    },
-    {
-      "idSala": "S1-B",
-      "tipoEnemigo": "WARRIOR",
-      "fila": 3,
-      "col": 4,
-      "hp": 35,
-      "vivo": true,
-      "dropItemId": "A1",
-      "turnosSinActuar": 0,
-      "esMiniJefe": false,
-      "parasitoPhase": 0,
-      "parasitoAoeCooldown": 0,
-      "parasitoDevorarLuzUsado": false,
-      "parasitoPhaseTransitionPending": false,
-      "parasitoDevorarLuzPendiente": false,
-      "parasitoSkipNextActionByTransition": false,
-      "efectos": []
-    },
-    {
-      "idSala": "S1-B",
-      "tipoEnemigo": "ARCHER",
-      "fila": 1,
-      "col": 2,
-      "hp": 28,
-      "vivo": true,
-      "dropItemId": "AC5",
-      "turnosSinActuar": 0,
-      "esMiniJefe": false,
-      "parasitoPhase": 0,
-      "parasitoAoeCooldown": 0,
-      "parasitoDevorarLuzUsado": false,
-      "parasitoPhaseTransitionPending": false,
-      "parasitoDevorarLuzPendiente": false,
-      "parasitoSkipNextActionByTransition": false,
-      "efectos": []
-    },
-    {
-      "idSala": "S1-C",
-      "tipoEnemigo": "CONTROLLER",
-      "fila": 6,
-      "col": 7,
-      "hp": 35,
-      "vivo": true,
-      "dropItemId": "P2",
-      "turnosSinActuar": 0,
-      "esMiniJefe": false,
-      "parasitoPhase": 0,
-      "parasitoAoeCooldown": 0,
-      "parasitoDevorarLuzUsado": false,
-      "parasitoPhaseTransitionPending": false,
-      "parasitoDevorarLuzPendiente": false,
-      "parasitoSkipNextActionByTransition": false,
-      "efectos": []
-    },
-    {
-      "idSala": "S1-D",
-      "tipoEnemigo": "WARRIOR",
-      "miniBossType": "ALCALDE_CORRUPTO",
-      "fila": 4,
-      "col": 4,
-      "hp": 55,
-      "vivo": true,
-      "dropItemId": "AC1",
-      "turnosSinActuar": 0,
-      "esMiniJefe": true,
-      "parasitoPhase": 0,
-      "parasitoAoeCooldown": 0,
-      "parasitoDevorarLuzUsado": false,
-      "parasitoPhaseTransitionPending": false,
-      "parasitoDevorarLuzPendiente": false,
-      "parasitoSkipNextActionByTransition": false,
-      "efectos": []
-    },
-    {
-      "idSala": "S1-D",
-      "tipoEnemigo": "WARRIOR",
-      "fila": 7,
-      "col": 6,
-      "hp": 35,
-      "vivo": true,
-      "dropItemId": "A1",
-      "turnosSinActuar": 0,
-      "esMiniJefe": false,
-      "parasitoPhase": 0,
-      "parasitoAoeCooldown": 0,
-      "parasitoDevorarLuzUsado": false,
-      "parasitoPhaseTransitionPending": false,
-      "parasitoDevorarLuzPendiente": false,
-      "parasitoSkipNextActionByTransition": false,
-      "efectos": []
-    },
-    {
-      "idSala": "S1-D",
-      "tipoEnemigo": "WARRIOR",
-      "fila": 2,
-      "col": 2,
-      "hp": 35,
-      "vivo": true,
-      "dropItemId": "P1",
-      "turnosSinActuar": 0,
-      "esMiniJefe": false,
-      "parasitoPhase": 0,
-      "parasitoAoeCooldown": 0,
-      "parasitoDevorarLuzUsado": false,
-      "parasitoPhaseTransitionPending": false,
-      "parasitoDevorarLuzPendiente": false,
-      "parasitoSkipNextActionByTransition": false,
-      "efectos": []
-    },
-    {
-      "idSala": "S2-A",
-      "tipoEnemigo": "ARCHER",
-      "fila": 1,
-      "col": 4,
-      "hp": 28,
-      "vivo": true,
-      "dropItemId": "P1",
-      "turnosSinActuar": 0,
-      "esMiniJefe": false,
-      "parasitoPhase": 0,
-      "parasitoAoeCooldown": 0,
-      "parasitoDevorarLuzUsado": false,
-      "parasitoPhaseTransitionPending": false,
-      "parasitoDevorarLuzPendiente": false,
-      "parasitoSkipNextActionByTransition": false,
-      "efectos": []
-    },
-    {
-      "idSala": "S2-A",
-      "tipoEnemigo": "WARRIOR",
-      "fila": 4,
-      "col": 2,
-      "hp": 35,
-      "vivo": true,
-      "dropItemId": "A1",
-      "turnosSinActuar": 0,
-      "esMiniJefe": false,
-      "parasitoPhase": 0,
-      "parasitoAoeCooldown": 0,
-      "parasitoDevorarLuzUsado": false,
-      "parasitoPhaseTransitionPending": false,
-      "parasitoDevorarLuzPendiente": false,
-      "parasitoSkipNextActionByTransition": false,
-      "efectos": []
-    },
-    {
-      "idSala": "S2-B",
-      "tipoEnemigo": "ARCHER",
-      "fila": 1,
-      "col": 2,
-      "hp": 28,
-      "vivo": true,
-      "dropItemId": "AC5",
-      "turnosSinActuar": 0,
-      "esMiniJefe": false,
-      "parasitoPhase": 0,
-      "parasitoAoeCooldown": 0,
-      "parasitoDevorarLuzUsado": false,
-      "parasitoPhaseTransitionPending": false,
-      "parasitoDevorarLuzPendiente": false,
-      "parasitoSkipNextActionByTransition": false,
-      "efectos": []
-    },
-    {
-      "idSala": "S2-B",
-      "tipoEnemigo": "ARCHER",
-      "fila": 5,
-      "col": 2,
-      "hp": 28,
-      "vivo": true,
-      "dropItemId": "P1",
-      "turnosSinActuar": 0,
-      "esMiniJefe": false,
-      "parasitoPhase": 0,
-      "parasitoAoeCooldown": 0,
-      "parasitoDevorarLuzUsado": false,
-      "parasitoPhaseTransitionPending": false,
-      "parasitoDevorarLuzPendiente": false,
-      "parasitoSkipNextActionByTransition": false,
-      "efectos": []
-    },
-    {
-      "idSala": "S2-B",
-      "tipoEnemigo": "DESTRUCTOR",
-      "fila": 4,
-      "col": 3,
-      "hp": 40,
-      "vivo": true,
-      "dropItemId": "AC6",
-      "turnosSinActuar": 0,
-      "esMiniJefe": false,
-      "parasitoPhase": 0,
-      "parasitoAoeCooldown": 0,
-      "parasitoDevorarLuzUsado": false,
-      "parasitoPhaseTransitionPending": false,
-      "parasitoDevorarLuzPendiente": false,
-      "parasitoSkipNextActionByTransition": false,
-      "efectos": []
-    },
-    {
       "idSala": "S2-C",
       "tipoEnemigo": "CONTROLLER",
-      "fila": 6,
+      "fila": 7,
       "col": 7,
       "hp": 35,
-      "vivo": true,
-      "dropItemId": "AC6",
-      "turnosSinActuar": 0,
-      "esMiniJefe": false,
-      "parasitoPhase": 0,
-      "parasitoAoeCooldown": 0,
-      "parasitoDevorarLuzUsado": false,
-      "parasitoPhaseTransitionPending": false,
-      "parasitoDevorarLuzPendiente": false,
-      "parasitoSkipNextActionByTransition": false,
-      "efectos": []
-    },
-    {
-      "idSala": "S2-D",
-      "tipoEnemigo": "WARRIOR",
-      "fila": 1,
-      "col": 2,
-      "hp": 35,
-      "vivo": true,
-      "dropItemId": "A1",
-      "turnosSinActuar": 0,
-      "esMiniJefe": false,
-      "parasitoPhase": 0,
-      "parasitoAoeCooldown": 0,
-      "parasitoDevorarLuzUsado": false,
-      "parasitoPhaseTransitionPending": false,
-      "parasitoDevorarLuzPendiente": false,
-      "parasitoSkipNextActionByTransition": false,
-      "efectos": []
-    },
-    {
-      "idSala": "S2-D",
-      "tipoEnemigo": "WARRIOR",
-      "fila": 3,
-      "col": 4,
-      "hp": 35,
-      "vivo": true,
-      "dropItemId": "P1",
-      "turnosSinActuar": 0,
-      "esMiniJefe": false,
-      "parasitoPhase": 0,
-      "parasitoAoeCooldown": 0,
-      "parasitoDevorarLuzUsado": false,
-      "parasitoPhaseTransitionPending": false,
-      "parasitoDevorarLuzPendiente": false,
-      "parasitoSkipNextActionByTransition": false,
-      "efectos": []
-    },
-    {
-      "idSala": "S2-D",
-      "tipoEnemigo": "BERSERKER",
-      "fila": 1,
-      "col": 4,
-      "hp": 25,
-      "vivo": true,
-      "dropItemId": "P1",
-      "turnosSinActuar": 0,
-      "esMiniJefe": false,
-      "parasitoPhase": 0,
-      "parasitoAoeCooldown": 0,
-      "parasitoDevorarLuzUsado": false,
-      "parasitoPhaseTransitionPending": false,
-      "parasitoDevorarLuzPendiente": false,
-      "parasitoSkipNextActionByTransition": false,
-      "efectos": []
-    },
-    {
-      "idSala": "S2-E",
-      "tipoEnemigo": "ARCHER",
-      "miniBossType": "ESPIRITU_MADRE",
-      "fila": 5,
-      "col": 5,
-      "hp": 65,
-      "vivo": true,
-      "dropItemId": "AC2",
-      "turnosSinActuar": 0,
-      "esMiniJefe": true,
-      "parasitoPhase": 0,
-      "parasitoAoeCooldown": 0,
-      "parasitoDevorarLuzUsado": false,
-      "parasitoPhaseTransitionPending": false,
-      "parasitoDevorarLuzPendiente": false,
-      "parasitoSkipNextActionByTransition": false,
-      "efectos": []
-    },
-    {
-      "idSala": "S2-E",
-      "tipoEnemigo": "ARCHER",
-      "fila": 8,
-      "col": 7,
-      "hp": 28,
-      "vivo": true,
-      "dropItemId": "AC5",
-      "turnosSinActuar": 0,
-      "esMiniJefe": false,
-      "parasitoPhase": 0,
-      "parasitoAoeCooldown": 0,
-      "parasitoDevorarLuzUsado": false,
-      "parasitoPhaseTransitionPending": false,
-      "parasitoDevorarLuzPendiente": false,
-      "parasitoSkipNextActionByTransition": false,
-      "efectos": []
-    },
-    {
-      "idSala": "S2-E",
-      "tipoEnemigo": "ARCHER",
-      "fila": 2,
-      "col": 2,
-      "hp": 28,
-      "vivo": true,
-      "dropItemId": "AC5",
-      "turnosSinActuar": 0,
-      "esMiniJefe": false,
-      "parasitoPhase": 0,
-      "parasitoAoeCooldown": 0,
-      "parasitoDevorarLuzUsado": false,
-      "parasitoPhaseTransitionPending": false,
-      "parasitoDevorarLuzPendiente": false,
-      "parasitoSkipNextActionByTransition": false,
-      "efectos": []
-    },
-    {
-      "idSala": "S2-SEC",
-      "tipoEnemigo": "GUARDIAN",
-      "fila": 3,
-      "col": 1,
-      "hp": 50,
       "vivo": true,
       "dropItemId": "P2",
       "turnosSinActuar": 0,
@@ -1590,11 +1227,11 @@
     {
       "idSala": "S3-A",
       "tipoEnemigo": "WARRIOR",
-      "fila": 2,
-      "col": 4,
+      "fila": 1,
+      "col": 2,
       "hp": 35,
       "vivo": true,
-      "dropItemId": "A1",
+      "dropItemId": "P1",
       "turnosSinActuar": 0,
       "esMiniJefe": false,
       "parasitoPhase": 0,
@@ -1608,11 +1245,11 @@
     {
       "idSala": "S3-A",
       "tipoEnemigo": "WARRIOR",
-      "fila": 5,
+      "fila": 1,
       "col": 5,
       "hp": 35,
       "vivo": true,
-      "dropItemId": "A1",
+      "dropItemId": "P1",
       "turnosSinActuar": 0,
       "esMiniJefe": false,
       "parasitoPhase": 0,
@@ -1626,7 +1263,7 @@
     {
       "idSala": "S3-A",
       "tipoEnemigo": "BERSERKER",
-      "fila": 4,
+      "fila": 5,
       "col": 5,
       "hp": 25,
       "vivo": true,
@@ -1644,11 +1281,29 @@
     {
       "idSala": "S3-B",
       "tipoEnemigo": "SUMMONER",
-      "fila": 6,
-      "col": 8,
+      "fila": 2,
+      "col": 7,
       "hp": 45,
       "vivo": true,
-      "dropItemId": "AC8",
+      "dropItemId": "P3",
+      "turnosSinActuar": 0,
+      "esMiniJefe": false,
+      "parasitoPhase": 0,
+      "parasitoAoeCooldown": 0,
+      "parasitoDevorarLuzUsado": false,
+      "parasitoPhaseTransitionPending": false,
+      "parasitoDevorarLuzPendiente": false,
+      "parasitoSkipNextActionByTransition": false,
+      "efectos": []
+    },
+    {
+      "idSala": "S3-C",
+      "tipoEnemigo": "GUARDIAN",
+      "fila": 6,
+      "col": 6,
+      "hp": 50,
+      "vivo": true,
+      "dropItemId": "P2",
       "turnosSinActuar": 0,
       "esMiniJefe": false,
       "parasitoPhase": 0,
@@ -1679,27 +1334,9 @@
     },
     {
       "idSala": "S3-C",
-      "tipoEnemigo": "GUARDIAN",
-      "fila": 1,
-      "col": 6,
-      "hp": 50,
-      "vivo": true,
-      "dropItemId": "P2",
-      "turnosSinActuar": 0,
-      "esMiniJefe": false,
-      "parasitoPhase": 0,
-      "parasitoAoeCooldown": 0,
-      "parasitoDevorarLuzUsado": false,
-      "parasitoPhaseTransitionPending": false,
-      "parasitoDevorarLuzPendiente": false,
-      "parasitoSkipNextActionByTransition": false,
-      "efectos": []
-    },
-    {
-      "idSala": "S3-C",
       "tipoEnemigo": "ARCHER",
-      "fila": 6,
-      "col": 6,
+      "fila": 1,
+      "col": 2,
       "hp": 28,
       "vivo": true,
       "dropItemId": "AC5",
@@ -1716,8 +1353,8 @@
     {
       "idSala": "S3-D",
       "tipoEnemigo": "DESTRUCTOR",
-      "fila": 5,
-      "col": 3,
+      "fila": 2,
+      "col": 6,
       "hp": 40,
       "vivo": true,
       "dropItemId": "P2",
@@ -1734,7 +1371,7 @@
     {
       "idSala": "S3-D",
       "tipoEnemigo": "DESTRUCTOR",
-      "fila": 5,
+      "fila": 4,
       "col": 7,
       "hp": 40,
       "vivo": true,
@@ -1752,8 +1389,8 @@
     {
       "idSala": "S3-D",
       "tipoEnemigo": "BERSERKER",
-      "fila": 2,
-      "col": 6,
+      "fila": 1,
+      "col": 7,
       "hp": 25,
       "vivo": true,
       "dropItemId": "A1",
@@ -1770,8 +1407,8 @@
     {
       "idSala": "S3-E",
       "tipoEnemigo": "WARRIOR",
-      "fila": 1,
-      "col": 3,
+      "fila": 6,
+      "col": 6,
       "hp": 35,
       "vivo": true,
       "dropItemId": "P1",
@@ -1788,11 +1425,11 @@
     {
       "idSala": "S3-E",
       "tipoEnemigo": "WARRIOR",
-      "fila": 2,
-      "col": 6,
+      "fila": 7,
+      "col": 3,
       "hp": 35,
       "vivo": true,
-      "dropItemId": "P1",
+      "dropItemId": "A1",
       "turnosSinActuar": 0,
       "esMiniJefe": false,
       "parasitoPhase": 0,
@@ -1824,11 +1461,11 @@
     {
       "idSala": "S3-E",
       "tipoEnemigo": "SNIPER",
-      "fila": 7,
+      "fila": 1,
       "col": 3,
       "hp": 28,
       "vivo": true,
-      "dropItemId": "P1",
+      "dropItemId": "AC5",
       "turnosSinActuar": 0,
       "esMiniJefe": false,
       "parasitoPhase": 0,
@@ -1861,8 +1498,8 @@
     {
       "idSala": "S3-F",
       "tipoEnemigo": "GUARDIAN",
-      "fila": 2,
-      "col": 3,
+      "fila": 8,
+      "col": 8,
       "hp": 50,
       "vivo": true,
       "dropItemId": "P2",
@@ -1880,7 +1517,7 @@
       "idSala": "S3-F",
       "tipoEnemigo": "GUARDIAN",
       "fila": 8,
-      "col": 8,
+      "col": 3,
       "hp": 50,
       "vivo": true,
       "dropItemId": "P2",
@@ -1897,8 +1534,8 @@
     {
       "idSala": "S4-A",
       "tipoEnemigo": "CONSTRUCTO",
-      "fila": 1,
-      "col": 2,
+      "fila": 5,
+      "col": 6,
       "hp": 45,
       "vivo": true,
       "dropItemId": "P5",
@@ -1915,8 +1552,8 @@
     {
       "idSala": "S4-A",
       "tipoEnemigo": "CONSTRUCTO",
-      "fila": 4,
-      "col": 5,
+      "fila": 1,
+      "col": 6,
       "hp": 45,
       "vivo": true,
       "dropItemId": "P5",
@@ -1933,8 +1570,8 @@
     {
       "idSala": "S4-A",
       "tipoEnemigo": "CONTROLLER",
-      "fila": 5,
-      "col": 6,
+      "fila": 2,
+      "col": 5,
       "hp": 35,
       "vivo": true,
       "dropItemId": "P2",
@@ -1951,11 +1588,11 @@
     {
       "idSala": "S4-B",
       "tipoEnemigo": "SNIPER",
-      "fila": 4,
-      "col": 6,
+      "fila": 5,
+      "col": 2,
       "hp": 28,
       "vivo": true,
-      "dropItemId": "AC5",
+      "dropItemId": "P1",
       "turnosSinActuar": 0,
       "esMiniJefe": false,
       "parasitoPhase": 0,
@@ -1987,11 +1624,11 @@
     {
       "idSala": "S4-B",
       "tipoEnemigo": "GUARDIAN",
-      "fila": 5,
-      "col": 2,
+      "fila": 4,
+      "col": 6,
       "hp": 50,
       "vivo": true,
-      "dropItemId": "P2",
+      "dropItemId": "A2",
       "turnosSinActuar": 0,
       "esMiniJefe": false,
       "parasitoPhase": 0,
@@ -2005,8 +1642,8 @@
     {
       "idSala": "S4-C",
       "tipoEnemigo": "DESTRUCTOR",
-      "fila": 2,
-      "col": 7,
+      "fila": 6,
+      "col": 2,
       "hp": 40,
       "vivo": true,
       "dropItemId": "P2",
@@ -2024,28 +1661,10 @@
       "idSala": "S4-C",
       "tipoEnemigo": "CONTROLLER",
       "fila": 6,
-      "col": 2,
+      "col": 7,
       "hp": 35,
       "vivo": true,
       "dropItemId": "AC6",
-      "turnosSinActuar": 0,
-      "esMiniJefe": false,
-      "parasitoPhase": 0,
-      "parasitoAoeCooldown": 0,
-      "parasitoDevorarLuzUsado": false,
-      "parasitoPhaseTransitionPending": false,
-      "parasitoDevorarLuzPendiente": false,
-      "parasitoSkipNextActionByTransition": false,
-      "efectos": []
-    },
-    {
-      "idSala": "S4-D",
-      "tipoEnemigo": "BERSERKER",
-      "fila": 1,
-      "col": 4,
-      "hp": 25,
-      "vivo": true,
-      "dropItemId": "A1",
       "turnosSinActuar": 0,
       "esMiniJefe": false,
       "parasitoPhase": 0,
@@ -2077,7 +1696,25 @@
     {
       "idSala": "S4-D",
       "tipoEnemigo": "BERSERKER",
-      "fila": 4,
+      "fila": 1,
+      "col": 2,
+      "hp": 25,
+      "vivo": true,
+      "dropItemId": "P1",
+      "turnosSinActuar": 0,
+      "esMiniJefe": false,
+      "parasitoPhase": 0,
+      "parasitoAoeCooldown": 0,
+      "parasitoDevorarLuzUsado": false,
+      "parasitoPhaseTransitionPending": false,
+      "parasitoDevorarLuzPendiente": false,
+      "parasitoSkipNextActionByTransition": false,
+      "efectos": []
+    },
+    {
+      "idSala": "S4-D",
+      "tipoEnemigo": "BERSERKER",
+      "fila": 1,
       "col": 4,
       "hp": 25,
       "vivo": true,
@@ -2114,7 +1751,7 @@
     {
       "idSala": "S4-E",
       "tipoEnemigo": "CONSTRUCTO",
-      "fila": 8,
+      "fila": 2,
       "col": 7,
       "hp": 45,
       "vivo": true,
@@ -2132,7 +1769,7 @@
     {
       "idSala": "S4-E",
       "tipoEnemigo": "CONSTRUCTO",
-      "fila": 2,
+      "fila": 8,
       "col": 7,
       "hp": 45,
       "vivo": true,
@@ -2151,10 +1788,10 @@
       "idSala": "S5-A",
       "tipoEnemigo": "SOMBRA_ABSORBIDA",
       "fila": 1,
-      "col": 2,
+      "col": 5,
       "hp": 45,
       "vivo": true,
-      "dropItemId": "P4",
+      "dropItemId": "P5",
       "turnosSinActuar": 0,
       "esMiniJefe": false,
       "parasitoPhase": 0,
@@ -2186,11 +1823,29 @@
     {
       "idSala": "S5-A",
       "tipoEnemigo": "ECO_DE_MAGIA",
-      "fila": 5,
+      "fila": 1,
       "col": 2,
       "hp": 35,
       "vivo": true,
-      "dropItemId": "P4",
+      "dropItemId": "AC7",
+      "turnosSinActuar": 0,
+      "esMiniJefe": false,
+      "parasitoPhase": 0,
+      "parasitoAoeCooldown": 0,
+      "parasitoDevorarLuzUsado": false,
+      "parasitoPhaseTransitionPending": false,
+      "parasitoDevorarLuzPendiente": false,
+      "parasitoSkipNextActionByTransition": false,
+      "efectos": []
+    },
+    {
+      "idSala": "S5-B",
+      "tipoEnemigo": "SOMBRA_ABSORBIDA",
+      "fila": 3,
+      "col": 6,
+      "hp": 45,
+      "vivo": true,
+      "dropItemId": "P5",
       "turnosSinActuar": 0,
       "esMiniJefe": false,
       "parasitoPhase": 0,
@@ -2239,30 +1894,12 @@
     },
     {
       "idSala": "S5-B",
-      "tipoEnemigo": "SOMBRA_ABSORBIDA",
+      "tipoEnemigo": "ECO_DE_MAGIA",
       "fila": 3,
       "col": 2,
-      "hp": 45,
-      "vivo": true,
-      "dropItemId": "P4",
-      "turnosSinActuar": 0,
-      "esMiniJefe": false,
-      "parasitoPhase": 0,
-      "parasitoAoeCooldown": 0,
-      "parasitoDevorarLuzUsado": false,
-      "parasitoPhaseTransitionPending": false,
-      "parasitoDevorarLuzPendiente": false,
-      "parasitoSkipNextActionByTransition": false,
-      "efectos": []
-    },
-    {
-      "idSala": "S5-B",
-      "tipoEnemigo": "ECO_DE_MAGIA",
-      "fila": 1,
-      "col": 6,
       "hp": 35,
       "vivo": true,
-      "dropItemId": "P4",
+      "dropItemId": "AC7",
       "turnosSinActuar": 0,
       "esMiniJefe": false,
       "parasitoPhase": 0,
@@ -2292,15 +1929,4530 @@
       "efectos": []
     }
   ],
-  "pasadizosActivos": [],
+  "pasadizosActivos": [
+    "PUZZLE_S1_C",
+    "S1_SECRET",
+    "S2_SECRET"
+  ],
   "logEventos": [
     {
       "turno": 0,
       "tipo": "ROOM",
-      "actor": "DORATH",
+      "actor": "SYRA",
       "salaId": "S1-A",
-      "mensaje": "DORATH entra en S1-A - Aldea Abandonada.",
+      "mensaje": "SYRA entra en S1-A - Aldea Abandonada.",
       "detalle": "salaId\u003dS1-A"
+    },
+    {
+      "turno": 0,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA decide no moverse en S1-A."
+    },
+    {
+      "turno": 0,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 0,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 0,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA inflige 15 daño a ARCHER. HP enemigo: 13/28.",
+      "detalle": "objetivo\u003dARCHER;danio\u003d15"
+    },
+    {
+      "turno": 0,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 1,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S1-A",
+      "mensaje": "WARRIOR se mueve de (1,5) a (1,3).",
+      "detalle": "origen\u003d1,5;destino\u003d1,3"
+    },
+    {
+      "turno": 1,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S1-A",
+      "mensaje": "WARRIOR se mueve de (4,6) a (3,5).",
+      "detalle": "origen\u003d4,6;destino\u003d3,5"
+    },
+    {
+      "turno": 1,
+      "tipo": "ENEMY_TURN",
+      "actor": "ARCHER",
+      "salaId": "S1-A",
+      "mensaje": "ARCHER ataca a SYRA e inflige 6 daño. HP jugador: 69/75.",
+      "detalle": "danio\u003d6"
+    },
+    {
+      "turno": 1,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-A",
+      "mensaje": "Turno enemigo resuelto en S1-A.",
+      "detalle": "enemigosIniciales\u003d3"
+    },
+    {
+      "turno": 1,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA se mueve de (3,1) a (4,1) en S1-A.",
+      "detalle": "origen\u003d3,1;destino\u003d4,1"
+    },
+    {
+      "turno": 1,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 1,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 1,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA inflige 26 daño a ARCHER. HP enemigo: 0/28.",
+      "detalle": "objetivo\u003dARCHER;danio\u003d26"
+    },
+    {
+      "turno": 1,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "ARCHER muere."
+    },
+    {
+      "turno": 1,
+      "tipo": "PICKUP",
+      "actor": "ARCHER",
+      "salaId": "S1-A",
+      "mensaje": "ARCHER deja caer AC5.",
+      "detalle": "dropItemId\u003dAC5"
+    },
+    {
+      "turno": 1,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 2,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S1-A",
+      "mensaje": "WARRIOR se mueve de (1,3) a (3,3).",
+      "detalle": "origen\u003d1,3;destino\u003d3,3"
+    },
+    {
+      "turno": 2,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S1-A",
+      "mensaje": "WARRIOR se mueve de (3,5) a (5,5).",
+      "detalle": "origen\u003d3,5;destino\u003d5,5"
+    },
+    {
+      "turno": 2,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-A",
+      "mensaje": "Turno enemigo resuelto en S1-A.",
+      "detalle": "enemigosIniciales\u003d2"
+    },
+    {
+      "turno": 2,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA recoge AC5 - Amuleto de Fuerza.",
+      "detalle": "itemId\u003dAC5"
+    },
+    {
+      "turno": 2,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA se mueve de (4,1) a (5,2) en S1-A.",
+      "detalle": "origen\u003d4,1;destino\u003d5,2"
+    },
+    {
+      "turno": 2,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 2,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 2,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA inflige 13 daño a WARRIOR. HP enemigo: 22/35.",
+      "detalle": "objetivo\u003dWARRIOR;danio\u003d13"
+    },
+    {
+      "turno": 2,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 3,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S1-A",
+      "mensaje": "WARRIOR se mueve de (3,3) a (4,2).",
+      "detalle": "origen\u003d3,3;destino\u003d4,2"
+    },
+    {
+      "turno": 3,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S1-A",
+      "mensaje": "WARRIOR se mueve de (5,5) a (5,3).",
+      "detalle": "origen\u003d5,5;destino\u003d5,3"
+    },
+    {
+      "turno": 3,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-A",
+      "mensaje": "Turno enemigo resuelto en S1-A.",
+      "detalle": "enemigosIniciales\u003d2"
+    },
+    {
+      "turno": 3,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA se mueve de (5,2) a (3,1) en S1-A.",
+      "detalle": "origen\u003d5,2;destino\u003d3,1"
+    },
+    {
+      "turno": 3,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 3,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 3,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA inflige 21 daño a WARRIOR. HP enemigo: 1/35.",
+      "detalle": "objetivo\u003dWARRIOR;danio\u003d21"
+    },
+    {
+      "turno": 3,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 4,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S1-A",
+      "mensaje": "WARRIOR se mueve de (4,2) a (4,1).",
+      "detalle": "origen\u003d4,2;destino\u003d4,1"
+    },
+    {
+      "turno": 4,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S1-A",
+      "mensaje": "WARRIOR se mueve de (5,3) a (3,3).",
+      "detalle": "origen\u003d5,3;destino\u003d3,3"
+    },
+    {
+      "turno": 4,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-A",
+      "mensaje": "Turno enemigo resuelto en S1-A.",
+      "detalle": "enemigosIniciales\u003d2"
+    },
+    {
+      "turno": 4,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA se mueve de (3,1) a (5,2) en S1-A.",
+      "detalle": "origen\u003d3,1;destino\u003d5,2"
+    },
+    {
+      "turno": 4,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 4,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 4,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA inflige 22 daño a WARRIOR. HP enemigo: 0/35.",
+      "detalle": "objetivo\u003dWARRIOR;danio\u003d22"
+    },
+    {
+      "turno": 4,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "WARRIOR muere."
+    },
+    {
+      "turno": 4,
+      "tipo": "PICKUP",
+      "actor": "WARRIOR",
+      "salaId": "S1-A",
+      "mensaje": "WARRIOR deja caer P1.",
+      "detalle": "dropItemId\u003dP1"
+    },
+    {
+      "turno": 4,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 5,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S1-A",
+      "mensaje": "WARRIOR se mueve de (3,3) a (4,2).",
+      "detalle": "origen\u003d3,3;destino\u003d4,2"
+    },
+    {
+      "turno": 5,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-A",
+      "mensaje": "Turno enemigo resuelto en S1-A.",
+      "detalle": "enemigosIniciales\u003d1"
+    },
+    {
+      "turno": 5,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA se mueve de (5,2) a (3,1) en S1-A.",
+      "detalle": "origen\u003d5,2;destino\u003d3,1"
+    },
+    {
+      "turno": 5,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 5,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 5,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA inflige 6 daño a WARRIOR. HP enemigo: 29/35.",
+      "detalle": "objetivo\u003dWARRIOR;danio\u003d6"
+    },
+    {
+      "turno": 5,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 6,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S1-A",
+      "mensaje": "WARRIOR se mueve de (4,2) a (4,1).",
+      "detalle": "origen\u003d4,2;destino\u003d4,1"
+    },
+    {
+      "turno": 6,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-A",
+      "mensaje": "Turno enemigo resuelto en S1-A.",
+      "detalle": "enemigosIniciales\u003d1"
+    },
+    {
+      "turno": 6,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA se mueve de (3,1) a (5,2) en S1-A.",
+      "detalle": "origen\u003d3,1;destino\u003d5,2"
+    },
+    {
+      "turno": 6,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 6,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 6,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA inflige 12 daño a WARRIOR. HP enemigo: 17/35.",
+      "detalle": "objetivo\u003dWARRIOR;danio\u003d12"
+    },
+    {
+      "turno": 6,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 7,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S1-A",
+      "mensaje": "WARRIOR se mueve de (4,1) a (4,2).",
+      "detalle": "origen\u003d4,1;destino\u003d4,2"
+    },
+    {
+      "turno": 7,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-A",
+      "mensaje": "Turno enemigo resuelto en S1-A.",
+      "detalle": "enemigosIniciales\u003d1"
+    },
+    {
+      "turno": 7,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA se mueve de (5,2) a (3,3) en S1-A.",
+      "detalle": "origen\u003d5,2;destino\u003d3,3"
+    },
+    {
+      "turno": 7,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 7,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 7,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA inflige 17 daño a WARRIOR. HP enemigo: 0/35.",
+      "detalle": "objetivo\u003dWARRIOR;danio\u003d17"
+    },
+    {
+      "turno": 7,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "WARRIOR muere."
+    },
+    {
+      "turno": 7,
+      "tipo": "PICKUP",
+      "actor": "WARRIOR",
+      "salaId": "S1-A",
+      "mensaje": "WARRIOR deja caer A1.",
+      "detalle": "dropItemId\u003dA1"
+    },
+    {
+      "turno": 7,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 8,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-A",
+      "mensaje": "Turno enemigo resuelto en S1-A.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 8,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA recoge P1 - Poción Pequeña.",
+      "detalle": "itemId\u003dP1"
+    },
+    {
+      "turno": 8,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA se mueve de (3,3) a (4,1) en S1-A.",
+      "detalle": "origen\u003d3,3;destino\u003d4,1"
+    },
+    {
+      "turno": 8,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 9,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-A",
+      "mensaje": "Turno enemigo resuelto en S1-A.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 9,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA recoge A1 - Escudo de Madera.",
+      "detalle": "itemId\u003dA1"
+    },
+    {
+      "turno": 9,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA se mueve de (4,1) a (4,2) en S1-A.",
+      "detalle": "origen\u003d4,1;destino\u003d4,2"
+    },
+    {
+      "turno": 9,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 10,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-A",
+      "mensaje": "Turno enemigo resuelto en S1-A.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 10,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA se mueve de (4,2) a (3,4) en S1-A.",
+      "detalle": "origen\u003d4,2;destino\u003d3,4"
+    },
+    {
+      "turno": 10,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 11,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-A",
+      "mensaje": "Turno enemigo resuelto en S1-A.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 11,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA se mueve de (3,4) a (3,5) en S1-A.",
+      "detalle": "origen\u003d3,4;destino\u003d3,5"
+    },
+    {
+      "turno": 11,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 12,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-A",
+      "mensaje": "Turno enemigo resuelto en S1-A.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 12,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-A",
+      "mensaje": "SYRA se mueve de (3,5) a (3,6) en S1-A.",
+      "detalle": "origen\u003d3,5;destino\u003d3,6"
+    },
+    {
+      "turno": 12,
+      "tipo": "ROOM",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA entra en S1-B - El Camino Roto.",
+      "detalle": "salaId\u003dS1-B"
+    },
+    {
+      "turno": 12,
+      "tipo": "ACCESS",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA usa un acceso hacia S1-B.",
+      "detalle": "destino\u003dS1-B"
+    },
+    {
+      "turno": 12,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA se mueve de (2,1) a (1,1) en S1-B.",
+      "detalle": "origen\u003d2,1;destino\u003d1,1"
+    },
+    {
+      "turno": 12,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 12,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 12,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA inflige 22 daño a WARRIOR. HP enemigo: 13/35.",
+      "detalle": "objetivo\u003dWARRIOR;danio\u003d22"
+    },
+    {
+      "turno": 12,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 13,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S1-B",
+      "mensaje": "WARRIOR se mueve de (1,4) a (1,2).",
+      "detalle": "origen\u003d1,4;destino\u003d1,2"
+    },
+    {
+      "turno": 13,
+      "tipo": "ENEMY_TURN",
+      "actor": "ARCHER",
+      "salaId": "S1-B",
+      "mensaje": "ARCHER se mueve de (3,4) a (3,3).",
+      "detalle": "origen\u003d3,4;destino\u003d3,3"
+    },
+    {
+      "turno": 13,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-B",
+      "mensaje": "Turno enemigo resuelto en S1-B.",
+      "detalle": "enemigosIniciales\u003d2"
+    },
+    {
+      "turno": 13,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA se mueve de (1,1) a (3,1) en S1-B.",
+      "detalle": "origen\u003d1,1;destino\u003d3,1"
+    },
+    {
+      "turno": 13,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 13,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA usa AC5 - Amuleto de Fuerza.",
+      "detalle": "itemId\u003dAC5"
+    },
+    {
+      "turno": 13,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA inflige 19 daño a WARRIOR. HP enemigo: 0/35.",
+      "detalle": "objetivo\u003dWARRIOR;danio\u003d19"
+    },
+    {
+      "turno": 13,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "WARRIOR muere."
+    },
+    {
+      "turno": 13,
+      "tipo": "PICKUP",
+      "actor": "WARRIOR",
+      "salaId": "S1-B",
+      "mensaje": "WARRIOR deja caer P1.",
+      "detalle": "dropItemId\u003dP1"
+    },
+    {
+      "turno": 13,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 14,
+      "tipo": "ENEMY_TURN",
+      "actor": "ARCHER",
+      "salaId": "S1-B",
+      "mensaje": "ARCHER ataca a SYRA e inflige 7 daño. HP jugador: 62/75.",
+      "detalle": "danio\u003d7"
+    },
+    {
+      "turno": 14,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-B",
+      "mensaje": "Turno enemigo resuelto en S1-B.",
+      "detalle": "enemigosIniciales\u003d1"
+    },
+    {
+      "turno": 14,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA recoge P1 - Poción Pequeña.",
+      "detalle": "itemId\u003dP1"
+    },
+    {
+      "turno": 14,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA se mueve de (3,1) a (1,2) en S1-B.",
+      "detalle": "origen\u003d3,1;destino\u003d1,2"
+    },
+    {
+      "turno": 14,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 14,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 14,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA inflige 10 daño a ARCHER. HP enemigo: 18/28.",
+      "detalle": "objetivo\u003dARCHER;danio\u003d10"
+    },
+    {
+      "turno": 14,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 15,
+      "tipo": "ENEMY_TURN",
+      "actor": "ARCHER",
+      "salaId": "S1-B",
+      "mensaje": "ARCHER ataca a SYRA e inflige 9 daño. HP jugador: 53/75.",
+      "detalle": "danio\u003d9"
+    },
+    {
+      "turno": 15,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-B",
+      "mensaje": "Turno enemigo resuelto en S1-B.",
+      "detalle": "enemigosIniciales\u003d1"
+    },
+    {
+      "turno": 15,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA decide no moverse en S1-B."
+    },
+    {
+      "turno": 15,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 15,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA usa A1 - Escudo de Madera.",
+      "detalle": "itemId\u003dA1"
+    },
+    {
+      "turno": 15,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA inflige 33 daño a ARCHER. HP enemigo: 0/28.",
+      "detalle": "objetivo\u003dARCHER;danio\u003d33"
+    },
+    {
+      "turno": 15,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "ARCHER muere."
+    },
+    {
+      "turno": 15,
+      "tipo": "PICKUP",
+      "actor": "ARCHER",
+      "salaId": "S1-B",
+      "mensaje": "ARCHER deja caer AC5.",
+      "detalle": "dropItemId\u003dAC5"
+    },
+    {
+      "turno": 15,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 16,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-B",
+      "mensaje": "Turno enemigo resuelto en S1-B.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 16,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA recoge AC5 - Amuleto de Fuerza.",
+      "detalle": "itemId\u003dAC5"
+    },
+    {
+      "turno": 16,
+      "tipo": "ACCESS",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "Una corriente de aire revela un pasadizo oculto: S1_SECRET.",
+      "detalle": "target\u003dS1_SECRET;trigger\u003dS1_SECRET"
+    },
+    {
+      "turno": 16,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA se mueve de (1,2) a (3,3) en S1-B.",
+      "detalle": "origen\u003d1,2;destino\u003d3,3"
+    },
+    {
+      "turno": 16,
+      "tipo": "ROOM",
+      "actor": "SYRA",
+      "salaId": "S1-SEC",
+      "mensaje": "SYRA entra en S1-SEC - El Molino.",
+      "detalle": "salaId\u003dS1-SEC"
+    },
+    {
+      "turno": 16,
+      "tipo": "ACCESS",
+      "actor": "SYRA",
+      "salaId": "S1-SEC",
+      "mensaje": "SYRA usa un acceso hacia S1-SEC.",
+      "detalle": "destino\u003dS1-SEC"
+    },
+    {
+      "turno": 16,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-SEC",
+      "mensaje": "SYRA decide no moverse en S1-SEC."
+    },
+    {
+      "turno": 16,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-SEC",
+      "mensaje": "SYRA abre Cofre del Molino; entre madera vieja y polvo antiguo encuentra Elixir de Combate [P5].",
+      "detalle": "containerId\u003dCH-S1-SEC;items\u003dElixir de Combate [P5]"
+    },
+    {
+      "turno": 16,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-SEC",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 17,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-SEC",
+      "mensaje": "Turno enemigo resuelto en S1-SEC.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 17,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-SEC",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 18,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-SEC",
+      "mensaje": "Turno enemigo resuelto en S1-SEC.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 18,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-SEC",
+      "mensaje": "SYRA decide no moverse en S1-SEC."
+    },
+    {
+      "turno": 18,
+      "tipo": "ROOM",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA entra en S1-B - El Camino Roto.",
+      "detalle": "salaId\u003dS1-B"
+    },
+    {
+      "turno": 18,
+      "tipo": "ACCESS",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA usa un acceso hacia S1-B.",
+      "detalle": "destino\u003dS1-B"
+    },
+    {
+      "turno": 18,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-B",
+      "mensaje": "SYRA se mueve de (3,3) a (2,4) en S1-B.",
+      "detalle": "origen\u003d3,3;destino\u003d2,4"
+    },
+    {
+      "turno": 18,
+      "tipo": "ROOM",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA entra en S1-C - El Puente Gris.",
+      "detalle": "salaId\u003dS1-C"
+    },
+    {
+      "turno": 18,
+      "tipo": "ACCESS",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA usa un acceso hacia S1-C.",
+      "detalle": "destino\u003dS1-C"
+    },
+    {
+      "turno": 18,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA se mueve de (4,1) a (5,1) en S1-C.",
+      "detalle": "origen\u003d4,1;destino\u003d5,1"
+    },
+    {
+      "turno": 18,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 18,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 18,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA inflige 10 daño a CONTROLLER. HP enemigo: 25/35.",
+      "detalle": "objetivo\u003dCONTROLLER;danio\u003d10"
+    },
+    {
+      "turno": 18,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 19,
+      "tipo": "STATE",
+      "actor": "CONTROLLER",
+      "salaId": "S1-C",
+      "mensaje": "CONTROLLER aplica BLIND a SYRA.",
+      "detalle": "efecto\u003dBLIND"
+    },
+    {
+      "turno": 19,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-C",
+      "mensaje": "Turno enemigo resuelto en S1-C.",
+      "detalle": "enemigosIniciales\u003d1"
+    },
+    {
+      "turno": 19,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA decide no moverse en S1-C."
+    },
+    {
+      "turno": 19,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 19,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 19,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA inflige 10 daño a CONTROLLER. HP enemigo: 15/35.",
+      "detalle": "objetivo\u003dCONTROLLER;danio\u003d10"
+    },
+    {
+      "turno": 19,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 20,
+      "tipo": "STATE",
+      "actor": "CONTROLLER",
+      "salaId": "S1-C",
+      "mensaje": "CONTROLLER aplica CURSE a SYRA.",
+      "detalle": "efecto\u003dCURSE"
+    },
+    {
+      "turno": 20,
+      "tipo": "STATE",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "BLIND expira en SYRA.",
+      "detalle": "efecto\u003dBLIND"
+    },
+    {
+      "turno": 20,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-C",
+      "mensaje": "Turno enemigo resuelto en S1-C.",
+      "detalle": "enemigosIniciales\u003d1"
+    },
+    {
+      "turno": 20,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA decide no moverse en S1-C."
+    },
+    {
+      "turno": 20,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 20,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 20,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA inflige 28 daño a CONTROLLER. HP enemigo: 0/35.",
+      "detalle": "objetivo\u003dCONTROLLER;danio\u003d28"
+    },
+    {
+      "turno": 20,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "CONTROLLER muere."
+    },
+    {
+      "turno": 20,
+      "tipo": "PICKUP",
+      "actor": "CONTROLLER",
+      "salaId": "S1-C",
+      "mensaje": "CONTROLLER deja caer P2.",
+      "detalle": "dropItemId\u003dP2"
+    },
+    {
+      "turno": 20,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 21,
+      "tipo": "STATE",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "CURSE expira en SYRA.",
+      "detalle": "efecto\u003dCURSE"
+    },
+    {
+      "turno": 21,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-C",
+      "mensaje": "Turno enemigo resuelto en S1-C.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 21,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA recoge P2 - Poción Mediana.",
+      "detalle": "itemId\u003dP2"
+    },
+    {
+      "turno": 21,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA se mueve de (5,1) a (6,2) en S1-C.",
+      "detalle": "origen\u003d5,1;destino\u003d6,2"
+    },
+    {
+      "turno": 21,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 22,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-C",
+      "mensaje": "Turno enemigo resuelto en S1-C.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 22,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA se mueve de (6,2) a (4,2) en S1-C.",
+      "detalle": "origen\u003d6,2;destino\u003d4,2"
+    },
+    {
+      "turno": 22,
+      "tipo": "PUZZLE",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA activa una palanca en S1-C."
+    },
+    {
+      "turno": 22,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 23,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-C",
+      "mensaje": "Turno enemigo resuelto en S1-C.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 23,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA se mueve de (4,2) a (4,5) en S1-C.",
+      "detalle": "origen\u003d4,2;destino\u003d4,5"
+    },
+    {
+      "turno": 23,
+      "tipo": "PUZZLE",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA activa una palanca en S1-C."
+    },
+    {
+      "turno": 23,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 24,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-C",
+      "mensaje": "Turno enemigo resuelto en S1-C.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 24,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA se mueve de (4,5) a (4,7) en S1-C.",
+      "detalle": "origen\u003d4,5;destino\u003d4,7"
+    },
+    {
+      "turno": 24,
+      "tipo": "PUZZLE",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA activa una palanca en S1-C."
+    },
+    {
+      "turno": 24,
+      "tipo": "PUZZLE",
+      "actor": "PUZZLE",
+      "salaId": "S1-C",
+      "mensaje": "Combinación incorrecta. El puzzle se reinicia. SYRA recibe 5 daño.",
+      "detalle": "danio\u003d5"
+    },
+    {
+      "turno": 24,
+      "tipo": "PUZZLE",
+      "actor": "PUZZLE",
+      "salaId": "S1-C",
+      "mensaje": "Pista: empieza por 1.",
+      "detalle": "pista\u003d1"
+    },
+    {
+      "turno": 24,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 25,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-C",
+      "mensaje": "Turno enemigo resuelto en S1-C.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 25,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA se mueve de (4,7) a (4,4) en S1-C.",
+      "detalle": "origen\u003d4,7;destino\u003d4,4"
+    },
+    {
+      "turno": 25,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 26,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-C",
+      "mensaje": "Turno enemigo resuelto en S1-C.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 26,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA se mueve de (4,4) a (4,2) en S1-C.",
+      "detalle": "origen\u003d4,4;destino\u003d4,2"
+    },
+    {
+      "turno": 26,
+      "tipo": "PUZZLE",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA activa una palanca en S1-C."
+    },
+    {
+      "turno": 26,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 27,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-C",
+      "mensaje": "Turno enemigo resuelto en S1-C.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 27,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA se mueve de (4,2) a (4,5) en S1-C.",
+      "detalle": "origen\u003d4,2;destino\u003d4,5"
+    },
+    {
+      "turno": 27,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 28,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-C",
+      "mensaje": "Turno enemigo resuelto en S1-C.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 28,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA se mueve de (4,5) a (4,7) en S1-C.",
+      "detalle": "origen\u003d4,5;destino\u003d4,7"
+    },
+    {
+      "turno": 28,
+      "tipo": "PUZZLE",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA activa una palanca en S1-C."
+    },
+    {
+      "turno": 28,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 29,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-C",
+      "mensaje": "Turno enemigo resuelto en S1-C.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 29,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA se mueve de (4,7) a (4,5) en S1-C.",
+      "detalle": "origen\u003d4,7;destino\u003d4,5"
+    },
+    {
+      "turno": 29,
+      "tipo": "PUZZLE",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA activa una palanca en S1-C."
+    },
+    {
+      "turno": 29,
+      "tipo": "PUZZLE",
+      "actor": "PUZZLE",
+      "salaId": "S1-C",
+      "mensaje": "Combinación correcta. El mecanismo se ha activado.",
+      "detalle": "target\u003dPUZZLE_S1_C"
+    },
+    {
+      "turno": 29,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 30,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-C",
+      "mensaje": "Turno enemigo resuelto en S1-C.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 30,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-C",
+      "mensaje": "SYRA se mueve de (4,5) a (4,8) en S1-C.",
+      "detalle": "origen\u003d4,5;destino\u003d4,8"
+    },
+    {
+      "turno": 30,
+      "tipo": "ROOM",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA entra en S1-D - Ayuntamiento Corrupto.",
+      "detalle": "salaId\u003dS1-D"
+    },
+    {
+      "turno": 30,
+      "tipo": "ACCESS",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA usa un acceso hacia S1-D.",
+      "detalle": "destino\u003dS1-D"
+    },
+    {
+      "turno": 30,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA se mueve de (4,1) a (5,2) en S1-D.",
+      "detalle": "origen\u003d4,1;destino\u003d5,2"
+    },
+    {
+      "turno": 30,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 30,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 30,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA inflige 19 daño a WARRIOR. HP enemigo: 16/35.",
+      "detalle": "objetivo\u003dWARRIOR;danio\u003d19"
+    },
+    {
+      "turno": 30,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 31,
+      "tipo": "ENEMY_TURN",
+      "actor": "Alcalde Corrupto",
+      "salaId": "S1-D",
+      "mensaje": "Alcalde Corrupto se mueve de (4,4) a (4,2).",
+      "detalle": "origen\u003d4,4;destino\u003d4,2"
+    },
+    {
+      "turno": 31,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S1-D",
+      "mensaje": "WARRIOR se mueve de (6,6) a (5,5).",
+      "detalle": "origen\u003d6,6;destino\u003d5,5"
+    },
+    {
+      "turno": 31,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S1-D",
+      "mensaje": "WARRIOR se mueve de (2,2) a (3,1).",
+      "detalle": "origen\u003d2,2;destino\u003d3,1"
+    },
+    {
+      "turno": 31,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-D",
+      "mensaje": "Turno enemigo resuelto en S1-D.",
+      "detalle": "enemigosIniciales\u003d3"
+    },
+    {
+      "turno": 31,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA se mueve de (5,2) a (3,4) en S1-D.",
+      "detalle": "origen\u003d5,2;destino\u003d3,4"
+    },
+    {
+      "turno": 31,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 31,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 31,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA inflige 13 daño a WARRIOR. HP enemigo: 3/35.",
+      "detalle": "objetivo\u003dWARRIOR;danio\u003d13"
+    },
+    {
+      "turno": 31,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 32,
+      "tipo": "ENEMY_TURN",
+      "actor": "Alcalde Corrupto",
+      "salaId": "S1-D",
+      "mensaje": "Alcalde Corrupto se mueve de (4,2) a (4,4).",
+      "detalle": "origen\u003d4,2;destino\u003d4,4"
+    },
+    {
+      "turno": 32,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S1-D",
+      "mensaje": "WARRIOR se mueve de (5,5) a (3,5).",
+      "detalle": "origen\u003d5,5;destino\u003d3,5"
+    },
+    {
+      "turno": 32,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S1-D",
+      "mensaje": "WARRIOR se mueve de (3,1) a (3,3).",
+      "detalle": "origen\u003d3,1;destino\u003d3,3"
+    },
+    {
+      "turno": 32,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-D",
+      "mensaje": "Turno enemigo resuelto en S1-D.",
+      "detalle": "enemigosIniciales\u003d3"
+    },
+    {
+      "turno": 32,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA decide no moverse en S1-D."
+    },
+    {
+      "turno": 32,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 32,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 32,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA inflige 10 daño a WARRIOR. HP enemigo: 0/35.",
+      "detalle": "objetivo\u003dWARRIOR;danio\u003d10"
+    },
+    {
+      "turno": 32,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "WARRIOR muere."
+    },
+    {
+      "turno": 32,
+      "tipo": "PICKUP",
+      "actor": "WARRIOR",
+      "salaId": "S1-D",
+      "mensaje": "WARRIOR deja caer A1.",
+      "detalle": "dropItemId\u003dA1"
+    },
+    {
+      "turno": 32,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 33,
+      "tipo": "ENEMY_TURN",
+      "actor": "Alcalde Corrupto",
+      "salaId": "S1-D",
+      "mensaje": "Alcalde Corrupto ataca a SYRA e inflige 13 daño. HP jugador: 35/75.",
+      "detalle": "danio\u003d13"
+    },
+    {
+      "turno": 33,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S1-D",
+      "mensaje": "WARRIOR ataca a SYRA e inflige 4 daño. HP jugador: 31/75.",
+      "detalle": "danio\u003d4"
+    },
+    {
+      "turno": 33,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-D",
+      "mensaje": "Turno enemigo resuelto en S1-D.",
+      "detalle": "enemigosIniciales\u003d2"
+    },
+    {
+      "turno": 33,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA se mueve de (3,4) a (4,1) en S1-D.",
+      "detalle": "origen\u003d3,4;destino\u003d4,1"
+    },
+    {
+      "turno": 33,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 33,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA usa P1 - Poción Pequeña.",
+      "detalle": "itemId\u003dP1"
+    },
+    {
+      "turno": 33,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA inflige 18 daño a WARRIOR. HP enemigo: 37/55.",
+      "detalle": "objetivo\u003dWARRIOR;danio\u003d18"
+    },
+    {
+      "turno": 33,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 34,
+      "tipo": "ENEMY_TURN",
+      "actor": "Alcalde Corrupto",
+      "salaId": "S1-D",
+      "mensaje": "Alcalde Corrupto usa Estocada Corrupta contra SYRA e inflige 35 daño. HP jugador: 21/75.",
+      "detalle": "habilidad\u003dEstocada Corrupta;danio\u003d35"
+    },
+    {
+      "turno": 34,
+      "tipo": "ENEMY_TURN",
+      "actor": "Alcalde Corrupto",
+      "salaId": "S1-D",
+      "mensaje": "Alcalde Corrupto se mueve de (4,4) a (4,2).",
+      "detalle": "origen\u003d4,4;destino\u003d4,2"
+    },
+    {
+      "turno": 34,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S1-D",
+      "mensaje": "WARRIOR se mueve de (3,5) a (3,3).",
+      "detalle": "origen\u003d3,5;destino\u003d3,3"
+    },
+    {
+      "turno": 34,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-D",
+      "mensaje": "Turno enemigo resuelto en S1-D.",
+      "detalle": "enemigosIniciales\u003d2"
+    },
+    {
+      "turno": 34,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA se mueve de (4,1) a (6,3) en S1-D.",
+      "detalle": "origen\u003d4,1;destino\u003d6,3"
+    },
+    {
+      "turno": 34,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 34,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 34,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA inflige 27 daño a WARRIOR. HP enemigo: 10/55.",
+      "detalle": "objetivo\u003dWARRIOR;danio\u003d27"
+    },
+    {
+      "turno": 34,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 35,
+      "tipo": "ENEMY_TURN",
+      "actor": "Alcalde Corrupto",
+      "salaId": "S1-D",
+      "mensaje": "Alcalde Corrupto se mueve de (4,2) a (5,3).",
+      "detalle": "origen\u003d4,2;destino\u003d5,3"
+    },
+    {
+      "turno": 35,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S1-D",
+      "mensaje": "WARRIOR se mueve de (3,3) a (4,2).",
+      "detalle": "origen\u003d3,3;destino\u003d4,2"
+    },
+    {
+      "turno": 35,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-D",
+      "mensaje": "Turno enemigo resuelto en S1-D.",
+      "detalle": "enemigosIniciales\u003d2"
+    },
+    {
+      "turno": 35,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA se mueve de (6,3) a (6,2) en S1-D.",
+      "detalle": "origen\u003d6,3;destino\u003d6,2"
+    },
+    {
+      "turno": 35,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 35,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 35,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA inflige 12 daño a WARRIOR. HP enemigo: 0/55.",
+      "detalle": "objetivo\u003dWARRIOR;danio\u003d12"
+    },
+    {
+      "turno": 35,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "WARRIOR muere."
+    },
+    {
+      "turno": 35,
+      "tipo": "PICKUP",
+      "actor": "WARRIOR",
+      "salaId": "S1-D",
+      "mensaje": "WARRIOR deja caer AC1.",
+      "detalle": "dropItemId\u003dAC1"
+    },
+    {
+      "turno": 35,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 36,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S1-D",
+      "mensaje": "WARRIOR se mueve de (4,2) a (5,2).",
+      "detalle": "origen\u003d4,2;destino\u003d5,2"
+    },
+    {
+      "turno": 36,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-D",
+      "mensaje": "Turno enemigo resuelto en S1-D.",
+      "detalle": "enemigosIniciales\u003d1"
+    },
+    {
+      "turno": 36,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA se mueve de (6,2) a (4,3) en S1-D.",
+      "detalle": "origen\u003d6,2;destino\u003d4,3"
+    },
+    {
+      "turno": 36,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 36,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 36,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA inflige 9 daño a WARRIOR. HP enemigo: 26/35.",
+      "detalle": "objetivo\u003dWARRIOR;danio\u003d9"
+    },
+    {
+      "turno": 36,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 37,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S1-D",
+      "mensaje": "WARRIOR se mueve de (5,2) a (5,3).",
+      "detalle": "origen\u003d5,2;destino\u003d5,3"
+    },
+    {
+      "turno": 37,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-D",
+      "mensaje": "Turno enemigo resuelto en S1-D.",
+      "detalle": "enemigosIniciales\u003d1"
+    },
+    {
+      "turno": 37,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA se mueve de (4,3) a (4,2) en S1-D.",
+      "detalle": "origen\u003d4,3;destino\u003d4,2"
+    },
+    {
+      "turno": 37,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 37,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 37,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA inflige 29 daño a WARRIOR. HP enemigo: 0/35.",
+      "detalle": "objetivo\u003dWARRIOR;danio\u003d29"
+    },
+    {
+      "turno": 37,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "WARRIOR muere."
+    },
+    {
+      "turno": 37,
+      "tipo": "PICKUP",
+      "actor": "WARRIOR",
+      "salaId": "S1-D",
+      "mensaje": "WARRIOR deja caer P1.",
+      "detalle": "dropItemId\u003dP1"
+    },
+    {
+      "turno": 37,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 38,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-D",
+      "mensaje": "Turno enemigo resuelto en S1-D.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 38,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA recoge P1 - Poción Pequeña.",
+      "detalle": "itemId\u003dP1"
+    },
+    {
+      "turno": 38,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA se mueve de (4,2) a (5,3) en S1-D.",
+      "detalle": "origen\u003d4,2;destino\u003d5,3"
+    },
+    {
+      "turno": 38,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 39,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-D",
+      "mensaje": "Turno enemigo resuelto en S1-D.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 39,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA recoge A1 - Escudo de Madera.",
+      "detalle": "itemId\u003dA1"
+    },
+    {
+      "turno": 39,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA se mueve de (5,3) a (3,3) en S1-D.",
+      "detalle": "origen\u003d5,3;destino\u003d3,3"
+    },
+    {
+      "turno": 39,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 40,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-D",
+      "mensaje": "Turno enemigo resuelto en S1-D.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 40,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA se mueve de (3,3) a (4,6) en S1-D.",
+      "detalle": "origen\u003d3,3;destino\u003d4,6"
+    },
+    {
+      "turno": 40,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 40,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA usa P1 - Poción Pequeña.",
+      "detalle": "itemId\u003dP1"
+    },
+    {
+      "turno": 40,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 41,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S1-D",
+      "mensaje": "Turno enemigo resuelto en S1-D.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 41,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S1-D",
+      "mensaje": "SYRA se mueve de (4,6) a (4,7) en S1-D.",
+      "detalle": "origen\u003d4,6;destino\u003d4,7"
+    },
+    {
+      "turno": 41,
+      "tipo": "ROOM",
+      "actor": "SYRA",
+      "salaId": "PASILLO_1_2",
+      "mensaje": "SYRA entra en PASILLO_1_2 - Linde del Bosque.",
+      "detalle": "salaId\u003dPASILLO_1_2"
+    },
+    {
+      "turno": 41,
+      "tipo": "ACCESS",
+      "actor": "SYRA",
+      "salaId": "PASILLO_1_2",
+      "mensaje": "SYRA usa un acceso hacia PASILLO_1_2.",
+      "detalle": "destino\u003dPASILLO_1_2"
+    },
+    {
+      "turno": 41,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "PASILLO_1_2",
+      "mensaje": "SYRA recoge P2 - Poción Mediana.",
+      "detalle": "itemId\u003dP2"
+    },
+    {
+      "turno": 41,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "PASILLO_1_2",
+      "mensaje": "SYRA se mueve de (1,1) a (1,4) en PASILLO_1_2.",
+      "detalle": "origen\u003d1,1;destino\u003d1,4"
+    },
+    {
+      "turno": 41,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "PASILLO_1_2",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 42,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "PASILLO_1_2",
+      "mensaje": "Turno enemigo resuelto en PASILLO_1_2.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 42,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "PASILLO_1_2",
+      "mensaje": "SYRA se mueve de (1,4) a (1,6) en PASILLO_1_2.",
+      "detalle": "origen\u003d1,4;destino\u003d1,6"
+    },
+    {
+      "turno": 42,
+      "tipo": "ROOM",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA entra en S2-A - Entrada del Bosque.",
+      "detalle": "salaId\u003dS2-A"
+    },
+    {
+      "turno": 42,
+      "tipo": "ROOM",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "Diálogo de SYRA mostrado en S2-A."
+    },
+    {
+      "turno": 42,
+      "tipo": "ACCESS",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA usa un acceso hacia S2-A.",
+      "detalle": "destino\u003dS2-A"
+    },
+    {
+      "turno": 42,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA decide no moverse en S2-A."
+    },
+    {
+      "turno": 42,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 42,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 42,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA inflige 12 daño a ARCHER. HP enemigo: 16/28.",
+      "detalle": "objetivo\u003dARCHER;danio\u003d12"
+    },
+    {
+      "turno": 42,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 43,
+      "tipo": "ENEMY_TURN",
+      "actor": "ARCHER",
+      "salaId": "S2-A",
+      "mensaje": "ARCHER ataca a SYRA e inflige 0 daño. HP jugador: 46/75.",
+      "detalle": "danio\u003d0"
+    },
+    {
+      "turno": 43,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S2-A",
+      "mensaje": "WARRIOR se mueve de (1,4) a (1,2).",
+      "detalle": "origen\u003d1,4;destino\u003d1,2"
+    },
+    {
+      "turno": 43,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-A",
+      "mensaje": "Turno enemigo resuelto en S2-A.",
+      "detalle": "enemigosIniciales\u003d2"
+    },
+    {
+      "turno": 43,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA se mueve de (3,1) a (3,3) en S2-A.",
+      "detalle": "origen\u003d3,1;destino\u003d3,3"
+    },
+    {
+      "turno": 43,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 43,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 43,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA inflige 29 daño a ARCHER. HP enemigo: 0/28.",
+      "detalle": "objetivo\u003dARCHER;danio\u003d29"
+    },
+    {
+      "turno": 43,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "ARCHER muere."
+    },
+    {
+      "turno": 43,
+      "tipo": "PICKUP",
+      "actor": "ARCHER",
+      "salaId": "S2-A",
+      "mensaje": "ARCHER deja caer AC5.",
+      "detalle": "dropItemId\u003dAC5"
+    },
+    {
+      "turno": 43,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 44,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S2-A",
+      "mensaje": "WARRIOR se mueve de (1,2) a (3,2).",
+      "detalle": "origen\u003d1,2;destino\u003d3,2"
+    },
+    {
+      "turno": 44,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-A",
+      "mensaje": "Turno enemigo resuelto en S2-A.",
+      "detalle": "enemigosIniciales\u003d1"
+    },
+    {
+      "turno": 44,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA se mueve de (3,3) a (4,1) en S2-A.",
+      "detalle": "origen\u003d3,3;destino\u003d4,1"
+    },
+    {
+      "turno": 44,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 44,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 44,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA inflige 16 daño a WARRIOR. HP enemigo: 19/35.",
+      "detalle": "objetivo\u003dWARRIOR;danio\u003d16"
+    },
+    {
+      "turno": 44,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 45,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S2-A",
+      "mensaje": "WARRIOR se mueve de (3,2) a (3,1).",
+      "detalle": "origen\u003d3,2;destino\u003d3,1"
+    },
+    {
+      "turno": 45,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-A",
+      "mensaje": "Turno enemigo resuelto en S2-A.",
+      "detalle": "enemigosIniciales\u003d1"
+    },
+    {
+      "turno": 45,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA se mueve de (4,1) a (2,2) en S2-A.",
+      "detalle": "origen\u003d4,1;destino\u003d2,2"
+    },
+    {
+      "turno": 45,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 45,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 45,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA inflige 12 daño a WARRIOR. HP enemigo: 7/35.",
+      "detalle": "objetivo\u003dWARRIOR;danio\u003d12"
+    },
+    {
+      "turno": 45,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 46,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S2-A",
+      "mensaje": "WARRIOR se mueve de (3,1) a (3,2).",
+      "detalle": "origen\u003d3,1;destino\u003d3,2"
+    },
+    {
+      "turno": 46,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-A",
+      "mensaje": "Turno enemigo resuelto en S2-A.",
+      "detalle": "enemigosIniciales\u003d1"
+    },
+    {
+      "turno": 46,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA se mueve de (2,2) a (4,1) en S2-A.",
+      "detalle": "origen\u003d2,2;destino\u003d4,1"
+    },
+    {
+      "turno": 46,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 46,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 46,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA inflige 26 daño a WARRIOR. HP enemigo: 0/35.",
+      "detalle": "objetivo\u003dWARRIOR;danio\u003d26"
+    },
+    {
+      "turno": 46,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "WARRIOR muere."
+    },
+    {
+      "turno": 46,
+      "tipo": "PICKUP",
+      "actor": "WARRIOR",
+      "salaId": "S2-A",
+      "mensaje": "WARRIOR deja caer P1.",
+      "detalle": "dropItemId\u003dP1"
+    },
+    {
+      "turno": 46,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 47,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-A",
+      "mensaje": "Turno enemigo resuelto en S2-A.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 47,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA recoge AC5 - Amuleto de Fuerza.",
+      "detalle": "itemId\u003dAC5"
+    },
+    {
+      "turno": 47,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA se mueve de (4,1) a (4,2) en S2-A.",
+      "detalle": "origen\u003d4,1;destino\u003d4,2"
+    },
+    {
+      "turno": 47,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 48,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-A",
+      "mensaje": "Turno enemigo resuelto en S2-A.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 48,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA recoge P1 - Poción Pequeña.",
+      "detalle": "itemId\u003dP1"
+    },
+    {
+      "turno": 48,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA se mueve de (4,2) a (3,2) en S2-A.",
+      "detalle": "origen\u003d4,2;destino\u003d3,2"
+    },
+    {
+      "turno": 48,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 49,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-A",
+      "mensaje": "Turno enemigo resuelto en S2-A.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 49,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-A",
+      "mensaje": "SYRA se mueve de (3,2) a (3,4) en S2-A.",
+      "detalle": "origen\u003d3,2;destino\u003d3,4"
+    },
+    {
+      "turno": 49,
+      "tipo": "ROOM",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA entra en S2-B - Claro Corrompido.",
+      "detalle": "salaId\u003dS2-B"
+    },
+    {
+      "turno": 49,
+      "tipo": "ACCESS",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA usa un acceso hacia S2-B.",
+      "detalle": "destino\u003dS2-B"
+    },
+    {
+      "turno": 49,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA se mueve de (3,1) a (3,4) en S2-B.",
+      "detalle": "origen\u003d3,1;destino\u003d3,4"
+    },
+    {
+      "turno": 49,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 49,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 49,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA inflige 32 daño a ARCHER. HP enemigo: 0/28.",
+      "detalle": "objetivo\u003dARCHER;danio\u003d32"
+    },
+    {
+      "turno": 49,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "ARCHER muere."
+    },
+    {
+      "turno": 49,
+      "tipo": "PICKUP",
+      "actor": "ARCHER",
+      "salaId": "S2-B",
+      "mensaje": "ARCHER deja caer P1.",
+      "detalle": "dropItemId\u003dP1"
+    },
+    {
+      "turno": 49,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 50,
+      "tipo": "ENEMY_TURN",
+      "actor": "ARCHER",
+      "salaId": "S2-B",
+      "mensaje": "ARCHER ataca a SYRA e inflige 0 daño. HP jugador: 46/75.",
+      "detalle": "danio\u003d0"
+    },
+    {
+      "turno": 50,
+      "tipo": "ENEMY_TURN",
+      "actor": "DESTRUCTOR",
+      "salaId": "S2-B",
+      "mensaje": "DESTRUCTOR no actúa: ESPERA.",
+      "detalle": "ESPERA"
+    },
+    {
+      "turno": 50,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-B",
+      "mensaje": "Turno enemigo resuelto en S2-B.",
+      "detalle": "enemigosIniciales\u003d2"
+    },
+    {
+      "turno": 50,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA recoge P1 - Poción Pequeña.",
+      "detalle": "itemId\u003dP1"
+    },
+    {
+      "turno": 50,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA se mueve de (3,4) a (4,3) en S2-B.",
+      "detalle": "origen\u003d3,4;destino\u003d4,3"
+    },
+    {
+      "turno": 50,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 50,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 50,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA inflige 17 daño a ARCHER. HP enemigo: 11/28.",
+      "detalle": "objetivo\u003dARCHER;danio\u003d17"
+    },
+    {
+      "turno": 50,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 51,
+      "tipo": "ENEMY_TURN",
+      "actor": "ARCHER",
+      "salaId": "S2-B",
+      "mensaje": "ARCHER ataca a SYRA e inflige 7 daño. HP jugador: 39/75.",
+      "detalle": "danio\u003d7"
+    },
+    {
+      "turno": 51,
+      "tipo": "ENEMY_TURN",
+      "actor": "DESTRUCTOR",
+      "salaId": "S2-B",
+      "mensaje": "DESTRUCTOR no actúa: ESPERA.",
+      "detalle": "ESPERA"
+    },
+    {
+      "turno": 51,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-B",
+      "mensaje": "Turno enemigo resuelto en S2-B.",
+      "detalle": "enemigosIniciales\u003d2"
+    },
+    {
+      "turno": 51,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA decide no moverse en S2-B."
+    },
+    {
+      "turno": 51,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 51,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 51,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA inflige 19 daño a ARCHER. HP enemigo: 0/28.",
+      "detalle": "objetivo\u003dARCHER;danio\u003d19"
+    },
+    {
+      "turno": 51,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "ARCHER muere."
+    },
+    {
+      "turno": 51,
+      "tipo": "PICKUP",
+      "actor": "ARCHER",
+      "salaId": "S2-B",
+      "mensaje": "ARCHER deja caer P1.",
+      "detalle": "dropItemId\u003dP1"
+    },
+    {
+      "turno": 51,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 52,
+      "tipo": "ENEMY_TURN",
+      "actor": "DESTRUCTOR",
+      "salaId": "S2-B",
+      "mensaje": "DESTRUCTOR no actúa: ESPERA.",
+      "detalle": "ESPERA"
+    },
+    {
+      "turno": 52,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-B",
+      "mensaje": "Turno enemigo resuelto en S2-B.",
+      "detalle": "enemigosIniciales\u003d1"
+    },
+    {
+      "turno": 52,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA recoge P1 - Poción Pequeña.",
+      "detalle": "itemId\u003dP1"
+    },
+    {
+      "turno": 52,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA se mueve de (4,3) a (5,2) en S2-B.",
+      "detalle": "origen\u003d4,3;destino\u003d5,2"
+    },
+    {
+      "turno": 52,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 53,
+      "tipo": "ENEMY_TURN",
+      "actor": "DESTRUCTOR",
+      "salaId": "S2-B",
+      "mensaje": "DESTRUCTOR no actúa: ESPERA.",
+      "detalle": "ESPERA"
+    },
+    {
+      "turno": 53,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-B",
+      "mensaje": "Turno enemigo resuelto en S2-B.",
+      "detalle": "enemigosIniciales\u003d1"
+    },
+    {
+      "turno": 53,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA se mueve de (5,2) a (3,1) en S2-B.",
+      "detalle": "origen\u003d5,2;destino\u003d3,1"
+    },
+    {
+      "turno": 53,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 53,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 53,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA inflige 20 daño a DESTRUCTOR. HP enemigo: 20/40.",
+      "detalle": "objetivo\u003dDESTRUCTOR;danio\u003d20"
+    },
+    {
+      "turno": 53,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 54,
+      "tipo": "ENEMY_TURN",
+      "actor": "DESTRUCTOR",
+      "salaId": "S2-B",
+      "mensaje": "DESTRUCTOR no actúa: ESPERA.",
+      "detalle": "ESPERA"
+    },
+    {
+      "turno": 54,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-B",
+      "mensaje": "Turno enemigo resuelto en S2-B.",
+      "detalle": "enemigosIniciales\u003d1"
+    },
+    {
+      "turno": 54,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA decide no moverse en S2-B."
+    },
+    {
+      "turno": 54,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 54,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 54,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA inflige 21 daño a DESTRUCTOR. HP enemigo: 0/40.",
+      "detalle": "objetivo\u003dDESTRUCTOR;danio\u003d21"
+    },
+    {
+      "turno": 54,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "DESTRUCTOR muere."
+    },
+    {
+      "turno": 54,
+      "tipo": "PICKUP",
+      "actor": "DESTRUCTOR",
+      "salaId": "S2-B",
+      "mensaje": "DESTRUCTOR deja caer AC6.",
+      "detalle": "dropItemId\u003dAC6"
+    },
+    {
+      "turno": 54,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 55,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-B",
+      "mensaje": "Turno enemigo resuelto en S2-B.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 55,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA recoge AC6 - Anillo de Velocidad.",
+      "detalle": "itemId\u003dAC6"
+    },
+    {
+      "turno": 55,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA se mueve de (3,1) a (1,2) en S2-B.",
+      "detalle": "origen\u003d3,1;destino\u003d1,2"
+    },
+    {
+      "turno": 55,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 56,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-B",
+      "mensaje": "Turno enemigo resuelto en S2-B.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 56,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA se mueve de (1,2) a (3,3) en S2-B.",
+      "detalle": "origen\u003d1,2;destino\u003d3,3"
+    },
+    {
+      "turno": 56,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 57,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-B",
+      "mensaje": "Turno enemigo resuelto en S2-B.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 57,
+      "tipo": "ACCESS",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "Una corriente de aire revela un pasadizo oculto: S2_SECRET.",
+      "detalle": "target\u003dS2_SECRET;trigger\u003dS2_SECRET"
+    },
+    {
+      "turno": 57,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA se mueve de (3,3) a (5,4) en S2-B.",
+      "detalle": "origen\u003d3,3;destino\u003d5,4"
+    },
+    {
+      "turno": 57,
+      "tipo": "ROOM",
+      "actor": "SYRA",
+      "salaId": "S2-SEC",
+      "mensaje": "SYRA entra en S2-SEC - Raíces Profundas.",
+      "detalle": "salaId\u003dS2-SEC"
+    },
+    {
+      "turno": 57,
+      "tipo": "ACCESS",
+      "actor": "SYRA",
+      "salaId": "S2-SEC",
+      "mensaje": "SYRA usa un acceso hacia S2-SEC.",
+      "detalle": "destino\u003dS2-SEC"
+    },
+    {
+      "turno": 57,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-SEC",
+      "mensaje": "SYRA decide no moverse en S2-SEC."
+    },
+    {
+      "turno": 57,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-SEC",
+      "mensaje": "SYRA abre Cofre de Raíces; entre madera vieja y polvo antiguo encuentra Armadura de Cuero Élfico [A4].",
+      "detalle": "containerId\u003dCH-S2-SEC;items\u003dArmadura de Cuero Élfico [A4]"
+    },
+    {
+      "turno": 57,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-SEC",
+      "mensaje": "SYRA usa A4 - Armadura de Cuero Élfico.",
+      "detalle": "itemId\u003dA4"
+    },
+    {
+      "turno": 57,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-SEC",
+      "mensaje": "SYRA inflige 20 daño a GUARDIAN. HP enemigo: 30/50.",
+      "detalle": "objetivo\u003dGUARDIAN;danio\u003d20"
+    },
+    {
+      "turno": 57,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-SEC",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 58,
+      "tipo": "ENEMY_TURN",
+      "actor": "GUARDIAN",
+      "salaId": "S2-SEC",
+      "mensaje": "GUARDIAN ataca a SYRA e inflige 0 daño. HP jugador: 39/75.",
+      "detalle": "danio\u003d0"
+    },
+    {
+      "turno": 58,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-SEC",
+      "mensaje": "Turno enemigo resuelto en S2-SEC.",
+      "detalle": "enemigosIniciales\u003d1"
+    },
+    {
+      "turno": 58,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-SEC",
+      "mensaje": "SYRA decide no moverse en S2-SEC."
+    },
+    {
+      "turno": 58,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-SEC",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 58,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-SEC",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 58,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-SEC",
+      "mensaje": "SYRA inflige 23 daño a GUARDIAN. HP enemigo: 7/50.",
+      "detalle": "objetivo\u003dGUARDIAN;danio\u003d23"
+    },
+    {
+      "turno": 58,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-SEC",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 59,
+      "tipo": "ENEMY_TURN",
+      "actor": "GUARDIAN",
+      "salaId": "S2-SEC",
+      "mensaje": "GUARDIAN ataca a SYRA e inflige 1 daño. HP jugador: 38/75.",
+      "detalle": "danio\u003d1"
+    },
+    {
+      "turno": 59,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-SEC",
+      "mensaje": "Turno enemigo resuelto en S2-SEC.",
+      "detalle": "enemigosIniciales\u003d1"
+    },
+    {
+      "turno": 59,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-SEC",
+      "mensaje": "SYRA decide no moverse en S2-SEC."
+    },
+    {
+      "turno": 59,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-SEC",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 59,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-SEC",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 59,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-SEC",
+      "mensaje": "SYRA inflige 28 daño a GUARDIAN. HP enemigo: 0/50.",
+      "detalle": "objetivo\u003dGUARDIAN;danio\u003d28"
+    },
+    {
+      "turno": 59,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-SEC",
+      "mensaje": "GUARDIAN muere."
+    },
+    {
+      "turno": 59,
+      "tipo": "PICKUP",
+      "actor": "GUARDIAN",
+      "salaId": "S2-SEC",
+      "mensaje": "GUARDIAN deja caer P2.",
+      "detalle": "dropItemId\u003dP2"
+    },
+    {
+      "turno": 59,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-SEC",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 60,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-SEC",
+      "mensaje": "Turno enemigo resuelto en S2-SEC.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 60,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-SEC",
+      "mensaje": "SYRA recoge P2 - Poción Mediana.",
+      "detalle": "itemId\u003dP2"
+    },
+    {
+      "turno": 60,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-SEC",
+      "mensaje": "SYRA se mueve de (1,2) a (1,3) en S2-SEC.",
+      "detalle": "origen\u003d1,2;destino\u003d1,3"
+    },
+    {
+      "turno": 60,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-SEC",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 61,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-SEC",
+      "mensaje": "Turno enemigo resuelto en S2-SEC.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 61,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-SEC",
+      "mensaje": "SYRA se mueve de (1,3) a (1,2) en S2-SEC.",
+      "detalle": "origen\u003d1,3;destino\u003d1,2"
+    },
+    {
+      "turno": 61,
+      "tipo": "ROOM",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA entra en S2-B - Claro Corrompido.",
+      "detalle": "salaId\u003dS2-B"
+    },
+    {
+      "turno": 61,
+      "tipo": "ACCESS",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA usa un acceso hacia S2-B.",
+      "detalle": "destino\u003dS2-B"
+    },
+    {
+      "turno": 61,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-B",
+      "mensaje": "SYRA se mueve de (5,4) a (5,6) en S2-B.",
+      "detalle": "origen\u003d5,4;destino\u003d5,6"
+    },
+    {
+      "turno": 61,
+      "tipo": "ROOM",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA entra en S2-D - Sendero Oscuro.",
+      "detalle": "salaId\u003dS2-D"
+    },
+    {
+      "turno": 61,
+      "tipo": "ACCESS",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA usa un acceso hacia S2-D.",
+      "detalle": "destino\u003dS2-D"
+    },
+    {
+      "turno": 61,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA se mueve de (1,1) a (3,1) en S2-D.",
+      "detalle": "origen\u003d1,1;destino\u003d3,1"
+    },
+    {
+      "turno": 61,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 61,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 61,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA inflige 32 daño a BERSERKER. HP enemigo: 0/25.",
+      "detalle": "objetivo\u003dBERSERKER;danio\u003d32"
+    },
+    {
+      "turno": 61,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "BERSERKER muere."
+    },
+    {
+      "turno": 61,
+      "tipo": "PICKUP",
+      "actor": "BERSERKER",
+      "salaId": "S2-D",
+      "mensaje": "BERSERKER deja caer A1.",
+      "detalle": "dropItemId\u003dA1"
+    },
+    {
+      "turno": 61,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 62,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S2-D",
+      "mensaje": "WARRIOR se mueve de (3,4) a (3,2).",
+      "detalle": "origen\u003d3,4;destino\u003d3,2"
+    },
+    {
+      "turno": 62,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S2-D",
+      "mensaje": "WARRIOR se mueve de (1,4) a (2,3).",
+      "detalle": "origen\u003d1,4;destino\u003d2,3"
+    },
+    {
+      "turno": 62,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-D",
+      "mensaje": "Turno enemigo resuelto en S2-D.",
+      "detalle": "enemigosIniciales\u003d2"
+    },
+    {
+      "turno": 62,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA recoge A1 - Escudo de Madera.",
+      "detalle": "itemId\u003dA1"
+    },
+    {
+      "turno": 62,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA se mueve de (3,1) a (1,2) en S2-D.",
+      "detalle": "origen\u003d3,1;destino\u003d1,2"
+    },
+    {
+      "turno": 62,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 62,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 62,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA inflige 27 daño a WARRIOR. HP enemigo: 8/35.",
+      "detalle": "objetivo\u003dWARRIOR;danio\u003d27"
+    },
+    {
+      "turno": 62,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 63,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S2-D",
+      "mensaje": "WARRIOR se mueve de (3,2) a (2,2).",
+      "detalle": "origen\u003d3,2;destino\u003d2,2"
+    },
+    {
+      "turno": 63,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S2-D",
+      "mensaje": "WARRIOR se mueve de (2,3) a (1,3).",
+      "detalle": "origen\u003d2,3;destino\u003d1,3"
+    },
+    {
+      "turno": 63,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-D",
+      "mensaje": "Turno enemigo resuelto en S2-D.",
+      "detalle": "enemigosIniciales\u003d2"
+    },
+    {
+      "turno": 63,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA se mueve de (1,2) a (3,1) en S2-D.",
+      "detalle": "origen\u003d1,2;destino\u003d3,1"
+    },
+    {
+      "turno": 63,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 63,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 63,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA inflige 5 daño a WARRIOR. HP enemigo: 30/35.",
+      "detalle": "objetivo\u003dWARRIOR;danio\u003d5"
+    },
+    {
+      "turno": 63,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 64,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S2-D",
+      "mensaje": "WARRIOR se mueve de (2,2) a (2,1).",
+      "detalle": "origen\u003d2,2;destino\u003d2,1"
+    },
+    {
+      "turno": 64,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S2-D",
+      "mensaje": "WARRIOR se mueve de (1,3) a (3,3).",
+      "detalle": "origen\u003d1,3;destino\u003d3,3"
+    },
+    {
+      "turno": 64,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-D",
+      "mensaje": "Turno enemigo resuelto en S2-D.",
+      "detalle": "enemigosIniciales\u003d2"
+    },
+    {
+      "turno": 64,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA se mueve de (3,1) a (1,2) en S2-D.",
+      "detalle": "origen\u003d3,1;destino\u003d1,2"
+    },
+    {
+      "turno": 64,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 64,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 64,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA inflige 12 daño a WARRIOR. HP enemigo: 18/35.",
+      "detalle": "objetivo\u003dWARRIOR;danio\u003d12"
+    },
+    {
+      "turno": 64,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 65,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S2-D",
+      "mensaje": "WARRIOR se mueve de (2,1) a (2,2).",
+      "detalle": "origen\u003d2,1;destino\u003d2,2"
+    },
+    {
+      "turno": 65,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S2-D",
+      "mensaje": "WARRIOR se mueve de (3,3) a (1,3).",
+      "detalle": "origen\u003d3,3;destino\u003d1,3"
+    },
+    {
+      "turno": 65,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-D",
+      "mensaje": "Turno enemigo resuelto en S2-D.",
+      "detalle": "enemigosIniciales\u003d2"
+    },
+    {
+      "turno": 65,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA se mueve de (1,2) a (3,1) en S2-D.",
+      "detalle": "origen\u003d1,2;destino\u003d3,1"
+    },
+    {
+      "turno": 65,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 65,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 65,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA inflige 19 daño a WARRIOR. HP enemigo: 0/35.",
+      "detalle": "objetivo\u003dWARRIOR;danio\u003d19"
+    },
+    {
+      "turno": 65,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "WARRIOR muere."
+    },
+    {
+      "turno": 65,
+      "tipo": "PICKUP",
+      "actor": "WARRIOR",
+      "salaId": "S2-D",
+      "mensaje": "WARRIOR deja caer P1.",
+      "detalle": "dropItemId\u003dP1"
+    },
+    {
+      "turno": 65,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 66,
+      "tipo": "ENEMY_TURN",
+      "actor": "WARRIOR",
+      "salaId": "S2-D",
+      "mensaje": "WARRIOR se mueve de (1,3) a (2,2).",
+      "detalle": "origen\u003d1,3;destino\u003d2,2"
+    },
+    {
+      "turno": 66,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-D",
+      "mensaje": "Turno enemigo resuelto en S2-D.",
+      "detalle": "enemigosIniciales\u003d1"
+    },
+    {
+      "turno": 66,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA se mueve de (3,1) a (1,3) en S2-D.",
+      "detalle": "origen\u003d3,1;destino\u003d1,3"
+    },
+    {
+      "turno": 66,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 66,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 66,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA inflige 27 daño a WARRIOR. HP enemigo: 0/35.",
+      "detalle": "objetivo\u003dWARRIOR;danio\u003d27"
+    },
+    {
+      "turno": 66,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "WARRIOR muere."
+    },
+    {
+      "turno": 66,
+      "tipo": "PICKUP",
+      "actor": "WARRIOR",
+      "salaId": "S2-D",
+      "mensaje": "WARRIOR deja caer P1.",
+      "detalle": "dropItemId\u003dP1"
+    },
+    {
+      "turno": 66,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 67,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-D",
+      "mensaje": "Turno enemigo resuelto en S2-D.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 67,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA recoge P1 - Poción Pequeña.",
+      "detalle": "itemId\u003dP1"
+    },
+    {
+      "turno": 67,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA se mueve de (1,3) a (2,2) en S2-D.",
+      "detalle": "origen\u003d1,3;destino\u003d2,2"
+    },
+    {
+      "turno": 67,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 68,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-D",
+      "mensaje": "Turno enemigo resuelto en S2-D.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 68,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-D",
+      "mensaje": "SYRA se mueve de (2,2) a (2,4) en S2-D.",
+      "detalle": "origen\u003d2,2;destino\u003d2,4"
+    },
+    {
+      "turno": 68,
+      "tipo": "ROOM",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA entra en S2-E - Corazón del Bosque.",
+      "detalle": "salaId\u003dS2-E"
+    },
+    {
+      "turno": 68,
+      "tipo": "ACCESS",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA usa un acceso hacia S2-E.",
+      "detalle": "destino\u003dS2-E"
+    },
+    {
+      "turno": 68,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA se mueve de (5,1) a (5,4) en S2-E.",
+      "detalle": "origen\u003d5,1;destino\u003d5,4"
+    },
+    {
+      "turno": 68,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 68,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 68,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA inflige 18 daño a ARCHER. HP enemigo: 47/65.",
+      "detalle": "objetivo\u003dARCHER;danio\u003d18"
+    },
+    {
+      "turno": 68,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 69,
+      "tipo": "ENEMY_TURN",
+      "actor": "Espíritu Madre",
+      "salaId": "S2-E",
+      "mensaje": "Espíritu Madre ataca a SYRA e inflige 0 daño. HP jugador: 38/75.",
+      "detalle": "danio\u003d0"
+    },
+    {
+      "turno": 69,
+      "tipo": "ENEMY_TURN",
+      "actor": "ARCHER",
+      "salaId": "S2-E",
+      "mensaje": "ARCHER se mueve de (2,2) a (3,2).",
+      "detalle": "origen\u003d2,2;destino\u003d3,2"
+    },
+    {
+      "turno": 69,
+      "tipo": "ENEMY_TURN",
+      "actor": "ARCHER",
+      "salaId": "S2-E",
+      "mensaje": "ARCHER se mueve de (8,7) a (7,6).",
+      "detalle": "origen\u003d8,7;destino\u003d7,6"
+    },
+    {
+      "turno": 69,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-E",
+      "mensaje": "Turno enemigo resuelto en S2-E.",
+      "detalle": "enemigosIniciales\u003d3"
+    },
+    {
+      "turno": 69,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA decide no moverse en S2-E."
+    },
+    {
+      "turno": 69,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 69,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 69,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA inflige 15 daño a ARCHER. HP enemigo: 32/65.",
+      "detalle": "objetivo\u003dARCHER;danio\u003d15"
+    },
+    {
+      "turno": 69,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 70,
+      "tipo": "ENEMY_TURN",
+      "actor": "Espíritu Madre",
+      "salaId": "S2-E",
+      "mensaje": "Espíritu Madre ataca a SYRA e inflige 1 daño. HP jugador: 37/75.",
+      "detalle": "danio\u003d1"
+    },
+    {
+      "turno": 70,
+      "tipo": "ENEMY_TURN",
+      "actor": "ARCHER",
+      "salaId": "S2-E",
+      "mensaje": "ARCHER ataca a SYRA e inflige 0 daño. HP jugador: 37/75.",
+      "detalle": "danio\u003d0"
+    },
+    {
+      "turno": 70,
+      "tipo": "ENEMY_TURN",
+      "actor": "ARCHER",
+      "salaId": "S2-E",
+      "mensaje": "ARCHER ataca a SYRA e inflige 0 daño. HP jugador: 37/75.",
+      "detalle": "danio\u003d0"
+    },
+    {
+      "turno": 70,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-E",
+      "mensaje": "Turno enemigo resuelto en S2-E.",
+      "detalle": "enemigosIniciales\u003d3"
+    },
+    {
+      "turno": 70,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA decide no moverse en S2-E."
+    },
+    {
+      "turno": 70,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 70,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 70,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA inflige 10 daño a ARCHER. HP enemigo: 22/65.",
+      "detalle": "objetivo\u003dARCHER;danio\u003d10"
+    },
+    {
+      "turno": 70,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 71,
+      "tipo": "ENEMY_TURN",
+      "actor": "Espíritu Madre",
+      "salaId": "S2-E",
+      "mensaje": "Espíritu Madre ataca a SYRA e inflige 2 daño. HP jugador: 35/75.",
+      "detalle": "danio\u003d2"
+    },
+    {
+      "turno": 71,
+      "tipo": "ENEMY_TURN",
+      "actor": "ARCHER",
+      "salaId": "S2-E",
+      "mensaje": "ARCHER ataca a SYRA e inflige 0 daño. HP jugador: 35/75.",
+      "detalle": "danio\u003d0"
+    },
+    {
+      "turno": 71,
+      "tipo": "ENEMY_TURN",
+      "actor": "ARCHER",
+      "salaId": "S2-E",
+      "mensaje": "ARCHER ataca a SYRA e inflige 0 daño. HP jugador: 35/75.",
+      "detalle": "danio\u003d0"
+    },
+    {
+      "turno": 71,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-E",
+      "mensaje": "Turno enemigo resuelto en S2-E.",
+      "detalle": "enemigosIniciales\u003d3"
+    },
+    {
+      "turno": 71,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA decide no moverse en S2-E."
+    },
+    {
+      "turno": 71,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 71,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 71,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA inflige 6 daño a ARCHER. HP enemigo: 16/65.",
+      "detalle": "objetivo\u003dARCHER;danio\u003d6"
+    },
+    {
+      "turno": 71,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 72,
+      "tipo": "ENEMY_TURN",
+      "actor": "Espíritu Madre",
+      "salaId": "S2-E",
+      "mensaje": "Espíritu Madre usa Enredadera Paralizante contra SYRA e inflige 12 daño. HP jugador: 23/75.",
+      "detalle": "habilidad\u003dEnredadera Paralizante;danio\u003d12"
+    },
+    {
+      "turno": 72,
+      "tipo": "STATE",
+      "actor": "Espíritu Madre",
+      "salaId": "S2-E",
+      "mensaje": "Espíritu Madre aplica PARALYSIS a SYRA.",
+      "detalle": "efecto\u003dPARALYSIS"
+    },
+    {
+      "turno": 72,
+      "tipo": "ENEMY_TURN",
+      "actor": "ARCHER",
+      "salaId": "S2-E",
+      "mensaje": "ARCHER ataca a SYRA e inflige 0 daño. HP jugador: 23/75.",
+      "detalle": "danio\u003d0"
+    },
+    {
+      "turno": 72,
+      "tipo": "ENEMY_TURN",
+      "actor": "ARCHER",
+      "salaId": "S2-E",
+      "mensaje": "ARCHER ataca a SYRA e inflige 0 daño. HP jugador: 23/75.",
+      "detalle": "danio\u003d0"
+    },
+    {
+      "turno": 72,
+      "tipo": "STATE",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "PARALYSIS expira en SYRA.",
+      "detalle": "efecto\u003dPARALYSIS"
+    },
+    {
+      "turno": 72,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-E",
+      "mensaje": "Turno enemigo resuelto en S2-E.",
+      "detalle": "enemigosIniciales\u003d3"
+    },
+    {
+      "turno": 72,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA decide no moverse en S2-E."
+    },
+    {
+      "turno": 72,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 72,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA usa P2 - Poción Mediana.",
+      "detalle": "itemId\u003dP2"
+    },
+    {
+      "turno": 72,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA inflige 27 daño a ARCHER. HP enemigo: 0/65.",
+      "detalle": "objetivo\u003dARCHER;danio\u003d27"
+    },
+    {
+      "turno": 72,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "ARCHER muere."
+    },
+    {
+      "turno": 72,
+      "tipo": "PICKUP",
+      "actor": "ARCHER",
+      "salaId": "S2-E",
+      "mensaje": "ARCHER deja caer AC2.",
+      "detalle": "dropItemId\u003dAC2"
+    },
+    {
+      "turno": 72,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 73,
+      "tipo": "ENEMY_TURN",
+      "actor": "ARCHER",
+      "salaId": "S2-E",
+      "mensaje": "ARCHER ataca a SYRA e inflige 0 daño. HP jugador: 63/75.",
+      "detalle": "danio\u003d0"
+    },
+    {
+      "turno": 73,
+      "tipo": "ENEMY_TURN",
+      "actor": "ARCHER",
+      "salaId": "S2-E",
+      "mensaje": "ARCHER ataca a SYRA e inflige 0 daño. HP jugador: 63/75.",
+      "detalle": "danio\u003d0"
+    },
+    {
+      "turno": 73,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-E",
+      "mensaje": "Turno enemigo resuelto en S2-E.",
+      "detalle": "enemigosIniciales\u003d2"
+    },
+    {
+      "turno": 73,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA recoge AC2 - Semilla Resonante.",
+      "detalle": "itemId\u003dAC2"
+    },
+    {
+      "turno": 73,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA se mueve de (5,4) a (5,5) en S2-E.",
+      "detalle": "origen\u003d5,4;destino\u003d5,5"
+    },
+    {
+      "turno": 73,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 74,
+      "tipo": "ENEMY_TURN",
+      "actor": "ARCHER",
+      "salaId": "S2-E",
+      "mensaje": "ARCHER se mueve de (3,2) a (4,2).",
+      "detalle": "origen\u003d3,2;destino\u003d4,2"
+    },
+    {
+      "turno": 74,
+      "tipo": "ENEMY_TURN",
+      "actor": "ARCHER",
+      "salaId": "S2-E",
+      "mensaje": "ARCHER ataca a SYRA e inflige 0 daño. HP jugador: 63/75.",
+      "detalle": "danio\u003d0"
+    },
+    {
+      "turno": 74,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-E",
+      "mensaje": "Turno enemigo resuelto en S2-E.",
+      "detalle": "enemigosIniciales\u003d2"
+    },
+    {
+      "turno": 74,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA se mueve de (5,5) a (6,6) en S2-E.",
+      "detalle": "origen\u003d5,5;destino\u003d6,6"
+    },
+    {
+      "turno": 74,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 74,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 74,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA inflige 20 daño a ARCHER. HP enemigo: 8/28.",
+      "detalle": "objetivo\u003dARCHER;danio\u003d20"
+    },
+    {
+      "turno": 74,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 75,
+      "tipo": "ENEMY_TURN",
+      "actor": "ARCHER",
+      "salaId": "S2-E",
+      "mensaje": "ARCHER se mueve de (4,2) a (6,2).",
+      "detalle": "origen\u003d4,2;destino\u003d6,2"
+    },
+    {
+      "turno": 75,
+      "tipo": "ENEMY_TURN",
+      "actor": "ARCHER",
+      "salaId": "S2-E",
+      "mensaje": "ARCHER ataca a SYRA e inflige 0 daño. HP jugador: 63/75.",
+      "detalle": "danio\u003d0"
+    },
+    {
+      "turno": 75,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-E",
+      "mensaje": "Turno enemigo resuelto en S2-E.",
+      "detalle": "enemigosIniciales\u003d2"
+    },
+    {
+      "turno": 75,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA decide no moverse en S2-E."
+    },
+    {
+      "turno": 75,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 75,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 75,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA inflige 18 daño a ARCHER. HP enemigo: 0/28.",
+      "detalle": "objetivo\u003dARCHER;danio\u003d18"
+    },
+    {
+      "turno": 75,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "ARCHER muere."
+    },
+    {
+      "turno": 75,
+      "tipo": "PICKUP",
+      "actor": "ARCHER",
+      "salaId": "S2-E",
+      "mensaje": "ARCHER deja caer P1.",
+      "detalle": "dropItemId\u003dP1"
+    },
+    {
+      "turno": 75,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 76,
+      "tipo": "ENEMY_TURN",
+      "actor": "ARCHER",
+      "salaId": "S2-E",
+      "mensaje": "ARCHER ataca a SYRA e inflige 0 daño. HP jugador: 63/75.",
+      "detalle": "danio\u003d0"
+    },
+    {
+      "turno": 76,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-E",
+      "mensaje": "Turno enemigo resuelto en S2-E.",
+      "detalle": "enemigosIniciales\u003d1"
+    },
+    {
+      "turno": 76,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA recoge P1 - Poción Pequeña.",
+      "detalle": "itemId\u003dP1"
+    },
+    {
+      "turno": 76,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA se mueve de (6,6) a (7,6) en S2-E.",
+      "detalle": "origen\u003d6,6;destino\u003d7,6"
+    },
+    {
+      "turno": 76,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 77,
+      "tipo": "ENEMY_TURN",
+      "actor": "ARCHER",
+      "salaId": "S2-E",
+      "mensaje": "ARCHER se mueve de (6,2) a (5,4).",
+      "detalle": "origen\u003d6,2;destino\u003d5,4"
+    },
+    {
+      "turno": 77,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-E",
+      "mensaje": "Turno enemigo resuelto en S2-E.",
+      "detalle": "enemigosIniciales\u003d1"
+    },
+    {
+      "turno": 77,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA se mueve de (7,6) a (6,4) en S2-E.",
+      "detalle": "origen\u003d7,6;destino\u003d6,4"
+    },
+    {
+      "turno": 77,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 77,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 77,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA inflige 19 daño a ARCHER. HP enemigo: 9/28.",
+      "detalle": "objetivo\u003dARCHER;danio\u003d19"
+    },
+    {
+      "turno": 77,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 78,
+      "tipo": "ENEMY_TURN",
+      "actor": "ARCHER",
+      "salaId": "S2-E",
+      "mensaje": "ARCHER ataca a SYRA e inflige 0 daño. HP jugador: 63/75.",
+      "detalle": "danio\u003d0"
+    },
+    {
+      "turno": 78,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-E",
+      "mensaje": "Turno enemigo resuelto en S2-E.",
+      "detalle": "enemigosIniciales\u003d1"
+    },
+    {
+      "turno": 78,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA decide no moverse en S2-E."
+    },
+    {
+      "turno": 78,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA decide no recoger ni interactuar."
+    },
+    {
+      "turno": 78,
+      "tipo": "ITEM",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA decide no usar item."
+    },
+    {
+      "turno": 78,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA inflige 22 daño a ARCHER. HP enemigo: 0/28.",
+      "detalle": "objetivo\u003dARCHER;danio\u003d22"
+    },
+    {
+      "turno": 78,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "ARCHER muere."
+    },
+    {
+      "turno": 78,
+      "tipo": "PICKUP",
+      "actor": "ARCHER",
+      "salaId": "S2-E",
+      "mensaje": "ARCHER deja caer AC5.",
+      "detalle": "dropItemId\u003dAC5"
+    },
+    {
+      "turno": 78,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 79,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-E",
+      "mensaje": "Turno enemigo resuelto en S2-E.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 79,
+      "tipo": "PICKUP",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA recoge AC5 - Amuleto de Fuerza.",
+      "detalle": "itemId\u003dAC5"
+    },
+    {
+      "turno": 79,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA se mueve de (6,4) a (5,4) en S2-E.",
+      "detalle": "origen\u003d6,4;destino\u003d5,4"
+    },
+    {
+      "turno": 79,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 80,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-E",
+      "mensaje": "Turno enemigo resuelto en S2-E.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 80,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA se mueve de (5,4) a (5,7) en S2-E.",
+      "detalle": "origen\u003d5,4;destino\u003d5,7"
+    },
+    {
+      "turno": 80,
+      "tipo": "COMBAT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA cede el turno."
+    },
+    {
+      "turno": 81,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S2-E",
+      "mensaje": "Turno enemigo resuelto en S2-E.",
+      "detalle": "enemigosIniciales\u003d0"
+    },
+    {
+      "turno": 81,
+      "tipo": "MOVEMENT",
+      "actor": "SYRA",
+      "salaId": "S2-E",
+      "mensaje": "SYRA se mueve de (5,7) a (5,8) en S2-E.",
+      "detalle": "origen\u003d5,7;destino\u003d5,8"
+    },
+    {
+      "turno": 81,
+      "tipo": "ROOM",
+      "actor": "SYRA",
+      "salaId": "PASILLO_2_3",
+      "mensaje": "SYRA entra en PASILLO_2_3 - Boca de la Mina.",
+      "detalle": "salaId\u003dPASILLO_2_3"
+    },
+    {
+      "turno": 81,
+      "tipo": "ACCESS",
+      "actor": "SYRA",
+      "salaId": "PASILLO_2_3",
+      "mensaje": "SYRA usa un acceso hacia PASILLO_2_3.",
+      "detalle": "destino\u003dPASILLO_2_3"
     }
   ]
 }

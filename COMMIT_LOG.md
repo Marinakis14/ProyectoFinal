@@ -2375,6 +2375,93 @@ item y cierre el modal tras una acción correcta.
 
 ---
 
+### Sesion 52 — 27 mayo 2026 — Codex
+
+**Objetivo:** Diferenciar visualmente las cinco zonas del mapa y mostrar transiciones suaves en los pasillos entre zonas.
+
+**Archivos trabajados:**
+- `src/Valdris/ui/view/ValdrisTheme.java`
+- `src/Valdris/ui/view/GameView.java`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- Añadidos colores ambientales para Zona 1, Zona 2, Zona 3, Zona 4 y Zona 5, con el Núcleo en azul profundo.
+- Añadido cálculo de matiz por sala usando los prefijos `S1-`, `S2-`, `S3-`, `S4-` y `S5-`.
+- Añadido degradado horizontal para `PASILLO_1_2`, `PASILLO_2_3`, `PASILLO_3_4`, `PASILLO_4_5` y `PASILLO_FINAL`.
+- Aplicado el matiz sobre los colores funcionales ya existentes de paredes, suelo, puertas, escaleras, trampas, runas, palancas y secretos.
+- Ajustado el título de la sala para que use un acento coherente con la zona actual.
+
+**Verificación:**
+- `mvn test` ejecutado correctamente.
+- Resultado: 493 tests, 0 failures, 0 errors, 0 skipped.
+- `rg "import java\.util" src tests -n` sin resultados.
+
+**Decisiones:**
+- El cambio queda limitado a JavaFX y no altera reglas de movimiento, acceso, combate, puzzles ni persistencia.
+- Los pasillos usan el eje más largo para el degradado, por lo que los pasillos este-oeste actuales transicionan de izquierda a derecha.
+- La Zona 5 usa azul profundo para reforzar la identidad del Núcleo.
+
+**Commit sugerido:** `git commit -m "style(ui): tint map zones and transition corridors"`
+
+---
+
+### Sesion 53 — 27 mayo 2026 — Codex
+
+**Objetivo:** Hacer que los tintes de zona sean bastante mas perceptibles manteniendo la lectura clara de celdas y elementos interactivos.
+
+**Archivos trabajados:**
+- `src/Valdris/ui/view/ValdrisTheme.java`
+- `src/Valdris/ui/view/GameView.java`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- Reforzados los colores base de Zona 2, Zona 3, Zona 4 y Zona 5 para que el contraste ambiental sea mas evidente.
+- Aumentada la intensidad de mezcla del suelo y trampas, que son las celdas donde mejor debe percibirse la identidad de cada zona.
+- Aumentada con mas moderacion la mezcla en paredes, puertas, secretos, escaleras, palancas y runas para conservar su lectura funcional.
+
+**Verificacion:**
+- `mvn test` ejecutado correctamente.
+- Resultado: 493 tests, 0 failures, 0 errors, 0 skipped.
+- `rg "import java\.util" src tests -n` sin resultados.
+
+**Decision:**
+- La identidad de zona debe notarse claramente en el tablero, pero los colores funcionales de interaccion siguen teniendo prioridad visual.
+
+**Commit sugerido:** `git commit -m "style(ui): strengthen map zone colors"`
+
+---
+
+### Sesion 54 — 27 mayo 2026 — Codex
+
+**Objetivo:** Mejorar la representacion visual del contenido del tablero para diferenciar con claridad enemigos, items, cofres y elementos interactivos.
+
+**Archivos trabajados:**
+- `src/Valdris/ui/view/GameView.java`
+- `TASKS.md`
+- `COMMIT_LOG.md`
+
+**Cambios realizados:**
+- Sustituidas las letras planas de cofres, items, secretos, puertas secretas, palancas, runas y escaleras por marcas 2D con forma y color propios.
+- Añadidos sprites compactos para items segun categoria: arma, armadura, escudo, pocion, accesorio y objeto narrativo.
+- Añadido cofre visual con estado cerrado/abierto para que no dependa solo de la letra `C`.
+- Añadidas siluetas diferenciadas para familias de enemigos: arqueros/francotiradores, guardianes/constructos, magos/invocadores, berserkers y sombras.
+- Añadidas etiquetas cortas sobre enemigos e items cuando ayudan a distinguir tipos sin tapar la celda.
+- Eliminado el renderizado textual antiguo de contenido de celda dentro de `GameView`.
+
+**Verificacion:**
+- `mvn test` ejecutado correctamente.
+- Resultado: 493 tests, 0 failures, 0 errors, 0 skipped.
+- `rg "import java\.util" src tests -n` sin resultados.
+
+**Decision:**
+- El tablero usa sprites JavaFX sencillos y explicables, manteniendo estilo 2D de fantasia sin introducir assets nuevos para cada elemento.
+
+**Commit sugerido:** `git commit -m "style(ui): improve map entity sprites"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas

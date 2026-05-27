@@ -19489,8 +19489,8 @@
       "tipo": "COMBAT",
       "actor": "Malachar",
       "salaId": "S5-D",
-      "mensaje": "Malachar golpea al Parásito e inflige 1 daño. HP Parásito: 179/180.",
-      "detalle": "danio\u003d1;phase\u003d1"
+      "mensaje": "Malachar golpea al Parásito e inflige 0 daño. HP Parásito: 180/180.",
+      "detalle": "danio\u003d0;phase\u003d1"
     },
     {
       "turno": 428,
@@ -19512,8 +19512,8 @@
       "tipo": "COMBAT",
       "actor": "Malachar",
       "salaId": "S5-D",
-      "mensaje": "Malachar golpea al Parásito e inflige 0 daño. HP Parásito: 179/180.",
-      "detalle": "danio\u003d0;phase\u003d1"
+      "mensaje": "Malachar golpea al Parásito e inflige 1 daño. HP Parásito: 179/180.",
+      "detalle": "danio\u003d1;phase\u003d1"
     },
     {
       "turno": 429,
@@ -19543,8 +19543,8 @@
       "tipo": "COMBAT",
       "actor": "Malachar",
       "salaId": "S5-D",
-      "mensaje": "Malachar golpea al Parásito e inflige 2 daño. HP Parásito: 177/180.",
-      "detalle": "danio\u003d2;phase\u003d1"
+      "mensaje": "Malachar golpea al Parásito e inflige 0 daño. HP Parásito: 179/180.",
+      "detalle": "danio\u003d0;phase\u003d1"
     },
     {
       "turno": 430,
@@ -19559,8 +19559,8 @@
       "tipo": "MOVEMENT",
       "actor": "DORATH",
       "salaId": "S5-D",
-      "mensaje": "DORATH se mueve de (6,5) a (5,5) en S5-D.",
-      "detalle": "origen\u003d6,5;destino\u003d5,5"
+      "mensaje": "DORATH se mueve de (6,5) a (5,6) en S5-D.",
+      "detalle": "origen\u003d6,5;destino\u003d5,6"
     },
     {
       "turno": 430,
@@ -19581,8 +19581,15 @@
       "tipo": "COMBAT",
       "actor": "DORATH",
       "salaId": "S5-D",
-      "mensaje": "DORATH inflige 12 daño a PARASITO. HP enemigo: 165/180.",
-      "detalle": "objetivo\u003dPARASITO;danio\u003d12"
+      "mensaje": "DORATH inflige 8 daño a PARASITO. HP enemigo: 171/180.",
+      "detalle": "objetivo\u003dPARASITO;danio\u003d8"
+    },
+    {
+      "turno": 430,
+      "tipo": "STATE",
+      "actor": "DORATH",
+      "salaId": "S5-D",
+      "mensaje": "PARASITO recibe BURN."
     },
     {
       "turno": 430,
@@ -19596,16 +19603,32 @@
       "tipo": "COMBAT",
       "actor": "Malachar",
       "salaId": "S5-D",
-      "mensaje": "Malachar golpea al Parásito e inflige 1 daño. HP Parásito: 164/180.",
-      "detalle": "danio\u003d1;phase\u003d1"
+      "mensaje": "Malachar golpea al Parásito e inflige 0 daño. HP Parásito: 171/180.",
+      "detalle": "danio\u003d0;phase\u003d1"
+    },
+    {
+      "turno": 431,
+      "tipo": "STATE",
+      "actor": "Parásito",
+      "salaId": "S5-D",
+      "mensaje": "Parásito recibe 3 daño por efectos. HP: 168/180.",
+      "detalle": "danioEfectos\u003d3"
+    },
+    {
+      "turno": 431,
+      "tipo": "STATE",
+      "actor": "Parásito",
+      "salaId": "S5-D",
+      "mensaje": "BURN expira en Parásito.",
+      "detalle": "efecto\u003dBURN"
     },
     {
       "turno": 431,
       "tipo": "ENEMY_TURN",
       "actor": "Parásito",
       "salaId": "S5-D",
-      "mensaje": "Parásito ataca a DORATH e inflige 13 daño. HP jugador: 41/80.",
-      "detalle": "habilidad\u003dZarpazo del Umbral;danio\u003d13"
+      "mensaje": "Parásito ataca a DORATH e inflige 0 daño. HP jugador: 54/80.",
+      "detalle": "habilidad\u003dZarpazo del Umbral;danio\u003d0"
     },
     {
       "turno": 431,
@@ -19634,8 +19657,15 @@
       "tipo": "ITEM",
       "actor": "DORATH",
       "salaId": "S5-D",
-      "mensaje": "DORATH usa P2 - Poción Mediana.",
-      "detalle": "itemId\u003dP2"
+      "mensaje": "DORATH decide no usar item."
+    },
+    {
+      "turno": 431,
+      "tipo": "COMBAT",
+      "actor": "DORATH",
+      "salaId": "S5-D",
+      "mensaje": "DORATH inflige 14 daño a PARASITO. HP enemigo: 154/180.",
+      "detalle": "objetivo\u003dPARASITO;danio\u003d14"
     },
     {
       "turno": 431,
@@ -19649,7 +19679,7 @@
       "tipo": "COMBAT",
       "actor": "Malachar",
       "salaId": "S5-D",
-      "mensaje": "Malachar golpea al Parásito e inflige 0 daño. HP Parásito: 164/180.",
+      "mensaje": "Malachar golpea al Parásito e inflige 0 daño. HP Parásito: 154/180.",
       "detalle": "danio\u003d0;phase\u003d1"
     },
     {
@@ -19657,8 +19687,8 @@
       "tipo": "ENEMY_TURN",
       "actor": "Parásito",
       "salaId": "S5-D",
-      "mensaje": "Parásito ataca a DORATH e inflige 3 daño. HP jugador: 77/80.",
-      "detalle": "habilidad\u003dZarpazo del Umbral;danio\u003d3"
+      "mensaje": "Parásito ataca a DORATH e inflige 1 daño. HP jugador: 53/80.",
+      "detalle": "habilidad\u003dZarpazo del Umbral;danio\u003d1"
     },
     {
       "turno": 432,
@@ -19673,8 +19703,7 @@
       "tipo": "MOVEMENT",
       "actor": "DORATH",
       "salaId": "S5-D",
-      "mensaje": "DORATH se mueve de (5,5) a (4,6) en S5-D.",
-      "detalle": "origen\u003d5,5;destino\u003d4,6"
+      "mensaje": "DORATH decide no moverse en S5-D."
     },
     {
       "turno": 432,
@@ -19695,8 +19724,8 @@
       "tipo": "COMBAT",
       "actor": "DORATH",
       "salaId": "S5-D",
-      "mensaje": "DORATH inflige 29 daño a PARASITO. HP enemigo: 135/180.",
-      "detalle": "objetivo\u003dPARASITO;danio\u003d29"
+      "mensaje": "DORATH inflige 21 daño a PARASITO. HP enemigo: 133/180.",
+      "detalle": "objetivo\u003dPARASITO;danio\u003d21"
     },
     {
       "turno": 432,
@@ -19710,7 +19739,7 @@
       "tipo": "COMBAT",
       "actor": "Malachar",
       "salaId": "S5-D",
-      "mensaje": "Malachar golpea al Parásito e inflige 0 daño. HP Parásito: 135/180.",
+      "mensaje": "Malachar golpea al Parásito e inflige 0 daño. HP Parásito: 133/180.",
       "detalle": "danio\u003d0;phase\u003d1"
     },
     {
@@ -19718,8 +19747,8 @@
       "tipo": "ENEMY_TURN",
       "actor": "Parásito",
       "salaId": "S5-D",
-      "mensaje": "Parásito ataca a DORATH e inflige 8 daño. HP jugador: 69/80.",
-      "detalle": "habilidad\u003dZarpazo del Umbral;danio\u003d8"
+      "mensaje": "Parásito ataca a DORATH e inflige 0 daño. HP jugador: 53/80.",
+      "detalle": "habilidad\u003dZarpazo del Umbral;danio\u003d0"
     },
     {
       "turno": 433,
@@ -19734,8 +19763,7 @@
       "tipo": "MOVEMENT",
       "actor": "DORATH",
       "salaId": "S5-D",
-      "mensaje": "DORATH se mueve de (4,6) a (3,7) en S5-D.",
-      "detalle": "origen\u003d4,6;destino\u003d3,7"
+      "mensaje": "DORATH decide no moverse en S5-D."
     },
     {
       "turno": 433,
@@ -19756,8 +19784,8 @@
       "tipo": "COMBAT",
       "actor": "DORATH",
       "salaId": "S5-D",
-      "mensaje": "DORATH inflige 24 daño a PARASITO. HP enemigo: 140/140.",
-      "detalle": "objetivo\u003dPARASITO;danio\u003d24"
+      "mensaje": "DORATH inflige 11 daño a PARASITO. HP enemigo: 122/180.",
+      "detalle": "objetivo\u003dPARASITO;danio\u003d11"
     },
     {
       "turno": 433,
@@ -19768,14 +19796,6 @@
     },
     {
       "turno": 433,
-      "tipo": "GAME",
-      "actor": "Parásito",
-      "salaId": "S5-D",
-      "mensaje": "El Parásito cambia a fase 2 y recompone su forma. HP: 140/140.",
-      "detalle": "phase\u003d2"
-    },
-    {
-      "turno": 433,
       "tipo": "COMBAT",
       "actor": "DORATH",
       "salaId": "S5-D",
@@ -19786,15 +19806,15 @@
       "tipo": "COMBAT",
       "actor": "Malachar",
       "salaId": "S5-D",
-      "mensaje": "Malachar golpea al Parásito e inflige 3 daño. HP Parásito: 137/140.",
-      "detalle": "danio\u003d3;phase\u003d2"
+      "mensaje": "Malachar golpea al Parásito e inflige 0 daño. HP Parásito: 122/180.",
+      "detalle": "danio\u003d0;phase\u003d1"
     },
     {
       "turno": 434,
       "tipo": "STATE",
       "actor": "Parásito",
       "salaId": "S5-D",
-      "mensaje": "Parásito recibe 3 daño por efectos. HP: 134/140.",
+      "mensaje": "Parásito recibe 3 daño por efectos. HP: 140/140.",
       "detalle": "danioEfectos\u003d3"
     },
     {
@@ -19804,6 +19824,14 @@
       "salaId": "S5-D",
       "mensaje": "BURN expira en Parásito.",
       "detalle": "efecto\u003dBURN"
+    },
+    {
+      "turno": 434,
+      "tipo": "GAME",
+      "actor": "Parásito",
+      "salaId": "S5-D",
+      "mensaje": "El Parásito cambia a fase 2 y recompone su forma. HP: 140/140.",
+      "detalle": "phase\u003d2"
     },
     {
       "turno": 434,
@@ -19826,8 +19854,7 @@
       "tipo": "MOVEMENT",
       "actor": "DORATH",
       "salaId": "S5-D",
-      "mensaje": "DORATH se mueve de (3,7) a (2,6) en S5-D.",
-      "detalle": "origen\u003d3,7;destino\u003d2,6"
+      "mensaje": "DORATH decide no moverse en S5-D."
     },
     {
       "turno": 434,
@@ -19848,155 +19875,41 @@
       "tipo": "COMBAT",
       "actor": "DORATH",
       "salaId": "S5-D",
-      "mensaje": "DORATH cede el turno."
+      "mensaje": "DORATH inflige 15 daño a PARASITO. HP enemigo: 125/140.",
+      "detalle": "objetivo\u003dPARASITO;danio\u003d15"
     },
     {
-      "turno": 435,
-      "tipo": "COMBAT",
-      "actor": "Malachar",
-      "salaId": "S5-D",
-      "mensaje": "Malachar golpea al Parásito e inflige 0 daño. HP Parásito: 134/140.",
-      "detalle": "danio\u003d0;phase\u003d2"
-    },
-    {
-      "turno": 435,
-      "tipo": "ENEMY_TURN",
-      "actor": "Parásito",
-      "salaId": "S5-D",
-      "mensaje": "El Parásito se mueve de (5,8) a (3,8).",
-      "detalle": "origen\u003d5,8;destino\u003d3,8"
-    },
-    {
-      "turno": 435,
-      "tipo": "ENEMY_TURN",
-      "actor": "ENEMIGOS",
-      "salaId": "S5-D",
-      "mensaje": "Turno enemigo resuelto en S5-D.",
-      "detalle": "enemigosIniciales\u003d1"
-    },
-    {
-      "turno": 435,
-      "tipo": "MOVEMENT",
-      "actor": "DORATH",
-      "salaId": "S5-D",
-      "mensaje": "DORATH se mueve de (2,6) a (2,5) en S5-D.",
-      "detalle": "origen\u003d2,6;destino\u003d2,5"
-    },
-    {
-      "turno": 435,
-      "tipo": "PICKUP",
-      "actor": "DORATH",
-      "salaId": "S5-D",
-      "mensaje": "DORATH decide no recoger ni interactuar."
-    },
-    {
-      "turno": 435,
-      "tipo": "ITEM",
-      "actor": "DORATH",
-      "salaId": "S5-D",
-      "mensaje": "DORATH decide no usar item."
-    },
-    {
-      "turno": 435,
-      "tipo": "COMBAT",
-      "actor": "DORATH",
-      "salaId": "S5-D",
-      "mensaje": "DORATH inflige 19 daño a PARASITO. HP enemigo: 115/140.",
-      "detalle": "objetivo\u003dPARASITO;danio\u003d19"
-    },
-    {
-      "turno": 435,
-      "tipo": "COMBAT",
-      "actor": "DORATH",
-      "salaId": "S5-D",
-      "mensaje": "DORATH cede el turno."
-    },
-    {
-      "turno": 436,
-      "tipo": "ENEMY_TURN",
-      "actor": "Malachar",
-      "salaId": "S5-D",
-      "mensaje": "Malachar avanza hacia el Parásito.",
-      "detalle": "fila\u003d5;col\u003d7"
-    },
-    {
-      "turno": 436,
-      "tipo": "ENEMY_TURN",
-      "actor": "Parásito",
-      "salaId": "S5-D",
-      "mensaje": "El Parásito se mueve de (3,8) a (2,7).",
-      "detalle": "origen\u003d3,8;destino\u003d2,7"
-    },
-    {
-      "turno": 436,
-      "tipo": "ENEMY_TURN",
-      "actor": "ENEMIGOS",
-      "salaId": "S5-D",
-      "mensaje": "Turno enemigo resuelto en S5-D.",
-      "detalle": "enemigosIniciales\u003d1"
-    },
-    {
-      "turno": 436,
-      "tipo": "MOVEMENT",
-      "actor": "DORATH",
-      "salaId": "S5-D",
-      "mensaje": "DORATH se mueve de (2,5) a (2,4) en S5-D.",
-      "detalle": "origen\u003d2,5;destino\u003d2,4"
-    },
-    {
-      "turno": 436,
-      "tipo": "PICKUP",
-      "actor": "DORATH",
-      "salaId": "S5-D",
-      "mensaje": "DORATH decide no recoger ni interactuar."
-    },
-    {
-      "turno": 436,
-      "tipo": "ITEM",
-      "actor": "DORATH",
-      "salaId": "S5-D",
-      "mensaje": "DORATH decide no usar item."
-    },
-    {
-      "turno": 436,
-      "tipo": "COMBAT",
-      "actor": "DORATH",
-      "salaId": "S5-D",
-      "mensaje": "DORATH inflige 14 daño a PARASITO. HP enemigo: 101/140.",
-      "detalle": "objetivo\u003dPARASITO;danio\u003d14"
-    },
-    {
-      "turno": 436,
+      "turno": 434,
       "tipo": "STATE",
       "actor": "DORATH",
       "salaId": "S5-D",
       "mensaje": "PARASITO recibe BURN."
     },
     {
-      "turno": 436,
+      "turno": 434,
       "tipo": "COMBAT",
       "actor": "DORATH",
       "salaId": "S5-D",
       "mensaje": "DORATH cede el turno."
     },
     {
-      "turno": 437,
-      "tipo": "ENEMY_TURN",
+      "turno": 435,
+      "tipo": "COMBAT",
       "actor": "Malachar",
       "salaId": "S5-D",
-      "mensaje": "Malachar avanza hacia el Parásito.",
-      "detalle": "fila\u003d4;col\u003d7"
+      "mensaje": "Malachar golpea al Parásito e inflige 0 daño. HP Parásito: 125/140.",
+      "detalle": "danio\u003d0;phase\u003d2"
     },
     {
-      "turno": 437,
+      "turno": 435,
       "tipo": "STATE",
       "actor": "Parásito",
       "salaId": "S5-D",
-      "mensaje": "Parásito recibe 3 daño por efectos. HP: 98/140.",
+      "mensaje": "Parásito recibe 3 daño por efectos. HP: 122/140.",
       "detalle": "danioEfectos\u003d3"
     },
     {
-      "turno": 437,
+      "turno": 435,
       "tipo": "STATE",
       "actor": "Parásito",
       "salaId": "S5-D",
@@ -20004,11 +19917,127 @@
       "detalle": "efecto\u003dBURN"
     },
     {
+      "turno": 435,
+      "tipo": "ENEMY_TURN",
+      "actor": "Parásito",
+      "salaId": "S5-D",
+      "mensaje": "Parásito ataca a DORATH e inflige 3 daño. HP jugador: 50/80.",
+      "detalle": "habilidad\u003dZarpazo Maldito;danio\u003d3"
+    },
+    {
+      "turno": 435,
+      "tipo": "STATE",
+      "actor": "Parásito",
+      "salaId": "S5-D",
+      "mensaje": "Zarpazo Maldito aplica CURSE a DORATH.",
+      "detalle": "efecto\u003dCURSE"
+    },
+    {
+      "turno": 435,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S5-D",
+      "mensaje": "Turno enemigo resuelto en S5-D.",
+      "detalle": "enemigosIniciales\u003d1"
+    },
+    {
+      "turno": 435,
+      "tipo": "MOVEMENT",
+      "actor": "DORATH",
+      "salaId": "S5-D",
+      "mensaje": "DORATH se mueve de (5,6) a (5,4) en S5-D.",
+      "detalle": "origen\u003d5,6;destino\u003d5,4"
+    },
+    {
+      "turno": 435,
+      "tipo": "COMBAT",
+      "actor": "DORATH",
+      "salaId": "S5-D",
+      "mensaje": "DORATH cede el turno."
+    },
+    {
+      "turno": 436,
+      "tipo": "COMBAT",
+      "actor": "Malachar",
+      "salaId": "S5-D",
+      "mensaje": "Malachar golpea al Parásito e inflige 0 daño. HP Parásito: 122/140.",
+      "detalle": "danio\u003d0;phase\u003d2"
+    },
+    {
+      "turno": 436,
+      "tipo": "ENEMY_TURN",
+      "actor": "Parásito",
+      "salaId": "S5-D",
+      "mensaje": "El Parásito se mueve de (5,8) a (5,6).",
+      "detalle": "origen\u003d5,8;destino\u003d5,6"
+    },
+    {
+      "turno": 436,
+      "tipo": "ENEMY_TURN",
+      "actor": "ENEMIGOS",
+      "salaId": "S5-D",
+      "mensaje": "Turno enemigo resuelto en S5-D.",
+      "detalle": "enemigosIniciales\u003d1"
+    },
+    {
+      "turno": 436,
+      "tipo": "MOVEMENT",
+      "actor": "DORATH",
+      "salaId": "S5-D",
+      "mensaje": "DORATH decide no moverse en S5-D."
+    },
+    {
+      "turno": 436,
+      "tipo": "PICKUP",
+      "actor": "DORATH",
+      "salaId": "S5-D",
+      "mensaje": "DORATH decide no recoger ni interactuar."
+    },
+    {
+      "turno": 436,
+      "tipo": "ITEM",
+      "actor": "DORATH",
+      "salaId": "S5-D",
+      "mensaje": "DORATH usa P2 - Poción Mediana.",
+      "detalle": "itemId\u003dP2"
+    },
+    {
+      "turno": 436,
+      "tipo": "COMBAT",
+      "actor": "DORATH",
+      "salaId": "S5-D",
+      "mensaje": "DORATH inflige 21 daño a PARASITO. HP enemigo: 101/140.",
+      "detalle": "objetivo\u003dPARASITO;danio\u003d21"
+    },
+    {
+      "turno": 436,
+      "tipo": "COMBAT",
+      "actor": "DORATH",
+      "salaId": "S5-D",
+      "mensaje": "DORATH cede el turno."
+    },
+    {
+      "turno": 437,
+      "tipo": "STATE",
+      "actor": "DORATH",
+      "salaId": "S5-D",
+      "mensaje": "CURSE expira en DORATH.",
+      "detalle": "efecto\u003dCURSE"
+    },
+    {
+      "turno": 437,
+      "tipo": "COMBAT",
+      "actor": "Malachar",
+      "salaId": "S5-D",
+      "mensaje": "Malachar golpea al Parásito e inflige 0 daño. HP Parásito: 101/140.",
+      "detalle": "danio\u003d0;phase\u003d2"
+    },
+    {
       "turno": 437,
       "tipo": "ENEMY_TURN",
       "actor": "Parásito",
       "salaId": "S5-D",
-      "mensaje": "Parásito alcanza con AOE a DORATH con Pulso del Núcleo e inflige 12 daño. HP jugador: 57/80.",
+      "mensaje": "Parásito alcanza con AOE a DORATH con Pulso del Núcleo e inflige 12 daño. HP jugador: 68/80.",
       "detalle": "habilidad\u003dPulso del Núcleo;danio\u003d12"
     },
     {
@@ -20032,8 +20061,7 @@
       "tipo": "MOVEMENT",
       "actor": "DORATH",
       "salaId": "S5-D",
-      "mensaje": "DORATH se mueve de (2,4) a (1,4) en S5-D.",
-      "detalle": "origen\u003d2,4;destino\u003d1,4"
+      "mensaje": "DORATH decide no moverse en S5-D."
     },
     {
       "turno": 437,
@@ -20054,15 +20082,8 @@
       "tipo": "COMBAT",
       "actor": "DORATH",
       "salaId": "S5-D",
-      "mensaje": "DORATH inflige 11 daño a PARASITO. HP enemigo: 87/140.",
-      "detalle": "objetivo\u003dPARASITO;danio\u003d11"
-    },
-    {
-      "turno": 437,
-      "tipo": "STATE",
-      "actor": "DORATH",
-      "salaId": "S5-D",
-      "mensaje": "PARASITO recibe BURN."
+      "mensaje": "DORATH inflige 28 daño a PARASITO. HP enemigo: 73/140.",
+      "detalle": "objetivo\u003dPARASITO;danio\u003d28"
     },
     {
       "turno": 437,
@@ -20076,32 +20097,24 @@
       "tipo": "COMBAT",
       "actor": "Malachar",
       "salaId": "S5-D",
-      "mensaje": "Malachar golpea al Parásito e inflige 1 daño. HP Parásito: 86/140.",
-      "detalle": "danio\u003d1;phase\u003d2"
-    },
-    {
-      "turno": 438,
-      "tipo": "STATE",
-      "actor": "Parásito",
-      "salaId": "S5-D",
-      "mensaje": "Parásito recibe 3 daño por efectos. HP: 83/140.",
-      "detalle": "danioEfectos\u003d3"
-    },
-    {
-      "turno": 438,
-      "tipo": "STATE",
-      "actor": "Parásito",
-      "salaId": "S5-D",
-      "mensaje": "BURN expira en Parásito.",
-      "detalle": "efecto\u003dBURN"
+      "mensaje": "Malachar golpea al Parásito e inflige 0 daño. HP Parásito: 73/140.",
+      "detalle": "danio\u003d0;phase\u003d2"
     },
     {
       "turno": 438,
       "tipo": "ENEMY_TURN",
       "actor": "Parásito",
       "salaId": "S5-D",
-      "mensaje": "El Parásito se mueve de (2,7) a (2,5).",
-      "detalle": "origen\u003d2,7;destino\u003d2,5"
+      "mensaje": "Parásito ataca a DORATH e inflige 0 daño. HP jugador: 68/80.",
+      "detalle": "habilidad\u003dZarpazo Maldito;danio\u003d0"
+    },
+    {
+      "turno": 438,
+      "tipo": "STATE",
+      "actor": "Parásito",
+      "salaId": "S5-D",
+      "mensaje": "Zarpazo Maldito aplica CURSE a DORATH.",
+      "detalle": "efecto\u003dCURSE"
     },
     {
       "turno": 438,
@@ -20116,37 +20129,8 @@
       "tipo": "MOVEMENT",
       "actor": "DORATH",
       "salaId": "S5-D",
-      "mensaje": "DORATH se mueve de (1,4) a (1,2) en S5-D.",
-      "detalle": "origen\u003d1,4;destino\u003d1,2"
-    },
-    {
-      "turno": 438,
-      "tipo": "PICKUP",
-      "actor": "DORATH",
-      "salaId": "S5-D",
-      "mensaje": "DORATH decide no recoger ni interactuar."
-    },
-    {
-      "turno": 438,
-      "tipo": "ITEM",
-      "actor": "DORATH",
-      "salaId": "S5-D",
-      "mensaje": "DORATH decide no usar item."
-    },
-    {
-      "turno": 438,
-      "tipo": "COMBAT",
-      "actor": "DORATH",
-      "salaId": "S5-D",
-      "mensaje": "DORATH inflige 8 daño a PARASITO. HP enemigo: 75/140.",
-      "detalle": "objetivo\u003dPARASITO;danio\u003d8"
-    },
-    {
-      "turno": 438,
-      "tipo": "STATE",
-      "actor": "DORATH",
-      "salaId": "S5-D",
-      "mensaje": "PARASITO recibe BURN."
+      "mensaje": "DORATH se mueve de (5,4) a (3,4) en S5-D.",
+      "detalle": "origen\u003d5,4;destino\u003d3,4"
     },
     {
       "turno": 438,
@@ -20157,35 +20141,19 @@
     },
     {
       "turno": 439,
-      "tipo": "ENEMY_TURN",
+      "tipo": "COMBAT",
       "actor": "Malachar",
       "salaId": "S5-D",
-      "mensaje": "Malachar avanza hacia el Parásito.",
-      "detalle": "fila\u003d3;col\u003d7"
-    },
-    {
-      "turno": 439,
-      "tipo": "STATE",
-      "actor": "Parásito",
-      "salaId": "S5-D",
-      "mensaje": "Parásito recibe 3 daño por efectos. HP: 72/140.",
-      "detalle": "danioEfectos\u003d3"
-    },
-    {
-      "turno": 439,
-      "tipo": "STATE",
-      "actor": "Parásito",
-      "salaId": "S5-D",
-      "mensaje": "BURN expira en Parásito.",
-      "detalle": "efecto\u003dBURN"
+      "mensaje": "Malachar golpea al Parásito e inflige 0 daño. HP Parásito: 73/140.",
+      "detalle": "danio\u003d0;phase\u003d2"
     },
     {
       "turno": 439,
       "tipo": "ENEMY_TURN",
       "actor": "Parásito",
       "salaId": "S5-D",
-      "mensaje": "El Parásito se mueve de (2,5) a (2,3).",
-      "detalle": "origen\u003d2,5;destino\u003d2,3"
+      "mensaje": "El Parásito se mueve de (5,6) a (4,5).",
+      "detalle": "origen\u003d5,6;destino\u003d4,5"
     },
     {
       "turno": 439,
@@ -20200,8 +20168,7 @@
       "tipo": "MOVEMENT",
       "actor": "DORATH",
       "salaId": "S5-D",
-      "mensaje": "DORATH se mueve de (1,2) a (3,2) en S5-D.",
-      "detalle": "origen\u003d1,2;destino\u003d3,2"
+      "mensaje": "DORATH decide no moverse en S5-D."
     },
     {
       "turno": 439,
@@ -20222,8 +20189,8 @@
       "tipo": "COMBAT",
       "actor": "DORATH",
       "salaId": "S5-D",
-      "mensaje": "DORATH inflige 12 daño a PARASITO. HP enemigo: 75/75.",
-      "detalle": "objetivo\u003dPARASITO;danio\u003d12"
+      "mensaje": "DORATH inflige 23 daño a PARASITO. HP enemigo: 75/75.",
+      "detalle": "objetivo\u003dPARASITO;danio\u003d23"
     },
     {
       "turno": 439,
@@ -20238,8 +20205,8 @@
       "tipo": "ENEMY_TURN",
       "actor": "Parásito",
       "salaId": "S5-D",
-      "mensaje": "El Parásito usa Devorar Luz: 20 daño y BLIND sobre DORATH. HP jugador: 37/80.",
-      "detalle": "habilidad\u003dDevorar Luz;danio\u003d20"
+      "mensaje": "El Parásito usa Devorar Luz: 23 daño y BLIND sobre DORATH. HP jugador: 45/80.",
+      "detalle": "habilidad\u003dDevorar Luz;danio\u003d23"
     },
     {
       "turno": 439,
@@ -20258,11 +20225,19 @@
     },
     {
       "turno": 440,
+      "tipo": "STATE",
+      "actor": "DORATH",
+      "salaId": "S5-D",
+      "mensaje": "CURSE expira en DORATH.",
+      "detalle": "efecto\u003dCURSE"
+    },
+    {
+      "turno": 440,
       "tipo": "ENEMY_TURN",
       "actor": "Malachar",
       "salaId": "S5-D",
       "mensaje": "Malachar avanza hacia el Parásito.",
-      "detalle": "fila\u003d2;col\u003d7"
+      "detalle": "fila\u003d5;col\u003d7"
     },
     {
       "turno": 440,
@@ -20285,8 +20260,8 @@
       "tipo": "MOVEMENT",
       "actor": "DORATH",
       "salaId": "S5-D",
-      "mensaje": "DORATH se mueve de (3,2) a (5,2) en S5-D.",
-      "detalle": "origen\u003d3,2;destino\u003d5,2"
+      "mensaje": "DORATH se mueve de (3,4) a (3,2) en S5-D.",
+      "detalle": "origen\u003d3,4;destino\u003d3,2"
     },
     {
       "turno": 440,
@@ -20300,15 +20275,15 @@
       "tipo": "ITEM",
       "actor": "DORATH",
       "salaId": "S5-D",
-      "mensaje": "DORATH decide no usar item."
+      "mensaje": "DORATH usa P2 - Poción Mediana.",
+      "detalle": "itemId\u003dP2"
     },
     {
       "turno": 440,
       "tipo": "COMBAT",
       "actor": "DORATH",
       "salaId": "S5-D",
-      "mensaje": "DORATH inflige 18 daño a PARASITO. HP enemigo: 57/75.",
-      "detalle": "objetivo\u003dPARASITO;danio\u003d18"
+      "mensaje": "DORATH falla el ataque contra PARASITO por BLIND."
     },
     {
       "turno": 440,
@@ -20331,15 +20306,15 @@
       "actor": "Malachar",
       "salaId": "S5-D",
       "mensaje": "Malachar avanza hacia el Parásito.",
-      "detalle": "fila\u003d2;col\u003d6"
+      "detalle": "fila\u003d5;col\u003d6"
     },
     {
       "turno": 441,
       "tipo": "ENEMY_TURN",
       "actor": "Parásito",
       "salaId": "S5-D",
-      "mensaje": "El Parásito se mueve de (2,3) a (4,2).",
-      "detalle": "origen\u003d2,3;destino\u003d4,2"
+      "mensaje": "El Parásito se mueve de (4,5) a (4,2).",
+      "detalle": "origen\u003d4,5;destino\u003d4,2"
     },
     {
       "turno": 441,
@@ -20368,16 +20343,15 @@
       "tipo": "ITEM",
       "actor": "DORATH",
       "salaId": "S5-D",
-      "mensaje": "DORATH usa P2 - Poción Mediana.",
-      "detalle": "itemId\u003dP2"
+      "mensaje": "DORATH decide no usar item."
     },
     {
       "turno": 441,
       "tipo": "COMBAT",
       "actor": "DORATH",
       "salaId": "S5-D",
-      "mensaje": "DORATH inflige 15 daño a PARASITO. HP enemigo: 42/75.",
-      "detalle": "objetivo\u003dPARASITO;danio\u003d15"
+      "mensaje": "DORATH inflige 22 daño a PARASITO. HP enemigo: 53/75.",
+      "detalle": "objetivo\u003dPARASITO;danio\u003d22"
     },
     {
       "turno": 441,
@@ -20392,15 +20366,15 @@
       "actor": "Malachar",
       "salaId": "S5-D",
       "mensaje": "Malachar avanza hacia el Parásito.",
-      "detalle": "fila\u003d2;col\u003d5"
+      "detalle": "fila\u003d5;col\u003d5"
     },
     {
       "turno": 442,
       "tipo": "ENEMY_TURN",
       "actor": "Parásito",
       "salaId": "S5-D",
-      "mensaje": "Parásito ataca a DORATH e inflige 2 daño. HP jugador: 75/80.",
-      "detalle": "habilidad\u003dDesgarro Profundo;danio\u003d2"
+      "mensaje": "Parásito ataca a DORATH e inflige 0 daño. HP jugador: 80/80.",
+      "detalle": "habilidad\u003dDesgarro Profundo;danio\u003d0"
     },
     {
       "turno": 442,
@@ -20436,8 +20410,8 @@
       "tipo": "COMBAT",
       "actor": "DORATH",
       "salaId": "S5-D",
-      "mensaje": "DORATH inflige 27 daño a PARASITO. HP enemigo: 15/75.",
-      "detalle": "objetivo\u003dPARASITO;danio\u003d27"
+      "mensaje": "DORATH inflige 12 daño a PARASITO. HP enemigo: 41/75.",
+      "detalle": "objetivo\u003dPARASITO;danio\u003d12"
     },
     {
       "turno": 442,
@@ -20452,14 +20426,14 @@
       "actor": "Malachar",
       "salaId": "S5-D",
       "mensaje": "Malachar avanza hacia el Parásito.",
-      "detalle": "fila\u003d2;col\u003d4"
+      "detalle": "fila\u003d5;col\u003d4"
     },
     {
       "turno": 443,
       "tipo": "ENEMY_TURN",
       "actor": "Parásito",
       "salaId": "S5-D",
-      "mensaje": "Parásito alcanza con AOE a DORATH con Pulso Intensificado e inflige 15 daño. HP jugador: 60/80.",
+      "mensaje": "Parásito alcanza con AOE a DORATH con Pulso Intensificado e inflige 15 daño. HP jugador: 65/80.",
       "detalle": "habilidad\u003dPulso Intensificado;danio\u003d15"
     },
     {
@@ -20496,8 +20470,8 @@
       "tipo": "COMBAT",
       "actor": "DORATH",
       "salaId": "S5-D",
-      "mensaje": "DORATH inflige 11 daño a PARASITO. HP enemigo: 4/75.",
-      "detalle": "objetivo\u003dPARASITO;danio\u003d11"
+      "mensaje": "DORATH inflige 26 daño a PARASITO. HP enemigo: 15/75.",
+      "detalle": "objetivo\u003dPARASITO;danio\u003d26"
     },
     {
       "turno": 443,
@@ -20519,14 +20493,14 @@
       "actor": "Malachar",
       "salaId": "S5-D",
       "mensaje": "Malachar avanza hacia el Parásito.",
-      "detalle": "fila\u003d3;col\u003d4"
+      "detalle": "fila\u003d5;col\u003d3"
     },
     {
       "turno": 444,
       "tipo": "STATE",
       "actor": "Parásito",
       "salaId": "S5-D",
-      "mensaje": "Parásito recibe 3 daño por efectos. HP: 1/75.",
+      "mensaje": "Parásito recibe 3 daño por efectos. HP: 12/75.",
       "detalle": "danioEfectos\u003d3"
     },
     {
@@ -20542,8 +20516,8 @@
       "tipo": "ENEMY_TURN",
       "actor": "Parásito",
       "salaId": "S5-D",
-      "mensaje": "Parásito ataca a DORATH e inflige 8 daño. HP jugador: 52/80.",
-      "detalle": "habilidad\u003dDesgarro Profundo;danio\u003d8"
+      "mensaje": "Parásito ataca a DORATH e inflige 0 daño. HP jugador: 65/80.",
+      "detalle": "habilidad\u003dDesgarro Profundo;danio\u003d0"
     },
     {
       "turno": 444,
@@ -20579,8 +20553,8 @@
       "tipo": "COMBAT",
       "actor": "DORATH",
       "salaId": "S5-D",
-      "mensaje": "DORATH inflige 30 daño a PARASITO. HP enemigo: 0/75.",
-      "detalle": "objetivo\u003dPARASITO;danio\u003d30"
+      "mensaje": "DORATH inflige 19 daño a PARASITO. HP enemigo: 0/75.",
+      "detalle": "objetivo\u003dPARASITO;danio\u003d19"
     },
     {
       "turno": 444,

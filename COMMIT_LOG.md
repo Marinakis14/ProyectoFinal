@@ -2682,6 +2682,72 @@ Permitir que el jugador vea el resumen de la partida al terminar antes de decidi
 
 ---
 
+### Sesión 64 — Memoria final y diagramas UML
+
+**Objetivo:**
+Cerrar la documentación de entrega del proyecto, unificando las guías de diseño
+en una memoria actualizada y añadiendo los diagramas UML pendientes.
+
+**Cambios realizados:**
+- Creado y completado `MEMORIA_DISENO_VALDRIS.md` como memoria y documento de
+  diseño unificado.
+- Añadidos integrantes, fecha de entrega, alcance, requisitos, casos de uso,
+  modelo de dominio, contratos, invariantes, pruebas, uso de IA y crítica del
+  proyecto.
+- Documentadas estructuras propias, costes, algoritmos principales, JSON,
+  JavaFX, decisiones de diseño y gestión del proyecto.
+- Añadidos diagramas UML de casos de uso, actividad del turno, secuencia de
+  ataque y estados de partida en formato `.puml` y `.svg`.
+- Referenciados en la memoria los diagramas de clases, fases de turno y fases
+  de desarrollo ya existentes en `diagramas/`.
+- Revisados los SVG nuevos mediante comprobación textual de apertura, cierre,
+  tamaño y textos principales.
+- Actualizados `TASKS.md` y `COMMIT_LOG.md` con el cierre documental.
+
+**Verificación:**
+- `mvn test` ejecutado correctamente.
+- Resultado: 498 tests, 0 failures, 0 errors, 0 skipped.
+- `git diff --check -- MEMORIA_DISENO_VALDRIS.md` sin errores; solo aviso
+  esperado de normalización LF/CRLF.
+- `rg "<svg|</svg>|@startuml|@enduml" diagramas` confirma que las fuentes
+  PlantUML y los SVG nuevos contienen inicio y cierre.
+
+**Decisión:**
+- La memoria queda como documento único de diseño y entrega; las guías previas
+  de `docs/` se conservan como material de apoyo, pero no sustituyen a la
+  memoria final.
+
+**Commit sugerido:** `git commit -m "docs: add final design memory and uml diagrams"`
+
+---
+
+### Sesión 65 — README de entrega
+
+**Objetivo:**
+Añadir un fichero de entrada al repositorio para orientar la ejecución, revisión
+y localización de los entregables principales.
+
+**Cambios realizados:**
+- Creado `README.md` con descripción del juego, integrantes, tecnologías,
+  comandos de ejecución y pruebas.
+- Documentada la estructura principal del proyecto y los ficheros de entrega.
+- Añadida referencia a la configuración JSON, memoria final, diagramas,
+  registros de tareas y diario de IA.
+- Actualizado `TASKS.md` con la tarea de cierre del README.
+
+**Verificación:**
+- Cambio documental sin modificación de código.
+- `git diff --check -- README.md TASKS.md COMMIT_LOG.md` sin errores; solo
+  avisos esperados de normalización LF/CRLF si Git los muestra.
+
+**Decisión:**
+- El README queda como guía breve de entrada; la explicación completa sigue en
+  `MEMORIA_DISENO_VALDRIS.md`.
+
+**Commit sugerido:** `git commit -m "docs: add project readme"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas

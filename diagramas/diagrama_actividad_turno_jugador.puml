@@ -1,0 +1,98 @@
+@startuml
+title Valdris - Diagrama de actividad del turno del jugador
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor #F7F1E4
+  BorderColor #5B4632
+  FontColor #221A12
+}
+skinparam diamond {
+  BackgroundColor #E8D8B7
+  BorderColor #5B4632
+}
+
+start
+:Comenzar turno del jugador;
+:Procesar efectos de inicio de turno;
+
+if (¿Jugador derrotado?) then (sí)
+  :Registrar derrota;
+  stop
+else (no)
+endif
+
+:Mostrar celdas alcanzables;
+
+if (¿Quiere moverse?) then (sí)
+  :Seleccionar celda destino;
+  if (¿Destino válido?) then (sí)
+    :Mover jugador;
+    :Consumir fase de movimiento;
+  else (no)
+    :Mostrar movimiento inválido;
+  endif
+else (no)
+endif
+
+if (¿Ha cambiado de sala?) then (sí)
+  :Entrar en nueva sala;
+  :Reiniciar fases del turno;
+  stop
+else (no)
+endif
+
+if (¿Interactuar o recoger?) then (sí)
+  :Resolver interacción con celda adyacente;
+  if (¿Cofre con elección?) then (sí)
+    :Mostrar opciones de recompensa;
+    :Añadir arma elegida al inventario;
+  else (no)
+    :Actualizar inventario o estado de sala;
+  endif
+  :Consumir fase de interacción;
+else (no)
+endif
+
+if (¿Usar objeto?) then (sí)
+  :Abrir inventario;
+  if (¿Objeto usable o equipable?) then (sí)
+    :Aplicar efecto o equipar objeto;
+    :Consumir fase de uso de objeto;
+  else (no)
+    :Mostrar acción no válida;
+  endif
+else (no)
+endif
+
+if (¿Atacar?) then (sí)
+  :Seleccionar enemigo objetivo;
+  if (¿Objetivo en rango y visible?) then (sí)
+    :Resolver combate;
+    :Registrar daño y efectos;
+    :Consumir fase de ataque;
+  else (no)
+    :Mostrar ataque inválido;
+  endif
+else (no)
+endif
+
+if (¿Victoria o derrota?) then (sí)
+  :Mostrar desenlace;
+  :Preparar resumen final;
+  stop
+else (no)
+endif
+
+:Resolver turno de enemigos;
+
+if (¿Victoria o derrota tras enemigos?) then (sí)
+  :Mostrar pantalla final;
+  :Preparar resumen final;
+  stop
+else (no)
+  :Avanzar al siguiente turno;
+endif
+
+stop
+@enduml

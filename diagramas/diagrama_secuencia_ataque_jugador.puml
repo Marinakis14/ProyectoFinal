@@ -1,0 +1,51 @@
+@startuml
+title Valdris - Diagrama de secuencia: ataque del jugador
+
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #4C3A2A
+  LifeLineBorderColor #5B4632
+  LifeLineBackgroundColor #EFE2C7
+  ParticipantBorderColor #5B4632
+  ParticipantBackgroundColor #FBF7ED
+  ParticipantFontColor #221A12
+}
+
+actor Jugador
+participant "GameView" as View
+participant "GameController" as Controller
+participant "GameModel" as Model
+participant "TurnManager" as Turn
+participant "CombatManager" as Combat
+participant "Enemy" as Enemy
+participant "CombatLogView" as Log
+
+Jugador -> View : selecciona enemigo y pulsa atacar
+View -> Controller : onBotonAtacar(enemy)
+Controller -> Model : atacar(enemy)
+Model -> Turn : atacar(enemy)
+
+Turn -> Turn : validar fase de ataque
+Turn -> Combat : puedeAtacar(player, enemy)
+
+alt objetivo válido
+  Combat --> Turn : true
+  Turn -> Combat : atacar(player, enemy)
+  Combat -> Enemy : aplicarDanio(danio)
+  Enemy --> Combat : estado actualizado
+  Combat --> Turn : CombatResult
+  Turn -> Turn : consumir fase de ataque
+  Turn -> Turn : registrar evento en log
+  Turn --> Model : resultado del ataque
+  Model --> Controller : mensaje y estado actualizado
+  Controller --> View : refrescar()
+  View -> Log : mostrarMensajes(log)
+else objetivo inválido
+  Combat --> Turn : false
+  Turn --> Model : error de ataque
+  Model --> Controller : mensaje de acción no válida
+  Controller --> View : mostrar aviso
+  View -> Log : añadir mensaje
+end
+
+@enduml

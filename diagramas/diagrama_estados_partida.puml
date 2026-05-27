@@ -1,0 +1,45 @@
+@startuml
+title Valdris - Diagrama de estados de la partida
+
+skinparam shadowing false
+skinparam state {
+  BackgroundColor #FBF7ED
+  BorderColor #5B4632
+  FontColor #221A12
+}
+
+[*] --> MenuPrincipal
+
+MenuPrincipal --> IntroduccionNarrativa : nueva partida
+MenuPrincipal --> CargandoPartida : cargar partida
+MenuPrincipal --> [*] : salir
+
+IntroduccionNarrativa --> SeleccionPersonaje : continuar
+SeleccionPersonaje --> DescensoInicial : personaje elegido
+DescensoInicial --> Exploracion : comenzar partida
+CargandoPartida --> Exploracion : carga correcta
+CargandoPartida --> MenuPrincipal : error de carga
+
+Exploracion --> TurnoJugador : sala activa
+TurnoJugador --> CambioSala : abre acceso
+CambioSala --> TurnoJugador : reiniciar fases
+
+TurnoJugador --> TurnoEnemigos : fin acciones jugador
+TurnoEnemigos --> TurnoJugador : enemigos terminan
+
+TurnoJugador --> CombateFinal : dialogo con Malachar
+CombateFinal --> TurnoJugador : fase del Parasito activa
+TurnoEnemigos --> CombateFinal : sala final activa
+
+TurnoJugador --> Derrota : jugador muere o turnos agotados
+TurnoEnemigos --> Derrota : jugador muere
+CombateFinal --> Victoria : Parasito derrotado
+CombateFinal --> Derrota : jugador muere
+
+Victoria --> ResumenFinal : ver desenlace
+Derrota --> ResumenFinal : ver desenlace
+ResumenFinal --> MenuPrincipal : volver al menu
+ResumenFinal --> ResumenExportado : exportar resumen
+ResumenExportado --> ResumenFinal : continuar
+
+@enduml

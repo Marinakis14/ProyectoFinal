@@ -29,6 +29,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga, TurnManager, ItemGenerator, PuzzleManager y DungeonGenerator completados |
 | Capa 6 inicial | GameState, LoadedGame, GameSummary, LectorJSON, GameConfig y DungeonConfigLoader completados |
 | Capa 7 JavaFX | Pantallas principales, introducciones narrativas, selección con retratos, partida, inventario, autoguardado, diálogos narrativos temáticos, cofres con elección de arma, pantalla final ampliada con resumen visible, correcciones jugables y ortográficas, redistribución de pantalla, sprites de unidades, aliados, mini-bosses y fases finales, feedback visual de puzzles y secretos, zonas tintadas, transiciones de pasillo, distancia/ruta global a salida y contadores de turno completados |
+| Documentación final | Memoria de diseño, documento de entrega y diagramas UML completados |
 | Tests JUnit actuales | 498 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
@@ -411,6 +412,28 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 
 ---
 
+## Documentación final de entrega
+
+| Nº | Tarea | Estado |
+|---:|-------|--------|
+| 1 | Crear `MEMORIA_DISENO_VALDRIS.md` como memoria y documento de diseño unificado | ✅ Completado |
+| 2 | Añadir portada, integrantes, fecha de entrega y alcance del documento | ✅ Completado |
+| 3 | Documentar requisitos funcionales, no funcionales y evidencias del enunciado | ✅ Completado |
+| 4 | Documentar diseño general, modelo de dominio, contratos e invariantes | ✅ Completado |
+| 5 | Justificar estructuras propias y costes de operaciones principales | ✅ Completado |
+| 6 | Documentar algoritmos principales: BFS, visión, combate, IA, puzzles y persistencia | ✅ Completado |
+| 7 | Documentar configuración inicial JSON, guardado, carga y resumen final | ✅ Completado |
+| 8 | Documentar interfaz JavaFX, casos de uso, pruebas, IA y decisiones de diseño | ✅ Completado |
+| 9 | Añadir sección `Crítica del Proyecto` con limitaciones y mejoras futuras | ✅ Completado |
+| 10 | Crear diagramas UML de casos de uso, actividad, secuencia y estados | ✅ Completado |
+| 11 | Mantener fuentes editables `.puml` junto a los diagramas `.svg` generados | ✅ Completado |
+| 12 | Referenciar en memoria los diagramas existentes de clases, turnos y desarrollo | ✅ Completado |
+| 13 | Revisar los SVG nuevos comprobando cierre, tamaño y textos principales | ✅ Completado |
+| 14 | Revisar líneas largas y referencias internas de la memoria | ✅ Completado |
+| 15 | Crear `README.md` con descripción, ejecución, pruebas, estructura y entregables | ✅ Completado |
+
+---
+
 ## Tests implementados
 
 | Nº | Test | Estado |
@@ -535,6 +558,8 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 61 | Suite tras sprite visible de Malachar como aliado mago | ✅ Correcta |
 | 62 | Suite tras fases visuales únicas del Parásito y desenlace final ampliado | ✅ Correcta |
 | 63 | Suite tras ventana modal de resumen final visible y exportación desplazada | ✅ Correcta |
+| 64 | Suite tras cierre de memoria, diagramas UML y documentación de entrega | ✅ Correcta |
+| 65 | Revisión documental tras añadir `README.md` | ✅ Correcta |
 
 Última verificación completa:
 

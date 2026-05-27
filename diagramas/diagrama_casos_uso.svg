@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="760" viewBox="0 0 1240 760">
+  <defs>
+    <style>
+      .bg { fill: #f7f1e4; }
+      .frame { fill: #fbf7ed; stroke: #5b4632; stroke-width: 2; rx: 8; }
+      .case { fill: #fffdf7; stroke: #6e563e; stroke-width: 2; }
+      .text { font-family: Arial, sans-serif; fill: #251a12; font-size: 16px; text-anchor: middle; }
+      .small { font-family: Arial, sans-serif; fill: #251a12; font-size: 13px; text-anchor: middle; }
+      .title { font-family: Arial, sans-serif; fill: #251a12; font-size: 26px; font-weight: 700; text-anchor: middle; }
+      .label { font-family: Arial, sans-serif; fill: #251a12; font-size: 14px; text-anchor: middle; }
+      .line { stroke: #4c3a2a; stroke-width: 2; fill: none; }
+      .dash { stroke: #4c3a2a; stroke-width: 2; fill: none; stroke-dasharray: 7 5; marker-end: url(#arrow); }
+      .note { fill: #efe2c7; stroke: #806649; stroke-width: 1.5; rx: 6; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L10,3 L0,6 Z" fill="#4c3a2a"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1240" height="760"/>
+  <text class="title" x="620" y="42">Valdris - Diagrama de casos de uso</text>
+
+  <g id="actor">
+    <circle cx="90" cy="170" r="24" fill="none" stroke="#3c2e21" stroke-width="3"/>
+    <line class="line" x1="90" y1="194" x2="90" y2="285"/>
+    <line class="line" x1="42" y1="225" x2="138" y2="225"/>
+    <line class="line" x1="90" y1="285" x2="50" y2="350"/>
+    <line class="line" x1="90" y1="285" x2="130" y2="350"/>
+    <text class="text" x="90" y="390">Jugador</text>
+  </g>
+
+  <rect class="frame" x="190" y="80" width="960" height="620"/>
+  <text class="text" x="670" y="112">Valdris: El Núcleo Profundo</text>
+
+  <ellipse class="case" cx="390" cy="170" rx="116" ry="34"/>
+  <text class="text" x="390" y="166">Iniciar partida</text>
+  <text class="small" x="390" y="184">nueva</text>
+
+  <ellipse class="case" cx="650" cy="170" rx="112" ry="34"/>
+  <text class="text" x="650" y="166">Leer introducción</text>
+  <text class="small" x="650" y="184">narrativa</text>
+
+  <ellipse class="case" cx="910" cy="170" rx="112" ry="34"/>
+  <text class="text" x="910" y="175">Elegir personaje</text>
+
+  <ellipse class="case" cx="390" cy="265" rx="116" ry="34"/>
+  <text class="text" x="390" y="270">Cargar partida</text>
+
+  <ellipse class="case" cx="650" cy="265" rx="116" ry="34"/>
+  <text class="text" x="650" y="270">Moverse en sala</text>
+
+  <ellipse class="case" cx="910" cy="265" rx="116" ry="34"/>
+  <text class="text" x="910" y="270">Cambiar de sala</text>
+
+  <ellipse class="case" cx="390" cy="360" rx="116" ry="34"/>
+  <text class="text" x="390" y="356">Revelar ruta</text>
+  <text class="small" x="390" y="374">al objetivo</text>
+
+  <ellipse class="case" cx="650" cy="360" rx="116" ry="34"/>
+  <text class="text" x="650" y="365">Recoger objeto</text>
+
+  <ellipse class="case" cx="910" cy="360" rx="116" ry="34"/>
+  <text class="text" x="910" y="356">Usar o equipar</text>
+  <text class="small" x="910" y="374">objeto</text>
+
+  <ellipse class="case" cx="390" cy="455" rx="116" ry="34"/>
+  <text class="text" x="390" y="451">Abrir cofre</text>
+  <text class="small" x="390" y="469">secreto</text>
+
+  <ellipse class="case" cx="650" cy="455" rx="116" ry="34"/>
+  <text class="text" x="650" y="451">Elegir</text>
+  <text class="small" x="650" y="469">recompensa</text>
+
+  <ellipse class="case" cx="910" cy="455" rx="116" ry="34"/>
+  <text class="text" x="910" y="460">Combatir enemigo</text>
+
+  <ellipse class="case" cx="390" cy="550" rx="116" ry="34"/>
+  <text class="text" x="390" y="546">Resolver turno</text>
+  <text class="small" x="390" y="564">enemigo</text>
+
+  <ellipse class="case" cx="650" cy="550" rx="116" ry="34"/>
+  <text class="text" x="650" y="555">Guardar partida</text>
+
+  <ellipse class="case" cx="910" cy="550" rx="116" ry="34"/>
+  <text class="text" x="910" y="546">Ver resumen</text>
+  <text class="small" x="910" y="564">final</text>
+
+  <ellipse class="case" cx="910" cy="645" rx="116" ry="34"/>
+  <text class="text" x="910" y="650">Exportar resumen</text>
+
+  <line class="line" x1="138" y1="225" x2="274" y2="170"/>
+  <line class="line" x1="138" y1="225" x2="274" y2="265"/>
+  <line class="line" x1="138" y1="225" x2="534" y2="265"/>
+  <line class="line" x1="138" y1="225" x2="794" y2="265"/>
+  <line class="line" x1="138" y1="225" x2="274" y2="360"/>
+  <line class="line" x1="138" y1="225" x2="534" y2="360"/>
+  <line class="line" x1="138" y1="225" x2="794" y2="360"/>
+  <line class="line" x1="138" y1="225" x2="274" y2="455"/>
+  <line class="line" x1="138" y1="225" x2="794" y2="455"/>
+  <line class="line" x1="138" y1="225" x2="534" y2="550"/>
+  <line class="line" x1="138" y1="225" x2="794" y2="550"/>
+
+  <path class="dash" d="M500 170 C540 150, 565 150, 535 170"/>
+  <path class="dash" d="M506 170 C620 126, 770 126, 800 170"/>
+  <path class="dash" d="M506 455 C550 435, 585 435, 535 455"/>
+  <path class="dash" d="M794 455 C720 492, 595 515, 504 550"/>
+  <path class="dash" d="M910 584 L910 611"/>
+
+  <text class="label" x="560" y="142">&lt;&lt;include&gt;&gt;</text>
+  <text class="label" x="710" y="135">&lt;&lt;include&gt;&gt;</text>
+  <text class="label" x="560" y="428">&lt;&lt;include&gt;&gt;</text>
+  <text class="label" x="690" y="510">&lt;&lt;include&gt;&gt;</text>
+  <text class="label" x="980" y="615">&lt;&lt;extend&gt;&gt;</text>
+
+  <rect class="note" x="1010" y="240" width="115" height="92"/>
+  <text class="small" x="1068" y="265">Cambiar de sala</text>
+  <text class="small" x="1068" y="284">reinicia las</text>
+  <text class="small" x="1068" y="303">fases del turno.</text>
+
+  <rect class="note" x="230" y="620" width="190" height="54"/>
+  <text class="small" x="325" y="641">La ruta combina BFS</text>
+  <text class="small" x="325" y="660">sobre sala y grafo.</text>
+</svg>

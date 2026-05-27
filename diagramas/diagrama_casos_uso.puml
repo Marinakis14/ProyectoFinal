@@ -1,0 +1,58 @@
+@startuml
+title Valdris - Diagrama de casos de uso
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam actorStyle awesome
+
+actor "Jugador" as Jugador
+
+rectangle "Valdris: El Núcleo Profundo" {
+  usecase "Iniciar partida nueva" as UC_Iniciar
+  usecase "Leer introducción\nnarrativa" as UC_Intro
+  usecase "Elegir personaje" as UC_Personaje
+  usecase "Cargar partida" as UC_Cargar
+  usecase "Moverse en sala" as UC_Mover
+  usecase "Cambiar de sala" as UC_Cambiar
+  usecase "Revelar ruta al objetivo" as UC_Ruta
+  usecase "Recoger objeto" as UC_Recoger
+  usecase "Usar o equipar objeto" as UC_Usar
+  usecase "Abrir cofre secreto" as UC_Cofre
+  usecase "Elegir recompensa" as UC_Recompensa
+  usecase "Combatir enemigo" as UC_Combatir
+  usecase "Resolver turno enemigo" as UC_Enemigos
+  usecase "Guardar partida" as UC_Guardar
+  usecase "Ver resumen final" as UC_Resumen
+  usecase "Exportar resumen" as UC_Exportar
+}
+
+Jugador --> UC_Iniciar
+Jugador --> UC_Cargar
+Jugador --> UC_Mover
+Jugador --> UC_Cambiar
+Jugador --> UC_Ruta
+Jugador --> UC_Recoger
+Jugador --> UC_Usar
+Jugador --> UC_Cofre
+Jugador --> UC_Combatir
+Jugador --> UC_Guardar
+Jugador --> UC_Resumen
+
+UC_Iniciar ..> UC_Intro : <<include>>
+UC_Iniciar ..> UC_Personaje : <<include>>
+UC_Cofre ..> UC_Recompensa : <<include>>
+UC_Combatir ..> UC_Enemigos : <<include>>
+UC_Resumen ..> UC_Exportar : <<extend>>
+
+note right of UC_Cambiar
+Al cambiar de sala se reinician
+las fases del turno.
+end note
+
+note right of UC_Ruta
+La ruta se calcula con BFS
+sobre sala y grafo.
+end note
+
+@enduml

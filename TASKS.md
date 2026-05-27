@@ -28,7 +28,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | Capas 2, 3 y 4 | Completadas y testeadas |
 | Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga, TurnManager, ItemGenerator, PuzzleManager y DungeonGenerator completados |
 | Capa 6 inicial | GameState, LoadedGame, GameSummary, LectorJSON, GameConfig y DungeonConfigLoader completados |
-| Capa 7 JavaFX | Pantallas principales, introducciones narrativas, selección con retratos, partida, inventario, autoguardado, diálogos narrativos temáticos, cofres con elección de arma, pantalla final ampliada, correcciones jugables y ortográficas, redistribución de pantalla, sprites de unidades y mini-bosses, feedback visual de puzzles y secretos, zonas tintadas, transiciones de pasillo, distancia/ruta global a salida y contadores de turno completados |
+| Capa 7 JavaFX | Pantallas principales, introducciones narrativas, selección con retratos, partida, inventario, autoguardado, diálogos narrativos temáticos, cofres con elección de arma, pantalla final ampliada, correcciones jugables y ortográficas, redistribución de pantalla, sprites de unidades, aliados, mini-bosses y fases finales, feedback visual de puzzles y secretos, zonas tintadas, transiciones de pasillo, distancia/ruta global a salida y contadores de turno completados |
 | Tests JUnit actuales | 498 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
@@ -405,6 +405,8 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 58 | Añadir modal temático de elección de arma para cofres secretos con 2 o 3 opciones | ✅ Completado |
 | 59 | Corregir tildes, eñes y textos visibles de pantallas narrativas, selección, ruta al Núcleo y recompensas | ✅ Completado |
 | 60 | Diferenciar visualmente mini-bosses narrativos y Parásito final con sprites propios en el mapa | ✅ Completado |
+| 61 | Renderizar a Malachar como aliado visible con aspecto de mago en la sala final | ✅ Completado |
+| 62 | Diferenciar visualmente las tres fases del Parásito y ampliar los desenlaces de victoria con el sacrificio final | ✅ Completado |
 
 ---
 
@@ -529,6 +531,8 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 58 | Suite tras corrección ortográfica de textos visibles en JavaFX y mensajes de configuración | ✅ Correcta |
 | 59 | Suite tras corrección de duración de `BLIND` y rotación de efectos de `CONTROLLER` | ✅ Correcta |
 | 60 | Suite tras sprites diferenciados de mini-bosses y Parásito final | ✅ Correcta |
+| 61 | Suite tras sprite visible de Malachar como aliado mago | ✅ Correcta |
+| 62 | Suite tras fases visuales únicas del Parásito y desenlace final ampliado | ✅ Correcta |
 
 Última verificación completa:
 
@@ -539,7 +543,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 Resultado:
 
 ```text
-496 tests, 0 failures, 0 errors, 0 skipped
+498 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---
@@ -659,6 +663,8 @@ Resultado:
 | 109 | Los efectos del jugador se consumen al cerrar su turno completo; los efectos aplicados por enemigos durante su turno no pierden duración antes de que el jugador pueda actuar | ✅ Aceptada |
 | 110 | `CONTROLLER` evita refrescar un efecto que el jugador ya tiene activo mientras pueda aplicar otro efecto válido | ✅ Aceptada |
 | 111 | Los mini-bosses usan una ruta de renderizado JavaFX propia para no confundirse con enemigos normales que reutilizan su misma IA base | ✅ Aceptada |
+| 112 | Malachar se renderiza por su clase concreta `MalacharAlly`, separada de jugador y enemigos, porque bloquea celda y participa en el combate final sin ser objetivo hostil | ✅ Aceptada |
+| 113 | Las fases del Parásito se diferencian por silueta y escala, no solo por color, para que el jugador perciba la degradación del jefe final | ✅ Aceptada |
 
 ---
 

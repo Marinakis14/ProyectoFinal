@@ -14,6 +14,7 @@ import Valdris.model.map.Cell;
 import Valdris.model.map.Container;
 import Valdris.model.map.Room;
 import Valdris.model.units.Enemy;
+import Valdris.model.units.MalacharAlly;
 import Valdris.model.units.MiniBossEnemy;
 import Valdris.model.units.ParasitoEnemy;
 import Valdris.model.units.Player;
@@ -250,6 +251,10 @@ public class GameView implements GameModelListener {
         Unit unit = cell.getUnit();
         if (unit instanceof Enemy) {
             stack.getChildren().add(crearMarcaEnemigo((Enemy) unit));
+            return;
+        }
+        if (unit instanceof MalacharAlly) {
+            stack.getChildren().add(crearMarcaMalachar((MalacharAlly) unit));
             return;
         }
         if (unit == modelo.getPlayer()) {
@@ -556,6 +561,94 @@ public class GameView implements GameModelListener {
     }
 
     /**
+     * Crea la marca visual de Malachar como aliado mago.
+     *
+     * @param malachar aliado mostrado
+     * @return nodo con sprite y vida
+     */
+    private VBox crearMarcaMalachar(MalacharAlly malachar) {
+        VBox box = new VBox(0);
+        box.setAlignment(Pos.CENTER);
+
+        StackPane sprite = crearSpriteMalachar();
+
+        Label vida = new Label(malachar.getHp() + "/" + malachar.getHpMax());
+        vida.setFont(Font.font("Monospaced", 8));
+        vida.setStyle("-fx-text-fill: #d8fbff; -fx-font-weight: bold;");
+
+        box.getChildren().addAll(sprite, vida);
+        return box;
+    }
+
+    /**
+     * Crea el sprite de Malachar con aspecto de mago.
+     *
+     * @return nodo visual de Malachar
+     */
+    private StackPane crearSpriteMalachar() {
+        StackPane sprite = new StackPane();
+        sprite.setPrefSize(38, 34);
+        sprite.setMaxSize(38, 34);
+
+        Circle aura = new Circle(18);
+        aura.setFill(Color.web("#72d6ff", 0.22));
+        aura.setStroke(Color.web("#d8fbff"));
+        aura.setStrokeWidth(1.2);
+
+        Polygon tunica = new Polygon(19.0, 3.0, 31.0, 33.0, 7.0, 33.0);
+        tunica.setFill(Color.web("#355d8a"));
+        tunica.setStroke(Color.web("#111827"));
+        tunica.setStrokeWidth(1.2);
+
+        Circle rostro = new Circle(6.5);
+        rostro.setTranslateY(-5);
+        rostro.setFill(Color.web("#d5b08a"));
+        rostro.setStroke(Color.web("#2b2118"));
+        rostro.setStrokeWidth(0.8);
+
+        Polygon sombrero = new Polygon(19.0, -18.0, 29.0, -4.0, 9.0, -4.0);
+        sombrero.setFill(Color.web("#263f66"));
+        sombrero.setStroke(Color.web("#111827"));
+        sombrero.setStrokeWidth(1);
+
+        Rectangle ala = new Rectangle(24, 4);
+        ala.setArcWidth(3);
+        ala.setArcHeight(3);
+        ala.setTranslateY(-4);
+        ala.setFill(Color.web("#263f66"));
+        ala.setStroke(Color.web("#111827"));
+        ala.setStrokeWidth(0.8);
+
+        Rectangle baston = new Rectangle(3, 30);
+        baston.setTranslateX(14);
+        baston.setTranslateY(5);
+        baston.setRotate(8);
+        baston.setFill(Color.web("#b88a42"));
+        baston.setStroke(Color.web("#24170c"));
+        baston.setStrokeWidth(0.7);
+
+        Circle cristal = new Circle(4);
+        cristal.setTranslateX(12);
+        cristal.setTranslateY(-12);
+        cristal.setFill(Color.web("#72d6ff"));
+        cristal.setStroke(Color.web("#e4fdff"));
+        cristal.setStrokeWidth(0.8);
+
+        Polygon barba = new Polygon(15.0, 0.0, 23.0, 0.0, 20.0, 11.0, 18.0, 11.0);
+        barba.setFill(Color.web("#d8dce5"));
+        barba.setStroke(Color.web("#7f8c9a"));
+        barba.setStrokeWidth(0.6);
+
+        Label inicial = new Label("M");
+        inicial.setFont(Font.font("Monospaced", 8));
+        inicial.setStyle("-fx-text-fill: #fff2bd; -fx-font-weight: bold;");
+        inicial.setTranslateY(10);
+
+        sprite.getChildren().addAll(aura, baston, cristal, tunica, rostro, barba, sombrero, ala, inicial);
+        return sprite;
+    }
+
+    /**
      * Crea la marca visual del jugador con color segun el personaje elegido.
      *
      * @param player jugador mostrado
@@ -857,47 +950,162 @@ public class GameView implements GameModelListener {
      * @return nodo visual del Parásito
      */
     private StackPane crearSpriteParasito(ParasitoEnemy parasito) {
-        StackPane sprite = new StackPane();
-        sprite.setPrefSize(44, 38);
-        sprite.setMaxSize(44, 38);
+        if (parasito.getPhase() == ParasitoEnemy.FASE_ESENCIA) {
+            return crearSpriteParasitoEsencia(parasito);
+        }
+        if (parasito.getPhase() == ParasitoEnemy.FASE_DESGARRADA) {
+            return crearSpriteParasitoDesgarrado(parasito);
+        }
+        return crearSpriteParasitoCoraza(parasito);
+    }
 
-        Circle aura = new Circle(21);
+    private StackPane crearSpriteParasitoCoraza(ParasitoEnemy parasito) {
+        StackPane sprite = new StackPane();
+        sprite.setPrefSize(48, 38);
+        sprite.setMaxSize(48, 38);
+
+        Circle aura = new Circle(22);
         aura.setFill(Color.web(colorParasito(parasito), 0.24));
         aura.setStroke(Color.web("#72d6ff", 0.75));
         aura.setStrokeWidth(1.4);
 
-        Polygon tentaculoIzq = new Polygon(19.0, 16.0, 4.0, 28.0, 10.0, 32.0, 23.0, 20.0);
-        tentaculoIzq.setFill(Color.web("#21122e"));
-        tentaculoIzq.setStroke(Color.web("#0b0710"));
-        tentaculoIzq.setStrokeWidth(0.8);
+        Polygon garraIzq = new Polygon(18.0, 13.0, 1.0, 20.0, 7.0, 27.0, 22.0, 19.0);
+        garraIzq.setFill(Color.web("#170d22"));
+        garraIzq.setStroke(Color.web("#07040a"));
+        garraIzq.setStrokeWidth(0.8);
 
-        Polygon tentaculoDer = new Polygon(25.0, 16.0, 40.0, 28.0, 34.0, 32.0, 21.0, 20.0);
-        tentaculoDer.setFill(Color.web("#21122e"));
-        tentaculoDer.setStroke(Color.web("#0b0710"));
-        tentaculoDer.setStrokeWidth(0.8);
+        Polygon garraDer = new Polygon(30.0, 13.0, 47.0, 20.0, 41.0, 27.0, 26.0, 19.0);
+        garraDer.setFill(Color.web("#170d22"));
+        garraDer.setStroke(Color.web("#07040a"));
+        garraDer.setStrokeWidth(0.8);
 
-        Polygon cuerpo = new Polygon(22.0, -2.0, 37.0, 12.0, 32.0, 32.0, 22.0, 38.0, 12.0, 32.0, 7.0, 12.0);
-        cuerpo.setFill(Color.web(colorParasito(parasito)));
-        cuerpo.setStroke(Color.web("#07040a"));
-        cuerpo.setStrokeWidth(1.5);
+        Polygon coraza = new Polygon(24.0, -3.0, 41.0, 8.0, 37.0, 29.0, 24.0, 38.0, 11.0, 29.0, 7.0, 8.0);
+        coraza.setFill(Color.web(colorParasito(parasito)));
+        coraza.setStroke(Color.web("#07040a"));
+        coraza.setStrokeWidth(1.7);
 
-        Circle nucleo = new Circle(8);
+        Polygon placas = new Polygon(24.0, 2.0, 34.0, 12.0, 31.0, 27.0, 24.0, 33.0, 17.0, 27.0, 14.0, 12.0);
+        placas.setFill(Color.web("#4e2850"));
+        placas.setStroke(Color.web("#0b0710"));
+        placas.setStrokeWidth(0.9);
+
+        Circle nucleo = new Circle(7);
+        nucleo.setTranslateY(5);
         nucleo.setFill(Color.web("#72d6ff", 0.50));
         nucleo.setStroke(Color.web("#d8fbff"));
         nucleo.setStrokeWidth(1.1);
 
-        Circle ojoCentral = new Circle(3);
+        Circle ojoCentral = new Circle(3.3);
+        ojoCentral.setTranslateY(5);
         ojoCentral.setFill(Color.web("#ffd166"));
         ojoCentral.setStroke(Color.web("#15050a"));
         ojoCentral.setStrokeWidth(0.6);
 
+        Label fase = crearEtiquetaFase(parasito, 13);
+        sprite.getChildren().addAll(aura, garraIzq, garraDer, coraza, placas, nucleo, ojoCentral, fase);
+        return sprite;
+    }
+
+    private StackPane crearSpriteParasitoDesgarrado(ParasitoEnemy parasito) {
+        StackPane sprite = new StackPane();
+        sprite.setPrefSize(42, 34);
+        sprite.setMaxSize(42, 34);
+
+        Circle aura = new Circle(18);
+        aura.setFill(Color.web(colorParasito(parasito), 0.26));
+        aura.setStroke(Color.web("#d572ff", 0.72));
+        aura.setStrokeWidth(1.2);
+
+        Polygon alaRota = new Polygon(18.0, 5.0, 3.0, 2.0, 10.0, 15.0, 2.0, 27.0, 21.0, 18.0);
+        alaRota.setFill(Color.web("#2b0f2f"));
+        alaRota.setStroke(Color.web("#07040a"));
+        alaRota.setStrokeWidth(0.8);
+
+        Polygon cola = new Polygon(24.0, 20.0, 39.0, 12.0, 34.0, 28.0, 25.0, 27.0);
+        cola.setFill(Color.web("#200b2a"));
+        cola.setStroke(Color.web("#07040a"));
+        cola.setStrokeWidth(0.8);
+
+        Polygon cuerpo = new Polygon(21.0, 0.0, 34.0, 10.0, 27.0, 31.0, 15.0, 29.0, 8.0, 11.0);
+        cuerpo.setFill(Color.web(colorParasito(parasito)));
+        cuerpo.setStroke(Color.web("#07040a"));
+        cuerpo.setStrokeWidth(1.5);
+
+        Polygon grieta = new Polygon(21.0, 4.0, 26.0, 13.0, 22.0, 18.0, 27.0, 27.0, 18.0, 20.0, 20.0, 13.0);
+        grieta.setFill(Color.web("#ff5a9d", 0.62));
+        grieta.setStroke(Color.web("#ffd2ec"));
+        grieta.setStrokeWidth(0.7);
+
+        Circle ojo = new Circle(3.1);
+        ojo.setTranslateY(-3);
+        ojo.setFill(Color.web("#f4d35e"));
+        ojo.setStroke(Color.web("#15050a"));
+        ojo.setStrokeWidth(0.6);
+
+        Label fase = crearEtiquetaFase(parasito, 11);
+        sprite.getChildren().addAll(aura, alaRota, cola, cuerpo, grieta, ojo, fase);
+        return sprite;
+    }
+
+    private StackPane crearSpriteParasitoEsencia(ParasitoEnemy parasito) {
+        StackPane sprite = new StackPane();
+        sprite.setPrefSize(34, 31);
+        sprite.setMaxSize(34, 31);
+
+        Circle aura = new Circle(15);
+        aura.setFill(Color.web("#13061f", 0.40));
+        aura.setStroke(Color.web("#9d6cff", 0.85));
+        aura.setStrokeWidth(1.1);
+
+        Polygon sombra = new Polygon(17.0, -2.0, 29.0, 11.0, 24.0, 30.0, 17.0, 25.0, 10.0, 30.0, 5.0, 11.0);
+        sombra.setFill(Color.web(colorParasito(parasito)));
+        sombra.setStroke(Color.web("#050208"));
+        sombra.setStrokeWidth(1.4);
+
+        Polygon capucha = new Polygon(17.0, -5.0, 27.0, 10.0, 21.0, 17.0, 13.0, 17.0, 7.0, 10.0);
+        capucha.setFill(Color.web("#241041"));
+        capucha.setStroke(Color.web("#06020a"));
+        capucha.setStrokeWidth(0.9);
+
+        Rectangle bastonRoto = new Rectangle(3, 25);
+        bastonRoto.setRotate(-24);
+        bastonRoto.setTranslateX(11);
+        bastonRoto.setFill(Color.web("#1b1028"));
+        bastonRoto.setStroke(Color.web("#8f78d8"));
+        bastonRoto.setStrokeWidth(0.6);
+
+        Circle cristal = new Circle(3.5);
+        cristal.setTranslateX(15);
+        cristal.setTranslateY(-11);
+        cristal.setFill(Color.web("#72d6ff", 0.75));
+        cristal.setStroke(Color.web("#d8fbff"));
+        cristal.setStrokeWidth(0.7);
+
+        Circle ojoIzq = new Circle(1.8);
+        ojoIzq.setTranslateX(-3.5);
+        ojoIzq.setTranslateY(2);
+        ojoIzq.setFill(Color.web("#ffcf5a"));
+
+        Circle ojoDer = new Circle(1.8);
+        ojoDer.setTranslateX(3.5);
+        ojoDer.setTranslateY(2);
+        ojoDer.setFill(Color.web("#ffcf5a"));
+
+        Label marca = new Label("M");
+        marca.setFont(Font.font("Serif", 8));
+        marca.setStyle("-fx-text-fill: #d8fbff; -fx-font-weight: bold;");
+        marca.setTranslateY(10);
+
+        sprite.getChildren().addAll(aura, bastonRoto, sombra, capucha, cristal, ojoIzq, ojoDer, marca);
+        return sprite;
+    }
+
+    private Label crearEtiquetaFase(ParasitoEnemy parasito, int translateY) {
         Label fase = new Label(String.valueOf(parasito.getPhase()));
         fase.setFont(Font.font("Monospaced", 8));
         fase.setStyle("-fx-text-fill: #ffffff; -fx-font-weight: bold;");
-        fase.setTranslateY(11);
-
-        sprite.getChildren().addAll(aura, tentaculoIzq, tentaculoDer, cuerpo, nucleo, ojoCentral, fase);
-        return sprite;
+        fase.setTranslateY(translateY);
+        return fase;
     }
 
     /**

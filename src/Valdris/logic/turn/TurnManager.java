@@ -1756,21 +1756,32 @@ public class TurnManager {
      */
     private String crearEndingText(CharacterType tipo) {
         if (tipo == CharacterType.SYRA) {
-            return "Syra no cierra los ojos cuando la luz del Núcleo la envuelve. Pronuncia despacio los nombres "
-                + "antiguos de Lireth, uno por uno, como si cada palabra pudiera guiar a los espíritus perdidos de "
-                + "vuelta a casa. Tres días después, en la superficie, un árbol del bosque crece hacia el cielo por "
-                + "primera vez en años. Nadie ve el milagro, pero Valdris lo recuerda.";
+            return "Syra no cierra los ojos cuando la luz del Núcleo la envuelve. El Parásito comprende que va a "
+                + "ser derrotado y, antes de deshacerse, reúne sus últimas fuerzas para lanzar una herida final "
+                + "contra ella y contra Malachar. Syra resiste el golpe el tiempo justo para pronunciar despacio "
+                + "los nombres antiguos de Lireth, uno por uno, como si cada palabra pudiera guiar a los espíritus "
+                + "perdidos de vuelta a casa. Malachar cae a su lado y el Núcleo se apaga con ellos, pero la "
+                + "oscuridad ya no sube hacia la superficie. Tres días después, un árbol del bosque crece hacia el "
+                + "cielo por primera vez en años. Nadie ve el milagro, pero Valdris entiende el precio y lo "
+                + "recuerda.";
         }
         if (tipo == CharacterType.DORATH) {
-            return "Dorath muere con la certeza que había perseguido desde su excomunión. Los textos que rescató "
-                + "de la Torre de Embrath sobreviven, y con ellos la prueba de que la Orden mintió por miedo. Cuando "
-                + "los reinos pregunten qué ocurrió bajo el continente, habrá palabras escritas por un excomulgado "
-                + "que ya nadie podrá borrar.";
+            return "Dorath muere con la certeza que había perseguido desde su excomunión. Al verse vencido, el "
+                + "Parásito descarga el resto de su voluntad en un último estallido y atraviesa a Dorath y a "
+                + "Malachar antes de extinguirse. Ninguno de los dos abandona el círculo del sello: Dorath sostiene "
+                + "los textos rescatados de la Torre de Embrath hasta que las runas dejan de temblar, y Malachar "
+                + "entrega su vida para cerrar la grieta que abrió. Los textos sobreviven, y con ellos la prueba de "
+                + "que la Orden mintió por miedo. Cuando los reinos pregunten qué ocurrió bajo el continente, habrá "
+                + "palabras escritas por un excomulgado que ya nadie podrá borrar, y Valdris seguirá en pie para "
+                + "leerlas.";
         }
-        return "En el último instante, el guantelete de Kael se abre y la mano quemada deja de doler. No cae como "
-            + "aprendiz rechazado ni como heredero fallido, sino como el guardián que llegó cuando todos los demás "
-            + "ya no podían. En Embrath, su nombre será añadido al final de la lista: el que cerró la deuda del "
-            + "sello y permitió que Valdris volviera a respirar.";
+        return "En el último instante, el guantelete de Kael se abre y la mano quemada deja de doler. El Parásito, "
+            + "acorralado y casi roto, usa su último aliento para golpear a Kael y a Malachar con la rabia de todo "
+            + "lo que había permanecido enterrado bajo Valdris. Malachar cae primero, pero mantiene el sello "
+            + "abierto el tiempo suficiente para que Kael lo cierre desde dentro. Kael no muere como aprendiz "
+            + "rechazado ni como heredero fallido, sino como el guardián que llegó cuando todos los demás ya no "
+            + "podían. En Embrath, su nombre será añadido al final de la lista: el que pagó la deuda del sello con "
+            + "su vida y permitió que Valdris volviera a respirar.";
     }
 
     /**

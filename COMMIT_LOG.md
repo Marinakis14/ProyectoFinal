@@ -2611,6 +2611,52 @@ Hacer que los mini-bosses narrativos y el Parásito final se distingan clarament
 
 ---
 
+### Sesión 61 — Sprite visible de Malachar
+
+**Objetivo:**
+Corregir que Malachar no aparecía en el mapa de la sala final y darle un aspecto visual coherente con su papel de mago aliado.
+
+**Cambios realizados:**
+- Añadida detección explícita de `MalacharAlly` en `GameView.agregarContenidoCelda(...)`.
+- Creado `crearMarcaMalachar(...)` para mostrar a Malachar con su HP visible igual que otras unidades relevantes.
+- Añadido sprite de mago con aura arcana, túnica, sombrero, bastón, cristal y barba.
+- Mantenido el cambio limitado a JavaFX, sin tocar reglas de combate final, IA ni persistencia.
+
+**Verificación:**
+- `mvn test` ejecutado correctamente.
+- Resultado: 498 tests, 0 failures, 0 errors, 0 skipped.
+
+**Decisión:**
+- Malachar se renderiza por su clase concreta `MalacharAlly` porque es una unidad aliada, no jugador ni enemigo.
+
+**Commit sugerido:** `git commit -m "fix(ui): render malachar ally sprite"`
+
+---
+
+### Sesión 62 — Fases finales del Parásito y desenlace ampliado
+
+**Objetivo:**
+Diferenciar de forma clara las tres fases visuales del Parásito y ampliar el desenlace de victoria para explicar que el protagonista y Malachar mueren por el último ataque del Parásito, mientras Valdris sobrevive.
+
+**Cambios realizados:**
+- Sustituido el sprite único del Parásito por tres variantes JavaFX específicas: coraza grande, forma desgarrada intermedia y esencia final más pequeña.
+- La tercera fase se representa como una esencia oscura con rasgos de mago corrompido para reforzar la presencia maligna vinculada a Malachar.
+- Ampliados los tres textos finales por personaje en `TurnManager.crearEndingText(...)` manteniendo el tono narrativo previo.
+- Aclarado en cada desenlace que el Parásito usa sus últimas fuerzas para matar al protagonista y a Malachar antes de extinguirse, pero no consigue destruir Valdris.
+
+**Verificación:**
+- `mvn test` ejecutado correctamente.
+- Resultado: 498 tests, 0 failures, 0 errors, 0 skipped.
+- `rg "import java\.util" src tests -n` sin resultados.
+- `git diff --check` sin errores; solo avisos esperados de CRLF.
+
+**Decisión:**
+- Las fases del Parásito deben cambiar de tamaño, silueta y motivo visual, no solo de color, para que la evolución del combate sea legible en el tablero.
+
+**Commit sugerido:** `git commit -m "style(ui): distinguish parasite phases"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas
@@ -2751,7 +2797,7 @@ Hacer que los mini-bosses narrativos y el Parásito final se distingan clarament
 Resultado:
 
 ```text
-496 tests, 0 failures, 0 errors, 0 skipped
+498 tests, 0 failures, 0 errors, 0 skipped
 ```
 
 ---

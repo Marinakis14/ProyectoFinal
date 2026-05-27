@@ -2563,6 +2563,54 @@ Corregir textos de interfaz donde faltaban tildes, eñes o grafías españolas e
 
 ---
 
+### Sesión 59 — Corrección de duración de BLIND
+
+**Objetivo:**
+Evitar que `BLIND` pueda quedarse activo de forma indefinida o consumir duración antes de que el jugador tenga oportunidad real de jugar su turno.
+
+**Cambios realizados:**
+- Movido el procesamiento de efectos del jugador en `TurnManager` al cierre del turno completo del jugador, antes de resolver las acciones enemigas.
+- Eliminado el consumo inmediato de efectos al final del turno enemigo, para que un `BLIND` recién aplicado conserve sus turnos visibles.
+- Ajustada la IA de `CONTROLLER` para elegir un efecto no activo siempre que existan alternativas entre `SLOW`, `BLIND` y `CURSE`.
+- Añadidos tests para comprobar que `BLIND` expira tras sus turnos y que `CONTROLLER` no refresca `BLIND` si puede aplicar otro efecto.
+
+**Verificación:**
+- `mvn -q "-Dtest=TurnManagerTest,IAEnemigoTest" test`: correcto.
+- `mvn test` ejecutado correctamente.
+- Resultado: 498 tests, 0 failures, 0 errors, 0 skipped.
+- `rg "import java\.util" src tests -n` sin resultados.
+- `git diff --check` sin errores; solo avisos esperados de CRLF.
+
+**Decisión:**
+- Los efectos aplicados por enemigos durante su turno empiezan a contar después de que el jugador haya tenido un turno útil bajo ese estado.
+
+**Commit sugerido:** `git commit -m "fix(turns): expire blind reliably"`
+
+---
+
+### Sesión 60 — Sprites diferenciados de mini-bosses y Parásito
+
+**Objetivo:**
+Hacer que los mini-bosses narrativos y el Parásito final se distingan claramente de enemigos normales que comparten su tipo de IA base.
+
+**Cambios realizados:**
+- Añadido render específico en `GameView` para `MiniBossEnemy` antes de usar la silueta normal por `EnemyType`.
+- Creado sprite propio para el Alcalde Corrupto con aura, capa, corona y bastón para que no se confunda con un `WARRIOR`.
+- Añadidas siluetas diferenciadas para Espíritu Madre, Golem, Guardián Sin Nombre y El Filtro.
+- Creado sprite propio para `ParasitoEnemy` con aura, núcleo, tentáculos y etiqueta de fase.
+- Mantenido el cambio en la capa JavaFX sin alterar estadísticas, IA, combate ni persistencia.
+
+**Verificación:**
+- `mvn test` ejecutado correctamente.
+- Resultado: 498 tests, 0 failures, 0 errors, 0 skipped.
+
+**Decisión:**
+- Los mini-bosses se diferencian visualmente por clase concreta (`MiniBossEnemy`) y no por `EnemyType`, porque varios reutilizan IA de enemigos normales.
+
+**Commit sugerido:** `git commit -m "style(ui): distinguish boss sprites"`
+
+---
+
 ## Progreso actual
 
 ### Checklist de clases implementadas

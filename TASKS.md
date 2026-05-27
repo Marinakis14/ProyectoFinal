@@ -28,8 +28,8 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | Capas 2, 3 y 4 | Completadas y testeadas |
 | Primera parte de capa 5 | BFS, visión, combate, árbol de decisión IA, IA enemiga, TurnManager, ItemGenerator, PuzzleManager y DungeonGenerator completados |
 | Capa 6 inicial | GameState, LoadedGame, GameSummary, LectorJSON, GameConfig y DungeonConfigLoader completados |
-| Capa 7 JavaFX | Pantallas principales, introducciones narrativas, selección con retratos, partida, inventario, autoguardado, diálogos narrativos temáticos, cofres con elección de arma, pantalla final ampliada, correcciones jugables y ortográficas, redistribución de pantalla, sprites de unidades, feedback visual de puzzles y secretos, zonas tintadas, transiciones de pasillo, distancia/ruta global a salida y contadores de turno completados |
-| Tests JUnit actuales | 496 tests pasando |
+| Capa 7 JavaFX | Pantallas principales, introducciones narrativas, selección con retratos, partida, inventario, autoguardado, diálogos narrativos temáticos, cofres con elección de arma, pantalla final ampliada, correcciones jugables y ortográficas, redistribución de pantalla, sprites de unidades y mini-bosses, feedback visual de puzzles y secretos, zonas tintadas, transiciones de pasillo, distancia/ruta global a salida y contadores de turno completados |
+| Tests JUnit actuales | 498 tests pasando |
 | Última verificación completa | `mvn test` con 0 fallos, 0 errores, 0 omitidos |
 
 ---
@@ -305,6 +305,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 103 | Aumentar +5 el daño base de personajes y armas para suavizar las primeras salas | ✅ Completado |
 | 104 | Reducir el daño y defensa del `WARRIOR` normal para mejorar el arranque | ✅ Completado |
 | 105 | Reducir daño y subir defensa del `GUARDIAN` normal para mantenerlo resistente pero menos letal | ✅ Completado |
+| 106 | Corregir el ciclo de duración de `BLIND` y evitar que `CONTROLLER` refresque un efecto activo si hay alternativas | ✅ Completado |
 
 ---
 
@@ -403,6 +404,7 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 57 | Colocar el arma inicial del personaje delante de la casilla de entrada al crear partida nueva | ✅ Completado |
 | 58 | Añadir modal temático de elección de arma para cofres secretos con 2 o 3 opciones | ✅ Completado |
 | 59 | Corregir tildes, eñes y textos visibles de pantallas narrativas, selección, ruta al Núcleo y recompensas | ✅ Completado |
+| 60 | Diferenciar visualmente mini-bosses narrativos y Parásito final con sprites propios en el mapa | ✅ Completado |
 
 ---
 
@@ -525,6 +527,8 @@ Este fichero debe actualizarse al terminar cada tarea relevante:
 | 56 | Suite tras arma inicial por personaje, cofres secretos con elección de arma y balance final V5 | ✅ Correcta |
 | 57 | Suite tras ajuste de balance inicial: personajes y armas +5, `WARRIOR` 12/5 y `GUARDIAN` 12/15 | ✅ Correcta |
 | 58 | Suite tras corrección ortográfica de textos visibles en JavaFX y mensajes de configuración | ✅ Correcta |
+| 59 | Suite tras corrección de duración de `BLIND` y rotación de efectos de `CONTROLLER` | ✅ Correcta |
+| 60 | Suite tras sprites diferenciados de mini-bosses y Parásito final | ✅ Correcta |
 
 Última verificación completa:
 
@@ -652,6 +656,9 @@ Resultado:
 | 106 | Para suavizar las primeras salas, se aplica un ajuste jugable sobre V5: personajes y armas suman +5 daño base | ✅ Aceptada |
 | 107 | `WARRIOR` queda como enemigo inicial menos punitivo con ataque 12 y defensa 5 | ✅ Aceptada |
 | 108 | `GUARDIAN` conserva rol defensivo con defensa 15, pero baja su ataque a 12 para reducir picos de daño | ✅ Aceptada |
+| 109 | Los efectos del jugador se consumen al cerrar su turno completo; los efectos aplicados por enemigos durante su turno no pierden duración antes de que el jugador pueda actuar | ✅ Aceptada |
+| 110 | `CONTROLLER` evita refrescar un efecto que el jugador ya tiene activo mientras pueda aplicar otro efecto válido | ✅ Aceptada |
+| 111 | Los mini-bosses usan una ruta de renderizado JavaFX propia para no confundirse con enemigos normales que reutilizan su misma IA base | ✅ Aceptada |
 
 ---
 

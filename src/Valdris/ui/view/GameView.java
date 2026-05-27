@@ -14,6 +14,8 @@ import Valdris.model.map.Cell;
 import Valdris.model.map.Container;
 import Valdris.model.map.Room;
 import Valdris.model.units.Enemy;
+import Valdris.model.units.MiniBossEnemy;
+import Valdris.model.units.ParasitoEnemy;
 import Valdris.model.units.Player;
 import Valdris.model.units.Unit;
 import Valdris.ui.MainApp;
@@ -600,6 +602,13 @@ public class GameView implements GameModelListener {
      * @return nodo visual del enemigo
      */
     private StackPane crearSpriteEnemigo(Enemy enemy) {
+        if (enemy instanceof ParasitoEnemy) {
+            return crearSpriteParasito((ParasitoEnemy) enemy);
+        }
+        if (enemy instanceof MiniBossEnemy) {
+            return crearSpriteMiniBoss((MiniBossEnemy) enemy);
+        }
+
         StackPane sprite = new StackPane();
         sprite.setPrefSize(34, 30);
         sprite.setMaxSize(34, 30);
@@ -622,6 +631,272 @@ public class GameView implements GameModelListener {
         ojoDer.setTranslateY(-3);
 
         sprite.getChildren().addAll(silueta, ojoIzq, ojoDer, icono);
+        return sprite;
+    }
+
+    /**
+     * Crea una silueta especial para mini-bosses narrativos.
+     *
+     * @param miniBoss mini-boss representado
+     * @return nodo visual diferenciado
+     */
+    private StackPane crearSpriteMiniBoss(MiniBossEnemy miniBoss) {
+        StackPane sprite = new StackPane();
+        sprite.setPrefSize(42, 36);
+        sprite.setMaxSize(42, 36);
+
+        Circle aura = new Circle(20);
+        aura.setFill(Color.web(colorAuraMiniBoss(miniBoss), 0.24));
+        aura.setStroke(Color.web("#e0bd65"));
+        aura.setStrokeWidth(1.4);
+
+        Node silueta = crearSiluetaMiniBoss(miniBoss);
+        Label sello = new Label(etiquetaMiniBoss(miniBoss));
+        sello.setFont(Font.font("Monospaced", 8));
+        sello.setStyle("-fx-text-fill: #fff2bd; -fx-font-weight: bold;");
+        sello.setTranslateY(9);
+
+        sprite.getChildren().addAll(aura, silueta, sello);
+        return sprite;
+    }
+
+    /**
+     * Crea la silueta principal de un mini-boss.
+     *
+     * @param miniBoss mini-boss representado
+     * @return nodo visual de silueta
+     */
+    private Node crearSiluetaMiniBoss(MiniBossEnemy miniBoss) {
+        String tipo = miniBoss.getTipoMiniBoss().name();
+        if ("ALCALDE_CORRUPTO".equals(tipo)) {
+            return crearSiluetaAlcaldeCorrupto();
+        }
+        if ("ESPIRITU_MADRE".equals(tipo)) {
+            return crearSiluetaEspirituMadre();
+        }
+        if ("GOLEM".equals(tipo)) {
+            return crearSiluetaGolemMiniBoss();
+        }
+        if ("GUARDIAN_SIN_NOMBRE".equals(tipo)) {
+            return crearSiluetaGuardianMiniBoss();
+        }
+        return crearSiluetaFiltroMiniBoss();
+    }
+
+    /**
+     * Crea el sprite del Alcalde Corrupto.
+     *
+     * @return silueta del Alcalde
+     */
+    private StackPane crearSiluetaAlcaldeCorrupto() {
+        StackPane silueta = new StackPane();
+        Polygon capa = new Polygon(21.0, 1.0, 35.0, 34.0, 7.0, 34.0);
+        capa.setFill(Color.web("#63212d"));
+        capa.setStroke(Color.web("#15090b"));
+        capa.setStrokeWidth(1.2);
+
+        Rectangle torso = new Rectangle(21, 22);
+        torso.setArcWidth(6);
+        torso.setArcHeight(6);
+        torso.setTranslateY(8);
+        torso.setFill(Color.web("#8c2f3c"));
+        torso.setStroke(Color.web("#2a1015"));
+        torso.setStrokeWidth(1);
+
+        Circle rostro = new Circle(7);
+        rostro.setTranslateY(-6);
+        rostro.setFill(Color.web("#d1a06d"));
+        rostro.setStroke(Color.web("#2b160f"));
+        rostro.setStrokeWidth(0.9);
+
+        Polygon corona = new Polygon(13.0, -10.0, 16.0, -18.0, 21.0, -11.0, 26.0, -18.0, 29.0, -10.0);
+        corona.setFill(Color.web("#d8b55a"));
+        corona.setStroke(Color.web("#2b2118"));
+        corona.setStrokeWidth(0.8);
+
+        Rectangle baston = new Rectangle(3, 26);
+        baston.setTranslateX(15);
+        baston.setTranslateY(6);
+        baston.setRotate(-12);
+        baston.setFill(Color.web("#c29b5a"));
+        baston.setStroke(Color.web("#2b2118"));
+        baston.setStrokeWidth(0.7);
+
+        silueta.getChildren().addAll(capa, baston, torso, rostro, corona);
+        return silueta;
+    }
+
+    /**
+     * Crea el sprite del Espiritu Madre.
+     *
+     * @return silueta espectral
+     */
+    private StackPane crearSiluetaEspirituMadre() {
+        StackPane silueta = new StackPane();
+        Polygon manto = new Polygon(21.0, 0.0, 36.0, 30.0, 27.0, 26.0, 21.0, 35.0, 15.0, 26.0, 6.0, 30.0);
+        manto.setFill(Color.web("#416f52"));
+        manto.setStroke(Color.web("#102016"));
+        manto.setStrokeWidth(1.2);
+
+        Circle nucleo = new Circle(8);
+        nucleo.setFill(Color.web("#a4e6a4", 0.62));
+        nucleo.setStroke(Color.web("#e2ffd8"));
+        nucleo.setStrokeWidth(1);
+
+        Rectangle ramaIzq = new Rectangle(3, 21);
+        ramaIzq.setTranslateX(-11);
+        ramaIzq.setTranslateY(-6);
+        ramaIzq.setRotate(-34);
+        ramaIzq.setFill(Color.web("#7f9a5c"));
+
+        Rectangle ramaDer = new Rectangle(3, 21);
+        ramaDer.setTranslateX(11);
+        ramaDer.setTranslateY(-6);
+        ramaDer.setRotate(34);
+        ramaDer.setFill(Color.web("#7f9a5c"));
+
+        silueta.getChildren().addAll(manto, ramaIzq, ramaDer, nucleo);
+        return silueta;
+    }
+
+    /**
+     * Crea el sprite del Golem.
+     *
+     * @return silueta petrea
+     */
+    private StackPane crearSiluetaGolemMiniBoss() {
+        StackPane silueta = new StackPane();
+        Rectangle cuerpo = new Rectangle(28, 29);
+        cuerpo.setArcWidth(4);
+        cuerpo.setArcHeight(4);
+        cuerpo.setTranslateY(4);
+        cuerpo.setFill(Color.web("#5c6465"));
+        cuerpo.setStroke(Color.web("#111111"));
+        cuerpo.setStrokeWidth(1.5);
+
+        Rectangle cabeza = new Rectangle(18, 12);
+        cabeza.setArcWidth(3);
+        cabeza.setArcHeight(3);
+        cabeza.setTranslateY(-12);
+        cabeza.setFill(Color.web("#707b7c"));
+        cabeza.setStroke(Color.web("#111111"));
+        cabeza.setStrokeWidth(1.1);
+
+        Polygon grieta = new Polygon(19.0, -16.0, 22.0, -8.0, 18.0, -4.0, 23.0, 4.0, 18.0, 14.0);
+        grieta.setFill(Color.TRANSPARENT);
+        grieta.setStroke(Color.web("#c8d0cc"));
+        grieta.setStrokeWidth(1.1);
+
+        silueta.getChildren().addAll(cuerpo, cabeza, grieta);
+        return silueta;
+    }
+
+    /**
+     * Crea el sprite del Guardian Sin Nombre.
+     *
+     * @return silueta blindada
+     */
+    private StackPane crearSiluetaGuardianMiniBoss() {
+        StackPane silueta = new StackPane();
+        Rectangle torso = new Rectangle(24, 27);
+        torso.setArcWidth(8);
+        torso.setArcHeight(8);
+        torso.setTranslateY(5);
+        torso.setFill(Color.web("#4b5560"));
+        torso.setStroke(Color.web("#101317"));
+        torso.setStrokeWidth(1.4);
+
+        Polygon escudo = new Polygon(21.0, 0.0, 34.0, 5.0, 31.0, 22.0, 21.0, 31.0, 11.0, 22.0, 8.0, 5.0);
+        escudo.setFill(Color.web("#8090a0", 0.86));
+        escudo.setStroke(Color.web("#e0bd65"));
+        escudo.setStrokeWidth(1.1);
+
+        Rectangle visor = new Rectangle(17, 5);
+        visor.setArcWidth(2);
+        visor.setArcHeight(2);
+        visor.setTranslateY(-9);
+        visor.setFill(Color.web("#c9f0ff"));
+        visor.setStroke(Color.web("#101317"));
+        visor.setStrokeWidth(0.7);
+
+        silueta.getChildren().addAll(torso, escudo, visor);
+        return silueta;
+    }
+
+    /**
+     * Crea el sprite de El Filtro.
+     *
+     * @return silueta arcana
+     */
+    private StackPane crearSiluetaFiltroMiniBoss() {
+        StackPane silueta = new StackPane();
+        Polygon tunica = new Polygon(21.0, -2.0, 36.0, 34.0, 6.0, 34.0);
+        tunica.setFill(Color.web("#3b2a62"));
+        tunica.setStroke(Color.web("#130c20"));
+        tunica.setStrokeWidth(1.3);
+
+        Circle mascara = new Circle(9);
+        mascara.setTranslateY(-5);
+        mascara.setFill(Color.web("#c5bfd8"));
+        mascara.setStroke(Color.web("#130c20"));
+        mascara.setStrokeWidth(1);
+
+        Polygon runa = new Polygon(21.0, -12.0, 27.0, -5.0, 21.0, 2.0, 15.0, -5.0);
+        runa.setFill(Color.web("#72d6ff", 0.58));
+        runa.setStroke(Color.web("#bfeeff"));
+        runa.setStrokeWidth(0.9);
+
+        silueta.getChildren().addAll(tunica, mascara, runa);
+        return silueta;
+    }
+
+    /**
+     * Crea una silueta especial para el Parásito final.
+     *
+     * @param parasito Parásito representado
+     * @return nodo visual del Parásito
+     */
+    private StackPane crearSpriteParasito(ParasitoEnemy parasito) {
+        StackPane sprite = new StackPane();
+        sprite.setPrefSize(44, 38);
+        sprite.setMaxSize(44, 38);
+
+        Circle aura = new Circle(21);
+        aura.setFill(Color.web(colorParasito(parasito), 0.24));
+        aura.setStroke(Color.web("#72d6ff", 0.75));
+        aura.setStrokeWidth(1.4);
+
+        Polygon tentaculoIzq = new Polygon(19.0, 16.0, 4.0, 28.0, 10.0, 32.0, 23.0, 20.0);
+        tentaculoIzq.setFill(Color.web("#21122e"));
+        tentaculoIzq.setStroke(Color.web("#0b0710"));
+        tentaculoIzq.setStrokeWidth(0.8);
+
+        Polygon tentaculoDer = new Polygon(25.0, 16.0, 40.0, 28.0, 34.0, 32.0, 21.0, 20.0);
+        tentaculoDer.setFill(Color.web("#21122e"));
+        tentaculoDer.setStroke(Color.web("#0b0710"));
+        tentaculoDer.setStrokeWidth(0.8);
+
+        Polygon cuerpo = new Polygon(22.0, -2.0, 37.0, 12.0, 32.0, 32.0, 22.0, 38.0, 12.0, 32.0, 7.0, 12.0);
+        cuerpo.setFill(Color.web(colorParasito(parasito)));
+        cuerpo.setStroke(Color.web("#07040a"));
+        cuerpo.setStrokeWidth(1.5);
+
+        Circle nucleo = new Circle(8);
+        nucleo.setFill(Color.web("#72d6ff", 0.50));
+        nucleo.setStroke(Color.web("#d8fbff"));
+        nucleo.setStrokeWidth(1.1);
+
+        Circle ojoCentral = new Circle(3);
+        ojoCentral.setFill(Color.web("#ffd166"));
+        ojoCentral.setStroke(Color.web("#15050a"));
+        ojoCentral.setStrokeWidth(0.6);
+
+        Label fase = new Label(String.valueOf(parasito.getPhase()));
+        fase.setFont(Font.font("Monospaced", 8));
+        fase.setStyle("-fx-text-fill: #ffffff; -fx-font-weight: bold;");
+        fase.setTranslateY(11);
+
+        sprite.getChildren().addAll(aura, tentaculoIzq, tentaculoDer, cuerpo, nucleo, ojoCentral, fase);
         return sprite;
     }
 
@@ -1481,6 +1756,68 @@ public class GameView implements GameModelListener {
             return "#7c2f2f";
         }
         return "#5c2424";
+    }
+
+    /**
+     * Devuelve el color de aura de un mini-boss.
+     *
+     * @param miniBoss mini-boss consultado
+     * @return color CSS hexadecimal
+     */
+    private String colorAuraMiniBoss(MiniBossEnemy miniBoss) {
+        String tipo = miniBoss.getTipoMiniBoss().name();
+        if ("ESPIRITU_MADRE".equals(tipo)) {
+            return "#7dbf73";
+        }
+        if ("GOLEM".equals(tipo)) {
+            return "#8c949a";
+        }
+        if ("GUARDIAN_SIN_NOMBRE".equals(tipo)) {
+            return "#8ca3c0";
+        }
+        if ("EL_FILTRO".equals(tipo)) {
+            return "#8b6fd8";
+        }
+        return "#b04c5a";
+    }
+
+    /**
+     * Devuelve una etiqueta corta para mini-bosses narrativos.
+     *
+     * @param miniBoss mini-boss consultado
+     * @return texto compacto
+     */
+    private String etiquetaMiniBoss(MiniBossEnemy miniBoss) {
+        String tipo = miniBoss.getTipoMiniBoss().name();
+        if ("ESPIRITU_MADRE".equals(tipo)) {
+            return "EM";
+        }
+        if ("GOLEM".equals(tipo)) {
+            return "GM";
+        }
+        if ("GUARDIAN_SIN_NOMBRE".equals(tipo)) {
+            return "GS";
+        }
+        if ("EL_FILTRO".equals(tipo)) {
+            return "FI";
+        }
+        return "AC";
+    }
+
+    /**
+     * Devuelve el color del Parásito segun su fase.
+     *
+     * @param parasito Parásito consultado
+     * @return color CSS hexadecimal
+     */
+    private String colorParasito(ParasitoEnemy parasito) {
+        if (parasito.getPhase() == ParasitoEnemy.FASE_ESENCIA) {
+            return "#201137";
+        }
+        if (parasito.getPhase() == ParasitoEnemy.FASE_DESGARRADA) {
+            return "#3b1238";
+        }
+        return "#2f1d35";
     }
 
     /**

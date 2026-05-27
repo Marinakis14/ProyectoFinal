@@ -814,6 +814,11 @@ public class TurnManager {
             return;
         }
 
+        procesarEfectosJugadorAlCerrarTurno();
+        if (gameResult != GameResult.IN_PROGRESS) {
+            return;
+        }
+
         if (finalCombatStarted) {
             ejecutarTurnoAliadoFinal(room);
             if (gameResult != GameResult.IN_PROGRESS) {
@@ -841,15 +846,21 @@ public class TurnManager {
             }
         }
 
-        EffectProcessingResult efectosJugador = player.procesarEfectos();
-        registrarResultadoEfectos(nombreJugador(), efectosJugador, player.getHp(), player.getHpMax());
-        comprobarDerrotaJugador(motivoDerrotaPorEfectos(efectosJugador));
         player.resetAcciones();
         addLog(LogEventType.ENEMY_TURN, "ENEMIGOS",
             "Turno enemigo resuelto en " + room.getId() + ".", "enemigosIniciales=" + enemigosIniciales);
         if (gameResult == GameResult.IN_PROGRESS) {
             faseActual = Phase.MOVEMENT;
         }
+    }
+
+    /**
+     * Procesa los efectos del jugador despues de que haya resuelto su turno completo.
+     */
+    private void procesarEfectosJugadorAlCerrarTurno() {
+        EffectProcessingResult efectosJugador = player.procesarEfectos();
+        registrarResultadoEfectos(nombreJugador(), efectosJugador, player.getHp(), player.getHpMax());
+        comprobarDerrotaJugador(motivoDerrotaPorEfectos(efectosJugador));
     }
 
     /**

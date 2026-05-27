@@ -1081,6 +1081,25 @@ class TurnManagerTest {
     }
 
     @Test
+    void ejecutarTurnoEnemigos_blindExpiraTrasSusTurnos() throws GameStateException {
+        // Arrange
+        player.addEfecto(new Effect(EffectType.BLIND, 2));
+
+        // Act + Assert
+        turnManager.cederTurno();
+        turnManager.ejecutarTurnoEnemigos();
+
+        assertTrue(player.tieneEfecto(EffectType.BLIND));
+        assertEquals(1, player.getEfectosActivos().get(0).getTurnosRestantes());
+
+        turnManager.cederTurno();
+        turnManager.ejecutarTurnoEnemigos();
+
+        assertFalse(player.tieneEfecto(EffectType.BLIND));
+        assertTrue(existeLog(LogEventType.STATE, "BLIND expira"));
+    }
+
+    @Test
     void ejecutarTurnoEnemigos_siEnemigoMataRegistraAtaqueComoCausa() throws GameStateException {
         // Arrange
         Enemy warrior = new Enemy(EnemyType.WARRIOR, 2, 3, "R1");

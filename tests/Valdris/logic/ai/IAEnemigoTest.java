@@ -212,6 +212,23 @@ class IAEnemigoTest {
         assertTrue(esEfectoController(result.getEfectoAplicado()));
     }
 
+    @Test
+    void ejecutarAtaque_controllerNoRefrescaBlindSiHayOtroEfectoDisponible() {
+        // Arrange
+        Enemy controller = crearEnemy(EnemyType.CONTROLLER, 3, 2);
+        player.setPosicion(3, 5);
+        player.addEfecto(new Effect(EffectType.BLIND, 1));
+
+        // Act
+        AIActionResult result = IAEnemigo.ejecutarAtaque(controller, player, null);
+
+        // Assert
+        assertNotEquals(EffectType.BLIND, result.getEfectoAplicado());
+        assertTrue(player.tieneEfecto(EffectType.BLIND));
+        assertEquals(1, turnosRestantesJugador(EffectType.BLIND));
+        assertTrue(esEfectoController(result.getEfectoAplicado()));
+    }
+
     // -- Invocación ----------------------------------------------------------
 
     @Test
@@ -288,6 +305,22 @@ class IAEnemigoTest {
      */
     private boolean esEfectoController(EffectType tipo) {
         return tipo == EffectType.SLOW || tipo == EffectType.BLIND || tipo == EffectType.CURSE;
+    }
+
+    /**
+     * Devuelve los turnos restantes de un efecto activo del jugador.
+     *
+     * @param tipo efecto consultado
+     * @return turnos restantes, o -1 si no existe
+     */
+    private int turnosRestantesJugador(EffectType tipo) {
+        for (int i = 0; i < player.getEfectosActivos().getSize(); i++) {
+            Effect effect = player.getEfectosActivos().get(i);
+            if (effect != null && effect.getTipo() == tipo) {
+                return effect.getTurnosRestantes();
+            }
+        }
+        return -1;
     }
 
     /**

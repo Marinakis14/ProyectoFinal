@@ -42,6 +42,13 @@ public final class IAEnemigo {
     /** Cooldown de ataque del Sniper. */
     private static final int COOLDOWN_SNIPER = 2;
 
+    /** Efectos que puede aplicar un Controller. */
+    private static final EffectType[] EFECTOS_CONTROLLER = {
+        EffectType.SLOW,
+        EffectType.BLIND,
+        EffectType.CURSE
+    };
+
     // -- Constructor privado -------------------------------------------------
 
     /**
@@ -329,7 +336,7 @@ public final class IAEnemigo {
         if (player == null) {
             return null;
         }
-        EffectType efecto = elegirEfectoController();
+        EffectType efecto = elegirEfectoController(player);
         player.addEfecto(new Effect(efecto, DURACION_EFECTO_CONTROLLER));
         return efecto;
     }
@@ -337,17 +344,18 @@ public final class IAEnemigo {
     /**
      * Elige uno de los efectos posibles del Controller.
      *
+     * @param player jugador afectado
      * @return efecto elegido
      */
-    private static EffectType elegirEfectoController() {
-        int valor = (int) (Math.random() * 3);
-        if (valor == 0) {
-            return EffectType.SLOW;
+    private static EffectType elegirEfectoController(Player player) {
+        int inicio = (int) (Math.random() * EFECTOS_CONTROLLER.length);
+        for (int i = 0; i < EFECTOS_CONTROLLER.length; i++) {
+            EffectType candidato = EFECTOS_CONTROLLER[(inicio + i) % EFECTOS_CONTROLLER.length];
+            if (player == null || !player.tieneEfecto(candidato)) {
+                return candidato;
+            }
         }
-        if (valor == 1) {
-            return EffectType.BLIND;
-        }
-        return EffectType.CURSE;
+        return EFECTOS_CONTROLLER[inicio];
     }
 
     /**
